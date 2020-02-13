@@ -1,8 +1,9 @@
 import React from 'react';
+import Router from '../routing/Router';
 
 function App() {
     return (
-        <div className="App">Test</div>
+        <Router />
     );
 }
 

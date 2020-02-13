@@ -145,6 +145,7 @@
             "children": true,
             "when": "always"
         } ],
+        "react/jsx-props-no-spreading": "off",
         "react/jsx-filename-extension": [ "error", { "extensions": [ ".js", ".jsx" ] } ],
         "react/jsx-handler-names": "error",
         "react/jsx-indent": [ 2, 4 ],
