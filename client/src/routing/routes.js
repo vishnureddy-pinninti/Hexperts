@@ -1,5 +1,5 @@
-import Home from '../components/pages/Home';
-import Test from '../components/pages/Test';
+import Home from '../pages/Home';
+import Test from '../pages/Test';
 
 const routes = [
     {
