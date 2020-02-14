@@ -1,10 +1,97 @@
-import React from 'react';
-import Router from '../routing/Router';
+import React, { Component } from 'react';
+import { UserAgentApplication } from 'msal';
+import { connect } from 'react-redux';
 
-function App() {
-    return (
-        <Router />
-    );
+import Router from '../routing/Router';
+import config from '../utils/config';
+import { getUserDetails } from '../services/authService';
+import Landing from '../pages/Landing';
+import { requestUserSession } from '../store/actions/auth';
+import { Button } from '@material-ui/core';
+
+class App extends Component {
+    constructor(props) {
+        super(props);
+
+        this.userAgentApplication = new UserAgentApplication({
+            auth: {
+                clientId: config.appId,
+                redirectUri: config.redirectUri,
+                authority: config.authority,
+            },
+            cache: {
+                cacheLocation: 'localStorage',
+                storeAuthStateInCookie: true,
+            },
+        });
+
+        const user = this.userAgentApplication.getAccount();
+
+        if (user) {
+            // Enhance user object with data from Graph
+            this.getUserProfile();
+        }
+    }
+
+    render() {
+        const { user } = this.props;
+        if (user.isAuthenticated) {
+            return (
+            <div>
+                <Button onClick={this.logout}>Logout</Button>
+                <Router />
+            </div>);
+        }
+        return <Landing onLoginClick={this.login}/>
+    }
+
+    login = async() => {
+        try {
+            await this.userAgentApplication.loginPopup(
+                {
+                    scopes: config.scopes,
+                });
+            await this.getUserProfile();
+        }
+        catch (e) {
+            return e;
+        }
+    }
+
+    logout = () => {
+        this.userAgentApplication.logout();
+    }
+    
+    getUserProfile = async() => {
+        try {
+            const accessToken = await this.userAgentApplication.acquireTokenSilent({
+                scopes: config.scopes,
+            });
+
+            if (accessToken) {
+            // Get the user's profile from Graph
+                const user = await getUserDetails(accessToken);
+                this.props.requestUserSession(user);
+            }
+        }
+        catch (err) {
+            return err;
+        }
+    }
 }
 
-export default App;
+const mapStateToProps = state => {
+    return {
+        user: state.user
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        requestUserSession: (user) => {
+            dispatch(requestUserSession(user));
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

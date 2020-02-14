@@ -4,8 +4,13 @@ const { Schema } = mongoose;
 const answerSchema = require('./answer');
 
 const questionSchema = new Schema({
+    answers: [ answerSchema ],
     author: {
         type: String,
+    },
+    followers: [ String ],
+    lastModified: {
+        type: Date,
     },
     postedDate: {
         type: Date,
@@ -17,7 +22,6 @@ const questionSchema = new Schema({
         type: String,
         trim: true,
     },
-    answers: [ answerSchema ],
 });
 
 mongoose.model('questions', questionSchema);
