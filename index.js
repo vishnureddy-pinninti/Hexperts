@@ -1,5 +1,6 @@
 require('./models/db');
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const bodyParser = require('body-parser');
 
@@ -7,8 +8,11 @@ const app = express();
 const http = require('http').createServer(app);
 const { PORT } = require('./utils/constants');
 
+app.use(cookieParser());
+
 app.use(bodyParser.json());
 
+require('./routes/auth')(app);
 require('./routes/question')(app);
 require('./routes/answer')(app);
 

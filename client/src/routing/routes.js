@@ -1,12 +1,6 @@
 import Home from '../pages/Home';
-import Test from '../pages/Test';
 
 const routes = [
-    {
-        path: '/test',
-        component: Test,
-        key: 'Test',
-    },
     {
         path: '/',
         component: Home,

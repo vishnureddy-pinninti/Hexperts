@@ -5,7 +5,11 @@ const apiRequest = (store) => (next) => (action) => {
 
     const {
         dispatch,
+        getState,
     } = store;
+
+    const { user } = getState();
+
     const config = action.makeApiRequest;
     const successHandler = config.success;
 
@@ -25,29 +29,20 @@ const apiRequest = (store) => (next) => (action) => {
         credentials: 'same-origin',
         redirect: 'follow',
         referrer: 'no-referrer',
+        method: config.method,
+        headers: {
+            userid: user.user.userid,
+            _id: user.user._id,
+        },
     };
+
     if (config.body) {
-        requestObject.method = config.method;
         requestObject.body = JSON.stringify(config.body);
-        requestObject.headers = {
-            'Content-Type': 'application/json',
-        };
-    }
-    else {
-        requestObject.method = config.method;
+        requestObject.headers['Content-Type'] = 'application/json';
     }
 
     return fetch(config.url, requestObject)
         .then((response) => response.json())
-    // if (response.status === 201 && config.success) {
-    //     dispatch(successHandler(response));
-    //     if (config.successcb) {
-    //         config.successcb();
-    //     }
-    // } else {
-    //     return response.json()
-    // }
-
         .then((response) => {
             if (config.success) {
                 dispatch(successHandler(response));

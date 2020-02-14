@@ -17,3 +17,4 @@ mongoose.connection.on('error', (err) => {
 });
 
 require('./question');
+require('./user');
