@@ -28,10 +28,18 @@ function Home() {
                 flexDirection: 'column',
                 backgroundColor: '#f5f5f5',
             } }>
-                <QACard />
-                <QACard />
-                <QACard />
-                <QACard />
+                <QACard
+                    author="Karthik Kosigi"
+                    time="September 14, 2016" />
+                <QACard
+                    author="Tanmoy"
+                    time="September 14, 2016" />
+                <QACard
+                    author="Reddaih Challa"
+                    time="September 14, 2016" />
+                <QACard
+                    author="Karthik Kosigi"
+                    time="September 14, 2016" />
             </div>
             <Link to="/test">Test Link</Link>
         </div>
