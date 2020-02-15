@@ -1,14 +1,23 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import TopBar from '../components/base/TopBar';
 import QACard from '../components/base/Card';
 import Drawer from '../components/base/Drawer';
+import { requestUserQuestions } from '../store/actions/questions';
 
-function Home() {
+function Home(props) {
     const [
         open,
         setOpen,
     ] = React.useState(false);
+
+    const { requestUserQuestions } = props;
+
+    useEffect(() => {
+        // Update the document title using the browser API
+        requestUserQuestions();
+      });
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -41,9 +50,22 @@ function Home() {
                     author="Karthik Kosigi"
                     time="September 14, 2016" />
             </div>
-            <Link to="/test">Test Link</Link>
         </div>
     );
 }
 
-export default Home;
+const mapStateToProps = (state) => {
+    return {
+
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        requestUserQuestions: () => {
+            dispatch(requestUserQuestions());
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
