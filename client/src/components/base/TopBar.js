@@ -157,6 +157,7 @@ const TopBar = (props) => {
             onClose={ handleMenuClose }>
             <MenuItem onClick={ handleMenuClose }>Profile</MenuItem>
             <MenuItem onClick={ handleMenuClose }>My account</MenuItem>
+            <MenuItem onClick={ props.handleLogout }>Logout</MenuItem>
         </Menu>
     );
 

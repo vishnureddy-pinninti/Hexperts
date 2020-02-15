@@ -9,16 +9,18 @@ const RouteWithSubRoutes = (route) => (
             // pass the sub-routes down to keep nesting
             <route.component
                 { ...props }
+                onLogout={ route.handleLogout }
                 routes={ route.routes } />
         ) } />
 );
 
-const Router = () => (
+const Router = (props) => (
     <BrowserRouter>
         <Switch>
             { routes.map((route) => (
                 <RouteWithSubRoutes
                     key={ route.key }
+                    { ...props }
                     { ...route } />
             )) }
         </Switch>
