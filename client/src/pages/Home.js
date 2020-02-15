@@ -11,12 +11,13 @@ function Home(props) {
         setOpen,
     ] = React.useState(false);
 
-    const { requestUserQuestions } = props;
+
+    const { requestUserQuestions, onLogout } = props;
 
     useEffect(() => {
         // Update the document title using the browser API
         requestUserQuestions();
-      });
+    });
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -27,7 +28,9 @@ function Home(props) {
     };
     return (
         <div className="App">
-            <TopBar handleDrawerOpen={ handleDrawerOpen } />
+            <TopBar
+                handleDrawerOpen={ handleDrawerOpen }
+                handleLogout={ onLogout } />
             <Drawer
                 open={ open }
                 handleDrawerClose={ handleDrawerClose } />
@@ -37,10 +40,18 @@ function Home(props) {
                 flexDirection: 'column',
                 backgroundColor: '#f5f5f5',
             } }>
-                <QACard />
-                <QACard />
-                <QACard />
-                <QACard />
+                <QACard
+                    author="Karthik Kosigi"
+                    time="September 14, 2016" />
+                <QACard
+                    author="Tanmoy"
+                    time="September 14, 2016" />
+                <QACard
+                    author="Reddaih Challa"
+                    time="September 14, 2016" />
+                <QACard
+                    author="Karthik Kosigi"
+                    time="September 14, 2016" />
             </div>
         </div>
     );
@@ -49,15 +60,15 @@ function Home(props) {
 const mapStateToProps = (state) => {
     return {
 
-    }
+    };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         requestUserQuestions: () => {
             dispatch(requestUserQuestions());
-        }
-    }
+        },
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

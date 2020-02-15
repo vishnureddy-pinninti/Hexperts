@@ -17,18 +17,11 @@ import ArrowUpwardOutlinedIcon from '@material-ui/icons/ArrowUpwardOutlined';
 import ArrowDownwardOutlinedIcon from '@material-ui/icons/ArrowDownwardOutlined';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Box from '@material-ui/core/Box';
-import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => {
     return {
         root: {
-            maxWidth: 700,
-            marginBottom: 10,
-        },
-        headerRoot: {
-            paddingTop: 0,
-            paddingBottom: 0,
+            marginTop: 10,
         },
         media: {
             height: 0,
@@ -47,14 +40,10 @@ const useStyles = makeStyles((theme) => {
         avatar: {
             backgroundColor: red[500],
         },
-        link: {
-            textDecoration: 'none',
-            color: 'inherit',
-        },
     };
 });
 
-const QACard = (props) => {
+const Answer = (props) => {
     const classes = useStyles();
     const [
         expanded,
@@ -79,29 +68,8 @@ const QACard = (props) => {
 
     return (
         <Card
-            className={ classes.root }
-            elevation={ 3 }>
-            <CardContent>
-                <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p">
-                    Answer - Recommended for you
-                </Typography>
-                <Typography>
-                    <Link
-                        to="/question"
-                        className={ classes.link }>
-                        <Box
-                            fontWeight="fontWeightBold"
-                            fontSize={ 20 }>
-                            Which framework is best for Frontend development?
-                        </Box>
-                    </Link>
-                </Typography>
-            </CardContent>
+            className={ classes.root }>
             <CardHeader
-                className={ classes.headerRoot }
                 avatar={
                     <Avatar
                         aria-label="recipe"
@@ -192,4 +160,4 @@ const QACard = (props) => {
     );
 };
 
-export default QACard;
+export default Answer;

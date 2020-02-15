@@ -1,6 +1,12 @@
 import Home from '../pages/Home';
+import Question from '../pages/Question';
 
 const routes = [
+    {
+        path: '/Question',
+        component: Question,
+        key: 'Question',
+    },
     {
         path: '/',
         component: Home,

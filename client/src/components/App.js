@@ -5,9 +5,8 @@ import { connect } from 'react-redux';
 import Router from '../routing/Router';
 import config from '../utils/config';
 import { getUserDetails } from '../services/authService';
-import Landing from '../pages/Landing';
+import SignIn from '../pages/SignIn';
 import { requestUserSession } from '../store/actions/auth';
-import { Button } from '@material-ui/core';
 
 class App extends Component {
     constructor(props) {
@@ -37,12 +36,10 @@ class App extends Component {
         const { user } = this.props;
         if (user.isAuthenticated) {
             return (
-            <div>
-                <Button onClick={this.logout}>Logout</Button>
-                <Router />
-            </div>);
+                <Router handleLogout={ this.logout } />
+            );
         }
-        return <Landing onLoginClick={this.login}/>
+        return <SignIn onLoginClick={ this.login } />;
     }
 
     login = async() => {
@@ -50,7 +47,8 @@ class App extends Component {
             await this.userAgentApplication.loginPopup(
                 {
                     scopes: config.scopes,
-                });
+                }
+            );
             await this.getUserProfile();
         }
         catch (e) {
@@ -61,7 +59,7 @@ class App extends Component {
     logout = () => {
         this.userAgentApplication.logout();
     }
-    
+
     getUserProfile = async() => {
         try {
             const accessToken = await this.userAgentApplication.acquireTokenSilent({
@@ -80,18 +78,18 @@ class App extends Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-        user: state.user
-    }
+        user: state.user,
+    };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         requestUserSession: (user) => {
             dispatch(requestUserSession(user));
-        }
-    }
+        },
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

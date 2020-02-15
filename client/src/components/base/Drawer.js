@@ -12,6 +12,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -102,6 +103,7 @@ const Drawer = (props) => {
                 <Divider />
                 <List>
                     { [
+                        'Question',
                         'Inbox',
                         'Starred',
                         'Send email',
@@ -113,7 +115,10 @@ const Drawer = (props) => {
                             <ListItemIcon>
                                 { index % 2 === 0 ? <InboxIcon /> : <MailIcon /> }
                             </ListItemIcon>
-                            <ListItemText primary={ text } />
+                            <Link
+                                to="/Question">
+                                <ListItemText primary={ text } />
+                            </Link>
                         </ListItem>
                     )) }
                 </List>

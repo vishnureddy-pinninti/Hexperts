@@ -16,6 +16,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
 import QuestionModal from './QuestionModal';
 
 
@@ -32,6 +33,16 @@ const useStyles = makeStyles((theme) => {
             [theme.breakpoints.up('sm')]: {
                 display: 'block',
             },
+        },
+        inline: {
+            display: 'inline',
+        },
+        link: {
+            textDecoration: 'none',
+            color: 'inherit',
+        },
+        tagline: {
+            display: 'inline-block',
         },
         search: {
             position: 'relative',
@@ -146,6 +157,7 @@ const TopBar = (props) => {
             onClose={ handleMenuClose }>
             <MenuItem onClick={ handleMenuClose }>Profile</MenuItem>
             <MenuItem onClick={ handleMenuClose }>My account</MenuItem>
+            <MenuItem onClick={ props.handleLogout }>Logout</MenuItem>
         </Menu>
     );
 
@@ -222,12 +234,22 @@ const TopBar = (props) => {
                         aria-label="open drawer">
                         <MenuIcon />
                     </IconButton>
-                    <Typography
-                        className={ classes.title }
-                        variant="h6"
-                        noWrap>
-                        Hexagon
-                    </Typography>
+                    <div className={ classes.inline }>
+                        <Typography
+                            variant="h6"
+                            color="inherit"
+                            noWrap>
+                            <Link
+                                to="/"
+                                className={ classes.link }>
+                                { /* <img
+                                    width={ 20 }
+                                    src={ logo }
+                                    alt="" /> */ }
+                                <span className={ classes.tagline }>Hexagon</span>
+                            </Link>
+                        </Typography>
+                    </div>
                     <div className={ classes.grow } />
                     <div className={ classes.search }>
                         <div className={ classes.searchIcon }>
