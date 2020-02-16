@@ -16,6 +16,7 @@ const userSchema = new Schema({
         type: String,
         unique: true,
     },
+    interests: [ String ],
 });
 
 mongoose.model('users', userSchema);

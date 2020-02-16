@@ -1,14 +1,24 @@
 const mongoose = require('mongoose');
-
 const { Schema } = mongoose;
-const answerSchema = require('./answer');
 
-const questionSchema = new Schema({
-    answers: [ answerSchema ],
-    author: {
+const userSchema = new Schema({
+    name: {
         type: String,
     },
-    followers: [ String ],
+    email: {
+        type: String,
+    },
+    jobTitle: {
+        type: String,
+    },
+    userid: {
+        type: String,
+    },
+});
+
+const questionSchema = new Schema({
+    author: userSchema,
+    followers: [ userSchema ],
     lastModified: {
         type: Date,
     },
@@ -16,7 +26,7 @@ const questionSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    suggestedExperts: [ String ],
+    suggestedExperts: [ userSchema ],
     tags: [ String ],
     question: {
         type: String,
