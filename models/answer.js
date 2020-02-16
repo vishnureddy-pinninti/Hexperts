@@ -1,20 +1,41 @@
 const mongoose = require('mongoose');
-
 const { Schema } = mongoose;
 
-const answerSchema = new Schema({
-    author: {
+const voterSchema = new Schema({
+    email: {
         type: String,
     },
-    postedDate: {
-        type: Date,
-        default: Date.now,
+    jobTitle: {
+        type: String,
     },
+    name: {
+        type: String,
+    },
+    userid: {
+        type: String,
+    },
+});
+
+const answerSchema = new Schema({
     answer: {
         type: String,
         required: true,
         trim: true,
     },
+    author: voterSchema,
+    downvoters: [ voterSchema ],
+    lastModified: {
+        type: Date,
+    },
+    postedDate: {
+        type: Date,
+        default: Date.now,
+    },
+    questionID: {
+        type: String,
+        required: true,
+    },
+    upvoters: [ voterSchema ],
 });
 
-module.exports = answerSchema;
+mongoose.model('answers', answerSchema);

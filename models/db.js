@@ -16,5 +16,6 @@ mongoose.connection.on('error', (err) => {
     console.log('Error connecting to db ', err);
 });
 
+require('./answer');
 require('./question');
 require('./user');

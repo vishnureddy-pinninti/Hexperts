@@ -1,21 +1,21 @@
 const mongoose = require('mongoose');
-const { errors: { QUESTION_NOT_FOUND } } = require('../utils/constants');
-
 const Question = mongoose.model('questions');
+const Answer = mongoose.model('answers');
+
+const { errors: { QUESTION_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
+const queryMiddleware = require('../middlewares/queryMiddleware');
 
 module.exports = (app) => {
     app.post('/api/v1/question.add', loginMiddleware, async(req, res) => {
-        const {
-            userid,
-        } = req.user;
         const {
             suggestedExperts,
             tags,
             question,
         } = req.body;
+
         const newQuestion = new Question({
-            author: userid,
+            author: req.user,
             suggestedExperts,
             tags,
             question,
@@ -37,34 +37,56 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/questions', loginMiddleware, async(req, res) => {
+    app.get('/api/v1/questions', loginMiddleware, queryMiddleware, async(req, res) => {
         const {
-            limit,
-            skip,
-            ...rest
-        } = req.query;
+            custom,
+            query,
+            pagination,
+        } = req.queryParams;
         const {
+            interests,
             userid,
         } = req.user;
-        const query = { author: userid };
+        const aggregationMatch = Object.keys(query).map(key => ({ [key]: query[key] }));
 
-        if (rest) {
-            Object.keys(rest).forEach((x) => {
-                const fields = rest[x].split(',');
-                if (fields.length) {
-                    query[x] = { $in: fields };
-                }
-                else {
-                    query[x] = rest[x];
-                }
+        if (custom._onlyInterests) {
+            aggregationMatch.push({
+                $or: [
+                    { tags: { $in: interests } },
+                    { 'followers.userid': userid }
+                ]
             });
         }
 
+        if (custom._onlySuggested) {
+            aggregationMatch.push({ 'suggestedExperts.userid': userid });
+        }
+
+        if (!aggregationMatch.length) {
+            aggregationMatch.push({});
+        }
+
         try {
-            const questions = await Question.find(query, { answers: 0 }, {
-                skip: Number(skip),
-                limit: Number(limit),
-            });
+            const questions = await Question.aggregate([
+                { $match: { $and: aggregationMatch } },
+                { $sort : { postedDate : -1 } },
+                {
+                    $lookup: {
+                        from: "answers",
+                        let: { id: "$_id" },
+                        pipeline: [
+                            { $match: { $expr: { $eq: [ "$$id", "$questionID" ] } } },
+                            { $addFields: { upvotersCount: { $size: "$upvoters" } } },
+                            { $sort: { upvotersCount: -1, postedDate: -1 } },
+                            { $limit: 1 }
+                        ],
+                        as: "answers"
+                    }
+                },
+                { $skip: pagination.skip || 0 },
+                { $limit: pagination.limit || 10 }
+            ]);
+
             res
                 .status(200)
                 .json(questions);
@@ -79,14 +101,55 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/question/:id', loginMiddleware, async(req, res) => {
+    app.get('/api/v1/question/:questionID', loginMiddleware, queryMiddleware, async(req, res) => {
         try {
-            const { id } = req.params;
-            const question = await Question.findById(id);
+            const { questionID } = req.params;
+            const {
+                pagination,
+                custom,
+            } = req.queryParams;
+            const question = await Question.findById(questionID);
+
             if (question) {
+                const answers = await Answer.aggregate([
+                    { $match: { questionID: mongoose.Types.ObjectId(questionID) } },
+                    { $addFields: { upvotersCount: { $size: "$upvoters" } } },
+                    { $sort: { upvotersCount: -1, postedDate: -1 } },
+                    {
+                        $facet: {
+                            results: [
+                                {
+                                    $skip: pagination.skip || 0
+                                },
+                                {
+                                    $limit: pagination.limit || 10
+                                }
+                            ],
+                            totalCount: [
+                                {
+                                    $count: "count"
+                                }
+                            ]
+                        }
+                    },
+                    { $unwind: "$totalCount" },
+                    {
+                        $project: {
+                            results: 1,
+                            totalCount: "$totalCount.count"
+                        }
+                    }
+                ]);
+
+                let response = { answers: answers[0] };
+
+                if (!custom._onlyanswers) {
+                    response = { ...question._doc, ...response };
+                }
+                
                 res
                     .status(200)
-                    .json(question);
+                    .json(response);
             }
             else {
                 res
@@ -107,13 +170,15 @@ module.exports = (app) => {
         }
     });
 
-    app.put('/api/v1/question/:id', loginMiddleware, async(req, res) => {
+    app.put('/api/v1/question/:questionID', loginMiddleware, async(req, res) => {
         try {
-            const { id } = req.params;
-            const question = await Question.findById(id);
+            const { questionID } = req.params;
+            const question = await Question.findById(questionID);
+
             if (question) {
                 Object.keys(req.body).forEach((x) => { question[x] = req.body[x]; });
                 question.lastModified = Date.now();
+
                 await question.save();
                 res
                     .status(200)
@@ -138,15 +203,16 @@ module.exports = (app) => {
         }
     });
 
-    app.delete('/api/v1/question/:id', loginMiddleware, async(req, res) => {
+    app.delete('/api/v1/question/:questionID', loginMiddleware, async(req, res) => {
         try {
-            const { id } = req.params;
-            const question = await Question.findById(id);
+            const { questionID } = req.params;
+            const question = await Question.findById(questionID);
+            
             if (question) {
                 await question.remove();
                 res
                     .status(200)
-                    .json({ id });
+                    .json({ questionID });
             }
             else {
                 res
@@ -169,61 +235,30 @@ module.exports = (app) => {
 
     app.post('/api/v1/question.follow', loginMiddleware, async(req, res) => {
         const {
-            follower,
             questionID,
         } = req.body;
 
-        try {
-            const question = await Question.findById(questionID);
-            if (question) {
-                question.followers = [
-                    ...question.followers,
-                    follower,
-                ];
-                await question.save();
-                res
-                    .status(200)
-                    .json({
-                        follower,
-                        questionID,
-                    });
-            }
-            else {
-                res
-                    .status(404)
-                    .json({
-                        error: true,
-                        response: QUESTION_NOT_FOUND,
-                    });
-            }
-        }
-        catch (e) {
-            res
-                .status(500)
-                .json({
-                    error: true,
-                    response: e,
-                });
-        }
-    });
-
-    app.post('/api/v1/question.unfollow', loginMiddleware, async(req, res) => {
         const {
-            follower,
-            questionID,
-        } = req.body;
+            userid,
+        } = req.user;
 
         try {
             const question = await Question.findById(questionID);
+
             if (question) {
-                question.followers = question.followers.filter((f) => f !== follower);
+                const isFollowing = question.followers.find(follower => follower.userid === userid);
+
+                if (isFollowing) {
+                    question.followers = question.followers.filter(follower => follower.userid !== userid);
+                }
+                else {
+                    question.followers = [ ...question.followers, req.user ];
+                }
+
                 await question.save();
                 res
                     .status(200)
-                    .json({
-                        follower,
-                        questionID,
-                    });
+                    .json(question);
             }
             else {
                 res
