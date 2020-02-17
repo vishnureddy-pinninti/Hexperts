@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Answer = mongoose.model('answers');
 
-const { errors: { ANSWER_NOT_FOUND, QUESTION_NOT_FOUND } } = require('../utils/constants');
+const { errors: { ANSWER_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 
 const handleVoting = (answer, user, voting) => {
@@ -37,38 +37,6 @@ module.exports = (app) => {
             res
                 .status(201)
                 .json(newAnswer);
-        }
-        catch (e) {
-            res
-                .status(500)
-                .json({
-                    error: true,
-                    response: e,
-                });
-        }
-    });
-
-    // TODO
-    app.get('/api/v1/answers/:questionID', loginMiddleware, async(req, res) => {
-        const {
-            questionID,
-        } = req.params;
-
-        try {
-            const question = await Question.findById(questionID);
-            if (question) {
-                res
-                    .status(200)
-                    .json(question.answers);
-            }
-            else {
-                res
-                    .status(404)
-                    .json({
-                        error: true,
-                        response: QUESTION_NOT_FOUND,
-                    });
-            }
         }
         catch (e) {
             res
