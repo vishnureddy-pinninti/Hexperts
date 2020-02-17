@@ -15,8 +15,10 @@ app.use(bodyParser.json());
 require('./routes/auth')(app);
 require('./routes/question')(app);
 require('./routes/answer')(app);
+require('./routes/uploads')(app);
 
 app.use(express.static('client/build'));
+app.use('/api/v1/images', express.static('uploads/img'));
 // serve the index.html if does not recognize any route
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
