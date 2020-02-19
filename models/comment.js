@@ -16,8 +16,8 @@ const voterSchema = new Schema({
     },
 });
 
-const answerSchema = new Schema({
-    answer: {
+const commentSchema = new Schema({
+    comment: {
         type: String,
         required: true,
         trim: true,
@@ -31,11 +31,15 @@ const answerSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    questionID: {
+    target: {
+        type: String,
+        default: 'answer',
+    },
+    targetID: {
         type: mongoose.Types.ObjectId,
         required: true,
     },
     upvoters: [ voterSchema ],
 });
 
-mongoose.model('answers', answerSchema);
+mongoose.model('comments', commentSchema);

@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports = (app) => {
-    app.post('/api/v1/image.upload', upload.any(), async(req, res) => {
+    app.post('/api/v1/image.upload', loginMiddleware, upload.any(), async(req, res) => {
         res
             .status(200)
             .json({
@@ -14,7 +14,7 @@ module.exports = (app) => {
             });
     });
 
-    app.get('/api/v1/image-delete/:imageID', async(req, res) => {
+    app.get('/api/v1/image-delete/:imageID', loginMiddleware, async(req, res) => {
         const { imageID } = req.params; 
         fs.unlink(path.join(__dirname, '../uploads/img/', imageID), (err) => {
             if (err) {

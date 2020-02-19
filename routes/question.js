@@ -12,6 +12,7 @@ module.exports = (app) => {
             suggestedExperts,
             tags,
             question,
+            description,
         } = req.body;
 
         const newQuestion = new Question({
@@ -19,6 +20,7 @@ module.exports = (app) => {
             suggestedExperts,
             tags,
             question,
+            description,
         });
 
         try {
@@ -116,6 +118,19 @@ module.exports = (app) => {
                     { $addFields: { upvotersCount: { $size: "$upvoters" } } },
                     { $sort: { upvotersCount: -1, postedDate: -1 } },
                     {
+                        $lookup: {
+                            from: "comments",
+                            let: { id: "$_id" },
+                            pipeline: [
+                                { $match: { $expr: { $eq: [ "$$id", "$targetID" ] } } },
+                                { $addFields: { upvotersCount: { $size: "$upvoters" } } },
+                                { $sort: { upvotersCount: -1, postedDate: -1 } },
+                                { $count: "commentsCount" },
+                            ],
+                            as: "comments"
+                        }
+                    },
+                    {
                         $facet: {
                             results: [
                                 {
@@ -136,7 +151,7 @@ module.exports = (app) => {
                     {
                         $project: {
                             results: 1,
-                            totalCount: "$totalCount.count"
+                            totalCount: "$totalCount.count",
                         }
                     }
                 ]);

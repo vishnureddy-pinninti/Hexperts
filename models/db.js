@@ -19,3 +19,4 @@ mongoose.connection.on('error', (err) => {
 require('./answer');
 require('./question');
 require('./user');
+require('./comment');
