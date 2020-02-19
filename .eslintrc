@@ -7,7 +7,7 @@
   },
   "extends": [
     // "plugin:putout/recommended",
-    "airbnb",
+    // "airbnb",
     "eslint:recommended",
     "plugin:import/errors",
     "plugin:import/warnings",

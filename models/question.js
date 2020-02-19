@@ -32,6 +32,9 @@ const questionSchema = new Schema({
         type: String,
         trim: true,
     },
+    description: {
+        type: String,
+    },
 });
 
 mongoose.model('questions', questionSchema);

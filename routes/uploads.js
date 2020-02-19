@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports = (app) => {
-    app.post('/api/v1/image.upload', upload.any(), async(req, res) => {
+    app.post('/api/v1/image.upload', loginMiddleware, upload.any(), async(req, res) => {
         res
             .status(200)
             .json({
@@ -14,23 +14,23 @@ module.exports = (app) => {
             });
     });
 
-    app.get('/api/v1/image-delete/:imageID', async(req, res) => {
-        const { imageID } = req.params; 
+    app.get('/api/v1/image-delete/:imageID', loginMiddleware, async(req, res) => {
+        const { imageID } = req.params;
         fs.unlink(path.join(__dirname, '../uploads/img/', imageID), (err) => {
             if (err) {
                 res
                     .status(500)
                     .json({
-                        status: 'failure'
+                        status: 'failure',
                     });
             }
             else {
                 res
                     .status(200)
                     .json({
-                        status: 'success'
+                        status: 'success',
                     });
             }
-        })
+        });
     });
 };

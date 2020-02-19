@@ -17,12 +17,15 @@ module.exports = (app) => {
 
         try {
             const user = await User.findOne({ userid: id });
-            
+
             if (user) {
                 // Create cookie and send the response back
                 const d1 = new Date();
                 d1.setHours(d1.getHours() + 240);
-                const cookieOptions = { httpOnly: true, expires: d1 };
+                const cookieOptions = {
+                    httpOnly: true,
+                    expires: d1,
+                };
                 cookieOptions.path = '/';
                 res
                     .cookie(config.cookieKey, encrypt(JSON.stringify(user)), cookieOptions);
@@ -70,9 +73,9 @@ module.exports = (app) => {
 
             if (user) {
                 user.interests = interests;
-    
+
                 await user.save();
-    
+
                 res
                     .status(200)
                     .json(user);
@@ -86,7 +89,7 @@ module.exports = (app) => {
                     });
             }
         }
-        catch(e) {
+        catch (e) {
             res
                 .status(500)
                 .json({
