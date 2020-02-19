@@ -53,9 +53,9 @@ module.exports = (app) => {
         try {
             const comments = await Comment.aggregate([
                 { $match: { $and: aggregationMatch } },
-                { $sort : { postedDate : -1 } },
+                { $sort: { postedDate: -1 } },
                 { $skip: pagination.skip || 0 },
-                { $limit: pagination.limit || 10 }
+                { $limit: pagination.limit || 10 },
             ]);
 
             res
@@ -103,13 +103,13 @@ module.exports = (app) => {
                     response: e,
                 });
         }
-    });   
-    
+    });
+
     app.delete('/api/v1/comments/:commentID', loginMiddleware, async(req, res) => {
         try {
             const { commentID } = req.params;
             const comment = await Comment.findById(commentID);
-            
+
             if (comment) {
                 await comment.remove();
                 res
@@ -156,9 +156,9 @@ module.exports = (app) => {
                     .status(404)
                     .json({
                         error: true,
-                        response: COMMENT_NOT_FOUND
+                        response: COMMENT_NOT_FOUND,
                     });
-            }            
+            }
         }
         catch (e) {
             res
@@ -191,9 +191,9 @@ module.exports = (app) => {
                     .status(404)
                     .json({
                         error: true,
-                        response: COMMENT_NOT_FOUND
+                        response: COMMENT_NOT_FOUND,
                     });
-            }            
+            }
         }
         catch (e) {
             res

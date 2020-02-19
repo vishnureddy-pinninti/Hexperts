@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
 const Question = mongoose.model('questions');
 const Answer = mongoose.model('answers');
@@ -49,14 +50,14 @@ module.exports = (app) => {
             interests,
             userid,
         } = req.user;
-        const aggregationMatch = Object.keys(query).map(key => ({ [key]: query[key] }));
+        const aggregationMatch = Object.keys(query).map((key) => { return { [key]: query[key] }; });
 
         if (custom._onlyInterests) {
             aggregationMatch.push({
                 $or: [
                     { tags: { $in: interests } },
-                    { 'followers.userid': userid }
-                ]
+                    { 'followers.userid': userid },
+                ],
             });
         }
 
@@ -71,22 +72,36 @@ module.exports = (app) => {
         try {
             const questions = await Question.aggregate([
                 { $match: { $and: aggregationMatch } },
-                { $sort : { postedDate : -1 } },
+                { $sort: { postedDate: -1 } },
                 {
                     $lookup: {
-                        from: "answers",
-                        let: { id: "$_id" },
+                        from: 'answers',
+                        let: { id: '$_id' },
                         pipeline: [
-                            { $match: { $expr: { $eq: [ "$$id", "$questionID" ] } } },
-                            { $addFields: { upvotersCount: { $size: "$upvoters" } } },
-                            { $sort: { upvotersCount: -1, postedDate: -1 } },
-                            { $limit: 1 }
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$questionID',
+                                        ],
+                                    },
+                                },
+                            },
+                            { $addFields: { upvotersCount: { $size: '$upvoters' } } },
+                            {
+                                $sort: {
+                                    upvotersCount: -1,
+                                    postedDate: -1,
+                                },
+                            },
+                            { $limit: 1 },
                         ],
-                        as: "answers"
-                    }
+                        as: 'answers',
+                    },
                 },
                 { $skip: pagination.skip || 0 },
-                { $limit: pagination.limit || 10 }
+                { $limit: pagination.limit || 10 },
             ]);
 
             res
@@ -115,53 +130,75 @@ module.exports = (app) => {
             if (question) {
                 const answers = await Answer.aggregate([
                     { $match: { questionID: mongoose.Types.ObjectId(questionID) } },
-                    { $addFields: { upvotersCount: { $size: "$upvoters" } } },
-                    { $sort: { upvotersCount: -1, postedDate: -1 } },
+                    { $addFields: { upvotersCount: { $size: '$upvoters' } } },
+                    {
+                        $sort: {
+                            upvotersCount: -1,
+                            postedDate: -1,
+                        },
+                    },
                     {
                         $lookup: {
-                            from: "comments",
-                            let: { id: "$_id" },
+                            from: 'comments',
+                            let: { id: '$_id' },
                             pipeline: [
-                                { $match: { $expr: { $eq: [ "$$id", "$targetID" ] } } },
-                                { $addFields: { upvotersCount: { $size: "$upvoters" } } },
-                                { $sort: { upvotersCount: -1, postedDate: -1 } },
-                                { $count: "commentsCount" },
+                                {
+                                    $match: {
+                                        $expr: {
+                                            $eq: [
+                                                '$$id',
+                                                '$targetID',
+                                            ],
+                                        },
+                                    },
+                                },
+                                { $addFields: { upvotersCount: { $size: '$upvoters' } } },
+                                {
+                                    $sort: {
+                                        upvotersCount: -1,
+                                        postedDate: -1,
+                                    },
+                                },
+                                { $count: 'commentsCount' },
                             ],
-                            as: "comments"
-                        }
+                            as: 'comments',
+                        },
                     },
                     {
                         $facet: {
                             results: [
                                 {
-                                    $skip: pagination.skip || 0
+                                    $skip: pagination.skip || 0,
                                 },
                                 {
-                                    $limit: pagination.limit || 10
-                                }
+                                    $limit: pagination.limit || 10,
+                                },
                             ],
                             totalCount: [
                                 {
-                                    $count: "count"
-                                }
-                            ]
-                        }
+                                    $count: 'count',
+                                },
+                            ],
+                        },
                     },
-                    { $unwind: "$totalCount" },
+                    { $unwind: '$totalCount' },
                     {
                         $project: {
                             results: 1,
-                            totalCount: "$totalCount.count",
-                        }
-                    }
+                            totalCount: '$totalCount.count',
+                        },
+                    },
                 ]);
 
                 let response = { answers: answers[0] };
 
                 if (!custom._onlyanswers) {
-                    response = { ...question._doc, ...response };
+                    response = {
+                        ...question._doc,
+                        ...response,
+                    };
                 }
-                
+
                 res
                     .status(200)
                     .json(response);
@@ -222,7 +259,7 @@ module.exports = (app) => {
         try {
             const { questionID } = req.params;
             const question = await Question.findById(questionID);
-            
+
             if (question) {
                 await question.remove();
                 res
@@ -261,13 +298,16 @@ module.exports = (app) => {
             const question = await Question.findById(questionID);
 
             if (question) {
-                const isFollowing = question.followers.find(follower => follower.userid === userid);
+                const isFollowing = question.followers.find((follower) => follower.userid === userid);
 
                 if (isFollowing) {
-                    question.followers = question.followers.filter(follower => follower.userid !== userid);
+                    question.followers = question.followers.filter((follower) => follower.userid !== userid);
                 }
                 else {
-                    question.followers = [ ...question.followers, req.user ];
+                    question.followers = [
+                        ...question.followers,
+                        req.user,
+                    ];
                 }
 
                 await question.save();

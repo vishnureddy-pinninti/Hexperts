@@ -28,12 +28,16 @@ module.exports = (req, res, next) => {
 
     if (limit) {
         pagination.limit = Number(limit);
-    };
+    }
 
     if (skip) {
         pagination.skip = Number(skip);
     }
 
-    req.queryParams = { query, pagination, custom };
+    req.queryParams = {
+        query,
+        pagination,
+        custom,
+    };
     next();
 };

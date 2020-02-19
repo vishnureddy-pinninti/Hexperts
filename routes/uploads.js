@@ -15,22 +15,22 @@ module.exports = (app) => {
     });
 
     app.get('/api/v1/image-delete/:imageID', loginMiddleware, async(req, res) => {
-        const { imageID } = req.params; 
+        const { imageID } = req.params;
         fs.unlink(path.join(__dirname, '../uploads/img/', imageID), (err) => {
             if (err) {
                 res
                     .status(500)
                     .json({
-                        status: 'failure'
+                        status: 'failure',
                     });
             }
             else {
                 res
                     .status(200)
                     .json({
-                        status: 'success'
+                        status: 'success',
                     });
             }
-        })
+        });
     });
 };

@@ -88,9 +88,9 @@ module.exports = (app) => {
                     .status(404)
                     .json({
                         error: true,
-                        response: ANSWER_NOT_FOUND
+                        response: ANSWER_NOT_FOUND,
                     });
-            }            
+            }
         }
         catch (e) {
             res
@@ -123,9 +123,9 @@ module.exports = (app) => {
                     .status(404)
                     .json({
                         error: true,
-                        response: ANSWER_NOT_FOUND
+                        response: ANSWER_NOT_FOUND,
                     });
-            }            
+            }
         }
         catch (e) {
             res

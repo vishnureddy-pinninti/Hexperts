@@ -10,18 +10,20 @@ module.exports = (req, res, next) => {
             .status(403)
             .json({
                 error: true,
-                response: constants.errors.UNAUTHORIZED
+                response: constants.errors.UNAUTHORIZED,
             });
-    }
-    if(req.cookies && req.cookies[COOKIEKEY] && req.headers && req.headers.userid) {
+    };
+    if (req.cookies && req.cookies[COOKIEKEY] && req.headers && req.headers.userid) {
         const user = JSON.parse(decrypt(req.cookies[COOKIEKEY]));
         if (req.headers.userid === user.userid) {
             req.user = user;
             next();
-        } else {
+        }
+        else {
             unauthorize();
         }
-    } else {
+    }
+    else {
         unauthorize();
     }
 };

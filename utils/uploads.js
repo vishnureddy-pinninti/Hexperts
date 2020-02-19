@@ -6,9 +6,9 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, '../uploads/img'));
     },
-    filename: function (req, file, cb) {
+    filename: (req, file, cb) => {
         cb(null, `${uuid()}-${file.originalname}`);
-    }
+    },
 });
 
 const fileFilter = (req, file, cb) => {
@@ -18,7 +18,7 @@ const fileFilter = (req, file, cb) => {
     else {
         cb(null, false);
     }
-}
+};
 
 const upload = multer({
     storage,
