@@ -41,14 +41,8 @@ module.exports = (app) => {
         const {
             pagination,
         } = req.queryParams;
-
         const { answerID } = req.params;
-
         const aggregationMatch = [ { targetID: mongoose.Types.ObjectId(answerID) } ];
-
-        if (!aggregationMatch.length) {
-            aggregationMatch.push({});
-        }
 
         try {
             const comments = await Comment.aggregate([
@@ -75,11 +69,14 @@ module.exports = (app) => {
     app.put('/api/v1/comments/:commentID', loginMiddleware, async(req, res) => {
         try {
             const { commentID } = req.params;
+            const { comment: commentString } = req.body;
             const comment = await Comment.findById(commentID);
 
             if (comment) {
-                Object.keys(req.body).forEach((x) => { comment[x] = req.body[x]; });
-                comment.lastModified = Date.now();
+                if (commentString) {
+                    comment.comment = commentString;
+                    comment.lastModified = Date.now();
+                }
 
                 await comment.save();
                 res

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-
 const { Schema } = mongoose;
+
+const { topic } = require('./common');
 
 const userSchema = new Schema({
     name: {
@@ -14,9 +15,9 @@ const userSchema = new Schema({
     },
     userid: {
         type: String,
-        unique: true,
     },
-    interests: [ String ],
+    interests: [ topic ],
+    followers: [ mongoose.Types.ObjectId ],
 });
 
 mongoose.model('users', userSchema);

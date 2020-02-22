@@ -3,26 +3,22 @@ const { Schema } = mongoose;
 
 const { user } = require('./common');
 
-const answerSchema = new Schema({
-    answer: {
+const topicSchema = new Schema({
+    topic: {
         type: String,
         required: true,
         trim: true,
     },
-    author: user,
-    downvoters: [ user ],
+    followers: [ user ],
     lastModified: {
         type: Date,
     },
-    postedDate: {
+    createdDate: {
         type: Date,
         default: Date.now,
     },
-    questionID: {
-        type: mongoose.Types.ObjectId,
-        required: true,
-    },
-    upvoters: [ user ],
 });
 
-mongoose.model('answers', answerSchema);
+topicSchema.index({ topic: 'text' });
+
+mongoose.model('topics', topicSchema);

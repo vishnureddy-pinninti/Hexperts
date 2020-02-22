@@ -37,16 +37,50 @@ module.exports = (app) => {
     app.put('/api/v1/answers/:answerID', loginMiddleware, async(req, res) => {
         try {
             const { answerID } = req.params;
+            const { answer: answerString } = req.body;
+
             const answer = await Answer.findById(answerID);
 
             if (answer) {
-                Object.keys(req.body).forEach((x) => { answer[x] = req.body[x]; });
-                answer.lastModified = Date.now();
+                if (answerString) {
+                    answer.answer = answerString;
+                    answer.lastModified = Date.now();
+                }
 
                 await answer.save();
                 res
                     .status(200)
                     .json(answer);
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: ANSWER_NOT_FOUND,
+                    });
+            }
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
+
+    app.delete('/api/v1/answers/:answerID', loginMiddleware, async(req, res) => {
+        try {
+            const { answerID } = req.params;
+            const answer = await Answer.findById(answerID);
+
+            if (answer) {
+                await answer.remove();
+                res
+                    .status(200)
+                    .json({ answerID });
             }
             else {
                 res

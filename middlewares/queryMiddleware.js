@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 module.exports = (req, res, next) => {
     const {
         limit,
@@ -11,7 +13,11 @@ module.exports = (req, res, next) => {
 
     if (rest) {
         Object.keys(rest).forEach((x) => {
-            if (x.indexOf('_') > -1) {
+            if (x.indexOf('_id') > -1) {
+                const fields = rest[x].split(',');
+                query[x] = { $in: fields.map((field) => mongoose.Types.ObjectId(field)) };
+            }
+            else if (x.indexOf('_') > -1) {
                 custom[x] = rest[x];
             }
             else {

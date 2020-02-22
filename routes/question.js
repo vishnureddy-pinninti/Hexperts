@@ -2,30 +2,38 @@
 const mongoose = require('mongoose');
 const Question = mongoose.model('questions');
 const Answer = mongoose.model('answers');
+const User = mongoose.model('users');
+const Topic = mongoose.model('topics');
 
 const { errors: { QUESTION_NOT_FOUND } } = require('../utils/constants');
+const emailNotify = require('../services/emailService');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 
 module.exports = (app) => {
     app.post('/api/v1/question.add', loginMiddleware, async(req, res) => {
         const {
-            suggestedExperts,
-            tags,
+            suggestedExperts = [],
+            topics = [],
             question,
             description,
         } = req.body;
 
-        const newQuestion = new Question({
-            author: req.user,
-            suggestedExperts,
-            tags,
-            question,
-            description,
-        });
-
         try {
+            const experts = await User.find({ _id: { $in: suggestedExperts.map((expert) => mongoose.Types.ObjectId(expert)) } });
+            const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
+
+            const newQuestion = new Question({
+                author: req.user,
+                suggestedExperts: experts,
+                topics: chosenTopics,
+                question,
+                description,
+            });
+
             await newQuestion.save();
+            emailNotify(experts, 'newQuestion', newQuestion);
+
             res
                 .status(201)
                 .json(newQuestion);
@@ -48,25 +56,33 @@ module.exports = (app) => {
         } = req.queryParams;
         const {
             interests,
-            userid,
+            _id,
         } = req.user;
+
         const aggregationMatch = Object.keys(query).map((key) => { return { [key]: query[key] }; });
 
         if (custom._onlyInterests) {
             aggregationMatch.push({
                 $or: [
-                    { tags: { $in: interests } },
-                    { 'followers.userid': userid },
+                    { 'topics._id': { $in: interests.map((interest) => mongoose.Types.ObjectId(interest._id)) } },
+                    { 'followers._id': mongoose.Types.ObjectId(_id) },
                 ],
             });
         }
 
         if (custom._onlySuggested) {
-            aggregationMatch.push({ 'suggestedExperts.userid': userid });
+            aggregationMatch.push({ 'suggestedExperts._id': mongoose.Types.ObjectId(_id) });
+        }
+
+        if (custom._ownQuestions) {
+            aggregationMatch.push({ 'author._id': mongoose.Types.ObjectId(_id) });
         }
 
         if (!aggregationMatch.length) {
-            aggregationMatch.push({});
+            res
+                .status(200)
+                .json([]);
+            return;
         }
 
         try {
@@ -225,10 +241,34 @@ module.exports = (app) => {
     app.put('/api/v1/question/:questionID', loginMiddleware, async(req, res) => {
         try {
             const { questionID } = req.params;
+            const {
+                description,
+                suggestedExperts,
+                topics,
+                question: questionString,
+            } = req.body;
+
             const question = await Question.findById(questionID);
 
             if (question) {
-                Object.keys(req.body).forEach((x) => { question[x] = req.body[x]; });
+                if (suggestedExperts) {
+                    const experts = await User.find({ _id: { $in: suggestedExperts.map((expert) => mongoose.Types.ObjectId(expert)) } });
+                    question.suggestedExperts = experts;
+                }
+
+                if (topics) {
+                    const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
+                    question.topics = chosenTopics;
+                }
+
+                if (questionString) {
+                    question.question = questionString;
+                }
+
+                if (description) {
+                    question.description = description;
+                }
+
                 question.lastModified = Date.now();
 
                 await question.save();
@@ -291,17 +331,17 @@ module.exports = (app) => {
         } = req.body;
 
         const {
-            userid,
+            _id,
         } = req.user;
 
         try {
             const question = await Question.findById(questionID);
 
             if (question) {
-                const isFollowing = question.followers.find((follower) => follower.userid === userid);
+                const isFollowing = question.followers.find((follower) => follower._id.equals(_id));
 
                 if (isFollowing) {
-                    question.followers = question.followers.filter((follower) => follower.userid !== userid);
+                    question.followers = question.followers.filter((follower) => !follower._id.equals(_id));
                 }
                 else {
                     question.followers = [
@@ -313,7 +353,10 @@ module.exports = (app) => {
                 await question.save();
                 res
                     .status(200)
-                    .json(question);
+                    .json({
+                        questionID,
+                        followers: question.followers,
+                    });
             }
             else {
                 res

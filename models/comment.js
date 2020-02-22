@@ -1,20 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const voterSchema = new Schema({
-    email: {
-        type: String,
-    },
-    jobTitle: {
-        type: String,
-    },
-    name: {
-        type: String,
-    },
-    userid: {
-        type: String,
-    },
-});
+const { user } = require('./common');
 
 const commentSchema = new Schema({
     comment: {
@@ -22,8 +9,8 @@ const commentSchema = new Schema({
         required: true,
         trim: true,
     },
-    author: voterSchema,
-    downvoters: [ voterSchema ],
+    author: user,
+    downvoters: [ user ],
     lastModified: {
         type: Date,
     },
@@ -39,7 +26,7 @@ const commentSchema = new Schema({
         type: mongoose.Types.ObjectId,
         required: true,
     },
-    upvoters: [ voterSchema ],
+    upvoters: [ user ],
 });
 
 mongoose.model('comments', commentSchema);
