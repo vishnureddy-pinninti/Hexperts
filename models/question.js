@@ -1,24 +1,11 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const userSchema = new Schema({
-    name: {
-        type: String,
-    },
-    email: {
-        type: String,
-    },
-    jobTitle: {
-        type: String,
-    },
-    userid: {
-        type: String,
-    },
-});
+const { user, topic } = require('./common');
 
 const questionSchema = new Schema({
-    author: userSchema,
-    followers: [ userSchema ],
+    author: user,
+    followers: [ user ],
     lastModified: {
         type: Date,
     },
@@ -26,8 +13,8 @@ const questionSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    suggestedExperts: [ userSchema ],
-    tags: [ String ],
+    suggestedExperts: [ user ],
+    topics: [ topic ],
     question: {
         type: String,
         trim: true,
@@ -36,5 +23,7 @@ const questionSchema = new Schema({
         type: String,
     },
 });
+
+questionSchema.index({ question: 'text' });
 
 mongoose.model('questions', questionSchema);

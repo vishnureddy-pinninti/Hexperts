@@ -12,12 +12,7 @@ app.use(cookieParser());
 
 app.use(bodyParser.json());
 
-require('./routes/auth')(app);
-require('./routes/question')(app);
-require('./routes/answer')(app);
-require('./routes/uploads')(app);
-require('./routes/tags')(app);
-require('./routes/comments')(app);
+require('./routes/index')(app);
 
 app.use(express.static('client/build'));
 app.use('/api/v1/images', express.static('uploads/img'));

@@ -20,3 +20,4 @@ require('./answer');
 require('./question');
 require('./user');
 require('./comment');
+require('./topic');
