@@ -4,6 +4,7 @@ const Answer = mongoose.model('answers');
 const { errors: { ANSWER_NOT_FOUND } } = require('../utils/constants');
 const voting = require('../utils/voting');
 const loginMiddleware = require('../middlewares/loginMiddleware');
+// const emailNotify = require('../services/emailService');
 
 module.exports = (app) => {
     app.post('/api/v1/answer.add', loginMiddleware, async(req, res) => {
@@ -12,17 +13,26 @@ module.exports = (app) => {
             questionID,
         } = req.body;
 
+        const { _id } = req.user;
+
         const newAnswer = new Answer({
             answer,
-            author: req.user,
+            author: mongoose.Types.ObjectId(_id),
             questionID: mongoose.Types.ObjectId(questionID),
         });
 
         try {
             await newAnswer.save();
+            // emailNotify('newAnswer', newAnswer, {
+            //     author: req.user,
+            // });
+
             res
                 .status(201)
-                .json(newAnswer);
+                .json({
+                    ...newAnswer._doc,
+                    author: req.user,
+                });
         }
         catch (e) {
             res
@@ -50,7 +60,11 @@ module.exports = (app) => {
                 await answer.save();
                 res
                     .status(200)
-                    .json(answer);
+                    .json({
+                        _id: answerID,
+                        answer: answerString,
+                        lastModified: answer.lastModified,
+                    });
             }
             else {
                 res
@@ -106,16 +120,22 @@ module.exports = (app) => {
             answerID,
         } = req.params;
 
+        const { _id } = req.user;
+
         try {
             const answer = await Answer.findById(answerID);
 
             if (answer) {
-                voting(answer, req.user, 'upvote');
+                const alreadyVoted = voting(answer, _id, 'upvote');
 
                 await answer.save();
                 res
                     .status(200)
-                    .json(answer);
+                    .json({
+                        _id: answerID,
+                        upvoter: req.user,
+                        removeVoting: alreadyVoted,
+                    });
             }
             else {
                 res
@@ -141,16 +161,22 @@ module.exports = (app) => {
             answerID,
         } = req.params;
 
+        const { _id } = req.user;
+
         try {
             const answer = await Answer.findById(answerID);
 
             if (answer) {
-                voting(answer, req.user);
+                const alreadyVoted = voting(answer, _id);
 
                 await answer.save();
                 res
                     .status(200)
-                    .json(answer);
+                    .json({
+                        _id: answerID,
+                        downvoter: req.user,
+                        removeVoting: alreadyVoted,
+                    });
             }
             else {
                 res

@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
 const Topic = mongoose.model('topics');
 const Question = mongoose.model('questions');
@@ -62,7 +61,40 @@ module.exports = (app) => {
 
             if (topic) {
                 const questions = await Question.aggregate([
-                    { $match: { 'topics._id': mongoose.Types.ObjectId(topicID) } },
+                    { $match: { 'topics': mongoose.Types.ObjectId(topicID) } },
+                    {
+                        $lookup: {
+                            from: 'users',
+                            localField: 'author',
+                            foreignField: '_id',
+                            as: 'author',
+                        },
+                    },
+                    { $unwind: '$author' },
+                    {
+                        $lookup: {
+                            from: 'users',
+                            localField: 'followers',
+                            foreignField: '_id',
+                            as: 'followers',
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: 'users',
+                            localField: 'suggestedExperts',
+                            foreignField: '_id',
+                            as: 'suggestedExperts',
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: 'topics',
+                            localField: 'topics',
+                            foreignField: '_id',
+                            as: 'topics',
+                        },
+                    },
                     { $sort: { postedDate: -1 } },
                     {
                         $lookup: {
@@ -79,6 +111,15 @@ module.exports = (app) => {
                                         },
                                     },
                                 },
+                                {
+                                    $lookup: {
+                                        from: 'users',
+                                        localField: 'author',
+                                        foreignField: '_id',
+                                        as: 'author',
+                                    },
+                                },
+                                { $unwind: '$author' },
                                 { $addFields: { upvotersCount: { $size: '$upvoters' } } },
                                 {
                                     $sort: {
@@ -96,7 +137,7 @@ module.exports = (app) => {
                 ]);
 
                 const followers = await User.aggregate([
-                    { $match: { 'interests._id': mongoose.Types.ObjectId(topicID) } },
+                    { $match: { 'interests': mongoose.Types.ObjectId(topicID) } },
                     { $count: 'following' },
                 ]);
 
@@ -131,8 +172,15 @@ module.exports = (app) => {
 
     app.get('/api/v1/suggested-experts', loginMiddleware, queryMiddleware, async(req, res) => {
         const {
-            query,
+            custom,
         } = req.queryParams;
+
+        const query = {};
+
+        if (custom._topics) {
+            const fields = custom._topics.split(',');
+            query.interests = { $in: fields.map((field) => mongoose.Types.ObjectId(field)) };
+        }
 
         try {
             const experts = await User.find(query);

@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
 const Question = mongoose.model('questions');
 const Answer = mongoose.model('answers');
@@ -6,7 +5,7 @@ const User = mongoose.model('users');
 const Topic = mongoose.model('topics');
 
 const { errors: { QUESTION_NOT_FOUND } } = require('../utils/constants');
-const emailNotify = require('../services/emailService');
+// const emailNotify = require('../services/emailService');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 
@@ -19,24 +18,33 @@ module.exports = (app) => {
             description,
         } = req.body;
 
+        const { _id } = req.user;
+
         try {
-            const experts = await User.find({ _id: { $in: suggestedExperts.map((expert) => mongoose.Types.ObjectId(expert)) } });
             const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
 
             const newQuestion = new Question({
-                author: req.user,
-                suggestedExperts: experts,
-                topics: chosenTopics,
+                author: _id,
+                suggestedExperts,
+                topics,
                 question,
                 description,
             });
 
             await newQuestion.save();
-            emailNotify(experts, 'newQuestion', newQuestion);
+            // emailNotify('newQuestion', newQuestion, {
+            //     author: req.user,
+            //     suggestedExperts: experts,
+            //     topics: chosenTopics,
+            // });
 
             res
                 .status(201)
-                .json(newQuestion);
+                .json({
+                    ...newQuestion._doc,
+                    author: req.user,
+                    topics: chosenTopics,
+                });
         }
         catch (e) {
             res
@@ -64,18 +72,18 @@ module.exports = (app) => {
         if (custom._onlyInterests) {
             aggregationMatch.push({
                 $or: [
-                    { 'topics._id': { $in: interests.map((interest) => mongoose.Types.ObjectId(interest._id)) } },
-                    { 'followers._id': mongoose.Types.ObjectId(_id) },
+                    { 'topics': { $in: interests.map((interest) => mongoose.Types.ObjectId(interest)) } },
+                    { 'followers': mongoose.Types.ObjectId(_id) },
                 ],
             });
         }
 
         if (custom._onlySuggested) {
-            aggregationMatch.push({ 'suggestedExperts._id': mongoose.Types.ObjectId(_id) });
+            aggregationMatch.push({ 'suggestedExperts': mongoose.Types.ObjectId(_id) });
         }
 
         if (custom._ownQuestions) {
-            aggregationMatch.push({ 'author._id': mongoose.Types.ObjectId(_id) });
+            aggregationMatch.push({ 'author': mongoose.Types.ObjectId(_id) });
         }
 
         if (!aggregationMatch.length) {
@@ -91,6 +99,39 @@ module.exports = (app) => {
                 { $sort: { postedDate: -1 } },
                 {
                     $lookup: {
+                        from: 'users',
+                        localField: 'author',
+                        foreignField: '_id',
+                        as: 'author',
+                    },
+                },
+                { $unwind: '$author' },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'followers',
+                        foreignField: '_id',
+                        as: 'followers',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'suggestedExperts',
+                        foreignField: '_id',
+                        as: 'suggestedExperts',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'topics',
+                        localField: 'topics',
+                        foreignField: '_id',
+                        as: 'topics',
+                    },
+                },
+                {
+                    $lookup: {
                         from: 'answers',
                         let: { id: '$_id' },
                         pipeline: [
@@ -104,6 +145,15 @@ module.exports = (app) => {
                                     },
                                 },
                             },
+                            {
+                                $lookup: {
+                                    from: 'users',
+                                    localField: 'author',
+                                    foreignField: '_id',
+                                    as: 'author',
+                                },
+                            },
+                            { $unwind: '$author' },
                             { $addFields: { upvotersCount: { $size: '$upvoters' } } },
                             {
                                 $sort: {
@@ -141,11 +191,71 @@ module.exports = (app) => {
                 pagination,
                 custom,
             } = req.queryParams;
-            const question = await Question.findById(questionID);
+            const question = await Question.aggregate([
+                { $match: { _id: mongoose.Types.ObjectId(questionID) } },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'author',
+                        foreignField: '_id',
+                        as: 'author',
+                    },
+                },
+                { $unwind: '$author' },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'followers',
+                        foreignField: '_id',
+                        as: 'followers',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'suggestedExperts',
+                        foreignField: '_id',
+                        as: 'suggestedExperts',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'topics',
+                        localField: 'topics',
+                        foreignField: '_id',
+                        as: 'topics',
+                    },
+                },
+            ]);
 
             if (question) {
                 const answers = await Answer.aggregate([
                     { $match: { questionID: mongoose.Types.ObjectId(questionID) } },
+                    {
+                        $lookup: {
+                            from: 'users',
+                            localField: 'author',
+                            foreignField: '_id',
+                            as: 'author',
+                        },
+                    },
+                    { $unwind: '$author' },
+                    {
+                        $lookup: {
+                            from: 'users',
+                            localField: 'downvoters',
+                            foreignField: '_id',
+                            as: 'downvoters',
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: 'users',
+                            localField: 'upvoters',
+                            foreignField: '_id',
+                            as: 'upvoters',
+                        },
+                    },
                     { $addFields: { upvotersCount: { $size: '$upvoters' } } },
                     {
                         $sort: {
@@ -210,7 +320,7 @@ module.exports = (app) => {
 
                 if (!custom._onlyanswers) {
                     response = {
-                        ...question._doc,
+                        ...question[0],
                         ...response,
                     };
                 }
@@ -249,24 +359,29 @@ module.exports = (app) => {
             } = req.body;
 
             const question = await Question.findById(questionID);
+            const responseObject = { _id: questionID };
 
             if (question) {
                 if (suggestedExperts) {
                     const experts = await User.find({ _id: { $in: suggestedExperts.map((expert) => mongoose.Types.ObjectId(expert)) } });
-                    question.suggestedExperts = experts;
+                    question.suggestedExperts = suggestedExperts;
+                    responseObject.suggestedExperts = experts;
                 }
 
                 if (topics) {
                     const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
-                    question.topics = chosenTopics;
+                    question.topics = topics;
+                    responseObject.topics = chosenTopics;
                 }
 
                 if (questionString) {
                     question.question = questionString;
+                    responseObject.question = questionString;
                 }
 
                 if (description) {
                     question.description = description;
+                    responseObject.description = description;
                 }
 
                 question.lastModified = Date.now();
@@ -274,7 +389,10 @@ module.exports = (app) => {
                 await question.save();
                 res
                     .status(200)
-                    .json(question);
+                    .json({
+                        ...responseObject,
+                        lastModified: question.lastModified,
+                    });
             }
             else {
                 res
@@ -338,15 +456,15 @@ module.exports = (app) => {
             const question = await Question.findById(questionID);
 
             if (question) {
-                const isFollowing = question.followers.find((follower) => follower._id.equals(_id));
+                const isFollowing = question.followers.find((follower) => follower.equals(_id));
 
                 if (isFollowing) {
-                    question.followers = question.followers.filter((follower) => !follower._id.equals(_id));
+                    question.followers = question.followers.filter((follower) => !follower.equals(_id));
                 }
                 else {
                     question.followers = [
                         ...question.followers,
-                        req.user,
+                        _id,
                     ];
                 }
 
@@ -354,8 +472,9 @@ module.exports = (app) => {
                 res
                     .status(200)
                     .json({
-                        questionID,
-                        followers: question.followers,
+                        _id: questionID,
+                        follower: req.user,
+                        unfollow: Boolean(isFollowing),
                     });
             }
             else {

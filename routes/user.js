@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const Topic = mongoose.model('topics');
@@ -18,7 +17,25 @@ module.exports = (app) => {
         } = req.body;
 
         try {
-            const user = await User.findOne({ userid: id });
+            const user = await User.aggregate([
+                { $match: { userid: id } },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'followers',
+                        foreignField: '_id',
+                        as: 'followers',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'topics',
+                        localField: 'interests',
+                        foreignField: '_id',
+                        as: 'interests',
+                    },
+                },
+            ]);
 
             if (user) {
                 // Create cookie and send the response back
@@ -108,10 +125,10 @@ module.exports = (app) => {
             const user = await User.findById(_id);
 
             if (user) {
-                const isFollowing = user.followers.find((follower) => follower._id.equals(req.user._id));
+                const isFollowing = user.followers.find((follower) => follower.equals(req.user._id));
 
                 if (isFollowing) {
-                    user.followers = user.followers.filter((follower) => !follower._id.equals(req.user._id));
+                    user.followers = user.followers.filter((follower) => !follower.equals(req.user._id));
                 }
                 else {
                     user.followers = [
@@ -123,7 +140,11 @@ module.exports = (app) => {
                 await user.save();
                 res
                     .status(200)
-                    .json(user);
+                    .json({
+                        _id,
+                        follower: req.user,
+                        unfollow: Boolean(isFollowing),
+                    });
             }
             else {
                 res
@@ -170,7 +191,10 @@ module.exports = (app) => {
 
             res
                 .status(200)
-                .json(userFollowers);
+                .json(userFollowers[0] || {
+                    _id,
+                    followers: [],
+                });
         }
         catch (e) {
             res
@@ -216,10 +240,10 @@ module.exports = (app) => {
             const interest = await Topic.findById(interestId);
 
             if (user && interest) {
-                const isFollowing = user.interests.find((uinterest) => uinterest._id.equals(interest._id));
+                const isFollowing = user.interests.find((uinterest) => uinterest.equals(interestId));
 
                 if (isFollowing) {
-                    user.interests = user.interests.filter((uinterest) => !uinterest._id.equals(interest._id));
+                    user.interests = user.interests.filter((uinterest) => !uinterest.equals(interestId));
                 }
                 else {
                     user.interests = [
@@ -231,7 +255,11 @@ module.exports = (app) => {
                 await user.save();
                 res
                     .status(200)
-                    .json(user);
+                    .json({
+                        _id,
+                        interest,
+                        interestRemoved: Boolean(isFollowing),
+                    });
             }
             else {
                 res

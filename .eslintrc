@@ -124,7 +124,6 @@
     "no-nested-ternary": "error",
     "no-plusplus": "error",
     "no-trailing-spaces": "error",
-    "no-underscore-dangle": "error",
     "no-unneeded-ternary": "error",
     "no-useless-constructor": "error",
     "no-var": "error",

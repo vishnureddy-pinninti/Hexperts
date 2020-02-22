@@ -14,8 +14,10 @@ module.exports = (app) => {
             targetID,
         } = req.body;
 
+        const { _id } = req.user;
+
         const newComment = new Comment({
-            author: req.user,
+            author: mongoose.Types.ObjectId(_id),
             comment,
             target,
             targetID: mongoose.Types.ObjectId(targetID),
@@ -25,7 +27,10 @@ module.exports = (app) => {
             await newComment.save();
             res
                 .status(201)
-                .json(newComment);
+                .json({
+                    ...newComment._doc,
+                    author: req.user,
+                });
         }
         catch (e) {
             res
@@ -47,6 +52,31 @@ module.exports = (app) => {
         try {
             const comments = await Comment.aggregate([
                 { $match: { $and: aggregationMatch } },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'author',
+                        foreignField: '_id',
+                        as: 'author',
+                    },
+                },
+                { $unwind: '$author' },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'downvoters',
+                        foreignField: '_id',
+                        as: 'downvoters',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'upvoters',
+                        foreignField: '_id',
+                        as: 'upvoters',
+                    },
+                },
                 { $sort: { postedDate: -1 } },
                 { $skip: pagination.skip || 0 },
                 { $limit: pagination.limit || 10 },
@@ -81,7 +111,11 @@ module.exports = (app) => {
                 await comment.save();
                 res
                     .status(200)
-                    .json(comment);
+                    .json({
+                        _id: commentID,
+                        comment: commentString,
+                        lastModified: comment.lastModified,
+                    });
             }
             else {
                 res
@@ -137,16 +171,22 @@ module.exports = (app) => {
             commentID,
         } = req.params;
 
+        const { _id } = req.user;
+
         try {
             const comment = await Comment.findById(commentID);
 
             if (comment) {
-                voting(comment, req.user, 'upvote');
+                const alreadyVoted = voting(comment, _id, 'upvote');
 
                 await comment.save();
                 res
                     .status(200)
-                    .json(comment);
+                    .json({
+                        _id: commentID,
+                        upvoter: req.user,
+                        removeVoting: alreadyVoted,
+                    });
             }
             else {
                 res
@@ -172,16 +212,22 @@ module.exports = (app) => {
             commentID,
         } = req.params;
 
+        const { _id } = req.user;
+
         try {
             const comment = await Comment.findById(commentID);
 
             if (comment) {
-                voting(comment, req.user);
+                const alreadyVoted = voting(comment, _id);
 
                 await comment.save();
                 res
                     .status(200)
-                    .json(comment);
+                    .json({
+                        _id: commentID,
+                        downvoter: req.user,
+                        removeVoting: alreadyVoted,
+                    });
             }
             else {
                 res
