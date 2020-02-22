@@ -1,16 +1,14 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const { user } = require('./common');
-
 const commentSchema = new Schema({
     comment: {
         type: String,
         required: true,
         trim: true,
     },
-    author: user,
-    downvoters: [ user ],
+    author: mongoose.Types.ObjectId,
+    downvoters: [ mongoose.Types.ObjectId ],
     lastModified: {
         type: Date,
     },
@@ -26,7 +24,7 @@ const commentSchema = new Schema({
         type: mongoose.Types.ObjectId,
         required: true,
     },
-    upvoters: [ user ],
+    upvoters: [ mongoose.Types.ObjectId ],
 });
 
 mongoose.model('comments', commentSchema);

@@ -1,11 +1,9 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const { user, topic } = require('./common');
-
 const questionSchema = new Schema({
-    author: user,
-    followers: [ user ],
+    author: mongoose.Types.ObjectId,
+    followers: [ mongoose.Types.ObjectId ],
     lastModified: {
         type: Date,
     },
@@ -13,8 +11,8 @@ const questionSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    suggestedExperts: [ user ],
-    topics: [ topic ],
+    suggestedExperts: [ mongoose.Types.ObjectId ],
+    topics: [ mongoose.Types.ObjectId ],
     question: {
         type: String,
         trim: true,
