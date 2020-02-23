@@ -47,11 +47,11 @@ module.exports = (app) => {
                 };
                 cookieOptions.path = '/';
                 res
-                    .cookie(config.cookieKey, encrypt(JSON.stringify(user)), cookieOptions);
+                    .cookie(config.cookieKey, encrypt(JSON.stringify(user[0])), cookieOptions);
 
                 res
                     .status(200)
-                    .json(user);
+                    .json(user[0]);
             }
             else {
                 // Create new user
