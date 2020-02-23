@@ -5,7 +5,7 @@ const User = mongoose.model('users');
 const Topic = mongoose.model('topics');
 
 const { errors: { QUESTION_NOT_FOUND } } = require('../utils/constants');
-// const emailNotify = require('../services/emailService');
+const emailNotify = require('../services/email/emailService');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 
@@ -32,19 +32,21 @@ module.exports = (app) => {
             });
 
             await newQuestion.save();
-            // emailNotify('newQuestion', newQuestion, {
-            //     author: req.user,
-            //     suggestedExperts: experts,
-            //     topics: chosenTopics,
-            // });
+
+            const responseObject = {
+                ...newQuestion._doc,
+                author: req.user,
+                topics: chosenTopics,
+            };
+            emailNotify('newQuestion', responseObject, {
+                author: req.user,
+                suggestedExperts,
+                topics,
+            });
 
             res
                 .status(201)
-                .json({
-                    ...newQuestion._doc,
-                    author: req.user,
-                    topics: chosenTopics,
-                });
+                .json(responseObject);
         }
         catch (e) {
             res
@@ -469,13 +471,17 @@ module.exports = (app) => {
                 }
 
                 await question.save();
+
+                const responseObject = {
+                    _id: questionID,
+                    follower: req.user,
+                    unfollow: Boolean(isFollowing),
+                };
+                emailNotify('followQuestion', responseObject);
+
                 res
                     .status(200)
-                    .json({
-                        _id: questionID,
-                        follower: req.user,
-                        unfollow: Boolean(isFollowing),
-                    });
+                    .json(responseObject);
             }
             else {
                 res

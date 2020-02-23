@@ -5,6 +5,7 @@ const { errors: { COMMENT_NOT_FOUND } } = require('../utils/constants');
 const voting = require('../utils/voting');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
+const emailNotify = require('../services/email/emailService');
 
 module.exports = (app) => {
     app.post('/api/v1/comment.add', loginMiddleware, async(req, res) => {
@@ -25,12 +26,16 @@ module.exports = (app) => {
 
         try {
             await newComment.save();
+
+            const responseObject = {
+                ...newComment._doc,
+                author: req.user,
+            };
+            emailNotify('newComment', responseObject);
+
             res
                 .status(201)
-                .json({
-                    ...newComment._doc,
-                    author: req.user,
-                });
+                .json(responseObject);
         }
         catch (e) {
             res
@@ -180,13 +185,17 @@ module.exports = (app) => {
                 const alreadyVoted = voting(comment, _id, 'upvote');
 
                 await comment.save();
+
+                const responseObject = {
+                    _id: commentID,
+                    upvoter: req.user,
+                    removeVoting: alreadyVoted,
+                };
+                emailNotify('upvoteComment', responseObject);
+
                 res
                     .status(200)
-                    .json({
-                        _id: commentID,
-                        upvoter: req.user,
-                        removeVoting: alreadyVoted,
-                    });
+                    .json(responseObject);
             }
             else {
                 res
@@ -221,13 +230,17 @@ module.exports = (app) => {
                 const alreadyVoted = voting(comment, _id);
 
                 await comment.save();
+
+                const responseObject = {
+                    _id: commentID,
+                    downvoter: req.user,
+                    removeVoting: alreadyVoted,
+                };
+                emailNotify('downvoteComment', responseObject);
+
                 res
                     .status(200)
-                    .json({
-                        _id: commentID,
-                        downvoter: req.user,
-                        removeVoting: alreadyVoted,
-                    });
+                    .json(responseObject);
             }
             else {
                 res
