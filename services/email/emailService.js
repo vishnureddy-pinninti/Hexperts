@@ -6,13 +6,14 @@ const emailService = async(type, data, options) => {
         template,
         locals,
         recipients,
+        user,
     } = await emailMap[type](data,
         options);
 
     const mailOptions = {
         template,
         locals,
-        bcc: recipients.filter((follower) => follower.emailSubscription).map((follower) => follower.email),
+        bcc: recipients.filter((follower) => follower.emailSubscription && (follower.email !== user.email)).map((follower) => follower.email),
     };
 
     email(mailOptions);

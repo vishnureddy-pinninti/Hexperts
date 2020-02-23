@@ -33,7 +33,7 @@ const emailMap = {
             ...experts,
             ...userFollowers,
             ...topicFollowers,
-        ].filter((recipient) => recipient !== `${owner.name} <${owner.email}>`);
+        ];
 
         return {
             template: 'newEntry',
@@ -45,6 +45,7 @@ const emailMap = {
                 subject: 'New Question for you',
             },
             recipients,
+            user: owner,
         };
     },
     newAnswer: async(data, options) => {
@@ -65,7 +66,7 @@ const emailMap = {
         const recipients = [
             ...questionFollowers,
             ...userFollowers,
-        ].filter((recipient) => recipient !== `${owner.name} <${owner.email}>`);
+        ];
 
         return {
             template: 'newEntry',
@@ -77,6 +78,7 @@ const emailMap = {
                 subject: 'New Answer to your question',
             },
             recipients,
+            user: owner,
         };
     },
     followQuestion: async(data) => {
@@ -88,8 +90,7 @@ const emailMap = {
         } = data;
 
         const questionFollowers = await getAuthor(questionID, Question);
-
-        const recipients = [ questionFollowers ].filter((recipient) => recipient !== `${follower.name} <${follower.email}>`);
+        const recipients = [ questionFollowers ];
 
         return {
             template: 'followQuestion',
@@ -99,6 +100,7 @@ const emailMap = {
                 link: `http://localhost:1515/question/${questionID}`,
             },
             recipients,
+            user: follower,
         };
     },
     upvoteAnswer: async(data) => {
@@ -110,8 +112,7 @@ const emailMap = {
         } = data;
 
         const answerAuthor = await getAuthor(answerID, Answer);
-
-        const recipients = [ answerAuthor ].filter((recipient) => recipient !== `${upvoter.name} <${upvoter.email}>`);
+        const recipients = [ answerAuthor ];
 
         return {
             template: 'vote',
@@ -123,6 +124,7 @@ const emailMap = {
                 type: 'Answer',
             },
             recipients,
+            user: upvoter,
         };
     },
     downvoteAnswer: async(data) => {
@@ -134,8 +136,7 @@ const emailMap = {
         } = data;
 
         const answerAuthor = await getAuthor(answerID, Answer);
-
-        const recipients = [ answerAuthor ].filter((recipient) => recipient !== `${downvoter.name} <${downvoter.email}>`);
+        const recipients = [ answerAuthor ];
 
         return {
             template: 'vote',
@@ -147,6 +148,7 @@ const emailMap = {
                 type: 'Answer',
             },
             recipients,
+            user: downvoter,
         };
     },
     newComment: async(data) => {
@@ -159,8 +161,7 @@ const emailMap = {
         } = data;
 
         const answerAuthor = await getAuthor(targetID, Answer);
-
-        const recipients = [ answerAuthor ].filter((recipient) => recipient !== `${author.name} <${author.email}>`);
+        const recipients = [ answerAuthor ];
 
         return {
             template: 'newEntry',
@@ -172,6 +173,7 @@ const emailMap = {
                 subject: 'New comment to your answer',
             },
             recipients,
+            user: author,
         };
     },
     upvoteComment: async(data) => {
@@ -183,8 +185,7 @@ const emailMap = {
         } = data;
 
         const author = await getAuthor(commentID, Comment);
-
-        const recipients = [ author ].filter((recipient) => recipient !== `${upvoter.name} <${upvoter.email}>`);
+        const recipients = [ author ];
 
         return {
             template: 'vote',
@@ -196,6 +197,7 @@ const emailMap = {
                 type: 'Comment',
             },
             recipients,
+            user: upvoter,
         };
     },
     downvoteComment: async(data) => {
@@ -207,8 +209,7 @@ const emailMap = {
         } = data;
 
         const author = await getAuthor(commentID, Comment);
-
-        const recipients = [ author ].filter((recipient) => recipient !== `${downvoter.name} <${downvoter.email}>`);
+        const recipients = [ author ];
 
         return {
             template: 'vote',
@@ -220,6 +221,7 @@ const emailMap = {
                 type: 'Comment',
             },
             recipients,
+            user: downvoter,
         };
     },
 };
