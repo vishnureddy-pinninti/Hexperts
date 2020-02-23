@@ -320,4 +320,41 @@ module.exports = (app) => {
                 });
         }
     });
+
+    app.get('/api/v1/email/subscription', loginMiddleware, async(req, res) => {
+        const { _id } = req.user;
+
+        try {
+            const user = await User.findById(_id);
+
+            if (user) {
+                user.emailSubscription = !user.emailSubscription;
+
+                await user.save();
+
+                res
+                    .status(200)
+                    .json({
+                        _id,
+                        emailSubscription: user.emailSubscription,
+                    });
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: USER_NOT_FOUND,
+                    });
+            }
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
 };

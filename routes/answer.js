@@ -4,7 +4,7 @@ const Answer = mongoose.model('answers');
 const { errors: { ANSWER_NOT_FOUND } } = require('../utils/constants');
 const voting = require('../utils/voting');
 const loginMiddleware = require('../middlewares/loginMiddleware');
-// const emailNotify = require('../services/emailService');
+const emailNotify = require('../services/email/emailService');
 
 module.exports = (app) => {
     app.post('/api/v1/answer.add', loginMiddleware, async(req, res) => {
@@ -23,16 +23,18 @@ module.exports = (app) => {
 
         try {
             await newAnswer.save();
-            // emailNotify('newAnswer', newAnswer, {
-            //     author: req.user,
-            // });
+
+            const responseObject = {
+                ...newAnswer._doc,
+                author: req.user,
+            };
+            emailNotify('newAnswer', responseObject, {
+                author: req.user,
+            });
 
             res
                 .status(201)
-                .json({
-                    ...newAnswer._doc,
-                    author: req.user,
-                });
+                .json(responseObject);
         }
         catch (e) {
             res
@@ -129,13 +131,17 @@ module.exports = (app) => {
                 const alreadyVoted = voting(answer, _id, 'upvote');
 
                 await answer.save();
+
+                const responseObject = {
+                    _id: answerID,
+                    upvoter: req.user,
+                    removeVoting: alreadyVoted,
+                };
+                emailNotify('upvoteAnswer', responseObject);
+
                 res
                     .status(200)
-                    .json({
-                        _id: answerID,
-                        upvoter: req.user,
-                        removeVoting: alreadyVoted,
-                    });
+                    .json(responseObject);
             }
             else {
                 res
@@ -170,13 +176,17 @@ module.exports = (app) => {
                 const alreadyVoted = voting(answer, _id);
 
                 await answer.save();
+
+                const responseObject = {
+                    _id: answerID,
+                    downvoter: req.user,
+                    removeVoting: alreadyVoted,
+                };
+                emailNotify('downvoteAnswer', responseObject);
+
                 res
                     .status(200)
-                    .json({
-                        _id: answerID,
-                        downvoter: req.user,
-                        removeVoting: alreadyVoted,
-                    });
+                    .json(responseObject);
             }
             else {
                 res
