@@ -37,24 +37,12 @@ module.exports = (app) => {
                 },
             ]);
 
-            if (user) {
-                // Create cookie and send the response back
-                const d1 = new Date();
-                d1.setHours(d1.getHours() + 240);
-                const cookieOptions = {
-                    httpOnly: true,
-                    expires: d1,
-                };
-                cookieOptions.path = '/';
-                res
-                    .cookie(config.cookieKey, encrypt(JSON.stringify(user[0])), cookieOptions);
+            let cookieUser;
 
-                res
-                    .status(200)
-                    .json(user[0]);
+            if (user.length) {
+                cookieUser = user[0];
             }
             else {
-                // Create new user
                 const newUser = new User({
                     name: displayName,
                     email: mail,
@@ -63,10 +51,23 @@ module.exports = (app) => {
                 });
 
                 await newUser.save();
-                res
-                    .status(201)
-                    .json(newUser);
+
+                cookieUser = newUser;
             }
+
+            // Create cookie and send the response back
+            const d1 = new Date();
+            d1.setHours(d1.getHours() + 240);
+            const cookieOptions = {
+                httpOnly: true,
+                expires: d1,
+            };
+            cookieOptions.path = '/';
+
+            res
+                .cookie(config.cookieKey, encrypt(JSON.stringify(cookieUser)), cookieOptions)
+                .status(200)
+                .json(cookieUser);
         }
         catch (e) {
             res
