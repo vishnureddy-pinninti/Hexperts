@@ -24,35 +24,14 @@ const getUserFollowers = async(id) => {
     ]);
 
     const uFollowers = userFollowers.length > 0 ? userFollowers[0] : { followers: [] };
-    return uFollowers.followers.map((follower) => `${follower.name} <${follower.email}>`);
+    return uFollowers.followers;
 };
 
-const getTopicFollowers = async(topics) => {
-    const topicFollowers = await User.find({ 'interests': { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
-    return topicFollowers.map((follower) => `${follower.name} <${follower.email}>`);
-};
+const getTopicFollowers = async(topics) => await User.find({ 'interests': { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
 
-const getSuggestedExperts = async(suggestedExperts) => {
-    const experts = await User.find({ _id: { $in: suggestedExperts.map((expert) => mongoose.Types.ObjectId(expert)) } });
-    return experts.map((expert) => `${expert.name} <${expert.email}>`);
-};
+const getSuggestedExperts = async(suggestedExperts) => await User.find({ _id: { $in: suggestedExperts.map((expert) => mongoose.Types.ObjectId(expert)) } });
 
-const getQuestionFollowers = async(questionID, onlyAuthor = false) => {
-    if (onlyAuthor) {
-        const question = await Question.aggregate([
-            { $match: { _id: mongoose.Types.ObjectId(questionID) } },
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'author',
-                    foreignField: '_id',
-                    as: 'author',
-                },
-            },
-            { $unwind: '$author' },
-        ]);
-        return `${question[0].author.name} <${question[0].author.email}>`;
-    }
+const getQuestionFollowers = async(questionID) => {
     const question = await Question.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(questionID) } },
         {
@@ -75,8 +54,8 @@ const getQuestionFollowers = async(questionID, onlyAuthor = false) => {
     ]);
 
     return [
-        ...question[0].followers.map((follower) => `${follower.name} <${follower.email}>`),
-        `${question[0].author.name} <${question[0].author.email}>`,
+        ...question[0].followers,
+        question[0].author,
     ];
 };
 
@@ -93,7 +72,7 @@ const getAuthor = async(id, model) => {
         },
         { $unwind: '$author' },
     ]);
-    return `${records[0].author.name} <${records[0].author.email}>`;
+    return records[0].author;
 };
 
 module.exports = {

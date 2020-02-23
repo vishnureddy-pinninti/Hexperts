@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Comment = mongoose.model('comments');
 const Answer = mongoose.model('answers');
+const Question = mongoose.model('questions');
 
 const {
     getAuthor,
@@ -86,7 +87,7 @@ const emailMap = {
             unfollow,
         } = data;
 
-        const questionFollowers = await getQuestionFollowers(questionID, true);
+        const questionFollowers = await getAuthor(questionID, Question);
 
         const recipients = [ questionFollowers ].filter((recipient) => recipient !== `${follower.name} <${follower.email}>`);
 

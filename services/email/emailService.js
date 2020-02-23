@@ -12,7 +12,7 @@ const emailService = async(type, data, options) => {
     const mailOptions = {
         template,
         locals,
-        bcc: recipients,
+        bcc: recipients.filter((follower) => follower.emailSubscription).map((follower) => follower.email),
     };
 
     email(mailOptions);

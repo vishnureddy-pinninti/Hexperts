@@ -16,6 +16,10 @@ const userSchema = new Schema({
     },
     interests: [ mongoose.Types.ObjectId ],
     followers: [ mongoose.Types.ObjectId ],
+    emailSubscription: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 mongoose.model('users', userSchema);
