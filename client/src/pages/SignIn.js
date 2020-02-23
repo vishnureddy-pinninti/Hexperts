@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => {
             height: '100vh',
         },
         image: {
-            backgroundImage: 'url(https://qsfs.fs.quoracdn.net/-3-images.home.illo_1920.png-26-5ac607d989ef8067.png)',
+            backgroundImage: 'url(/signin.png)',
             backgroundRepeat: 'no-repeat',
             backgroundColor:
       theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
@@ -61,6 +61,9 @@ const useStyles = makeStyles((theme) => {
         },
         submit: {
             margin: theme.spacing(3, 0, 2),
+        },
+        logo: {
+            boxShadow: 'none',
         },
     };
 });
@@ -97,42 +100,15 @@ const SignIn = (props) => {
                         variant="h5">
                         Sign in
                     </Typography>
+                    <Paper className={ classes.logo }>
+                        <img
+                            src="hexagon.jpg"
+                            width={ 250 }
+                            alt="logo" />
+                    </Paper>
                     <form
                         className={ classes.form }
                         noValidate>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password" />
-                        <FormControlLabel
-                            control={ <Checkbox
-                                value="remember"
-                                color="primary" /> }
-                            label="Remember me" />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={ classes.submit }>
-                            Sign In
-                        </Button>
                         <Button
                             fullWidth
                             variant="contained"
@@ -141,24 +117,6 @@ const SignIn = (props) => {
                             onClick={ props.onLoginClick }>
                             Login with Microsoft
                         </Button>
-                        <Grid container>
-                            <Grid
-                                item
-                                xs>
-                                <Link
-                                    href="#"
-                                    variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <Link
-                                    href="#"
-                                    variant="body2">
-                                    Don't have an account? Sign Up
-                                </Link>
-                            </Grid>
-                        </Grid>
                         <Box mt={ 5 }>
                             <Copyright />
                         </Box>

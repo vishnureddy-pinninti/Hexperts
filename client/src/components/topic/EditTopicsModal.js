@@ -10,10 +10,10 @@ import TextField from '@material-ui/core/TextField';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import { addUserQuestion, addQuestionPending } from '../../store/actions/questions';
+import { addUserQuestion } from '../../store/actions/questions';
 
 
-const useStyles = makeStyles(() => {
+const useStyles = makeStyles((theme) => {
     return {
         root: {
             minWidth: 700,
@@ -33,7 +33,7 @@ const validate = (values) => {
 };
 
 
-const QuestionModal = (props) => {
+const EditTopicsModal = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -41,7 +41,8 @@ const QuestionModal = (props) => {
     const {
         addUserQuestion,
         handleSubmit,
-        handleClose,
+        question,
+        questionID,
     } = props;
 
     const renderTextField = ({ input }) => (
@@ -68,11 +69,15 @@ const QuestionModal = (props) => {
                 id="question"
                 onSubmit={ handleSubmit(addUserQuestion) }>
                 <DialogTitle id="responsive-dialog-title">
-                    Question
+                    Edit Topics
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Feel free to ask any anything either technical or domain. Try to choose suggested experts to get an instant answer.
+                        Make sure this question has the right topics:
+                        { ' ' }
+                        <b>
+                            { question }
+                        </b>
                     </DialogContentText>
                     <Field
                         name="question"
@@ -81,14 +86,14 @@ const QuestionModal = (props) => {
                 <DialogActions>
                     <Button
                         autoFocus
-                        onClick={ handleClose }
+                        onClick={ props.handleClose }
                         color="primary">
                         Cancel
                     </Button>
                     <Button
                         color="primary"
                         type="submit">
-                        Add
+                        Done
                     </Button>
                 </DialogActions>
             </form>
@@ -105,13 +110,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         addUserQuestion: (body, callback) => {
-            dispatch(addQuestionPending());
             dispatch(addUserQuestion(body, callback));
         },
     };
 };
 
 export default reduxForm({
-    form: 'question', // a unique identifier for this form
+    form: 'topic', // a unique identifier for this form
     validate,
-})(connect(mapStateToProps, mapDispatchToProps)(QuestionModal));
+})(connect(mapStateToProps, mapDispatchToProps)(EditTopicsModal));

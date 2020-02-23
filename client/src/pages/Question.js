@@ -1,17 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
+import { connect } from 'react-redux';
 import TopBar from '../components/base/TopBar';
 import Drawer from '../components/base/Drawer';
 import Questions from '../components/base/Questions';
-import QuestionSection from '../components/base/QuestionSection';
-import Answer from '../components/base/Answer';
+import QuestionSection from '../components/question/QuestionSection';
+import Answer from '../components/answer/Card';
+import { requestQuestionById } from '../store/actions/questions';
 
-function Home() {
+
+function Question(props) {
     const [
         open,
         setOpen,
     ] = React.useState(false);
+
+    const {
+        match: {
+            params: { questionId },
+        },
+        requestQuestion,
+    } = props;
+
+    useEffect(() => {
+        requestQuestion(questionId);
+    }, [
+        questionId,
+        requestQuestion,
+    ]);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -20,6 +37,17 @@ function Home() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    const renderAnswers = () => question.answers.results.map((answer) => (
+        <Answer
+            key={ answer._id }
+            hideHeader
+            author={ answer.author }
+            date={ answer.postedDate }
+            answer={ answer } />
+    ));
+
+    const { question } = props;
     return (
         <div className="App">
             <TopBar handleDrawerOpen={ handleDrawerOpen } />
@@ -34,22 +62,10 @@ function Home() {
                     <Grid
                         item
                         xs={ 8 }>
-                        <QuestionSection />
-                        <Answer
-                            author="Karthik Kosigi"
-                            time="September 14, 2016" />
-                        <Answer
-                            author="Challa Reddiah"
-                            time="September 14, 2016" />
-                        <Answer
-                            author="Umakanth"
-                            time="September 14, 2016" />
-                        <Answer
-                            author="Karthik Kosigi"
-                            time="September 14, 2016" />
-                        <Answer
-                            author="Tanmoy Chakraborthy"
-                            time="September 14, 2016" />
+                        { question && <QuestionSection
+                            question={ question.question }
+                            id={ question._id } /> }
+                        { question && question.answers && renderAnswers() }
                     </Grid>
                     <Grid
                         item
@@ -62,4 +78,18 @@ function Home() {
     );
 }
 
-export default Home;
+const mapStateToProps = (state) => {
+    return {
+        question: state.questions.question,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        requestQuestion: (questionId) => {
+            dispatch(requestQuestionById(questionId));
+        },
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Question);

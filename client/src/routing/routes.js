@@ -3,7 +3,7 @@ import Question from '../pages/Question';
 
 const routes = [
     {
-        path: '/Question',
+        path: '/Question/:questionId',
         component: Question,
         key: 'Question',
     },

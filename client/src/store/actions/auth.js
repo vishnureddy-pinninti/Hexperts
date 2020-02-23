@@ -1,12 +1,12 @@
 export const REQUEST_USER_SESSION = 'REQUEST_USER_SESSION';
 export const RECEIVE_USER_SESSION = 'RECEIVE_USER_SESSION';
 
-const receiveUserSession = user => {
+const receiveUserSession = (user) => {
     return {
         type: RECEIVE_USER_SESSION,
-        user
-    }
-}
+        user,
+    };
+};
 
 export const requestUserSession = (user) => {
     return {
@@ -15,7 +15,7 @@ export const requestUserSession = (user) => {
             url: '/api/v1/user.read',
             method: 'POST',
             body: user,
-            success: response => receiveUserSession(response),
-        }
-    }
-}
+            success: (response) => receiveUserSession(response),
+        },
+    };
+};

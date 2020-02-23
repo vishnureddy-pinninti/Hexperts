@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -17,6 +17,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import QuestionModal from './QuestionModal';
 
 
@@ -138,6 +139,14 @@ const TopBar = (props) => {
         setOpenQModal(false);
     };
 
+    const { pending } = props;
+
+    useEffect(() => {
+        if (!pending) {
+            setOpenQModal(pending);
+        }
+    }, [ pending ]);
+
     const menuId = 'primary-search-account-menu';
 
     const renderMenu = (
@@ -224,7 +233,8 @@ const TopBar = (props) => {
 
     return (
         <div className={ classes.grow }>
-            <AppBar position="static">
+            <AppBar
+                position="static">
                 <Toolbar>
                     <IconButton
                         edge="start"
@@ -322,4 +332,16 @@ TopBar.propTypes = {
     handleDrawerOpen: PropTypes.func,
 };
 
-export default TopBar;
+const mapStateToProps = (state) => {
+    return {
+        user: state.user,
+        pending: state.questions.pending,
+    };
+};
+
+const mapDispatchToProps = () => {
+    return {
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TopBar);

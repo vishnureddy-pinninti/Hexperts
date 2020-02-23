@@ -2,6 +2,9 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import TagFacesIcon from '@material-ui/icons/TagFaces';
+import EditIcon from '@material-ui/icons/Edit';
+import IconButton from '@material-ui/core/IconButton';
+import EditTopicsModal from '../topic/EditTopicsModal';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -45,9 +48,25 @@ const QuestionTags = (props) => {
         },
     ]);
 
+    const { question, id } = props;
+
     const handleDelete = (chipToDelete) => () => {
         setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
     };
+
+    const [
+        openEditTopicsModal,
+        setOpenEditTopicsModal,
+    ] = React.useState(false);
+
+    const handleEditTopicsModalOpen = () => {
+        setOpenEditTopicsModal(true);
+    };
+
+    const handleEditTopicsModalClose = () => {
+        setOpenEditTopicsModal(false);
+    };
+
 
     return (
         <div className={ classes.root }>
@@ -60,13 +79,27 @@ const QuestionTags = (props) => {
 
                 return (
                     <Chip
+                        variant="outlined"
+                        size="small"
+                        color="primary"
                         key={ data.key }
                         icon={ icon }
                         label={ data.label }
-                        onDelete={ data.label === 'React' ? undefined : handleDelete(data) }
                         className={ classes.chip } />
                 );
             }) }
+            <IconButton
+                size="small"
+                color="primary"
+                onClick={ handleEditTopicsModalOpen }
+                aria-label="upload picture">
+                <EditIcon />
+            </IconButton>
+            <EditTopicsModal
+                open={ openEditTopicsModal }
+                question={ question }
+                id={ id }
+                handleClose={ handleEditTopicsModalClose } />
         </div>
     );
 };
