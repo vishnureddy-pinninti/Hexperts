@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const topicSchema = new Schema({
-    topic: {
+const spaceSchema = new Schema({
+    author: {
+        type: mongoose.Types.ObjectId,
+    },
+    name: {
         type: String,
         required: true,
         trim: true,
@@ -24,6 +27,6 @@ const topicSchema = new Schema({
     },
 });
 
-topicSchema.index({ topic: 'text' });
+spaceSchema.index({ name: 'text' });
 
-mongoose.model('topics', topicSchema);
+mongoose.model('spaces', spaceSchema);

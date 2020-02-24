@@ -1,37 +1,39 @@
 const mongoose = require('mongoose');
+const Space = mongoose.model('spaces');
+const Blog = mongoose.model('blogs');
 const Comment = mongoose.model('comments');
 
-const { errors: { COMMENT_NOT_FOUND } } = require('../utils/constants');
-const voting = require('../utils/voting');
+const { errors: { BLOG_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
-const queryMiddleware = require('../middlewares/queryMiddleware');
-const emailNotify = require('../services/email/emailService');
+const voting = require('../utils/voting');
 
 module.exports = (app) => {
-    app.post('/api/v1/comment.add', loginMiddleware, async(req, res) => {
+    app.post('/api/v1/blog.add', loginMiddleware, async(req, res) => {
         const {
-            comment,
-            target,
-            targetID,
+            space,
+            title,
+            description,
         } = req.body;
 
         const { _id } = req.user;
 
-        const newComment = new Comment({
-            author: mongoose.Types.ObjectId(_id),
-            comment,
-            target,
-            targetID: mongoose.Types.ObjectId(targetID),
-        });
-
         try {
-            await newComment.save();
+            const chosenSpace = await Space.findById(mongoose.Types.ObjectId(space));
+
+            const newBlog = new Blog({
+                author: _id,
+                space,
+                title,
+                description,
+            });
+
+            await newBlog.save();
 
             const responseObject = {
-                ...newComment._doc,
+                ...newBlog._doc,
                 author: req.user,
+                space: chosenSpace,
             };
-            emailNotify('newComment', responseObject);
 
             res
                 .status(201)
@@ -47,16 +49,12 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/comments/:targetID', loginMiddleware, queryMiddleware, async(req, res) => {
-        const {
-            pagination,
-        } = req.queryParams;
-        const { targetID } = req.params;
-        const aggregationMatch = [ { targetID: mongoose.Types.ObjectId(targetID) } ];
-
+    app.get('/api/v1/blog/:blogID', loginMiddleware, async(req, res) => {
         try {
-            const comments = await Comment.aggregate([
-                { $match: { $and: aggregationMatch } },
+            const { blogID } = req.params;
+
+            const blog = await Blog.aggregate([
+                { $match: { _id: mongoose.Types.ObjectId(blogID) } },
                 {
                     $lookup: {
                         from: 'users',
@@ -69,6 +67,14 @@ module.exports = (app) => {
                 {
                     $lookup: {
                         from: 'users',
+                        localField: 'upvoters',
+                        foreignField: '_id',
+                        as: 'upvoters',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'users',
                         localField: 'downvoters',
                         foreignField: '_id',
                         as: 'downvoters',
@@ -76,20 +82,33 @@ module.exports = (app) => {
                 },
                 {
                     $lookup: {
-                        from: 'users',
-                        localField: 'upvoters',
+                        from: 'spaces',
+                        localField: 'space',
                         foreignField: '_id',
-                        as: 'upvoters',
+                        as: 'space',
                     },
                 },
-                { $sort: { postedDate: -1 } },
-                { $skip: pagination.skip || 0 },
-                { $limit: pagination.limit || 10 },
+                { $unwind: '$space' },
             ]);
 
-            res
-                .status(200)
-                .json(comments);
+            if (blog.length) {
+                const comments = await Comment.find({ targetID: mongoose.Types.ObjectId(blogID) });
+
+                res
+                    .status(200)
+                    .json({
+                        ...blog[0],
+                        commentsCount: comments.length,
+                    });
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: BLOG_NOT_FOUND,
+                    });
+            }
         }
         catch (e) {
             res
@@ -101,25 +120,37 @@ module.exports = (app) => {
         }
     });
 
-    app.put('/api/v1/comments/:commentID', loginMiddleware, async(req, res) => {
+    app.put('/api/v1/blog/:blogID', loginMiddleware, async(req, res) => {
         try {
-            const { commentID } = req.params;
-            const { comment: commentString } = req.body;
-            const comment = await Comment.findById(commentID);
+            const { blogID } = req.params;
+            const {
+                title,
+                description,
+            } = req.body;
 
-            if (comment) {
-                if (commentString) {
-                    comment.comment = commentString;
-                    comment.lastModified = Date.now();
+            const blog = await Blog.findById(blogID);
+
+            if (blog) {
+                const responseObject = { _id: blogID };
+
+                if (title) {
+                    blog.title = title;
+                    responseObject.title = title;
                 }
 
-                await comment.save();
+                if (description) {
+                    blog.description = description;
+                    responseObject.description = description;
+                }
+
+                blog.lastModified = Date.now();
+
+                await blog.save();
                 res
                     .status(200)
                     .json({
-                        _id: commentID,
-                        comment: commentString,
-                        lastModified: comment.lastModified,
+                        ...responseObject,
+                        lastModified: blog.lastModified,
                     });
             }
             else {
@@ -127,7 +158,7 @@ module.exports = (app) => {
                     .status(404)
                     .json({
                         error: true,
-                        response: COMMENT_NOT_FOUND,
+                        response: BLOG_NOT_FOUND,
                     });
             }
         }
@@ -141,23 +172,23 @@ module.exports = (app) => {
         }
     });
 
-    app.delete('/api/v1/comments/:commentID', loginMiddleware, async(req, res) => {
+    app.delete('/api/v1/blog/:blogID', loginMiddleware, async(req, res) => {
         try {
-            const { commentID } = req.params;
-            const comment = await Comment.findById(commentID);
+            const { blogID } = req.params;
+            const blog = await Blog.findById(blogID);
 
-            if (comment) {
-                await comment.remove();
+            if (blog) {
+                await blog.remove();
                 res
                     .status(200)
-                    .json({ commentID });
+                    .json({ blogID });
             }
             else {
                 res
                     .status(404)
                     .json({
                         error: true,
-                        response: COMMENT_NOT_FOUND,
+                        response: BLOG_NOT_FOUND,
                     });
             }
         }
@@ -171,27 +202,26 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/comment-upvote/:commentID', loginMiddleware, async(req, res) => {
+    app.get('/api/v1/blog-upvote/:blogID', loginMiddleware, async(req, res) => {
         const {
-            commentID,
+            blogID,
         } = req.params;
 
         const { _id } = req.user;
 
         try {
-            const comment = await Comment.findById(commentID);
+            const blog = await Blog.findById(blogID);
 
-            if (comment) {
-                const alreadyVoted = voting(comment, _id, 'upvote');
+            if (blog) {
+                const alreadyVoted = voting(blog, _id, 'upvote');
 
-                await comment.save();
+                await blog.save();
 
                 const responseObject = {
-                    _id: commentID,
+                    _id: blogID,
                     upvoter: req.user,
                     removeVoting: alreadyVoted,
                 };
-                emailNotify('upvoteComment', responseObject);
 
                 res
                     .status(200)
@@ -202,7 +232,7 @@ module.exports = (app) => {
                     .status(404)
                     .json({
                         error: true,
-                        response: COMMENT_NOT_FOUND,
+                        response: BLOG_NOT_FOUND,
                     });
             }
         }
@@ -216,27 +246,26 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/comment-downvote/:commentID', loginMiddleware, async(req, res) => {
+    app.get('/api/v1/blog-downvote/:blogID', loginMiddleware, async(req, res) => {
         const {
-            commentID,
+            blogID,
         } = req.params;
 
         const { _id } = req.user;
 
         try {
-            const comment = await Comment.findById(commentID);
+            const blog = await Blog.findById(blogID);
 
-            if (comment) {
-                const alreadyVoted = voting(comment, _id);
+            if (blog) {
+                const alreadyVoted = voting(blog, _id);
 
-                await comment.save();
+                await blog.save();
 
                 const responseObject = {
-                    _id: commentID,
+                    _id: blogID,
                     downvoter: req.user,
                     removeVoting: alreadyVoted,
                 };
-                emailNotify('downvoteComment', responseObject);
 
                 res
                     .status(200)
@@ -247,7 +276,7 @@ module.exports = (app) => {
                     .status(404)
                     .json({
                         error: true,
-                        response: COMMENT_NOT_FOUND,
+                        response: BLOG_NOT_FOUND,
                     });
             }
         }

@@ -21,3 +21,5 @@ require('./question');
 require('./user');
 require('./comment');
 require('./topic');
+require('./space');
+require('./blog');

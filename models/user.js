@@ -15,6 +15,7 @@ const userSchema = new Schema({
         type: String,
     },
     interests: [ mongoose.Types.ObjectId ],
+    spaces: [ mongoose.Types.ObjectId ],
     followers: [ mongoose.Types.ObjectId ],
     emailSubscription: {
         type: Boolean,

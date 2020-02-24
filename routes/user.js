@@ -1,11 +1,16 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const Topic = mongoose.model('topics');
+const Space = mongoose.model('spaces');
 
 const { encrypt } = require('../utils/crypto');
 const config = require('../config/keys');
 const loginMiddleware = require('../middlewares/loginMiddleware');
-const { errors: { USER_NOT_FOUND, TOPIC_NOT_FOUND } } = require('../utils/constants');
+const {
+    errors: {
+        USER_NOT_FOUND, TOPIC_NOT_FOUND, SPACE_NOT_FOUND,
+    },
+} = require('../utils/constants');
 
 module.exports = (app) => {
     app.post('/api/v1/user.read', async(req, res) => {
@@ -268,6 +273,60 @@ module.exports = (app) => {
                     .json({
                         error: true,
                         response: TOPIC_NOT_FOUND,
+                    });
+            }
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
+
+    app.post('/api/v1/user-spaces.manage', loginMiddleware, async(req, res) => {
+        const {
+            spaceId,
+        } = req.body;
+
+        const {
+            _id,
+        } = req.user;
+
+        try {
+            const user = await User.findById(_id);
+            const space = await Space.findById(spaceId);
+
+            if (user && space) {
+                const isFollowing = user.spaces.find((uspace) => uspace.equals(spaceId));
+
+                if (isFollowing) {
+                    user.spaces = user.spaces.filter((uspace) => !uspace.equals(spaceId));
+                }
+                else {
+                    user.spaces = [
+                        ...user.spaces,
+                        spaceId,
+                    ];
+                }
+
+                await user.save();
+                res
+                    .status(200)
+                    .json({
+                        _id,
+                        space,
+                        spaceRemoved: Boolean(isFollowing),
+                    });
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: SPACE_NOT_FOUND,
                     });
             }
         }
