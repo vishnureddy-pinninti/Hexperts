@@ -15,8 +15,15 @@ module.exports = (app) => {
 
         try {
             const existingTopics = await Topic.distinct('topic');
-            const regex = new RegExp( existingTopics.join( '|' ), 'i');
-            const newTopics = topics.filter((topic) => !regex.test( topic ) ).map((topic) => { return { topic }; });
+            let newTopics;
+
+            if (existingTopics.length) {
+                const regex = new RegExp( existingTopics.join( '|' ), 'i');
+                newTopics = topics.filter((topic) => !regex.test( topic ) ).map((topic) => { return { topic }; });
+            }
+            else {
+                newTopics = topics.map((topic) => { return { topic }; });
+            }
 
             const response = await Topic.insertMany(newTopics);
             res

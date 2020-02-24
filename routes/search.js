@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Question = mongoose.model('questions');
+const Topic = mongoose.model('topics');
 
 const loginMiddleware = require('../middlewares/loginMiddleware');
 
@@ -39,6 +40,33 @@ module.exports = (app) => {
                     },
                 },
             ]);
+            res
+                .status(200)
+                .json(results);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
+
+    app.post('/api/v1/topic-search', loginMiddleware, async(req, res) => {
+        const { text } = req.body;
+        try {
+            let results = await Topic.aggregate([
+                { $match: { $text: { $search: text } } },
+                { $addFields: { score: { $meta: 'textScore' } } },
+                { $sort: { score: { $meta: 'textScore' } } },
+            ]);
+
+            if (!results.length) {
+                results = await Topic.find({ topic: new RegExp(text, 'gi') });
+            }
+
             res
                 .status(200)
                 .json(results);
