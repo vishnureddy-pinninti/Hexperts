@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
+import { connect } from 'react-redux';
 import { red } from '@material-ui/core/colors';
+import QuestionModal from '../base/QuestionModal';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -34,9 +37,34 @@ const useStyles = makeStyles((theme) => {
     };
 });
 
-export default function AskQuestionCard(props) {
+function AskQuestionCard(props) {
     const classes = useStyles();
-    const { user: { name } } = props;
+    const { user: { name }, pending } = props;
+    const [
+        openQModal,
+        setOpenQModal,
+    ] = React.useState(false);
+
+    const handleClickQuestionModalOpen = () => {
+        setOpenQModal(true);
+    };
+
+    const handleQuestionModalClose = () => {
+        setOpenQModal(false);
+    };
+
+    const renderQuestionModal = (
+        <QuestionModal
+            open={ openQModal }
+            handleClose={ handleQuestionModalClose } />
+    );
+
+    useEffect(() => {
+        if (!pending) {
+            setOpenQModal(pending);
+        }
+    }, [ pending ]);
+
     return (
         <Card className={ classes.root }>
             <CardHeader
@@ -51,13 +79,32 @@ export default function AskQuestionCard(props) {
                 color="textSecondary"
                 title={ name } />
             <CardContent className={ classes.content }>
-                <Typography
-                    variant="h7"
-                    color="textSecondary"
-                    component="h2">
-                    What is your question or link?
-                </Typography>
+                <Link
+                    onClick={ handleClickQuestionModalOpen }>
+
+                    <Typography
+                        variant="h7"
+                        color="textSecondary"
+                        component="h2">
+                        What is your question or link?
+                    </Typography>
+                </Link>
             </CardContent>
+
+            { renderQuestionModal }
         </Card>
     );
 }
+
+const mapStateToProps = (state) => {
+    return {
+        pending: state.questions.pending,
+    };
+};
+
+const mapDispatchToProps = () => {
+    return {
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AskQuestionCard);
