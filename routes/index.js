@@ -6,4 +6,6 @@ module.exports = (app) => {
     require('./topics')(app);
     require('./comments')(app);
     require('./search')(app);
+    require('./space')(app);
+    require('./blogs')(app);
 };
