@@ -5,6 +5,7 @@ const Comment = mongoose.model('comments');
 
 const { errors: { BLOG_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
+const queryMiddleware = require('../middlewares/queryMiddleware');
 const voting = require('../utils/voting');
 
 module.exports = (app) => {
@@ -38,6 +39,73 @@ module.exports = (app) => {
             res
                 .status(201)
                 .json(responseObject);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
+
+    app.get('/api/v1/blogs', loginMiddleware, queryMiddleware, async(req, res) => {
+        const {
+            pagination,
+        } = req.queryParams;
+        const {
+            spaces,
+        } = req.user;
+
+        try {
+            const blogs = await Blog.aggregate([
+                { $match: { 'space': { $in: spaces.map((space) => mongoose.Types.ObjectId(space)) } } },
+                { $sort: { postedDate: -1 } },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'author',
+                        foreignField: '_id',
+                        as: 'author',
+                    },
+                },
+                { $unwind: '$author' },
+                {
+                    $lookup: {
+                        from: 'spaces',
+                        localField: 'space',
+                        foreignField: '_id',
+                        as: 'space',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'comments',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$targetID',
+                                        ],
+                                    },
+                                },
+                            },
+                            { $count: 'commentsCount' },
+                        ],
+                        as: 'comments',
+                    },
+                },
+                { $skip: pagination.skip || 0 },
+                { $limit: pagination.limit || 10 },
+            ]);
+
+            res
+                .status(200)
+                .json(blogs);
         }
         catch (e) {
             res

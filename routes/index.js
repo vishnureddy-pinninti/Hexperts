@@ -8,4 +8,5 @@ module.exports = (app) => {
     require('./search')(app);
     require('./space')(app);
     require('./blogs')(app);
+    require('./notification')(app);
 };

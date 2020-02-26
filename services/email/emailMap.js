@@ -36,16 +36,24 @@ const emailMap = {
         ];
 
         return {
-            template: 'newEntry',
-            locals: {
-                name: author.name,
-                data: question,
-                dataDescription: 'added below question to you.',
-                link: `http://localhost:1515/question/${_id}`,
-                subject: 'New Question for you',
+            email: {
+                template: 'newEntry',
+                locals: {
+                    name: author.name,
+                    data: question,
+                    dataDescription: 'added below question to you.',
+                    link: `http://localhost:1515/question/${_id}`,
+                    subject: 'New Question for you',
+                },
+                recipients,
+                user: owner,
             },
-            recipients,
-            user: owner,
+            notification: {
+                recipients,
+                message: `<b>${author.name}</b> added a new question.`,
+                link: `/question/${_id}`,
+                user: owner,
+            },
         };
     },
     newAnswer: async(data, options) => {
@@ -69,16 +77,24 @@ const emailMap = {
         ];
 
         return {
-            template: 'newEntry',
-            locals: {
-                name: owner.name,
-                data: answer,
-                dataDescription: 'answered your question.',
-                link: `http://localhost:1515/answer/${_id}`,
-                subject: 'New Answer to your question',
+            email: {
+                template: 'newEntry',
+                locals: {
+                    name: owner.name,
+                    data: answer,
+                    dataDescription: 'answered your question.',
+                    link: `http://localhost:1515/answer/${_id}`,
+                    subject: 'New Answer to your question',
+                },
+                recipients,
+                user: owner,
             },
-            recipients,
-            user: owner,
+            notification: {
+                recipients,
+                message: `<b>${owner.name}</b> answered a question.`,
+                link: `/answer/${_id}`,
+                user: owner,
+            },
         };
     },
     followQuestion: async(data) => {
@@ -93,14 +109,22 @@ const emailMap = {
         const recipients = [ questionFollowers ];
 
         return {
-            template: 'followQuestion',
-            locals: {
-                name: follower.name,
-                data: unfollow ? 'Unfollowed your question' : 'Started following your question',
-                link: `http://localhost:1515/question/${questionID}`,
+            email: {
+                template: 'followQuestion',
+                locals: {
+                    name: follower.name,
+                    data: unfollow ? 'Unfollowed your question' : 'Started following your question',
+                    link: `http://localhost:1515/question/${questionID}`,
+                },
+                recipients,
+                user: follower,
             },
-            recipients,
-            user: follower,
+            notification: {
+                recipients,
+                message: unfollow ? `<b>${follower.name}</b> unfollowed your question` : `<b>${follower.name}</b> stated following your question.`,
+                link: `/question/${questionID}`,
+                user: follower,
+            },
         };
     },
     upvoteAnswer: async(data) => {
@@ -115,16 +139,24 @@ const emailMap = {
         const recipients = [ answerAuthor ];
 
         return {
-            template: 'vote',
-            locals: {
-                name: upvoter.name,
-                data: removeVoting ? 'Removed voting for your answer' : 'Upvoted your answer',
-                link: `http://localhost:1515/answer/${answerID}`,
-                vote: 'Upvote',
-                type: 'Answer',
+            email: {
+                template: 'vote',
+                locals: {
+                    name: upvoter.name,
+                    data: removeVoting ? 'Removed voting for your answer' : 'Upvoted your answer',
+                    link: `http://localhost:1515/answer/${answerID}`,
+                    vote: 'Upvote',
+                    type: 'Answer',
+                },
+                recipients,
+                user: upvoter,
             },
-            recipients,
-            user: upvoter,
+            notification: {
+                recipients,
+                message: removeVoting ? `<b>${upvoter.name}</b> removed voting for your answer.` : `<b>${upvoter.name}</b> upvoted your answer.`,
+                link: `/answer/${answerID}`,
+                user: upvoter,
+            },
         };
     },
     downvoteAnswer: async(data) => {
@@ -139,16 +171,24 @@ const emailMap = {
         const recipients = [ answerAuthor ];
 
         return {
-            template: 'vote',
-            locals: {
-                name: downvoter.name,
-                data: removeVoting ? 'Removed voting for your answer' : 'Downvoted your answer',
-                link: `http://localhost:1515/answer/${answerID}`,
-                vote: 'Downvote',
-                type: 'Answer',
+            email: {
+                template: 'vote',
+                locals: {
+                    name: downvoter.name,
+                    data: removeVoting ? 'Removed voting for your answer' : 'Downvoted your answer',
+                    link: `http://localhost:1515/answer/${answerID}`,
+                    vote: 'Downvote',
+                    type: 'Answer',
+                },
+                recipients,
+                user: downvoter,
             },
-            recipients,
-            user: downvoter,
+            notification: {
+                recipients,
+                message: removeVoting ? `<b>${downvoter.name}</b> removed voting for your answer.` : `<b>${downvoter.name}</b> downvoted your answer.`,
+                link: `/answer/${answerID}`,
+                user: downvoter,
+            },
         };
     },
     newComment: async(data) => {
@@ -164,16 +204,24 @@ const emailMap = {
         const recipients = [ answerAuthor ];
 
         return {
-            template: 'newEntry',
-            locals: {
-                name: author.name,
-                data: comment,
-                dataDescription: 'added below comment to your answer.',
-                link: `http://localhost:1515/comment/${_id}`,
-                subject: 'New comment to your answer',
+            email: {
+                template: 'newEntry',
+                locals: {
+                    name: author.name,
+                    data: comment,
+                    dataDescription: 'added below comment to your answer.',
+                    link: `http://localhost:1515/comment/${_id}`,
+                    subject: 'New comment to your answer',
+                },
+                recipients,
+                user: author,
             },
-            recipients,
-            user: author,
+            notification: {
+                recipients,
+                message: `<b>${author.name}</b> commented on your answer`,
+                link: `/comment/${_id}`,
+                user: author,
+            },
         };
     },
     upvoteComment: async(data) => {
@@ -188,16 +236,24 @@ const emailMap = {
         const recipients = [ author ];
 
         return {
-            template: 'vote',
-            locals: {
-                name: upvoter.name,
-                data: removeVoting ? 'Removed voting for your comment' : 'Upvoted your comment',
-                link: `http://localhost:1515/comment/${commentID}`,
-                vote: 'Upvote',
-                type: 'Comment',
+            email: {
+                template: 'vote',
+                locals: {
+                    name: upvoter.name,
+                    data: removeVoting ? 'Removed voting for your comment' : 'Upvoted your comment',
+                    link: `http://localhost:1515/comment/${commentID}`,
+                    vote: 'Upvote',
+                    type: 'Comment',
+                },
+                recipients,
+                user: upvoter,
             },
-            recipients,
-            user: upvoter,
+            notification: {
+                recipients,
+                message: removeVoting ? `<b>${upvoter.name}</b> removed voting for your comment.` : `<b>${upvoter.name}</b> upvoted your comment.`,
+                link: `/comment/${commentID}`,
+                user: upvoter,
+            },
         };
     },
     downvoteComment: async(data) => {
@@ -212,16 +268,24 @@ const emailMap = {
         const recipients = [ author ];
 
         return {
-            template: 'vote',
-            locals: {
-                name: downvoter.name,
-                data: removeVoting ? 'Removed voting for your comment' : 'Downvoted your comment',
-                link: `http://localhost:1515/comment/${commentID}`,
-                vote: 'Downvote',
-                type: 'Comment',
+            email: {
+                template: 'vote',
+                locals: {
+                    name: downvoter.name,
+                    data: removeVoting ? 'Removed voting for your comment' : 'Downvoted your comment',
+                    link: `http://localhost:1515/comment/${commentID}`,
+                    vote: 'Downvote',
+                    type: 'Comment',
+                },
+                recipients,
+                user: downvoter,
             },
-            recipients,
-            user: downvoter,
+            notification: {
+                recipients,
+                message: removeVoting ? `<b>${downvoter.name}</b> removed voting for your comment.` : `<b>${downvoter.name}</b> downvoted your comment.`,
+                link: `/comment/${commentID}`,
+                user: downvoter,
+            },
         };
     },
 };

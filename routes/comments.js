@@ -47,6 +47,184 @@ module.exports = (app) => {
         }
     });
 
+    // This is to get single comment details for notification purpose
+    app.get('/api/v1/comment/:commentID', loginMiddleware, async(req, res) => {
+        const { commentID } = req.params;
+
+        const comment = await Comment.findById(commentID);
+
+        if (comment) {
+            const { target } = comment;
+
+            try {
+                if (target === 'answers') {
+                    const comments = await Comment.aggregate([
+                        { $match: { _id: mongoose.Types.ObjectId(commentID) } },
+                        {
+                            $lookup: {
+                                from: 'users',
+                                localField: 'author',
+                                foreignField: '_id',
+                                as: 'author',
+                            },
+                        },
+                        { $unwind: '$author' },
+                        {
+                            $lookup: {
+                                from: 'answers',
+                                let: { id: '$targetID' },
+                                pipeline: [
+                                    {
+                                        $match: {
+                                            $expr: {
+                                                $eq: [
+                                                    '$$id',
+                                                    '$_id',
+                                                ],
+                                            },
+                                        },
+                                    },
+                                    {
+                                        $lookup: {
+                                            from: 'users',
+                                            localField: 'author',
+                                            foreignField: '_id',
+                                            as: 'author',
+                                        },
+                                    },
+                                    { $unwind: '$author' },
+                                    {
+                                        $lookup: {
+                                            from: 'topics',
+                                            localField: 'topics',
+                                            foreignField: '_id',
+                                            as: 'topics',
+                                        },
+                                    },
+                                    {
+                                        $lookup: {
+                                            from: 'questions',
+                                            let: { id: '$questionID' },
+                                            pipeline: [
+                                                {
+                                                    $match: {
+                                                        $expr: {
+                                                            $eq: [
+                                                                '$$id',
+                                                                '$_id',
+                                                            ],
+                                                        },
+                                                    },
+                                                },
+                                                {
+                                                    $lookup: {
+                                                        from: 'users',
+                                                        localField: 'author',
+                                                        foreignField: '_id',
+                                                        as: 'author',
+                                                    },
+                                                },
+                                                { $unwind: '$author' },
+                                                {
+                                                    $lookup: {
+                                                        from: 'topics',
+                                                        localField: 'topics',
+                                                        foreignField: '_id',
+                                                        as: 'topics',
+                                                    },
+                                                },
+                                            ],
+                                            as: 'question',
+                                        },
+                                    },
+                                    { $unwind: '$question' },
+                                ],
+                                as: 'answer',
+                            },
+                        },
+                        { $unwind: '$answer' },
+                    ]);
+
+                    res
+                        .status(200)
+                        .json(comments[0]);
+                }
+                else {
+                    const comments = await Comment.aggregate([
+                        { $match: { _id: mongoose.Types.ObjectId(commentID) } },
+                        {
+                            $lookup: {
+                                from: 'users',
+                                localField: 'author',
+                                foreignField: '_id',
+                                as: 'author',
+                            },
+                        },
+                        { $unwind: '$author' },
+                        {
+                            $lookup: {
+                                from: 'blogs',
+                                let: { id: '$targetID' },
+                                pipeline: [
+                                    {
+                                        $match: {
+                                            $expr: {
+                                                $eq: [
+                                                    '$$id',
+                                                    '$_id',
+                                                ],
+                                            },
+                                        },
+                                    },
+                                    {
+                                        $lookup: {
+                                            from: 'users',
+                                            localField: 'author',
+                                            foreignField: '_id',
+                                            as: 'author',
+                                        },
+                                    },
+                                    { $unwind: '$author' },
+                                    {
+                                        $lookup: {
+                                            from: 'spaces',
+                                            localField: 'space',
+                                            foreignField: '_id',
+                                            as: 'space',
+                                        },
+                                    },
+                                    { $unwind: '$space' },
+                                ],
+                                as: 'blog',
+                            },
+                        },
+                        { $unwind: '$blog' },
+                    ]);
+
+                    res
+                        .status(200)
+                        .json(comments[0]);
+                }
+            }
+            catch (e) {
+                res
+                    .status(500)
+                    .json({
+                        error: true,
+                        response: e,
+                    });
+            }
+        }
+        else {
+            res
+                .status(404)
+                .json({
+                    error: true,
+                    response: COMMENT_NOT_FOUND,
+                });
+        }
+    });
+
     app.get('/api/v1/comments/:targetID', loginMiddleware, queryMiddleware, async(req, res) => {
         const {
             pagination,

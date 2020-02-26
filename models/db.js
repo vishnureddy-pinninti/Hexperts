@@ -23,3 +23,4 @@ require('./comment');
 require('./topic');
 require('./space');
 require('./blog');
+require('./notification');

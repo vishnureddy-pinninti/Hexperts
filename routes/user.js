@@ -2,10 +2,15 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const Topic = mongoose.model('topics');
 const Space = mongoose.model('spaces');
+const Notification = mongoose.model('notifications');
+const Question = mongoose.model('questions');
+const Answer = mongoose.model('answers');
+const Blog = mongoose.model('blogs');
 
 const { encrypt } = require('../utils/crypto');
 const config = require('../config/keys');
 const loginMiddleware = require('../middlewares/loginMiddleware');
+const queryMiddleware = require('../middlewares/queryMiddleware');
 const {
     errors: {
         USER_NOT_FOUND, TOPIC_NOT_FOUND, SPACE_NOT_FOUND,
@@ -60,6 +65,11 @@ module.exports = (app) => {
                 cookieUser = newUser;
             }
 
+            const notifications = await Notification.find({
+                recipient: mongoose.Types.ObjectId(cookieUser._id),
+                read: false,
+            });
+
             // Create cookie and send the response back
             const d1 = new Date();
             d1.setHours(d1.getHours() + 240);
@@ -72,7 +82,10 @@ module.exports = (app) => {
             res
                 .cookie(config.cookieKey, encrypt(JSON.stringify(cookieUser)), cookieOptions)
                 .status(200)
-                .json(cookieUser);
+                .json({
+                    ...cookieUser,
+                    notificationCount: notifications.length,
+                });
         }
         catch (e) {
             res
@@ -84,23 +97,30 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/user-profile', loginMiddleware, async(req, res) => {
-        const { _id } = req.user;
+    app.get('/api/v1/user-profile/:userID', loginMiddleware, async(req, res) => {
+        const { userID } = req.params;
 
         try {
-            const user = await User.findById(_id);
+            const user = await User.findById(userID);
 
             if (user) {
                 const following = await User.aggregate([
-                    { $match: { 'followers': mongoose.Types.ObjectId(_id) } },
+                    { $match: { 'followers': mongoose.Types.ObjectId(userID) } },
                     { $count: 'following' },
                 ]);
+
+                const questions = await Question.find({ author: mongoose.Types.ObjectId(userID) });
+                const answers = await Answer.find({ author: mongoose.Types.ObjectId(userID) });
+                const blogs = await Blog.find({ author: mongoose.Types.ObjectId(userID) });
 
                 res
                     .status(200)
                     .json({
                         ...user._doc,
                         following: following[0] && following[0].following || 0,
+                        questions: questions.length,
+                        answers: answers.length,
+                        blogs: blogs.length,
                     });
             }
             else {
@@ -171,12 +191,12 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/user-followers', loginMiddleware, async(req, res) => {
-        const { _id } = req.user;
+    app.get('/api/v1/user-followers/:userID', loginMiddleware, async(req, res) => {
+        const { userID } = req.params;
 
         try {
             const userFollowers = await User.aggregate([
-                { $match: { _id: mongoose.Types.ObjectId(_id) } },
+                { $match: { _id: mongoose.Types.ObjectId(userID) } },
                 { $unwind: '$followers' },
                 {
                     $lookup: {
@@ -198,7 +218,7 @@ module.exports = (app) => {
             res
                 .status(200)
                 .json(userFollowers[0] || {
-                    _id,
+                    _id: userID,
                     followers: [],
                 });
         }
@@ -212,11 +232,11 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/user-following', loginMiddleware, async(req, res) => {
-        const { _id } = req.user;
+    app.get('/api/v1/user-following/:userID', loginMiddleware, async(req, res) => {
+        const { userID } = req.params;
 
         try {
-            const usersFollowing = await User.find({ followers: mongoose.Types.ObjectId(_id) });
+            const usersFollowing = await User.find({ followers: mongoose.Types.ObjectId(userID) });
 
             res
                 .status(200)
@@ -406,6 +426,176 @@ module.exports = (app) => {
                         response: USER_NOT_FOUND,
                     });
             }
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
+
+    app.get('/api/v1/user-questions/:userID', loginMiddleware, queryMiddleware, async(req, res) => {
+        const { userID } = req.params;
+        const {
+            pagination,
+        } = req.queryParams;
+
+        try {
+            const questions = await Question.aggregate([
+                { $match: { author: mongoose.Types.ObjectId(userID) } },
+                { $sort: { postedDate: -1 } },
+                {
+                    $lookup: {
+                        from: 'topics',
+                        localField: 'topics',
+                        foreignField: '_id',
+                        as: 'topics',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'answers',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$questionID',
+                                        ],
+                                    },
+                                },
+                            },
+                            { $count: 'answersCount' },
+                        ],
+                        as: 'answers',
+                    },
+                },
+                { $skip: pagination.skip || 0 },
+                { $limit: pagination.limit || 10 },
+            ]);
+
+            res
+                .status(200)
+                .json(questions);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
+
+    app.get('/api/v1/user-answers/:userID', loginMiddleware, queryMiddleware, async(req, res) => {
+        const { userID } = req.params;
+        const {
+            pagination,
+        } = req.queryParams;
+
+        try {
+            const answers = await Answer.aggregate([
+                { $match: { author: mongoose.Types.ObjectId(userID) } },
+                { $sort: { postedDate: -1 } },
+                {
+                    $lookup: {
+                        from: 'questions',
+                        let: { id: '$questionID' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$_id',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'question',
+                    },
+                },
+                { $unwind: '$question' },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'author',
+                        foreignField: '_id',
+                        as: 'author',
+                    },
+                },
+                { $unwind: '$author' },
+                { $skip: pagination.skip || 0 },
+                { $limit: pagination.limit || 10 },
+            ]);
+
+            res
+                .status(200)
+                .json(answers);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
+
+    app.get('/api/v1/user-blogs/:userID', loginMiddleware, queryMiddleware, async(req, res) => {
+        const { userID } = req.params;
+        const {
+            pagination,
+        } = req.queryParams;
+
+        try {
+            const blogs = await Blog.aggregate([
+                { $match: { author: mongoose.Types.ObjectId(userID) } },
+                { $sort: { postedDate: -1 } },
+                {
+                    $lookup: {
+                        from: 'comments',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$targetID',
+                                        ],
+                                    },
+                                },
+                            },
+                            { $count: 'commentsCount' },
+                        ],
+                        as: 'comments',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'author',
+                        foreignField: '_id',
+                        as: 'author',
+                    },
+                },
+                { $unwind: '$author' },
+                { $skip: pagination.skip || 0 },
+                { $limit: pagination.limit || 10 },
+            ]);
+
+            res
+                .status(200)
+                .json(blogs);
         }
         catch (e) {
             res
