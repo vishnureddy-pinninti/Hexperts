@@ -18,7 +18,7 @@ const commentSchema = new Schema({
     },
     target: {
         type: String,
-        default: 'answer',
+        default: 'answers',
     },
     targetID: {
         type: mongoose.Types.ObjectId,

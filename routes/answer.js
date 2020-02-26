@@ -46,6 +46,74 @@ module.exports = (app) => {
         }
     });
 
+    app.get('/api/v1/answers/:answerID', loginMiddleware, async(req, res) => {
+        try {
+            const { answerID } = req.params;
+
+            const answer = await Answer.aggregate([
+                { $match: { _id: mongoose.Types.ObjectId(answerID) } },
+                {
+                    $lookup: {
+                        from: 'questions',
+                        let: { id: '$questionID' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$_id',
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                $lookup: {
+                                    from: 'users',
+                                    localField: 'author',
+                                    foreignField: '_id',
+                                    as: 'author',
+                                },
+                            },
+                            { $unwind: '$author' },
+                            {
+                                $lookup: {
+                                    from: 'topics',
+                                    localField: 'topics',
+                                    foreignField: '_id',
+                                    as: 'topics',
+                                },
+                            },
+                        ],
+                        as: 'question',
+                    },
+                },
+                { $unwind: '$question' },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'author',
+                        foreignField: '_id',
+                        as: 'author',
+                    },
+                },
+                { $unwind: '$author' },
+            ]);
+
+            res
+                .status(200)
+                .json(answer[0]);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
+
     app.put('/api/v1/answers/:answerID', loginMiddleware, async(req, res) => {
         try {
             const { answerID } = req.params;
