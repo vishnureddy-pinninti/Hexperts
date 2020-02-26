@@ -45,6 +45,22 @@ module.exports = (app) => {
                         as: 'interests',
                     },
                 },
+                {
+                    $lookup: {
+                        from: 'topics',
+                        localField: 'expertIn',
+                        foreignField: '_id',
+                        as: 'expertIn',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'spaces',
+                        localField: 'spaces',
+                        foreignField: '_id',
+                        as: 'spaces',
+                    },
+                },
             ]);
 
             let cookieUser;
@@ -101,7 +117,33 @@ module.exports = (app) => {
         const { userID } = req.params;
 
         try {
-            const user = await User.findById(userID);
+            const user = await User.aggregate([
+                { $match: { _id: mongoose.Types.ObjectId(userID) } },
+                {
+                    $lookup: {
+                        from: 'topics',
+                        localField: 'interests',
+                        foreignField: '_id',
+                        as: 'interests',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'topics',
+                        localField: 'expertIn',
+                        foreignField: '_id',
+                        as: 'expertIn',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'spaces',
+                        localField: 'spaces',
+                        foreignField: '_id',
+                        as: 'spaces',
+                    },
+                },
+            ]);
 
             if (user) {
                 const following = await User.aggregate([
@@ -116,7 +158,7 @@ module.exports = (app) => {
                 res
                     .status(200)
                     .json({
-                        ...user._doc,
+                        ...user[0],
                         following: following[0] && following[0].following || 0,
                         questions: questions.length,
                         answers: answers.length,
@@ -360,10 +402,58 @@ module.exports = (app) => {
         }
     });
 
-    app.post('/api/v1/user.update', loginMiddleware, async(req, res) => {
+    app.post('/api/v1/user-preferences.add', loginMiddleware, async(req, res) => {
         const {
-            interests,
+            interests = [],
+            expertIn = [],
         } = req.body;
+
+        const {
+            _id,
+        } = req.user;
+
+        try {
+            const user = await User.findById(_id);
+            const interestedTopics = await Topic.find({ _id: { $in: interests } });
+            const expertInTopics = await Topic.find({ _id: { $in: expertIn } });
+
+            if (user) {
+                interests.forEach((interest) => user.interests.addToSet(interest));
+                expertIn.forEach((expert) => user.expertIn.addToSet(expert));
+
+                await user.save();
+
+                res
+                    .status(200)
+                    .json({
+                        _id,
+                        interests: interestedTopics,
+                        expertIn: expertInTopics,
+                    });
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: USER_NOT_FOUND,
+                    });
+            }
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
+
+    app.delete('/api/v1/user-expertise-remove/:topicID', loginMiddleware, async(req, res) => {
+        const {
+            topicID,
+        } = req.params;
 
         const {
             _id,
@@ -373,13 +463,17 @@ module.exports = (app) => {
             const user = await User.findById(_id);
 
             if (user) {
-                user.interests = interests;
+                user.expertIn = user.expertIn.filter((expertIn) => !expertIn.equals(topicID));
 
                 await user.save();
 
                 res
                     .status(200)
-                    .json(user);
+                    .json({
+                        _id,
+                        topicID,
+                        expertiseRemoved: true,
+                    });
             }
             else {
                 res

@@ -243,7 +243,7 @@ module.exports = (app) => {
 
         if (custom._topics) {
             const fields = custom._topics.split(',');
-            query.interests = { $in: fields.map((field) => mongoose.Types.ObjectId(field)) };
+            query.expertIn = { $in: fields.map((field) => mongoose.Types.ObjectId(field)) };
         }
 
         try {
