@@ -107,7 +107,12 @@ module.exports = (app) => {
                         as: 'author',
                     },
                 },
-                { $unwind: '$author' },
+                {
+                    $unwind: {
+                        path: '$author',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
                 {
                     $lookup: {
                         from: 'users',
@@ -155,7 +160,12 @@ module.exports = (app) => {
                                     as: 'author',
                                 },
                             },
-                            { $unwind: '$author' },
+                            {
+                                $unwind: {
+                                    path: '$author',
+                                    preserveNullAndEmptyArrays: true,
+                                },
+                            },
                             { $addFields: { upvotersCount: { $size: '$upvoters' } } },
                             {
                                 $sort: {
@@ -249,7 +259,12 @@ module.exports = (app) => {
                         as: 'author',
                     },
                 },
-                { $unwind: '$author' },
+                {
+                    $unwind: {
+                        path: '$author',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
                 {
                     $lookup: {
                         from: 'users',
@@ -287,7 +302,12 @@ module.exports = (app) => {
                             as: 'author',
                         },
                     },
-                    { $unwind: '$author' },
+                    {
+                        $unwind: {
+                            path: '$author',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
                     {
                         $lookup: {
                             from: 'users',

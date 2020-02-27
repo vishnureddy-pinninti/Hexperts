@@ -24,7 +24,6 @@ module.exports = (app) => {
                                     },
                                 },
                             },
-                            { $count: 'answersCount' },
                         ],
                         as: 'answers',
                     },
@@ -44,7 +43,6 @@ module.exports = (app) => {
                                     },
                                 },
                             },
-                            { $count: 'blogsCount' },
                         ],
                         as: 'blogs',
                     },
@@ -64,7 +62,6 @@ module.exports = (app) => {
                                     },
                                 },
                             },
-                            { $count: 'commentsCount' },
                         ],
                         as: 'comments',
                     },
@@ -72,22 +69,25 @@ module.exports = (app) => {
                 {
                     $project: {
                         answers: {
-                            $arrayElemAt: [
-                                '$answers',
-                                0,
-                            ],
+                            $cond: {
+                                if: { $isArray: '$answers' },
+                                then: { $size: '$answers' },
+                                else: 0,
+                            },
                         },
                         blogs: {
-                            $arrayElemAt: [
-                                '$blogs',
-                                0,
-                            ],
+                            $cond: {
+                                if: { $isArray: '$blogs' },
+                                then: { $size: '$blogs' },
+                                else: 0,
+                            },
                         },
                         comments: {
-                            $arrayElemAt: [
-                                '$comments',
-                                0,
-                            ],
+                            $cond: {
+                                if: { $isArray: '$comments' },
+                                then: { $size: '$comments' },
+                                else: 0,
+                            },
                         },
                         reputation: 1,
                         name: 1,

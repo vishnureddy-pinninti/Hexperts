@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const Space = mongoose.model('spaces');
-const Blog = mongoose.model('blogs');
-const User = mongoose.model('users');
 
 const { errors: { SPACE_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
@@ -79,69 +77,152 @@ module.exports = (app) => {
         } = req.queryParams;
 
         try {
-            const space = await Space.findById(spaceID);
-
-            if (space) {
-                const blogs = await Blog.aggregate([
-                    { $match: { 'space': mongoose.Types.ObjectId(spaceID) } },
-                    {
-                        $lookup: {
-                            from: 'users',
-                            localField: 'author',
-                            foreignField: '_id',
-                            as: 'author',
-                        },
+            const space = await Space.aggregate([
+                { $match: { _id: mongoose.Types.ObjectId(spaceID) } },
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $in: [
+                                            '$$id',
+                                            '$spaces',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'following',
                     },
-                    { $unwind: '$author' },
-                    { $sort: { postedDate: -1 } },
-                    {
-                        $lookup: {
-                            from: 'comments',
-                            let: { id: '$_id' },
-                            pipeline: [
-                                {
-                                    $match: {
-                                        $expr: {
-                                            $eq: [
-                                                '$$id',
-                                                '$targetID',
-                                            ],
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'author',
+                        foreignField: '_id',
+                        as: 'author',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$author',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'blogs',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$space',
+                                        ],
+                                    },
+                                },
+                            },
+                            { $sort: { postedDate: -1 } },
+                            {
+                                $lookup: {
+                                    from: 'comments',
+                                    let: { id: '$_id' },
+                                    pipeline: [
+                                        {
+                                            $match: {
+                                                $expr: {
+                                                    $eq: [
+                                                        '$$id',
+                                                        '$targetID',
+                                                    ],
+                                                },
+                                            },
+                                        },
+                                    ],
+                                    as: 'comments',
+                                },
+                            },
+                            {
+                                $lookup: {
+                                    from: 'spaces',
+                                    localField: 'space',
+                                    foreignField: '_id',
+                                    as: 'space',
+                                },
+                            },
+                            {
+                                $unwind: {
+                                    path: '$space',
+                                    preserveNullAndEmptyArrays: true,
+                                },
+                            },
+                            {
+                                $lookup: {
+                                    from: 'users',
+                                    localField: 'author',
+                                    foreignField: '_id',
+                                    as: 'author',
+                                },
+                            },
+                            {
+                                $unwind: {
+                                    path: '$author',
+                                    preserveNullAndEmptyArrays: true,
+                                },
+                            },
+                            {
+                                $project: {
+                                    author: 1,
+                                    downvoters: 1,
+                                    lastModified: 1,
+                                    postedDate: 1,
+                                    space: 1,
+                                    title: 1,
+                                    description: 1,
+                                    upvoters: 1,
+                                    comments: {
+                                        $cond: {
+                                            if: { $isArray: '$comments' },
+                                            then: { $size: '$comments' },
+                                            else: 0,
                                         },
                                     },
                                 },
-                                { $count: 'commentsCount' },
-                            ],
-                            as: 'comments',
+                            },
+                            { $skip: pagination.skip || 0 },
+                            { $limit: pagination.limit || 10 },
+                        ],
+                        as: 'blogs',
+                    },
+                },
+                {
+                    $project: {
+                        author: 1,
+                        name: 1,
+                        lastModified: 1,
+                        createdDate: 1,
+                        imageUrl: 1,
+                        description: 1,
+                        blogs: 1,
+                        following: {
+                            $cond: {
+                                if: { $isArray: '$following' },
+                                then: { $size: '$following' },
+                                else: 0,
+                            },
                         },
                     },
-                    // { $unwind: '$comments' },
-                    { $skip: pagination.skip || 0 },
-                    { $limit: pagination.limit || 10 },
-                ]);
+                },
+            ]);
 
-                const followers = await User.aggregate([
-                    { $match: { 'spaces': mongoose.Types.ObjectId(spaceID) } },
-                    { $count: 'following' },
-                ]);
-
-                const response = {
-                    ...space._doc,
-                    blogs,
-                    followers: followers[0] && followers[0].following || 0,
-                };
-
-                res
-                    .status(200)
-                    .json(response);
-            }
-            else {
-                res
-                    .status(404)
-                    .json({
-                        error: true,
-                        response: SPACE_NOT_FOUND,
-                    });
-            }
+            res
+                .status(200)
+                .json(space[0]);
         }
         catch (e) {
             res
