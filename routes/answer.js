@@ -196,7 +196,7 @@ module.exports = (app) => {
             const answer = await Answer.findById(answerID);
 
             if (answer) {
-                const alreadyVoted = voting(answer, _id, 'upvote');
+                const { alreadyVoted, secondaryVoted } = voting(answer, _id, 'upvote');
 
                 await answer.save();
 
@@ -205,7 +205,10 @@ module.exports = (app) => {
                     upvoter: req.user,
                     removeVoting: alreadyVoted,
                 };
-                emailNotify('upvoteAnswer', responseObject);
+                emailNotify('upvoteAnswer', {
+                    ...responseObject,
+                    secondaryVoted,
+                });
 
                 res
                     .status(200)
@@ -241,7 +244,7 @@ module.exports = (app) => {
             const answer = await Answer.findById(answerID);
 
             if (answer) {
-                const alreadyVoted = voting(answer, _id);
+                const { alreadyVoted, secondaryVoted } = voting(answer, _id);
 
                 await answer.save();
 
@@ -250,7 +253,10 @@ module.exports = (app) => {
                     downvoter: req.user,
                     removeVoting: alreadyVoted,
                 };
-                emailNotify('downvoteAnswer', responseObject);
+                emailNotify('downvoteAnswer', {
+                    ...responseObject,
+                    secondaryVoted,
+                });
 
                 res
                     .status(200)

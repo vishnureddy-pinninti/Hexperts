@@ -360,7 +360,7 @@ module.exports = (app) => {
             const comment = await Comment.findById(commentID);
 
             if (comment) {
-                const alreadyVoted = voting(comment, _id, 'upvote');
+                const { alreadyVoted, secondaryVoted } = voting(comment, _id, 'upvote');
 
                 await comment.save();
 
@@ -369,7 +369,10 @@ module.exports = (app) => {
                     upvoter: req.user,
                     removeVoting: alreadyVoted,
                 };
-                emailNotify('upvoteComment', responseObject);
+                emailNotify('upvoteComment', {
+                    ...responseObject,
+                    secondaryVoted,
+                });
 
                 res
                     .status(200)
@@ -405,7 +408,7 @@ module.exports = (app) => {
             const comment = await Comment.findById(commentID);
 
             if (comment) {
-                const alreadyVoted = voting(comment, _id);
+                const { alreadyVoted, secondaryVoted } = voting(comment, _id);
 
                 await comment.save();
 
@@ -414,7 +417,10 @@ module.exports = (app) => {
                     downvoter: req.user,
                     removeVoting: alreadyVoted,
                 };
-                emailNotify('downvoteComment', responseObject);
+                emailNotify('downvoteComment', {
+                    ...responseObject,
+                    secondaryVoted,
+                });
 
                 res
                     .status(200)

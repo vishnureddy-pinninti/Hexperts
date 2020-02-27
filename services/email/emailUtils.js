@@ -53,10 +53,14 @@ const getQuestionFollowers = async(questionID) => {
         },
     ]);
 
-    return [
-        ...question[0].followers,
-        question[0].author,
-    ];
+    if (question.length) {
+        return [
+            ...question[0].followers,
+            question[0].author,
+        ];
+    }
+
+    return [];
 };
 
 const getAuthor = async(id, model) => {
@@ -75,10 +79,13 @@ const getAuthor = async(id, model) => {
     return records[0].author;
 };
 
+const getSpaceFollowers = async(space) => await User.find({ 'space': mongoose.Types.ObjectId(space) });
+
 module.exports = {
     getUserFollowers,
     getTopicFollowers,
     getSuggestedExperts,
     getQuestionFollowers,
     getAuthor,
+    getSpaceFollowers,
 };

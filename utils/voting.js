@@ -3,6 +3,7 @@ const voting = (topic, user, voting) => {
     const secondary = voting === 'upvote' ? 'downvoters' : 'upvoters';
 
     const alreadyVoted = topic[main].find((v) => v.equals(user));
+    const secondaryVoted = topic[secondary].find((v) => v.equals(user));
 
     if (alreadyVoted) {
         topic[main] = topic[main].filter((v) => !v.equals(user));
@@ -15,7 +16,10 @@ const voting = (topic, user, voting) => {
         topic[secondary] = topic[secondary].filter((v) => !v.equals(user));
     }
 
-    return Boolean(alreadyVoted);
+    return {
+        alreadyVoted: Boolean(alreadyVoted),
+        secondaryVoted: Boolean(secondaryVoted),
+    };
 };
 
 module.exports = voting;
