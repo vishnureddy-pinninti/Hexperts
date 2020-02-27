@@ -186,6 +186,52 @@ module.exports = (app) => {
         }
     });
 
+    app.get('/api/v1/trending-questions', loginMiddleware, async(req, res) => {
+        try {
+            const questions = await Answer.aggregate([
+                {
+                    $group: {
+                        _id: '$questionID',
+                        count: { $sum: 1 },
+                    },
+                },
+                { $sort: { count: -1 } },
+                { $limit: 10 },
+                {
+                    $lookup: {
+                        from: 'questions',
+                        localField: '_id',
+                        foreignField: '_id',
+                        as: 'question',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$question',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $project: {
+                        question: '$question.question',
+                    },
+                },
+            ]);
+
+            res
+                .status(200)
+                .json(questions);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
+
     app.get('/api/v1/question/:questionID', loginMiddleware, queryMiddleware, async(req, res) => {
         try {
             const { questionID } = req.params;
