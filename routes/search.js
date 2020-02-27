@@ -27,7 +27,6 @@ module.exports = (app) => {
                                     },
                                 },
                             },
-                            { $count: 'answersCount' },
                         ],
                         as: 'answers',
                     },
@@ -36,7 +35,13 @@ module.exports = (app) => {
                     $project: {
                         question: 1,
                         score: 1,
-                        answers: 1,
+                        answers: {
+                            $cond: {
+                                if: { $isArray: '$answers' },
+                                then: { $size: '$answers' },
+                                else: 0,
+                            },
+                        },
                     },
                 },
             ]);

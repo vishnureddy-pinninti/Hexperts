@@ -143,36 +143,135 @@ module.exports = (app) => {
                         as: 'spaces',
                     },
                 },
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $in: [
+                                            '$$id',
+                                            '$followers',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'following',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'questions',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$author',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'questions',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'answers',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$author',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'answers',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'blogs',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$author',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'blogs',
+                    },
+                },
+                {
+                    $project: {
+                        following: {
+                            $cond: {
+                                if: { $isArray: '$following' },
+                                then: { $size: '$following' },
+                                else: 0,
+                            },
+                        },
+                        followers: {
+                            $cond: {
+                                if: { $isArray: '$followers' },
+                                then: { $size: '$followers' },
+                                else: 0,
+                            },
+                        },
+                        emailSubscription: 1,
+                        name: 1,
+                        email: 1,
+                        jobTitle: 1,
+                        userid: 1,
+                        reputation: 1,
+                        spaces: 1,
+                        expertIn: 1,
+                        interests: 1,
+                        questions: {
+                            $cond: {
+                                if: { $isArray: '$questions' },
+                                then: { $size: '$questions' },
+                                else: 0,
+                            },
+                        },
+                        answers: {
+                            $cond: {
+                                if: { $isArray: '$answers' },
+                                then: { $size: '$answers' },
+                                else: 0,
+                            },
+                        },
+                        blogs: {
+                            $cond: {
+                                if: { $isArray: '$blogs' },
+                                then: { $size: '$blogs' },
+                                else: 0,
+                            },
+                        },
+                    },
+                },
             ]);
 
-            if (user) {
-                const following = await User.aggregate([
-                    { $match: { 'followers': mongoose.Types.ObjectId(userID) } },
-                    { $count: 'following' },
-                ]);
-
-                const questions = await Question.find({ author: mongoose.Types.ObjectId(userID) });
-                const answers = await Answer.find({ author: mongoose.Types.ObjectId(userID) });
-                const blogs = await Blog.find({ author: mongoose.Types.ObjectId(userID) });
-
-                res
-                    .status(200)
-                    .json({
-                        ...user[0],
-                        following: following[0] && following[0].following || 0,
-                        questions: questions.length,
-                        answers: answers.length,
-                        blogs: blogs.length,
-                    });
-            }
-            else {
-                res
-                    .status(404)
-                    .json({
-                        error: true,
-                        response: USER_NOT_FOUND,
-                    });
-            }
+            res
+                .status(200)
+                .json(user[0]);
         }
         catch (e) {
             res
@@ -239,7 +338,6 @@ module.exports = (app) => {
         try {
             const userFollowers = await User.aggregate([
                 { $match: { _id: mongoose.Types.ObjectId(userID) } },
-                { $unwind: '$followers' },
                 {
                     $lookup: {
                         from: 'users',
@@ -248,21 +346,16 @@ module.exports = (app) => {
                         as: 'followers',
                     },
                 },
-                { $unwind: '$followers' },
                 {
-                    $group: {
-                        _id: '$_id',
-                        followers: { $push: '$followers' },
+                    $project: {
+                        followers: 1,
                     },
                 },
             ]);
 
             res
                 .status(200)
-                .json(userFollowers[0] || {
-                    _id: userID,
-                    followers: [],
-                });
+                .json(userFollowers[0]);
         }
         catch (e) {
             res
@@ -278,11 +371,14 @@ module.exports = (app) => {
         const { userID } = req.params;
 
         try {
-            const usersFollowing = await User.find({ followers: mongoose.Types.ObjectId(userID) });
+            const following = await User.find({ followers: mongoose.Types.ObjectId(userID) });
 
             res
                 .status(200)
-                .json(usersFollowing);
+                .json({
+                    _id: userID,
+                    following,
+                });
         }
         catch (e) {
             res
@@ -564,18 +660,53 @@ module.exports = (app) => {
                                     },
                                 },
                             },
-                            { $count: 'answersCount' },
                         ],
                         as: 'answers',
                     },
                 },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'author',
+                        foreignField: '_id',
+                        as: 'author',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$author',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
                 { $skip: pagination.skip || 0 },
                 { $limit: pagination.limit || 10 },
+                {
+                    $project: {
+                        author: 1,
+                        followers: 1,
+                        lastModified: 1,
+                        postedDate: 1,
+                        suggestedExperts: 1,
+                        topics: 1,
+                        question: 1,
+                        description: 1,
+                        answers: {
+                            $cond: {
+                                if: { $isArray: '$answers' },
+                                then: { $size: '$answers' },
+                                else: 0,
+                            },
+                        },
+                    },
+                },
             ]);
 
             res
                 .status(200)
-                .json(questions);
+                .json({
+                    _id: userID,
+                    questions,
+                });
         }
         catch (e) {
             res
@@ -616,7 +747,12 @@ module.exports = (app) => {
                         as: 'question',
                     },
                 },
-                { $unwind: '$question' },
+                {
+                    $unwind: {
+                        path: '$question',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
                 {
                     $lookup: {
                         from: 'users',
@@ -625,14 +761,34 @@ module.exports = (app) => {
                         as: 'author',
                     },
                 },
-                { $unwind: '$author' },
+                {
+                    $unwind: {
+                        path: '$author',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
                 { $skip: pagination.skip || 0 },
                 { $limit: pagination.limit || 10 },
+                {
+                    $project: {
+                        answer: 1,
+                        author: 1,
+                        downvoters: 1,
+                        lastModified: 1,
+                        postedDate: 1,
+                        upvoters: 1,
+                        questionID: '$question._id',
+                        question: '$question.question',
+                    },
+                },
             ]);
 
             res
                 .status(200)
-                .json(answers);
+                .json({
+                    _id: userID,
+                    answers,
+                });
         }
         catch (e) {
             res
@@ -669,7 +825,6 @@ module.exports = (app) => {
                                     },
                                 },
                             },
-                            { $count: 'commentsCount' },
                         ],
                         as: 'comments',
                     },
@@ -682,14 +837,55 @@ module.exports = (app) => {
                         as: 'author',
                     },
                 },
-                { $unwind: '$author' },
+                {
+                    $unwind: {
+                        path: '$author',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'spaces',
+                        localField: 'space',
+                        foreignField: '_id',
+                        as: 'space',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$space',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
                 { $skip: pagination.skip || 0 },
                 { $limit: pagination.limit || 10 },
+                {
+                    $project: {
+                        author: 1,
+                        downvoters: 1,
+                        lastModified: 1,
+                        postedDate: 1,
+                        space: 1,
+                        title: 1,
+                        description: 1,
+                        upvoters: 1,
+                        comments: {
+                            $cond: {
+                                if: { $isArray: '$comments' },
+                                then: { $size: '$comments' },
+                                else: 0,
+                            },
+                        },
+                    },
+                },
             ]);
 
             res
                 .status(200)
-                .json(blogs);
+                .json({
+                    _id: userID,
+                    blogs,
+                });
         }
         catch (e) {
             res

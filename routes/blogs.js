@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Space = mongoose.model('spaces');
 const Blog = mongoose.model('blogs');
-const Comment = mongoose.model('comments');
 
 const { errors: { BLOG_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
@@ -73,7 +72,12 @@ module.exports = (app) => {
                         as: 'author',
                     },
                 },
-                { $unwind: '$author' },
+                {
+                    $unwind: {
+                        path: '$author',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
                 {
                     $lookup: {
                         from: 'spaces',
@@ -97,13 +101,31 @@ module.exports = (app) => {
                                     },
                                 },
                             },
-                            { $count: 'commentsCount' },
                         ],
                         as: 'comments',
                     },
                 },
                 { $skip: pagination.skip || 0 },
                 { $limit: pagination.limit || 10 },
+                {
+                    $project: {
+                        author: 1,
+                        downvoters: 1,
+                        lastModified: 1,
+                        postedDate: 1,
+                        space: 1,
+                        title: 1,
+                        description: 1,
+                        upvoters: 1,
+                        comments: {
+                            $cond: {
+                                if: { $isArray: '$comments' },
+                                then: { $size: '$comments' },
+                                else: 0,
+                            },
+                        },
+                    },
+                },
             ]);
 
             res
@@ -134,7 +156,12 @@ module.exports = (app) => {
                         as: 'author',
                     },
                 },
-                { $unwind: '$author' },
+                {
+                    $unwind: {
+                        path: '$author',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
                 {
                     $lookup: {
                         from: 'users',
@@ -159,27 +186,55 @@ module.exports = (app) => {
                         as: 'space',
                     },
                 },
-                { $unwind: '$space' },
+                {
+                    $unwind: {
+                        path: '$space',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'comments',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$targetID',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'comments',
+                    },
+                },
+                {
+                    $project: {
+                        author: 1,
+                        downvoters: 1,
+                        lastModified: 1,
+                        postedDate: 1,
+                        space: 1,
+                        title: 1,
+                        description: 1,
+                        upvoters: 1,
+                        comments: {
+                            $cond: {
+                                if: { $isArray: '$comments' },
+                                then: { $size: '$comments' },
+                                else: 0,
+                            },
+                        },
+                    },
+                },
             ]);
 
-            if (blog.length) {
-                const comments = await Comment.find({ targetID: mongoose.Types.ObjectId(blogID) });
-
-                res
-                    .status(200)
-                    .json({
-                        ...blog[0],
-                        commentsCount: comments.length,
-                    });
-            }
-            else {
-                res
-                    .status(404)
-                    .json({
-                        error: true,
-                        response: BLOG_NOT_FOUND,
-                    });
-            }
+            res
+                .status(200)
+                .json(blog[0]);
         }
         catch (e) {
             res

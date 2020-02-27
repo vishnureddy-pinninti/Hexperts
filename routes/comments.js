@@ -68,7 +68,12 @@ module.exports = (app) => {
                                 as: 'author',
                             },
                         },
-                        { $unwind: '$author' },
+                        {
+                            $unwind: {
+                                path: '$author',
+                                preserveNullAndEmptyArrays: true,
+                            },
+                        },
                         {
                             $lookup: {
                                 from: 'answers',
@@ -92,7 +97,12 @@ module.exports = (app) => {
                                             as: 'author',
                                         },
                                     },
-                                    { $unwind: '$author' },
+                                    {
+                                        $unwind: {
+                                            path: '$author',
+                                            preserveNullAndEmptyArrays: true,
+                                        },
+                                    },
                                     {
                                         $lookup: {
                                             from: 'topics',
@@ -124,7 +134,12 @@ module.exports = (app) => {
                                                         as: 'author',
                                                     },
                                                 },
-                                                { $unwind: '$author' },
+                                                {
+                                                    $unwind: {
+                                                        path: '$author',
+                                                        preserveNullAndEmptyArrays: true,
+                                                    },
+                                                },
                                                 {
                                                     $lookup: {
                                                         from: 'topics',
@@ -137,12 +152,36 @@ module.exports = (app) => {
                                             as: 'question',
                                         },
                                     },
-                                    { $unwind: '$question' },
+                                    {
+                                        $unwind: {
+                                            path: '$question',
+                                            preserveNullAndEmptyArrays: true,
+                                        },
+                                    },
                                 ],
                                 as: 'answer',
                             },
                         },
-                        { $unwind: '$answer' },
+                        {
+                            $unwind: {
+                                path: '$answer',
+                                preserveNullAndEmptyArrays: true,
+                            },
+                        },
+                        {
+                            $project: {
+                                question: '$answer.question',
+                                answer: '$answer',
+                                comment: 1,
+                                author: 1,
+                                downvoters: 1,
+                                lastModified: 1,
+                                postedDate: 1,
+                                target: 1,
+                                targetID: 1,
+                                upvoters: 1,
+                            },
+                        },
                     ]);
 
                     res
@@ -160,7 +199,12 @@ module.exports = (app) => {
                                 as: 'author',
                             },
                         },
-                        { $unwind: '$author' },
+                        {
+                            $unwind: {
+                                path: '$author',
+                                preserveNullAndEmptyArrays: true,
+                            },
+                        },
                         {
                             $lookup: {
                                 from: 'blogs',
@@ -184,7 +228,12 @@ module.exports = (app) => {
                                             as: 'author',
                                         },
                                     },
-                                    { $unwind: '$author' },
+                                    {
+                                        $unwind: {
+                                            path: '$author',
+                                            preserveNullAndEmptyArrays: true,
+                                        },
+                                    },
                                     {
                                         $lookup: {
                                             from: 'spaces',
@@ -193,12 +242,22 @@ module.exports = (app) => {
                                             as: 'space',
                                         },
                                     },
-                                    { $unwind: '$space' },
+                                    {
+                                        $unwind: {
+                                            path: '$space',
+                                            preserveNullAndEmptyArrays: true,
+                                        },
+                                    },
                                 ],
                                 as: 'blog',
                             },
                         },
-                        { $unwind: '$blog' },
+                        {
+                            $unwind: {
+                                path: '$blog',
+                                preserveNullAndEmptyArrays: true,
+                            },
+                        },
                     ]);
 
                     res
@@ -243,7 +302,12 @@ module.exports = (app) => {
                         as: 'author',
                     },
                 },
-                { $unwind: '$author' },
+                {
+                    $unwind: {
+                        path: '$author',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
                 {
                     $lookup: {
                         from: 'users',
