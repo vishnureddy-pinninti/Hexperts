@@ -1,20 +1,29 @@
 const email = require('./email');
 const emailMap = require('./emailMap');
 const notificationService = require('../notifications/notificationService');
+const reputationService = require('../reputation/reputationService');
 
 const emailService = async(type, data, options) => {
     const {
-        email: {
-            template,
-            locals,
-            recipients,
-            user,
-        },
+        email: emailData,
         notification,
+        reputation,
     } = await emailMap[type](data,
         options);
 
+
+    const {
+        template,
+        locals,
+        recipients,
+        user,
+    } = emailData;
+
     notificationService(notification);
+
+    if (reputation) {
+        reputationService(reputation);
+    }
 
     const mailOptions = {
         template,

@@ -22,6 +22,10 @@ const userSchema = new Schema({
         type: Boolean,
         default: true,
     },
+    reputation: {
+        type: Number,
+        default: 0,
+    },
 });
 
 mongoose.model('users', userSchema);

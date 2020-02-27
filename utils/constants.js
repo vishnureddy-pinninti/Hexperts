@@ -11,4 +11,15 @@ module.exports = {
         UNAUTHORIZED: 'UNAUTHORIZED',
         USER_NOT_FOUND: 'User Not Found',
     },
+    scores: {
+        NEW_ANSWER: 10,
+        UPVOTE_ANSWER: 2,
+        DOWNVOTE_ANSWER: -1,
+        NEW_BLOG: 10,
+        UPVOTE_BLOG: 2,
+        DOWNVOTE_BLOG: -1,
+        NEW_COMMENT: 0,
+        UPVOTE_COMMENT: 0,
+        DOWNVOTE_COMMENT: 0,
+    },
 };

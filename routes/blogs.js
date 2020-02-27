@@ -7,6 +7,7 @@ const { errors: { BLOG_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const voting = require('../utils/voting');
+const emailNotify = require('../services/email/emailService');
 
 module.exports = (app) => {
     app.post('/api/v1/blog.add', loginMiddleware, async(req, res) => {
@@ -35,6 +36,8 @@ module.exports = (app) => {
                 author: req.user,
                 space: chosenSpace,
             };
+
+            emailNotify('newBlog', responseObject);
 
             res
                 .status(201)
@@ -281,7 +284,7 @@ module.exports = (app) => {
             const blog = await Blog.findById(blogID);
 
             if (blog) {
-                const alreadyVoted = voting(blog, _id, 'upvote');
+                const { alreadyVoted, secondaryVoted } = voting(blog, _id, 'upvote');
 
                 await blog.save();
 
@@ -290,6 +293,11 @@ module.exports = (app) => {
                     upvoter: req.user,
                     removeVoting: alreadyVoted,
                 };
+
+                emailNotify('upvoteBlog', {
+                    ...responseObject,
+                    secondaryVoted,
+                });
 
                 res
                     .status(200)
@@ -325,7 +333,7 @@ module.exports = (app) => {
             const blog = await Blog.findById(blogID);
 
             if (blog) {
-                const alreadyVoted = voting(blog, _id);
+                const { alreadyVoted, secondaryVoted } = voting(blog, _id);
 
                 await blog.save();
 
@@ -334,6 +342,11 @@ module.exports = (app) => {
                     downvoter: req.user,
                     removeVoting: alreadyVoted,
                 };
+
+                emailNotify('downvoteBlog', {
+                    ...responseObject,
+                    secondaryVoted,
+                });
 
                 res
                     .status(200)
