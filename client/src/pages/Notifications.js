@@ -4,10 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
-import Topics from '../components/topic/TopicsList';
 import { requestUserQuestions } from '../store/actions/questions';
-import TopCreators from '../components/answer/TopCreators';
-import AskQuestionCard from '../components/question/AskQuestionCard';
 
 function Home(props) {
     const {
@@ -46,29 +43,15 @@ function Home(props) {
 
     return (
         <div
-            className="App">
+            className="App"
+            style={ { backgroundColor: '#fafafa' } }>
             <Container fixed>
                 <Grid
                     container
                     style={ { marginTop: 70 } }
                     justify="center"
                     spacing={ 3 }>
-                    <Grid
-                        item
-                        xs={ 2 }>
-                        <Topics />
-                    </Grid>
-                    <Grid
-                        item
-                        xs={ 7 }>
-                        <AskQuestionCard user={ user } />
-                        { renderQuestions() }
-                    </Grid>
-                    <Grid
-                        item
-                        xs={ 3 }>
-                        <TopCreators />
-                    </Grid>
+                    Notifications
                 </Grid>
             </Container>
         </div>

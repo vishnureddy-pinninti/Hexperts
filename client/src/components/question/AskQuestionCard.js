@@ -13,8 +13,8 @@ import QuestionModal from '../base/QuestionModal';
 const useStyles = makeStyles((theme) => {
     return {
         root: {
-            marginTop: 10,
             marginBottom: 10,
+            border: '1px solid #efefef',
         },
         bullet: {
             display: 'inline-block',
@@ -66,7 +66,9 @@ function AskQuestionCard(props) {
     }, [ pending ]);
 
     return (
-        <Card className={ classes.root }>
+        <Card
+            className={ classes.root }
+            elevation={ 0 }>
             <CardHeader
                 avatar={
                     <Avatar

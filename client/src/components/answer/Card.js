@@ -20,12 +20,13 @@ const useStyles = makeStyles((theme) => {
     return {
         root: {
             marginTop: 10,
+            border: '1px solid #efefef',
         },
         headerRoot: {
         },
-        media: {
-            height: 0,
-            paddingTop: '56.25%', // 16:9
+        topics: {
+            display: 'flex',
+            flexDirection: 'row',
         },
         expand: {
             transform: 'rotate(0deg)',
@@ -47,6 +48,14 @@ const useStyles = makeStyles((theme) => {
                 textDecoration: 'underline',
             },
         },
+        topicLink: {
+            textDecoration: 'none',
+            color: 'inherit',
+            '&:hover': {
+                textDecoration: 'underline',
+            },
+            paddingLeft: 10,
+        },
         more: {
             textDecoration: 'none',
             '&:hover': {
@@ -65,6 +74,7 @@ const AnswerCard = (props) => {
         answer,
         hideHeader,
         author: { name, jobTitle },
+        topics,
     } = props;
 
     const renderAnswer = (answer) => (
@@ -86,30 +96,42 @@ const AnswerCard = (props) => {
         </ReadMore>
     );
 
+    const renderTopics = () => topics.map((topic) => (
+        <Link
+            key={ topic._id }
+            className={ classes.topicLink }
+            to={ `/topic/${topic._id}` }>
+            { topic.topic }
+        </Link>
+    ));
+
     return (
         <Card
             className={ classes.root }
-            elevation={ 3 }>
-            { !hideHeader
-            && <CardContent>
-                <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p">
-                    Answer - Recommended for you
-                </Typography>
-                <Typography>
-                    <Link
-                        to={ `/question/${questionId}` }
-                        className={ classes.link }>
-                        <Box
-                            fontWeight="fontWeightBold"
-                            fontSize={ 20 }>
-                            { question }
-                        </Box>
-                    </Link>
-                </Typography>
-            </CardContent> }
+            elevation={ 0 }>
+            {
+                !hideHeader && <CardContent>
+                    <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        className={ classes.topics }
+                        component="p">
+                        Answer -
+                        { renderTopics() }
+                    </Typography>
+                    <Typography>
+                        <Link
+                            to={ `/question/${questionId}` }
+                            className={ classes.link }>
+                            <Box
+                                fontWeight="fontWeightBold"
+                                fontSize={ 20 }>
+                                { question }
+                            </Box>
+                        </Link>
+                    </Typography>
+                </CardContent>
+            }
             <CardHeader
                 className={ classes.headerRoot }
                 avatar={

@@ -7,6 +7,8 @@ export const RECEIVE_QUESTION_BY_ID = 'RECEIVE_QUESTION_BY_ID';
 export const ADD_QUESTION_PENDING = 'ADD_QUESTION_PENDING';
 export const FOLLOW_QUESTION = 'FOLLOW_QUESTION';
 export const RECEIVE_FOLLOWED_QUESTION = 'RECEIVE_FOLLOWED_QUESTION';
+export const EDIT_QUESTION = 'EDIT_QUESTION';
+export const RECEIVE_EDITED_QUESTION = 'RECEIVE_EDITED_QUESTION';
 
 const receiveUserQuestions = (questions) => {
     return {
@@ -85,6 +87,25 @@ export const followQuestion = (postData) => {
             method: 'POST',
             body: postData,
             success: receiveFollowedQuestion,
+        },
+    };
+};
+
+const receiveEditedQuestion = (question) => {
+    return {
+        type: RECEIVE_EDITED_QUESTION,
+        question,
+    };
+};
+
+export const editQuestion = (id, postData) => {
+    return {
+        type: EDIT_QUESTION,
+        makeApiRequest: {
+            url: `/api/v1/question/${id}`,
+            method: 'PUT',
+            body: postData,
+            success: receiveEditedQuestion,
         },
     };
 };
