@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { UserAgentApplication } from 'msal';
 import { connect } from 'react-redux';
-
-import Router from '../routing/Router';
-import config from '../utils/config';
-import { getUserDetails } from '../services/authService';
 import SignIn from '../pages/SignIn';
+import { getUserDetails } from '../services/authService';
+import config from '../utils/config';
+import Router from '../routing/Router';
+
 import { requestUserSession } from '../store/actions/auth';
 
 class App extends Component {

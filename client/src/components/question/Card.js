@@ -28,6 +28,7 @@ const useStyles = makeStyles({
     root: {
         overflow: 'visible',
         marginTop: 10,
+        border: '1px solid #efefef',
     },
     media: {
 
@@ -111,7 +112,9 @@ const QuestionSection = (props) => {
     };
 
     return (
-        <Card className={ classes.root }>
+        <Card
+            className={ classes.root }
+            elevation={ 0 }>
             <CardContent>
                 <Typography
                     variant="body2"

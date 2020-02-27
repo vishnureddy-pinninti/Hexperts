@@ -2,13 +2,10 @@ import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
-import TopBar from '../components/base/TopBar';
-import Drawer from '../components/base/Drawer';
 import Questions from '../components/base/Questions';
 import QuestionSection from '../components/question/QuestionSection';
 import Answer from '../components/answer/Card';
 import { requestQuestionById } from '../store/actions/questions';
-
 
 function Question(props) {
     const [
@@ -18,9 +15,11 @@ function Question(props) {
 
     const {
         match: {
-            params: { questionId },
+            params: { questionId 
+},
         },
         requestQuestion,
+        onLogout,
     } = props;
 
     useEffect(() => {
@@ -29,14 +28,6 @@ function Question(props) {
         questionId,
         requestQuestion,
     ]);
-
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
 
     const renderAnswers = () => question.answers.results.map((answer) => (
         <Answer
@@ -50,21 +41,19 @@ function Question(props) {
     const { question } = props;
     return (
         <div className="App">
-            <TopBar handleDrawerOpen={ handleDrawerOpen } />
-            <Drawer
-                open={ open }
-                handleDrawerClose={ handleDrawerClose } />
             <Container fixed>
                 <Grid
                     container
                     justify="center"
+                    style={ { marginTop: 70 } }
                     spacing={ 3 }>
                     <Grid
                         item
                         xs={ 8 }>
                         { question && <QuestionSection
                             question={ question.question }
-                            id={ question._id } /> }
+                            id={ question._id }
+                            topics={ question.topics } /> }
                         { question && question.answers && renderAnswers() }
                     </Grid>
                     <Grid

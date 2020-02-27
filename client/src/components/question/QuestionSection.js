@@ -45,6 +45,7 @@ const QuestionSection = (props) => {
         description,
         pending,
         followQuestion,
+        topics,
     } = props;
 
     const [
@@ -103,6 +104,7 @@ const QuestionSection = (props) => {
             <CardContent>
                 <QuestionTags
                     question={ question }
+                    topics={ topics }
                     id={ id } />
                 <Typography
                     variant="h5"

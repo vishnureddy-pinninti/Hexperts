@@ -9,7 +9,7 @@ import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
+import Grid from '@material-ui/core/Grid';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
@@ -18,6 +18,9 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import HomeIcon from '@material-ui/icons/Home';
+import EditIcon from '@material-ui/icons/Edit';
+import GroupIcon from '@material-ui/icons/Group';
 import QuestionModal from './QuestionModal';
 
 
@@ -28,6 +31,9 @@ const useStyles = makeStyles((theme) => {
         },
         menuButton: {
             marginRight: theme.spacing(2),
+        },
+        toolbar: {
+            alignItems: 'center',
         },
         title: {
             display: 'none',
@@ -42,8 +48,16 @@ const useStyles = makeStyles((theme) => {
             textDecoration: 'none',
             color: 'inherit',
         },
-        tagline: {
+        logo: {
             display: 'inline-block',
+            fontWeight: 'bold',
+            color: theme.palette.primary.dark,
+        },
+        menu: {
+            display: 'inline-block',
+            '& > *': {
+                margin: theme.spacing(1),
+            },
         },
         search: {
             position: 'relative',
@@ -59,6 +73,7 @@ const useStyles = makeStyles((theme) => {
                 marginLeft: theme.spacing(3),
                 width: 'auto',
             },
+            border: '2px solid #e2e2e2',
         },
         searchIcon: {
             width: theme.spacing(7),
@@ -147,6 +162,15 @@ const TopBar = (props) => {
         }
     }, [ pending ]);
 
+    const [
+        value,
+        setValue,
+    ] = React.useState(2);
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
     const menuId = 'primary-search-account-menu';
 
     const renderMenu = (
@@ -165,8 +189,7 @@ const TopBar = (props) => {
             open={ isMenuOpen }
             onClose={ handleMenuClose }>
             <MenuItem onClick={ handleMenuClose }>Profile</MenuItem>
-            <MenuItem onClick={ handleMenuClose }>My account</MenuItem>
-            <MenuItem onClick={ props.handleLogout }>Logout</MenuItem>
+            <MenuItem onClick={ props.onLogout }>Logout</MenuItem>
         </Menu>
     );
 
@@ -229,97 +252,125 @@ const TopBar = (props) => {
             handleClose={ handleQuestionModalClose } />
     );
 
-    const { handleDrawerOpen } = props;
-
     return (
         <div className={ classes.grow }>
             <AppBar
-                position="static">
-                <Toolbar>
-                    <IconButton
-                        edge="start"
-                        className={ classes.menuButton }
-                        color="inherit"
-                        onClick={ handleDrawerOpen }
-                        aria-label="open drawer">
-                        <MenuIcon />
-                    </IconButton>
-                    <div className={ classes.inline }>
-                        <Typography
-                            variant="h6"
-                            color="inherit"
-                            noWrap>
-                            <Link
-                                to="/"
-                                className={ classes.link }>
-                                { /* <img
-                                    width={ 20 }
-                                    src={ logo }
-                                    alt="" /> */ }
-                                <span className={ classes.tagline }>Hexagon</span>
-                            </Link>
-                        </Typography>
-                    </div>
-                    <div className={ classes.grow } />
-                    <div className={ classes.search }>
-                        <div className={ classes.searchIcon }>
-                            <SearchIcon />
-                        </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={ {
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            } }
-                            inputProps={ { 'aria-label': 'search' } } />
-                    </div>
-                    <div className={ classes.sectionDesktop }>
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            color="inherit"
-                            onClick={ handleClickQuestionModalOpen }>
-                            Ask Question
-                        </Button>
-                        <IconButton
-                            aria-label="show 4 new mails"
-                            color="inherit">
-                            <Badge
-                                badgeContent={ 4 }
-                                color="secondary">
-                                <MailIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            aria-label="show 17 new notifications"
-                            color="inherit">
-                            <Badge
-                                badgeContent={ 17 }
-                                color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={ menuId }
-                            aria-haspopup="true"
-                            onClick={ handleProfileMenuOpen }
-                            color="inherit">
-                            <AccountCircle />
-                        </IconButton>
-                    </div>
-                    <div className={ classes.sectionMobile }>
-                        <IconButton
-                            aria-label="show more"
-                            aria-controls={ mobileMenuId }
-                            aria-haspopup="true"
-                            onClick={ handleMobileMenuOpen }
-                            color="inherit">
-                            <MoreIcon />
-                        </IconButton>
-                    </div>
-                </Toolbar>
+                position="fixed"
+                elevation={ 1 }
+                color="default">
+                <Grid
+                    container
+                    justify="center">
+                    <Grid
+                        item
+                        xs={ 9 }>
+                        <Toolbar>
+                            <div className={ classes.inline }>
+                                <Typography
+                                    variant="h6"
+                                    color="inherit"
+                                    noWrap>
+                                    <Link
+                                        to="/"
+                                        className={ classes.link }>
+                                        { /* <img
+                                            src="/hexagon.jpg"
+                                            className={ classes.logo }
+                                            width={ 180 }
+                                            alt="logo" /> */ }
+                                        <span className={ classes.logo }>HexagonQA</span>
+                                    </Link>
+                                </Typography>
+                            </div>
+                            <div className={ classes.grow } />
+                            <div className={ classes.menu }>
+                                <Link
+                                    to="/"
+                                    className={ classes.link }>
+                                    <Button
+                                        startIcon={ <HomeIcon /> }>
+                                        Home
+                                    </Button>
+                                </Link>
+                                <Link
+                                    to="/answer"
+                                    className={ classes.link }>
+                                    <Badge
+                                        badgeContent={ 2 }
+                                        color="secondary">
+                                        <Button
+                                            startIcon={ <EditIcon /> }>
+                                            Answer
+                                        </Button>
+                                    </Badge>
+                                </Link>
+                                <Link
+                                    to="/spaces"
+                                    className={ classes.link }>
+                                    <Button
+                                        startIcon={ <GroupIcon /> }>
+                                        Spaces
+                                    </Button>
+                                </Link>
+                                <Link
+                                    to="/notifications"
+                                    className={ classes.link }>
+                                    <Badge
+                                        badgeContent={ 17 }
+                                        color="secondary">
+                                        <Button
+                                            startIcon={ <NotificationsIcon /> }>
+                                            Notifications
+                                        </Button>
+                                    </Badge>
+                                </Link>
+                            </div>
+                            <div className={ classes.grow } />
+                            <div className={ classes.search }>
+                                <div className={ classes.searchIcon }>
+                                    <SearchIcon />
+                                </div>
+                                <InputBase
+                                    placeholder="Search…"
+                                    classes={ {
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    } }
+                                    inputProps={ { 'aria-label': 'search' } } />
+                            </div>
+                            <div className={ classes.inline }>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="primary"
+                                    onClick={ handleClickQuestionModalOpen }>
+                                    Ask Question
+                                </Button>
+                            </div>
+                            <div className={ classes.sectionDesktop }>
+                                <IconButton
+                                    edge="end"
+                                    aria-label="account of current user"
+                                    aria-controls={ menuId }
+                                    aria-haspopup="true"
+                                    onClick={ handleProfileMenuOpen }
+                                    color="inherit">
+                                    <AccountCircle />
+                                </IconButton>
+                            </div>
+                            <div className={ classes.sectionMobile }>
+                                <IconButton
+                                    aria-label="show more"
+                                    aria-controls={ mobileMenuId }
+                                    aria-haspopup="true"
+                                    onClick={ handleMobileMenuOpen }
+                                    color="inherit">
+                                    <MoreIcon />
+                                </IconButton>
+                            </div>
+                        </Toolbar>
+                    </Grid>
+                </Grid>
             </AppBar>
             { renderMobileMenu }
             { renderMenu }

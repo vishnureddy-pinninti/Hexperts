@@ -1,25 +1,33 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
+import { connect } from 'react-redux';
+import Topics from '../components/topic/TopicsList';
+import TopicSection from '../components/topic/TopicSection';
+
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
-import Topics from '../components/topic/TopicsList';
-import { requestUserQuestions } from '../store/actions/questions';
-import TopCreators from '../components/answer/TopCreators';
-import AskQuestionCard from '../components/question/AskQuestionCard';
+import { requestTopicById } from '../store/actions/topic';
 
-function Home(props) {
+
+function Topic(props) {
     const {
-        requestUserQuestions,
-        user,
+        match: {
+            params: { topicID 
+},
+        },
+        requestTopic,
         onLogout,
-        questions,
     } = props;
 
     useEffect(() => {
-        requestUserQuestions();
-    }, [ requestUserQuestions ]);
+        requestTopic(topicID);
+    }, [
+        requestTopic,
+        topicID,
+    ]);
+
+    const { topic, topic: { questions } } = props;
 
     const renderQuestions = () => questions.map((question) => {
         if (question.answers && question.answers.length){
@@ -44,14 +52,14 @@ function Home(props) {
         );
     });
 
+
     return (
-        <div
-            className="App">
+        <div className="App">
             <Container fixed>
                 <Grid
                     container
-                    style={ { marginTop: 70 } }
                     justify="center"
+                    style={ { marginTop: 70 } }
                     spacing={ 3 }>
                     <Grid
                         item
@@ -61,14 +69,14 @@ function Home(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        <AskQuestionCard user={ user } />
-                        { renderQuestions() }
+                        <TopicSection
+                            topic={ topic }
+                            id={ topicID } />
+                        { questions && renderQuestions() }
                     </Grid>
                     <Grid
                         item
-                        xs={ 3 }>
-                        <TopCreators />
-                    </Grid>
+                        xs={ 3 } />
                 </Grid>
             </Container>
         </div>
@@ -77,17 +85,16 @@ function Home(props) {
 
 const mapStateToProps = (state) => {
     return {
-        questions: state.questions.questions,
-        user: state.user.user,
+        topic: state.topic.topic,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestUserQuestions: () => {
-            dispatch(requestUserQuestions());
+        requestTopic: (topicID) => {
+            dispatch(requestTopicById(topicID));
         },
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Topic);
