@@ -100,6 +100,8 @@ module.exports = (app) => {
                                 },
                             },
                             { $sort: { postedDate: -1 } },
+                            { $skip: pagination.skip || 0 },
+                            { $limit: pagination.limit || 10 },
                             {
                                 $lookup: {
                                     from: 'answers',
@@ -123,7 +125,12 @@ module.exports = (app) => {
                                                 as: 'author',
                                             },
                                         },
-                                        { $unwind: '$author' },
+                                        {
+                                            $unwind: {
+                                                path: '$author',
+                                                preserveNullAndEmptyArrays: true,
+                                            },
+                                        },
                                         { $addFields: { upvotersCount: { $size: '$upvoters' } } },
                                         {
                                             $sort: {
@@ -136,8 +143,28 @@ module.exports = (app) => {
                                     as: 'answers',
                                 },
                             },
-                            { $skip: pagination.skip || 0 },
-                            { $limit: pagination.limit || 10 },
+                            {
+                                $lookup: {
+                                    from: 'users',
+                                    localField: 'author',
+                                    foreignField: '_id',
+                                    as: 'author',
+                                },
+                            },
+                            {
+                                $unwind: {
+                                    path: '$author',
+                                    preserveNullAndEmptyArrays: true,
+                                },
+                            },
+                            {
+                                $lookup: {
+                                    from: 'topics',
+                                    localField: 'topics',
+                                    foreignField: '_id',
+                                    as: 'topics',
+                                },
+                            },
                         ],
                         as: 'questions',
                     },
