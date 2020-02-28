@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { withStyles, useTheme, makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -7,7 +8,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import TextField from '@material-ui/core/TextField';
-import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,6 +15,8 @@ import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
+import CheckCircleOutlinedIcon from '@material-ui/icons/CheckCircleOutlined';
+import Checkbox from '@material-ui/core/Checkbox';
 import { addNewTopic, requestTopics } from '../../store/actions/topic';
 import { editQuestion } from '../../store/actions/questions';
 
@@ -26,15 +28,26 @@ const useStyles = makeStyles((theme) => {
             flexWrap: 'wrap',
             justifyContent: 'space-around',
             overflow: 'hidden',
+
         },
         gridList: {
-
+            width: 700,
+            height: 500,
         },
         icon: {
             color: 'rgba(255, 255, 255, 0.54)',
         },
         title: {
             color: 'white',
+        },
+        textfield: {
+            marginBottom: 30,
+        },
+        checkbox: {
+            color: 'white',
+            '&$checked': {
+                color: 'red',
+            },
         },
     };
 });
@@ -50,6 +63,19 @@ const validate = (values) => {
     return errors;
 };
 
+const WhiteCheckbox = withStyles({
+    root: {
+        color: 'white',
+        '&$checked': {
+            color: 'white',
+        },
+    },
+    checked: {},
+})((props) => (
+    <Checkbox
+        color="default"
+        { ...props } />
+));
 
 const FollowTopicsModal = (props) => {
     const classes = useStyles();
@@ -67,21 +93,32 @@ const FollowTopicsModal = (props) => {
         editQuestion,
     } = props;
 
-    const renderTextField = ({ input }) => (
+
+    const [
+        filteredTopics,
+        setFilteredTopics,
+    ] = React.useState(topics);
+
+    const filterTopics = (text) => {
+        const filtered = topics.filter((topic) => topic.topic.toLowerCase().startsWith(text.toLowerCase()));
+        setFilteredTopics(filtered);
+    };
+
+    const renderTextField = () => (
         <TextField
-            { ...input }
             margin="dense"
             id="name"
-            label="Topic"
+            label="Search Topics"
             type="text"
             className={ classes.textfield }
-            required
+            onChange={ (event) => filterTopics(event.target.value) }
             fullWidth />
     );
 
     const onAddNewTopic = (values) => {
         addNewTopic({ topics: [ values.topic ] });
     };
+
 
     useEffect(() => {
         requestTopics();
@@ -112,7 +149,8 @@ const FollowTopicsModal = (props) => {
         setChecked(newChecked);
     };
 
-    const onTopicSelect = (obj, value) => {
+
+    const selectTopic = (value) => {
         if (value){
             const currentIndex = checked.indexOf(value._id);
             const newChecked = [ ...checked ];
@@ -124,19 +162,23 @@ const FollowTopicsModal = (props) => {
                     value,
                 ]);
             }
+            else {
+                newChecked.splice(currentIndex, 1);
+            }
             setChecked(newChecked);
         }
     };
 
-    const addTopicsToQuestion = () => {
-        editQuestion(questionID, { topics: checked });
+    const addTopicsToInterests = () => {
+        console.log(checked);
+        // editQuestion(questionID, { topics: checked });
     };
 
     const renderTopics = () => (
         <div className={ classes.root }>
             <GridList
                 className={ classes.gridList }>
-                { topics.map((topic) => (
+                { filteredTopics.map((topic) => (
                     <GridListTile key={ topic._id }>
                         <img
                             src={ topic.imageUrl }
@@ -148,9 +190,18 @@ const FollowTopicsModal = (props) => {
                                 title: classes.title,
                             } }
                             actionIcon={
-                                <IconButton aria-label={ `star ${topic.topic}` }>
-                                    <CheckCircleRoundedIcon className={ classes.title } />
+                                <IconButton
+                                    aria-label={ `star ${topic.topic}` }
+                                    onClick={ () => { selectTopic(topic); } }>
+                                    <WhiteCheckbox
+                                        icon={ <CheckCircleOutlinedIcon /> }
+                                        checkedIcon={ <CheckCircleRoundedIcon /> }
+                                        checked={ checked.indexOf(topic._id) !== -1 }
+                                        className={ classes.checkbox } />
+                                    { /* <CheckCircleRoundedIcon className={ classes.title } /> */ }
                                 </IconButton>
+
+
                             } />
                     </GridListTile>
                 )) }
@@ -162,7 +213,6 @@ const FollowTopicsModal = (props) => {
         <Dialog
             className={ classes.root }
             fullScreen={ fullScreen }
-            style={ { minWidth: 1000 } }
             open={ props.open }
             onClose={ props.handleClose }
             aria-labelledby="responsive-dialog-title">
@@ -171,6 +221,10 @@ const FollowTopicsModal = (props) => {
                 Topics
             </DialogTitle>
             <DialogContent>
+                <DialogContentText>
+                    Follow topics of your interest and we will give you feed when new question or answer is posted.
+                </DialogContentText>
+                { renderTextField() }
                 { renderTopics() }
             </DialogContent>
             <DialogActions>
@@ -182,7 +236,7 @@ const FollowTopicsModal = (props) => {
                 </Button>
                 <Button
                     color="primary"
-                    onClick={ addTopicsToQuestion }
+                    onClick={ addTopicsToInterests }
                     type="submit">
                     Done
                 </Button>
