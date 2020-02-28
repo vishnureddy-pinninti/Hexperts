@@ -40,8 +40,8 @@ export default (state = initialState, action) => {
             };
         case RECEIVE_QUESTION_BY_ID:
             return {
-                question: action.question,
                 ...state,
+                question: action.question,
                 pending: false,
             };
         case RECEIVE_FOLLOWED_QUESTION:

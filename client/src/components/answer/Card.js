@@ -4,7 +4,6 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import ChatBubbleOutlineRoundedIcon from '@material-ui/icons/ChatBubbleOutlineRounded';
@@ -15,6 +14,7 @@ import Box from '@material-ui/core/Box';
 import { Link } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
 import ReadMore from '../base/ReadMore';
+import Avatar from '../base/Avatar';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -73,7 +73,11 @@ const AnswerCard = (props) => {
         questionId,
         answer,
         hideHeader,
-        author: { name, jobTitle },
+        author: {
+ name,
+ jobTitle,
+ mail 
+},
         topics,
     } = props;
 
@@ -138,6 +142,7 @@ const AnswerCard = (props) => {
                     <Avatar
                         aria-label="recipe"
                         alt={ name }
+                        user={ mail }
                         className={ classes.avatar }>
                         { name.match(/\b(\w)/g).join('') }
                     </Avatar>
