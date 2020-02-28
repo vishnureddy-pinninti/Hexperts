@@ -242,6 +242,42 @@ module.exports = (app) => {
         }
     });
 
+    app.get('/api/v1/related-questions', loginMiddleware, queryMiddleware, async(req, res) => {
+        const {
+            custom,
+        } = req.queryParams;
+
+        const query = {};
+
+        if (custom._topics) {
+            const fields = custom._topics.split(',');
+            query.topics = { $in: fields.map((field) => mongoose.Types.ObjectId(field)) };
+        }
+        try {
+            const questions = await Question.aggregate([
+                { $match: query },
+                { $limit: 10 },
+                {
+                    $project: {
+                        question: 1,
+                    },
+                },
+            ]);
+
+            res
+                .status(200)
+                .json(questions);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: e,
+                });
+        }
+    });
+
     app.get('/api/v1/question/:questionID', loginMiddleware, queryMiddleware, async(req, res) => {
         try {
             const { questionID } = req.params;
