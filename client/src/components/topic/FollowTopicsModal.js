@@ -88,11 +88,16 @@ const FollowTopicsModal = (props) => {
         question,
         questionID,
         topics,
-        topicsList,
+        followedTopics,
         requestTopics,
         editQuestion,
+        open,
     } = props;
 
+
+    useEffect(() => {
+        requestTopics();
+    }, [ requestTopics ]);
 
     const [
         filteredTopics,
@@ -119,11 +124,6 @@ const FollowTopicsModal = (props) => {
         addNewTopic({ topics: [ values.topic ] });
     };
 
-
-    useEffect(() => {
-        requestTopics();
-    }, [ requestTopics ]);
-
     const [
         checked,
         setChecked,
@@ -133,7 +133,6 @@ const FollowTopicsModal = (props) => {
         selectedTopics,
         setSelectedTopics,
     ] = React.useState(topics);
-
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value._id);
@@ -248,7 +247,7 @@ const FollowTopicsModal = (props) => {
 const mapStateToProps = (state) => {
     return {
         user: state.user,
-        topicsList: state.topic.topics,
+        topics: state.topic.topics,
     };
 };
 
@@ -267,6 +266,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default reduxForm({
-    form: 'topic', // a unique identifier for this form
+    form: 'followtopics', // a unique identifier for this form
     validate,
 })(connect(mapStateToProps, mapDispatchToProps)(FollowTopicsModal));

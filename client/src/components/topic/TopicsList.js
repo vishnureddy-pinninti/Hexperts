@@ -87,7 +87,7 @@ function TopicList(props) {
                 color="primary" />
             <FollowTopicsModal
                 open={ openFollowTopicsModal }
-                topics={ topics }
+                followedTopics={ topics }
                 handleClose={ handleEditTopicsModalClose } />
         </div>
     );

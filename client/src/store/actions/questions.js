@@ -11,6 +11,8 @@ export const EDIT_QUESTION = 'EDIT_QUESTION';
 export const RECEIVE_EDITED_QUESTION = 'RECEIVE_EDITED_QUESTION';
 export const REQUEST_TRENDING_QUESTIONS = 'REQUEST_TRENDING_QUESTIONS';
 export const RECEIVE_TRENDING_QUESTIONS = 'RECEIVE_TRENDING_QUESTIONS';
+export const REQUEST_RELATED_QUESTIONS = 'REQUEST_RELATED_QUESTIONS';
+export const RECEIVE_RELATED_QUESTIONS = 'RECEIVE_RELATED_QUESTIONS';
 
 const receiveUserQuestions = (questions) => {
     return {
@@ -44,6 +46,24 @@ export const requestTrendingQuestions = () => {
             url: '/api/v1/trending-questions',
             method: 'GET',
             success: receiveTrendingQuestions,
+        },
+    };
+};
+
+const receiveRelatedQuestions = (questions) => {
+    return {
+        type: RECEIVE_RELATED_QUESTIONS,
+        questions,
+    };
+};
+
+export const requestRelatedQuestions = (topics) => {
+    return {
+        type: REQUEST_RELATED_QUESTIONS,
+        makeApiRequest: {
+            url: `/api/v1/related-questions?topics=${topics}`,
+            method: 'GET',
+            success: receiveRelatedQuestions,
         },
     };
 };
