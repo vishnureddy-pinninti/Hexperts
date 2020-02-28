@@ -54,9 +54,12 @@ const useStyles = makeStyles((theme) => {
             color: theme.palette.primary.dark,
         },
         menu: {
-            display: 'inline-block',
             '& > *': {
                 margin: theme.spacing(1),
+            },
+            display: 'none',
+            [theme.breakpoints.up('md')]: {
+                display: 'flex',
             },
         },
         search: {
@@ -213,13 +216,29 @@ const TopBar = (props) => {
                 <IconButton
                     aria-label="show 4 new mails"
                     color="inherit">
+                    <HomeIcon />
+                </IconButton>
+                <p>Home</p>
+            </MenuItem>
+            <MenuItem>
+                <IconButton
+                    aria-label="show 4 new mails"
+                    color="inherit">
                     <Badge
-                        badgeContent={ 4 }
+                        badgeContent={ 11 }
                         color="secondary">
-                        <MailIcon />
+                        <EditIcon />
                     </Badge>
                 </IconButton>
-                <p>Messages</p>
+                <p>Answert</p>
+            </MenuItem>
+            <MenuItem>
+                <IconButton
+                    aria-label="show 4 new mails"
+                    color="inherit">
+                    <GroupIcon />
+                </IconButton>
+                <p>Spaces</p>
             </MenuItem>
             <MenuItem>
                 <IconButton
@@ -262,8 +281,7 @@ const TopBar = (props) => {
                     container
                     justify="center">
                     <Grid
-                        item
-                        xs={ 9 }>
+                        item>
                         <Toolbar>
                             <div className={ classes.inline }>
                                 <Typography
@@ -282,7 +300,6 @@ const TopBar = (props) => {
                                     </Link>
                                 </Typography>
                             </div>
-                            <div className={ classes.grow } />
                             <div className={ classes.menu }>
                                 <Link
                                     to="/"
@@ -325,7 +342,6 @@ const TopBar = (props) => {
                                     </Badge>
                                 </Link>
                             </div>
-                            <div className={ classes.grow } />
                             <div className={ classes.search }>
                                 <div className={ classes.searchIcon }>
                                     <SearchIcon />

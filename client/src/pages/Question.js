@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Questions from '../components/question/QuestionsList';
 import QuestionSection from '../components/question/QuestionSection';
 import Answer from '../components/answer/Card';
-import { requestQuestionById } from '../store/actions/questions';
+import { requestQuestionById, requestRelatedQuestions } from '../store/actions/questions';
 
 function Question(props) {
     const [
@@ -19,14 +19,21 @@ function Question(props) {
 },
         },
         requestQuestion,
-        onLogout,
+        requestRelatedQuestions,
+        question,
+ relatedQuestions
     } = props;
+
+    const topics = question && question.topics.map((topic) => topic._id).join(',');
 
     useEffect(() => {
         requestQuestion(questionId);
+        requestRelatedQuestions(topics);
     }, [
         questionId,
         requestQuestion,
+        requestRelatedQuestions,
+        topics,
     ]);
 
     const renderAnswers = () => question.answers.results.map((answer) => (
@@ -38,7 +45,6 @@ function Question(props) {
             answer={ answer } />
     ));
 
-    const { question } = props;
     return (
         <div className="App">
             <Container fixed>
@@ -61,7 +67,7 @@ function Question(props) {
                         xs={ 4 }>
                         <Questions
                             title="Related Questions"
-                            questions={ [] } />
+                            questions={ relatedQuestions } />
                     </Grid>
                 </Grid>
             </Container>
@@ -72,6 +78,7 @@ function Question(props) {
 const mapStateToProps = (state) => {
     return {
         question: state.questions.question,
+        relatedQuestions: state.questions.relatedQuestions,
     };
 };
 
@@ -79,6 +86,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         requestQuestion: (questionId) => {
             dispatch(requestQuestionById(questionId));
+        },
+        requestRelatedQuestions: (topics) => {
+            dispatch(requestRelatedQuestions(topics));
         },
     };
 };

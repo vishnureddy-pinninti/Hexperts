@@ -3,13 +3,15 @@ import { RECEIVE_USER_QUESTIONS,
     RECEIVE_QUESTION_BY_ID,
     ADD_QUESTION_PENDING,
     RECEIVE_FOLLOWED_QUESTION,
-    RECEIVE_TRENDING_QUESTIONS } from '../actions/questions';
+    RECEIVE_TRENDING_QUESTIONS,
+    RECEIVE_RELATED_QUESTIONS } from '../actions/questions';
 import { RECEIVE_ADDED_ANSWER } from '../actions/answer';
 
 const initialState = {
     questions: [],
     pending: true,
     trendingQuestions: [],
+    relatedQuestions: [],
 };
 
 export default (state = initialState, action) => {
@@ -24,6 +26,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 trendingQuestions: action.questions,
+            };
+        case RECEIVE_RELATED_QUESTIONS:
+            return {
+                ...state,
+                relatedQuestions: action.questions,
             };
         case RECEIVE_ADDED_QUESTION:
             return {

@@ -54,7 +54,7 @@ function Home(props) {
     return (
         <div
             className="App">
-            <Container fixed>
+            <Container>
                 <Grid
                     container
                     style={ { marginTop: 70 } }
