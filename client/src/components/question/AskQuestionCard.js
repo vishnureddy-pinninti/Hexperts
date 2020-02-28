@@ -3,11 +3,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { connect } from 'react-redux';
 import { red } from '@material-ui/core/colors';
+import Avatar from '../base/Avatar';
 import QuestionModal from '../base/QuestionModal';
 
 const useStyles = makeStyles((theme) => {

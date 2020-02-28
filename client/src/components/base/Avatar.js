@@ -10,15 +10,18 @@ class Avatar extends Component {
     render() {
         const { image } = this.state;
         return (
-            <MuiAvatar alt="Avatar Image" src={ image } />
+            <MuiAvatar
+                { ...this.props }
+                alt="Avatar Image"
+                src={ image } />
         );
     }
 
     async componentDidMount() {
         const { user } = this.props;
-        let image = await authService.getImage(user);
+        const image = await authService.getImage(user);
         this.setState({
-            image
+            image,
         });
     }
 }
