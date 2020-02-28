@@ -11,7 +11,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Grid from '@material-ui/core/Grid';
 import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
@@ -22,6 +21,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import EditIcon from '@material-ui/icons/Edit';
 import GroupIcon from '@material-ui/icons/Group';
 import QuestionModal from './QuestionModal';
+import Avatar from './Avatar';
 
 
 const useStyles = makeStyles((theme) => {
@@ -239,7 +239,7 @@ const TopBar = (props) => {
                     aria-controls="primary-search-account-menu"
                     aria-haspopup="true"
                     color="inherit">
-                    <AccountCircle />
+                    <Avatar />
                 </IconButton>
                 <p>Profile</p>
             </MenuItem>
@@ -355,7 +355,7 @@ const TopBar = (props) => {
                                     aria-haspopup="true"
                                     onClick={ handleProfileMenuOpen }
                                     color="inherit">
-                                    <AccountCircle />
+                                    <Avatar />
                                 </IconButton>
                             </div>
                             <div className={ classes.sectionMobile }>

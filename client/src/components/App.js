@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { UserAgentApplication } from 'msal';
 import { connect } from 'react-redux';
 import SignIn from '../pages/SignIn';
-import { getUserDetails } from '../services/authService';
+import { authService } from '../services/authService';
 import config from '../utils/config';
 import Router from '../routing/Router';
 
@@ -68,7 +68,7 @@ class App extends Component {
 
             if (accessToken) {
             // Get the user's profile from Graph
-                const user = await getUserDetails(accessToken);
+                const user = await authService.getUserDetails(accessToken);
                 this.props.requestUserSession(user);
             }
         }
