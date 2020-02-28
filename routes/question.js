@@ -99,6 +99,8 @@ module.exports = (app) => {
             const questions = await Question.aggregate([
                 { $match: { $and: aggregationMatch } },
                 { $sort: { postedDate: -1 } },
+                { $skip: pagination.skip || 0 },
+                { $limit: pagination.limit || 10 },
                 {
                     $lookup: {
                         from: 'users',
@@ -178,8 +180,6 @@ module.exports = (app) => {
                         as: 'answers',
                     },
                 },
-                { $skip: pagination.skip || 0 },
-                { $limit: pagination.limit || 10 },
             ]);
 
             res

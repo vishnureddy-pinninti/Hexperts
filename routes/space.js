@@ -128,6 +128,8 @@ module.exports = (app) => {
                                 },
                             },
                             { $sort: { postedDate: -1 } },
+                            { $skip: pagination.skip || 0 },
+                            { $limit: pagination.limit || 10 },
                             {
                                 $lookup: {
                                     from: 'comments',
@@ -194,8 +196,6 @@ module.exports = (app) => {
                                     },
                                 },
                             },
-                            { $skip: pagination.skip || 0 },
-                            { $limit: pagination.limit || 10 },
                         ],
                         as: 'blogs',
                     },

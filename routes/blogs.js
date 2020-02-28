@@ -64,6 +64,8 @@ module.exports = (app) => {
             const blogs = await Blog.aggregate([
                 { $match: { 'space': { $in: spaces.map((space) => mongoose.Types.ObjectId(space)) } } },
                 { $sort: { postedDate: -1 } },
+                { $skip: pagination.skip || 0 },
+                { $limit: pagination.limit || 10 },
                 {
                     $lookup: {
                         from: 'users',
@@ -105,8 +107,6 @@ module.exports = (app) => {
                         as: 'comments',
                     },
                 },
-                { $skip: pagination.skip || 0 },
-                { $limit: pagination.limit || 10 },
                 {
                     $project: {
                         author: 1,
