@@ -1,16 +1,30 @@
-import { RECEIVE_USER_QUESTIONS, RECEIVE_ADDED_QUESTION, RECEIVE_QUESTION_BY_ID, ADD_QUESTION_PENDING, RECEIVE_FOLLOWED_QUESTION } from '../actions/questions';
+import { RECEIVE_USER_QUESTIONS,
+    RECEIVE_ADDED_QUESTION,
+    RECEIVE_QUESTION_BY_ID,
+    ADD_QUESTION_PENDING,
+    RECEIVE_FOLLOWED_QUESTION,
+    RECEIVE_TRENDING_QUESTIONS } from '../actions/questions';
 import { RECEIVE_ADDED_ANSWER } from '../actions/answer';
 
 const initialState = {
     questions: [],
     pending: true,
+    trendingQuestions: [],
 };
 
 export default (state = initialState, action) => {
     let answers = [];
     switch (action.type) {
         case RECEIVE_USER_QUESTIONS:
-            return { questions: action.questions };
+            return {
+                ...state,
+                questions: action.questions,
+            };
+        case RECEIVE_TRENDING_QUESTIONS:
+            return {
+                ...state,
+                trendingQuestions: action.questions,
+            };
         case RECEIVE_ADDED_QUESTION:
             return {
                 questions: [

@@ -9,6 +9,8 @@ export const FOLLOW_QUESTION = 'FOLLOW_QUESTION';
 export const RECEIVE_FOLLOWED_QUESTION = 'RECEIVE_FOLLOWED_QUESTION';
 export const EDIT_QUESTION = 'EDIT_QUESTION';
 export const RECEIVE_EDITED_QUESTION = 'RECEIVE_EDITED_QUESTION';
+export const REQUEST_TRENDING_QUESTIONS = 'REQUEST_TRENDING_QUESTIONS';
+export const RECEIVE_TRENDING_QUESTIONS = 'RECEIVE_TRENDING_QUESTIONS';
 
 const receiveUserQuestions = (questions) => {
     return {
@@ -16,12 +18,6 @@ const receiveUserQuestions = (questions) => {
         questions,
     };
 };
-
-export function addQuestionPending() {
-    return {
-        type: ADD_QUESTION_PENDING,
-    };
-}
 
 export const requestUserQuestions = () => {
     return {
@@ -33,6 +29,30 @@ export const requestUserQuestions = () => {
         },
     };
 };
+
+const receiveTrendingQuestions = (questions) => {
+    return {
+        type: RECEIVE_TRENDING_QUESTIONS,
+        questions,
+    };
+};
+
+export const requestTrendingQuestions = () => {
+    return {
+        type: REQUEST_TRENDING_QUESTIONS,
+        makeApiRequest: {
+            url: '/api/v1/trending-questions',
+            method: 'GET',
+            success: receiveTrendingQuestions,
+        },
+    };
+};
+
+export function addQuestionPending() {
+    return {
+        type: ADD_QUESTION_PENDING,
+    };
+}
 
 const receiveAddedQuestion = (question) => {
     return {

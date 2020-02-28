@@ -5,21 +5,28 @@ import Container from '@material-ui/core/Container';
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
 import Topics from '../components/topic/TopicsList';
-import { requestUserQuestions } from '../store/actions/questions';
+import { requestUserQuestions, requestTrendingQuestions } from '../store/actions/questions';
 import TopCreators from '../components/answer/TopCreators';
 import AskQuestionCard from '../components/question/AskQuestionCard';
+import QuestionsList from '../components/question/QuestionsList';
 
 function Home(props) {
     const {
         requestUserQuestions,
+        requestTrendingQuestions,
         user,
         onLogout,
         questions,
+        trendingQuestions,
     } = props;
 
     useEffect(() => {
         requestUserQuestions();
-    }, [ requestUserQuestions ]);
+        requestTrendingQuestions();
+    }, [
+        requestTrendingQuestions,
+        requestUserQuestions,
+    ]);
 
     const renderQuestions = () => questions.map((question) => {
         if (question.answers && question.answers.length){
@@ -68,6 +75,9 @@ function Home(props) {
                         item
                         xs={ 3 }>
                         <TopCreators />
+                        <QuestionsList
+                            title="Trending Questions"
+                            questions={ trendingQuestions } />
                     </Grid>
                 </Grid>
             </Container>
@@ -79,6 +89,7 @@ const mapStateToProps = (state) => {
     return {
         questions: state.questions.questions,
         user: state.user.user,
+        trendingQuestions: state.questions.trendingQuestions,
     };
 };
 
@@ -86,6 +97,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         requestUserQuestions: () => {
             dispatch(requestUserQuestions());
+        },
+        requestTrendingQuestions: () => {
+            dispatch(requestTrendingQuestions());
         },
     };
 };

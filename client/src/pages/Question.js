@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
-import Questions from '../components/base/Questions';
+import Questions from '../components/question/QuestionsList';
 import QuestionSection from '../components/question/QuestionSection';
 import Answer from '../components/answer/Card';
 import { requestQuestionById } from '../store/actions/questions';
@@ -59,7 +59,9 @@ function Question(props) {
                     <Grid
                         item
                         xs={ 4 }>
-                        <Questions title="Related Questions" />
+                        <Questions
+                            title="Related Questions"
+                            questions={ [] } />
                     </Grid>
                 </Grid>
             </Container>
