@@ -637,6 +637,8 @@ module.exports = (app) => {
             const questions = await Question.aggregate([
                 { $match: { author: mongoose.Types.ObjectId(userID) } },
                 { $sort: { postedDate: -1 } },
+                { $skip: pagination.skip || 0 },
+                { $limit: pagination.limit || 10 },
                 {
                     $lookup: {
                         from: 'topics',
@@ -678,8 +680,6 @@ module.exports = (app) => {
                         preserveNullAndEmptyArrays: true,
                     },
                 },
-                { $skip: pagination.skip || 0 },
-                { $limit: pagination.limit || 10 },
                 {
                     $project: {
                         author: 1,
@@ -728,6 +728,8 @@ module.exports = (app) => {
             const answers = await Answer.aggregate([
                 { $match: { author: mongoose.Types.ObjectId(userID) } },
                 { $sort: { postedDate: -1 } },
+                { $skip: pagination.skip || 0 },
+                { $limit: pagination.limit || 10 },
                 {
                     $lookup: {
                         from: 'questions',
@@ -767,8 +769,6 @@ module.exports = (app) => {
                         preserveNullAndEmptyArrays: true,
                     },
                 },
-                { $skip: pagination.skip || 0 },
-                { $limit: pagination.limit || 10 },
                 {
                     $project: {
                         answer: 1,
@@ -810,6 +810,8 @@ module.exports = (app) => {
             const blogs = await Blog.aggregate([
                 { $match: { author: mongoose.Types.ObjectId(userID) } },
                 { $sort: { postedDate: -1 } },
+                { $skip: pagination.skip || 0 },
+                { $limit: pagination.limit || 10 },
                 {
                     $lookup: {
                         from: 'comments',
@@ -857,8 +859,6 @@ module.exports = (app) => {
                         preserveNullAndEmptyArrays: true,
                     },
                 },
-                { $skip: pagination.skip || 0 },
-                { $limit: pagination.limit || 10 },
                 {
                     $project: {
                         author: 1,
