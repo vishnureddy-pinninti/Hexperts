@@ -45,6 +45,7 @@ const QuestionSection = (props) => {
         description,
         pending,
         followQuestion,
+        answers,
         topics,
     } = props;
 
@@ -115,7 +116,7 @@ const QuestionSection = (props) => {
                     variant="body2"
                     color="textSecondary"
                     component="p">
-                    { description }
+                    { answers ? `${answers.totalCount} answers` : 'No answers yet' }
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>

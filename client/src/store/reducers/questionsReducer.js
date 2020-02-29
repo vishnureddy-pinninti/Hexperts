@@ -4,18 +4,23 @@ import { RECEIVE_USER_QUESTIONS,
     ADD_QUESTION_PENDING,
     RECEIVE_FOLLOWED_QUESTION,
     RECEIVE_TRENDING_QUESTIONS,
-    RECEIVE_RELATED_QUESTIONS } from '../actions/questions';
+    EDIT_QUESTION_PENDING,
+    RECEIVE_RELATED_QUESTIONS,
+    RECEIVE_EDITED_QUESTION } from '../actions/questions';
 import { RECEIVE_ADDED_ANSWER } from '../actions/answer';
 
 const initialState = {
     questions: [],
     pending: true,
+    newQuestion: {},
+    question: null,
     trendingQuestions: [],
     relatedQuestions: [],
 };
 
 export default (state = initialState, action) => {
     let answers = [];
+    let question = {};
     switch (action.type) {
         case RECEIVE_USER_QUESTIONS:
             return {
@@ -34,6 +39,8 @@ export default (state = initialState, action) => {
             };
         case RECEIVE_ADDED_QUESTION:
             return {
+                ...state,
+                newQuestion: action.question,
                 questions: [
                     action.question,
                     ...state.questions,
@@ -45,9 +52,21 @@ export default (state = initialState, action) => {
                 ...state,
                 pending: true,
             };
+        case EDIT_QUESTION_PENDING:
+            return {
+                ...state,
+                pending: true,
+            };
+        case RECEIVE_EDITED_QUESTION:
+            return {
+                ...state,
+                pending: false,
+                question: action.question,
+            };
         case RECEIVE_QUESTION_BY_ID:
             return {
                 ...state,
+                newQuestion: {},
                 question: action.question,
                 pending: false,
             };
@@ -56,12 +75,9 @@ export default (state = initialState, action) => {
                 ...state,
             };
         case RECEIVE_ADDED_ANSWER:
-            if (state.question.answers){
+            if (state.question && state.question.answers && state.question.answers.results){
                 answers = [ ...state.question.answers.results ];
-            }
-            return {
-                ...state,
-                question: {
+                question = {
                     ...state.question,
                     answers: {
                         results: [
@@ -69,7 +85,11 @@ export default (state = initialState, action) => {
                             ...answers,
                         ],
                     },
-                },
+                };
+            }
+            return {
+                ...state,
+                question,
             };
         default:
             return state;

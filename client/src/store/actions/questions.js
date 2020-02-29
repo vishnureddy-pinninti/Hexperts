@@ -8,6 +8,7 @@ export const ADD_QUESTION_PENDING = 'ADD_QUESTION_PENDING';
 export const FOLLOW_QUESTION = 'FOLLOW_QUESTION';
 export const RECEIVE_FOLLOWED_QUESTION = 'RECEIVE_FOLLOWED_QUESTION';
 export const EDIT_QUESTION = 'EDIT_QUESTION';
+export const EDIT_QUESTION_PENDING = 'EDIT_QUESTION_PENDING';
 export const RECEIVE_EDITED_QUESTION = 'RECEIVE_EDITED_QUESTION';
 export const REQUEST_TRENDING_QUESTIONS = 'REQUEST_TRENDING_QUESTIONS';
 export const RECEIVE_TRENDING_QUESTIONS = 'RECEIVE_TRENDING_QUESTIONS';
@@ -130,6 +131,12 @@ export const followQuestion = (postData) => {
         },
     };
 };
+
+export function editQuestionPending() {
+    return {
+        type: EDIT_QUESTION_PENDING,
+    };
+}
 
 const receiveEditedQuestion = (question) => {
     return {

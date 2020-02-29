@@ -15,11 +15,12 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import HomeIcon from '@material-ui/icons/Home';
 import EditIcon from '@material-ui/icons/Edit';
 import GroupIcon from '@material-ui/icons/Group';
+import Snackbar from '@material-ui/core/Snackbar';
 import QuestionModal from './QuestionModal';
 import Avatar from './Avatar';
 
@@ -157,13 +158,31 @@ const TopBar = (props) => {
         setOpenQModal(false);
     };
 
-    const { pending } = props;
+    const {
+        pending,
+        location,
+        history,
+        newQuestion,
+        answerPending,
+    } = props;
 
     useEffect(() => {
         if (!pending) {
             setOpenQModal(pending);
         }
     }, [ pending ]);
+
+
+    useEffect(() => {
+        if (!pending && newQuestion && newQuestion._id) {
+            history.push(`/question/${newQuestion._id}`);
+        }
+    }, [
+        history,
+        newQuestion,
+        newQuestion._id,
+        pending,
+    ]);
 
     const [
         value,
@@ -276,7 +295,7 @@ const TopBar = (props) => {
             <AppBar
                 position="fixed"
                 elevation={ 1 }
-                color="default">
+                color="inherit">
                 <Grid
                     container
                     justify="center">
@@ -391,6 +410,9 @@ const TopBar = (props) => {
             { renderMobileMenu }
             { renderMenu }
             { renderQuestionModal }
+            <Snackbar
+                open={ newQuestion._id }
+                message="Adding Question" />
         </div>
     );
 };
@@ -403,6 +425,8 @@ const mapStateToProps = (state) => {
     return {
         user: state.user,
         pending: state.questions.pending,
+        answerPending: state.answer.pending,
+        newQuestion: state.questions.newQuestion,
     };
 };
 
@@ -411,4 +435,4 @@ const mapDispatchToProps = () => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TopBar);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TopBar));

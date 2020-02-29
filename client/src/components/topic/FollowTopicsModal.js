@@ -19,6 +19,7 @@ import CheckCircleOutlinedIcon from '@material-ui/icons/CheckCircleOutlined';
 import Checkbox from '@material-ui/core/Checkbox';
 import { addNewTopic, requestTopics } from '../../store/actions/topic';
 import { editQuestion } from '../../store/actions/questions';
+import { addUserPreferences, addPreferencesPending } from '../../store/actions/auth';
 
 
 const useStyles = makeStyles((theme) => {
@@ -91,6 +92,7 @@ const FollowTopicsModal = (props) => {
         followedTopics,
         requestTopics,
         editQuestion,
+        addUserPreferences,
         open,
     } = props;
 
@@ -103,6 +105,10 @@ const FollowTopicsModal = (props) => {
         filteredTopics,
         setFilteredTopics,
     ] = React.useState(topics);
+
+    useEffect(() => {
+        setFilteredTopics(topics);
+    }, [ topics ]);
 
     const filterTopics = (text) => {
         const filtered = topics.filter((topic) => topic.topic.toLowerCase().startsWith(text.toLowerCase()));
@@ -170,7 +176,7 @@ const FollowTopicsModal = (props) => {
 
     const addTopicsToInterests = () => {
         console.log(checked);
-        // editQuestion(questionID, { topics: checked });
+        addUserPreferences({ interests: checked });
     };
 
     const renderTopics = () => (
@@ -180,7 +186,7 @@ const FollowTopicsModal = (props) => {
                 { filteredTopics.map((topic) => (
                     <GridListTile key={ topic._id }>
                         <img
-                            src={ topic.imageUrl }
+                            src={ topic.imageUrl || '/placeholder.png' }
                             alt={ topic.topic } />
                         <GridListTileBar
                             title={ topic.topic }
@@ -197,10 +203,7 @@ const FollowTopicsModal = (props) => {
                                         checkedIcon={ <CheckCircleRoundedIcon /> }
                                         checked={ checked.indexOf(topic._id) !== -1 }
                                         className={ classes.checkbox } />
-                                    { /* <CheckCircleRoundedIcon className={ classes.title } /> */ }
                                 </IconButton>
-
-
                             } />
                     </GridListTile>
                 )) }
@@ -213,10 +216,9 @@ const FollowTopicsModal = (props) => {
             className={ classes.root }
             fullScreen={ fullScreen }
             open={ props.open }
-            onClose={ props.handleClose }
+            onClose={ props.handleFollowTopicsModalClose }
             aria-labelledby="responsive-dialog-title">
-
-            <DialogTitle id="responsive-dialog-title">
+            <DialogTitle>
                 Topics
             </DialogTitle>
             <DialogContent>
@@ -229,7 +231,7 @@ const FollowTopicsModal = (props) => {
             <DialogActions>
                 <Button
                     autoFocus
-                    onClick={ props.handleClose }
+                    onClick={ props.handleFollowTopicsModalClose }
                     color="primary">
                     Cancel
                 </Button>
@@ -261,6 +263,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         editQuestion: (questionID, body) => {
             dispatch(editQuestion(questionID, body));
+        },
+        addUserPreferences: (body) => {
+            dispatch(addPreferencesPending());
+            dispatch(addUserPreferences(body));
         },
     };
 };

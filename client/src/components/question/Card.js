@@ -48,7 +48,7 @@ const useStyles = makeStyles({
     },
 });
 
-const QuestionSection = (props) => {
+const QuestionCard = (props) => {
     const classes = useStyles();
     const {
         question,
@@ -140,21 +140,21 @@ const QuestionSection = (props) => {
                 <Button
                     size="small"
                     onClick={ handleOpen }
-                    endIcon={ <EditTwoToneIcon /> }
+                    startIcon={ <EditTwoToneIcon /> }
                     color="primary">
                     Answer
                 </Button>
                 <Button
                     size="small"
                     onClick={ handleFollowClick }
-                    endIcon={ <RssFeedSharpIcon /> }
+                    startIcon={ <RssFeedSharpIcon /> }
                     color="primary">
                     Follow
                 </Button>
                 <Button
                     size="small"
                     onClick={ handleOpen }
-                    endIcon={ <RecordVoiceOverIcon /> }
+                    startIcon={ <RecordVoiceOverIcon /> }
                     color="primary">
                     Request
                 </Button>
@@ -209,4 +209,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(QuestionSection);
+export default connect(mapStateToProps, mapDispatchToProps)(QuestionCard);

@@ -71,20 +71,12 @@ const TopicSection = (props) => {
                         { topic.topic }
                     </Box>
                 }
-                subheader="12k followers" />
-            <CardContent>
-                <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p">
-                    { description }
-                </Typography>
-            </CardContent>
+                subheader={ `${topic.following} followers` } />
             <CardActions disableSpacing>
                 <Button
                     size="small"
                     onClick={ handleFollowClick }
-                    endIcon={ <RssFeedSharpIcon /> }
+                    startIcon={ <RssFeedSharpIcon /> }
                     color="primary">
                     Follow
                 </Button>

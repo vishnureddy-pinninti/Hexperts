@@ -9,6 +9,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { connect } from 'react-redux';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { requestTopCreators } from '../../store/actions/auth';
 import Avatar from '../base/Avatar';
 
@@ -52,6 +53,11 @@ function TopCreators(props) {
                             { user.jobTitle }
                         </Typography>
                         { `${user.answers} answers` }
+                        <br />
+                        { `${user.reputation} points` }
+                        <LinearProgress
+                            variant="buffer"
+                            value={ 50 } />
                     </>
                 } />
         </ListItem>

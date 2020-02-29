@@ -1,12 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import AddIcon from '@material-ui/icons/Add';
+import ExploreIcon from '@material-ui/icons/Explore';
 import Avatar from '@material-ui/core/Avatar';
 import { green } from '@material-ui/core/colors';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Chip from '@material-ui/core/Chip';
-import FollowTopicsModal from './FollowTopicsModal';
 
 
 const useStyles = makeStyles((theme) => {
@@ -37,22 +36,7 @@ const useStyles = makeStyles((theme) => {
 
 function TopicList(props) {
     const classes = useStyles();
-    const { topics } = props;
-
-    const [
-        openFollowTopicsModal,
-        setFollowTopicsModal,
-    ] = React.useState(false);
-
-
-    const handleEditTopicsModalOpen = () => {
-        setFollowTopicsModal(true);
-    };
-
-    const handleEditTopicsModalClose = () => {
-        setFollowTopicsModal(false);
-    };
-
+    const { topics, handleFollowTopicsModalOpen } = props;
 
     const renderTopics = () => topics.map((topic) => (
         <Link
@@ -78,24 +62,20 @@ function TopicList(props) {
                 variant="contained"
                 avatar={
                     <Avatar>
-                        <AddIcon />
+                        <ExploreIcon />
                     </Avatar>
                 }
-                label="Add More Topics"
-                onClick={ handleEditTopicsModalOpen }
+                label="Discover More Topics"
+                onClick={ handleFollowTopicsModalOpen }
                 clickable
                 color="primary" />
-            <FollowTopicsModal
-                open={ openFollowTopicsModal }
-                followedTopics={ topics }
-                handleClose={ handleEditTopicsModalClose } />
         </div>
     );
 }
 
 const mapStateToProps = (state) => {
     return {
-        topics: state.user.user.interests,
+        topics: state.user.interests,
     };
 };
 

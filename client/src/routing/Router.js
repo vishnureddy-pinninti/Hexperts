@@ -60,7 +60,7 @@ const RouteWithSubRoutes = (route) => (
         path={ route.path }
         render={ (props) => (
             // pass the sub-routes down to keep nesting
-            <div style={ { backgroundColor: '#fafafa' } }>
+            <div>
                 <div id="back-to-top-anchor" />
                 <TopBar onLogout={ route.handleLogout } />
 

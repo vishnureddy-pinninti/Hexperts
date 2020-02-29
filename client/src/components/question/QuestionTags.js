@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import EditIcon from '@material-ui/icons/Edit';
@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import Avatar from '@material-ui/core/Avatar';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import EditTopicsModal from '../topic/EditTopicsModal';
 
 const useStyles = makeStyles((theme) => {
@@ -32,12 +33,17 @@ const QuestionTags = (props) => {
         question,
         id,
         topics,
+        pending,
     } = props;
 
     const [
         chipData,
         setChipData,
     ] = React.useState(topics);
+
+    useEffect(() => {
+        setChipData(topics);
+    }, [ topics ]);
 
     const handleDelete = (chipToDelete) => () => {
         setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
@@ -55,6 +61,12 @@ const QuestionTags = (props) => {
     const handleEditTopicsModalClose = () => {
         setOpenEditTopicsModal(false);
     };
+
+    useEffect(() => {
+        if (!pending) {
+            setOpenEditTopicsModal(pending);
+        }
+    }, [ pending ]);
 
 
     return (
@@ -98,7 +110,7 @@ const QuestionTags = (props) => {
                     onClick={ handleEditTopicsModalOpen }
                     aria-label="upload picture">
                     <EditIcon />
-                </IconButton>
+                                         </IconButton>
             }
             <EditTopicsModal
                 open={ openEditTopicsModal }
@@ -110,4 +122,15 @@ const QuestionTags = (props) => {
     );
 };
 
-export default QuestionTags;
+const mapStateToProps = (state) => {
+    return {
+        pending: state.questions.pending,
+    };
+};
+
+const mapDispatchToProps = () => {
+    return {
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(QuestionTags);

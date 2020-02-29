@@ -18,7 +18,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 pending: false,
-                newTopic: action.topic,
+                topics: [
+                    ...action.topic,
+                    ...state.topics,
+                ],
+                newTopic: action.topic[0],
             };
         case RECEIVE_TOPICS:
             return {

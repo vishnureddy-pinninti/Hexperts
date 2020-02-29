@@ -9,6 +9,8 @@ import { requestUserQuestions, requestTrendingQuestions } from '../store/actions
 import TopCreators from '../components/answer/TopCreators';
 import AskQuestionCard from '../components/question/AskQuestionCard';
 import QuestionsList from '../components/question/QuestionsList';
+import FollowTopicsModal from '../components/topic/FollowTopicsModal';
+
 
 function Home(props) {
     const {
@@ -18,6 +20,8 @@ function Home(props) {
         onLogout,
         questions,
         trendingQuestions,
+        followedTopics,
+        pending,
     } = props;
 
     useEffect(() => {
@@ -27,6 +31,30 @@ function Home(props) {
         requestTrendingQuestions,
         requestUserQuestions,
     ]);
+
+    useEffect(() => {
+        if (!pending) {
+            setFollowTopicsModal(pending);
+            requestUserQuestions();
+        }
+    }, [
+        pending,
+        requestUserQuestions,
+    ]);
+
+    const [
+        openFollowTopicsModal,
+        setFollowTopicsModal,
+    ] = React.useState(user.interests.length === 0);
+
+
+    const handleFollowTopicsModalOpen = () => {
+        setFollowTopicsModal(true);
+    };
+
+    const handleFollowTopicsModalClose = () => {
+        setFollowTopicsModal(false);
+    };
 
     const renderQuestions = () => questions.map((question) => {
         if (question.answers && question.answers.length){
@@ -63,7 +91,11 @@ function Home(props) {
                     <Grid
                         item
                         xs={ 2 }>
-                        <Topics />
+                        <Topics handleFollowTopicsModalOpen={ handleFollowTopicsModalOpen } />
+                        <FollowTopicsModal
+                            open={ openFollowTopicsModal }
+                            followedTopics={ followedTopics }
+                            handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
                     </Grid>
                     <Grid
                         item
@@ -89,6 +121,8 @@ const mapStateToProps = (state) => {
     return {
         questions: state.questions.questions,
         user: state.user.user,
+        pending: state.user.pending,
+        followedTopics: state.user.user.interests,
         trendingQuestions: state.questions.trendingQuestions,
     };
 };

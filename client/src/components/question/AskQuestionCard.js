@@ -68,7 +68,8 @@ function AskQuestionCard(props) {
     return (
         <Card
             className={ classes.root }
-            elevation={ 0 }>
+            elevation={ 0 }
+            onClick={ handleClickQuestionModalOpen }>
             <CardHeader
                 avatar={
                     <Avatar
@@ -83,7 +84,6 @@ function AskQuestionCard(props) {
             <CardContent className={ classes.content }>
                 <Link
                     onClick={ handleClickQuestionModalOpen }>
-
                     <Typography
                         variant="h7"
                         color="textSecondary"
