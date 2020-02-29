@@ -59,6 +59,7 @@ function Question(props) {
                         { question && <QuestionSection
                             question={ question.question }
                             id={ question._id }
+                            answers={ question.answers }
                             topics={ question.topics } /> }
                         { question && question.answers && renderAnswers() }
                     </Grid>

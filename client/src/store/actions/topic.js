@@ -14,10 +14,10 @@ export function addTopicPending() {
     };
 }
 
-const receiveAddedTopic = (answer) => {
+const receiveAddedTopic = (topic) => {
     return {
         type: RECEIVE_ADDED_TOPIC,
-        answer,
+        topic,
     };
 };
 

@@ -26,6 +26,13 @@ const useStyles = makeStyles({
     pos: {
         marginBottom: 12,
     },
+    link: {
+        color: '#2b6dad',
+        textDecoration: 'none',
+        '&:hover': {
+            textDecoration: 'underline',
+        },
+    },
 });
 
 
@@ -38,13 +45,13 @@ const Questions = (props) => {
         <ListItem
             alignItems="flex-start"
             key={ question._id }>
-            <Typography>
-                <Link
-                    to={ `/question/${question._id}` }
-                    className={ classes.link }>
+            <Link
+                to={ `/question/${question._id}` }
+                className={ classes.link }>
+                <Typography className={ classes.link }>
                     { question.question }
-                </Link>
-            </Typography>
+                </Typography>
+            </Link>
         </ListItem>
     ));
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -22,7 +22,7 @@ import Box from '@material-ui/core/Box';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import { addNewTopic, requestTopics } from '../../store/actions/topic';
-import { editQuestion } from '../../store/actions/questions';
+import { editQuestion, editQuestionPending } from '../../store/actions/questions';
 
 
 const useStyles = makeStyles((theme) => {
@@ -64,6 +64,7 @@ const EditTopicsModal = (props) => {
         topicsList,
         requestTopics,
         editQuestion,
+        newTopic,
     } = props;
 
     const renderTextField = ({ input }) => (
@@ -75,6 +76,7 @@ const EditTopicsModal = (props) => {
             type="text"
             className={ classes.textfield }
             required
+            autoFocus
             fullWidth />
     );
 
@@ -96,8 +98,25 @@ const EditTopicsModal = (props) => {
         setSelectedTopics,
     ] = React.useState(topics);
 
+    useEffect(() => {
+        const temp = [];
+        const newChecked = [];
+        topics.map((topic) => (newChecked.push(topic._id)));
+        if (newTopic && newTopic._id){
+            newChecked.push(newTopic._id);
+            temp.push(newTopic);
+        }
+        setSelectedTopics([
+            ...topics,
+            ...temp,
+        ]);
+        setChecked(newChecked);
+    }, [
+        topics,
+        newTopic,
+    ]);
 
-    const handleToggle = (value) => () => {
+    const handleToggle =((value) => () => {
         const currentIndex = checked.indexOf(value._id);
         const newChecked = [ ...checked ];
 
@@ -109,7 +128,7 @@ const EditTopicsModal = (props) => {
         }
 
         setChecked(newChecked);
-    };
+    });
 
     const onTopicSelect = (obj, value) => {
         if (value){
@@ -258,6 +277,7 @@ const EditTopicsModal = (props) => {
 const mapStateToProps = (state) => {
     return {
         user: state.user,
+        newTopic: state.topic.newTopic,
         topicsList: state.topic.topics,
     };
 };
@@ -271,6 +291,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(requestTopics(body));
         },
         editQuestion: (questionID, body) => {
+            dispatch(editQuestionPending());
             dispatch(editQuestion(questionID, body));
         },
     };

@@ -83,7 +83,7 @@ const AnswerCard = (props) => {
 
     const renderAnswer = (answer) => (
         <ReadMore
-            initialHeight={ 600 }
+            initialHeight={ 300 }
             readMore={ (props) => (
                 <Link
                     className={ classes.more }
@@ -122,6 +122,7 @@ const AnswerCard = (props) => {
                         component="p">
                         Answer -
                         { renderTopics() }
+                        { topics.length ? `${renderTopics()}` : ' Recommended to you' }
                     </Typography>
                     <Typography>
                         <Link
@@ -134,7 +135,7 @@ const AnswerCard = (props) => {
                             </Box>
                         </Link>
                     </Typography>
-                </CardContent>
+                               </CardContent>
             }
             <CardHeader
                 className={ classes.headerRoot }

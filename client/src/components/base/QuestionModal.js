@@ -9,7 +9,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import TextField from '@material-ui/core/TextField';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, reset } from 'redux-form';
 import { addUserQuestion, addQuestionPending } from '../../store/actions/questions';
 
 
@@ -62,12 +62,12 @@ const QuestionModal = (props) => {
             fullScreen={ fullScreen }
             style={ { minWidth: 1000 } }
             open={ props.open }
-            onClose={ props.handleClose }
+            onClose={ handleClose }
             aria-labelledby="responsive-dialog-title">
             <form
                 id="question"
                 onSubmit={ handleSubmit(addUserQuestion) }>
-                <DialogTitle id="responsive-dialog-title">
+                <DialogTitle>
                     Question
                 </DialogTitle>
                 <DialogContent>
@@ -107,6 +107,7 @@ const mapDispatchToProps = (dispatch) => {
         addUserQuestion: (body, callback) => {
             dispatch(addQuestionPending());
             dispatch(addUserQuestion(body, callback));
+            dispatch(reset('question'));
         },
     };
 };
