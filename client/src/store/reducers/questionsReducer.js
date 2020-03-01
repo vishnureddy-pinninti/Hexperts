@@ -71,8 +71,15 @@ export default (state = initialState, action) => {
                 pending: false,
             };
         case RECEIVE_FOLLOWED_QUESTION:
+            question = { ...state.question };
+            question.following = action.res.unfollow;
+            question.followers = [
+                ...question.followers,
+                action.res.follower,
+            ];
             return {
                 ...state,
+                question,
             };
         case RECEIVE_ADDED_ANSWER:
             if (state.question && state.question.answers && state.question.answers.results){

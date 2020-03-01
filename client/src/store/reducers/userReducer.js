@@ -35,7 +35,10 @@ export default (state = initialState, action) => {
                     ...state.interests,
                     ...action.user.interests,
                 ],
-                expertIn: action.user.expertIn,
+                expertIn: [
+                    ...state.expertIn,
+                    ...action.user.expertIn,
+                ],
             };
         default:
             return state;

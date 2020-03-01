@@ -141,21 +141,21 @@ const QuestionCard = (props) => {
                     size="small"
                     onClick={ handleOpen }
                     startIcon={ <EditTwoToneIcon /> }
-                    color="primary">
+                    color="default">
                     Answer
                 </Button>
                 <Button
                     size="small"
                     onClick={ handleFollowClick }
                     startIcon={ <RssFeedSharpIcon /> }
-                    color="primary">
+                    color="default">
                     Follow
                 </Button>
                 <Button
                     size="small"
                     onClick={ handleOpen }
                     startIcon={ <RecordVoiceOverIcon /> }
-                    color="primary">
+                    color="default">
                     Request
                 </Button>
             </CardActions>

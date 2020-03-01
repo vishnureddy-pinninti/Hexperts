@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme) => {
             border: '1px solid #efefef',
         },
         headerRoot: {
+            paddingLeft: 0,
+            paddingRight: 0,
         },
         topics: {
             display: 'flex',
@@ -113,44 +115,43 @@ const AnswerCard = (props) => {
         <Card
             className={ classes.root }
             elevation={ 0 }>
-            {
-                !hideHeader && <CardContent>
-                    <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        className={ classes.topics }
-                        component="p">
-                        Answer -
-                        { renderTopics() }
-                        { topics.length ? `${renderTopics()}` : ' Recommended to you' }
-                    </Typography>
-                    <Typography>
-                        <Link
-                            to={ `/question/${questionId}` }
-                            className={ classes.link }>
-                            <Box
-                                fontWeight="fontWeightBold"
-                                fontSize={ 20 }>
-                                { question }
-                            </Box>
-                        </Link>
-                    </Typography>
-                               </CardContent>
-            }
-            <CardHeader
-                className={ classes.headerRoot }
-                avatar={
-                    <Avatar
-                        aria-label="recipe"
-                        alt={ name }
-                        user={ mail }
-                        className={ classes.avatar }>
-                        { name.match(/\b(\w)/g).join('') }
-                    </Avatar>
-                }
-                title={ `${name},${jobTitle}` }
-                subheader={ `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` } />
             <CardContent>
+                {
+                    !hideHeader && <>
+                        <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            className={ classes.topics }
+                            component="p">
+                            Answer -
+                            { topics.length ? renderTopics() : ' Recommended to you' }
+                        </Typography>
+                        <Typography>
+                            <Link
+                                to={ `/question/${questionId}` }
+                                className={ classes.link }>
+                                <Box
+                                    fontWeight="fontWeightBold"
+                                    fontSize={ 20 }>
+                                    { question }
+                                </Box>
+                            </Link>
+                        </Typography>
+                    </>
+                }
+                <CardHeader
+                    className={ classes.headerRoot }
+                    avatar={
+                        <Avatar
+                            aria-label="recipe"
+                            alt={ name }
+                            user={ mail }
+                            className={ classes.avatar }>
+                            { name.match(/\b(\w)/g).join('') }
+                        </Avatar>
+                    }
+                    title={ `${name},${jobTitle}` }
+                    subheader={ `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` } />
                 { answer && answer.answer && renderAnswer(answer.answer) }
             </CardContent>
             <CardActions disableSpacing>

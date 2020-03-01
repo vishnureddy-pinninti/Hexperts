@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { connect } from 'react-redux';
 import { red } from '@material-ui/core/colors';
+import Box from '@material-ui/core/Box';
 import Avatar from '../base/Avatar';
 import QuestionModal from '../base/QuestionModal';
 
@@ -85,10 +86,12 @@ function AskQuestionCard(props) {
                 <Link
                     onClick={ handleClickQuestionModalOpen }>
                     <Typography
-                        variant="h7"
-                        color="textSecondary"
-                        component="h2">
-                        What is your question or link?
+                        color="textSecondary">
+                        <Box
+                            fontWeight="fontWeightBold"
+                            fontSize={ 20 }>
+                            What is your question or link?
+                        </Box>
                     </Typography>
                 </Link>
             </CardContent>

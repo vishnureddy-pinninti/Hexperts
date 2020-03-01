@@ -113,10 +113,10 @@ export const requestQuestionById = (id) => {
     };
 };
 
-const receiveFollowedQuestion = (question) => {
+const receiveFollowedQuestion = (res) => {
     return {
         type: RECEIVE_FOLLOWED_QUESTION,
-        question,
+        res,
     };
 };
 

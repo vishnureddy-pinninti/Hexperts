@@ -47,6 +47,8 @@ const QuestionSection = (props) => {
         followQuestion,
         answers,
         topics,
+        following,
+        followers,
     } = props;
 
     const [
@@ -123,22 +125,24 @@ const QuestionSection = (props) => {
                 <Button
                     size="small"
                     onClick={ handleOpen }
-                    endIcon={ <EditTwoToneIcon /> }
-                    color="primary">
+                    startIcon={ <EditTwoToneIcon /> }
+                    color="default">
                     Answer
                 </Button>
                 <Button
                     size="small"
                     onClick={ handleFollowClick }
-                    endIcon={ <RssFeedSharpIcon /> }
-                    color="primary">
+                    startIcon={ <RssFeedSharpIcon /> }
+                    color={ following ? 'primary' : 'default' }>
                     Follow
+                    { ' ' }
+                    { followers && followers.length }
                 </Button>
                 <Button
                     size="small"
                     onClick={ handleOpen }
-                    endIcon={ <RecordVoiceOverIcon /> }
-                    color="primary">
+                    startIcon={ <RecordVoiceOverIcon /> }
+                    color="default">
                     Request
                 </Button>
             </CardActions>
@@ -177,6 +181,8 @@ const QuestionSection = (props) => {
 const mapStateToProps = (state) => {
     return {
         pending: state.answer.pending,
+        following: state.questions.question.following,
+        followers: state.questions.question.followers,
     };
 };
 

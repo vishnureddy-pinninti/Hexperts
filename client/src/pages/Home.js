@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import AnswerCard from '../components/answer/Card';
@@ -10,7 +12,19 @@ import TopCreators from '../components/answer/TopCreators';
 import AskQuestionCard from '../components/question/AskQuestionCard';
 import QuestionsList from '../components/question/QuestionsList';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
+import ExpertInModal from '../components/topic/ExpertInModal';
 
+
+const useStyles = makeStyles((theme) => {
+    return {
+        sectionDesktop: {
+            display: 'none',
+            [theme.breakpoints.up('md')]: {
+                display: 'block',
+            },
+        },
+    };
+});
 
 function Home(props) {
     const {
@@ -22,7 +36,10 @@ function Home(props) {
         trendingQuestions,
         followedTopics,
         pending,
+        expertIn,
     } = props;
+
+    const classes = useStyles();
 
     useEffect(() => {
         requestUserQuestions();
@@ -34,27 +51,55 @@ function Home(props) {
 
     useEffect(() => {
         if (!pending) {
-            setFollowTopicsModal(pending);
+            setOpenFollowTopicsModal(pending);
+            if (expertIn.length) {
+                setOpenExpertInModal(pending);
+            }
+            else {
+                setOpenExpertInModal(true);
+            }
             requestUserQuestions();
         }
     }, [
         pending,
         requestUserQuestions,
+        expertIn,
     ]);
 
     const [
         openFollowTopicsModal,
-        setFollowTopicsModal,
+        setOpenFollowTopicsModal,
     ] = React.useState(user.interests.length === 0);
 
 
     const handleFollowTopicsModalOpen = () => {
-        setFollowTopicsModal(true);
+        setOpenFollowTopicsModal(true);
     };
 
     const handleFollowTopicsModalClose = () => {
-        setFollowTopicsModal(false);
+        setOpenFollowTopicsModal(false);
     };
+
+    const [
+        openExpertInModal,
+        setOpenExpertInModal,
+    ] = React.useState(user.interests.length && user.expertIn.length === 0);
+
+    // useEffect(() => {
+    //     if (user.expertIn.length) {
+    //         setOpenExpertInModal(false);
+    //     }
+    // }, [ user ]);
+
+
+    const handleExpertInModalOpen = () => {
+        setOpenExpertInModal(true);
+    };
+
+    const handleExpertInModalClose = () => {
+        setOpenExpertInModal(false);
+    };
+
 
     const renderQuestions = () => questions.map((question) => {
         if (question.answers && question.answers.length){
@@ -89,13 +134,10 @@ function Home(props) {
                     justify="center"
                     spacing={ 3 }>
                     <Grid
+                        className={ classes.sectionDesktop }
                         item
                         xs={ 2 }>
                         <Topics handleFollowTopicsModalOpen={ handleFollowTopicsModalOpen } />
-                        <FollowTopicsModal
-                            open={ openFollowTopicsModal }
-                            followedTopics={ followedTopics }
-                            handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
                     </Grid>
                     <Grid
                         item
@@ -105,6 +147,7 @@ function Home(props) {
                     </Grid>
                     <Grid
                         item
+                        className={ classes.sectionDesktop }
                         xs={ 3 }>
                         <TopCreators />
                         <QuestionsList
@@ -113,6 +156,14 @@ function Home(props) {
                     </Grid>
                 </Grid>
             </Container>
+            <FollowTopicsModal
+                open={ openFollowTopicsModal }
+                followedTopics={ followedTopics }
+                handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
+            <ExpertInModal
+                open={ openExpertInModal }
+                followedTopics={ followedTopics }
+                handleFollowTopicsModalClose={ handleExpertInModalClose } />
         </div>
     );
 }
@@ -121,6 +172,7 @@ const mapStateToProps = (state) => {
     return {
         questions: state.questions.questions,
         user: state.user.user,
+        expertIn: state.user.expertIn,
         pending: state.user.pending,
         followedTopics: state.user.user.interests,
         trendingQuestions: state.questions.trendingQuestions,
