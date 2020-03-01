@@ -24,7 +24,7 @@ function Question(props) {
  relatedQuestions
     } = props;
 
-    const topics = question && question.topics.map((topic) => topic._id).join(',');
+    const topics = question && question.topics && question.topics.map((topic) => topic._id).join(',');
 
     useEffect(() => {
         requestQuestion(questionId);

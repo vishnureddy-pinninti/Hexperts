@@ -62,7 +62,7 @@ export const requestRelatedQuestions = (topics) => {
     return {
         type: REQUEST_RELATED_QUESTIONS,
         makeApiRequest: {
-            url: `/api/v1/related-questions?topics=${topics}`,
+            url: `/api/v1/related-questions?_topics=${topics}`,
             method: 'GET',
             success: receiveRelatedQuestions,
         },

@@ -116,7 +116,7 @@ const EditTopicsModal = (props) => {
         newTopic,
     ]);
 
-    const handleToggle =((value) => () => {
+    const handleToggle = ((value) => () => {
         const currentIndex = checked.indexOf(value._id);
         const newChecked = [ ...checked ];
 
@@ -272,6 +272,10 @@ const EditTopicsModal = (props) => {
             </DialogActions>
         </Dialog>
     );
+};
+
+EditTopicsModal.defaultProps = {
+    topics: [],
 };
 
 const mapStateToProps = (state) => {
