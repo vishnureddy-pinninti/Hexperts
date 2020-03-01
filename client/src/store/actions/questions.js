@@ -58,11 +58,11 @@ const receiveRelatedQuestions = (questions) => {
     };
 };
 
-export const requestRelatedQuestions = (topics) => {
+export const requestRelatedQuestions = (questionId) => {
     return {
         type: REQUEST_RELATED_QUESTIONS,
         makeApiRequest: {
-            url: `/api/v1/related-questions?_topics=${topics}`,
+            url: `/api/v1/related-questions?questionID=${questionId}`,
             method: 'GET',
             success: receiveRelatedQuestions,
         },

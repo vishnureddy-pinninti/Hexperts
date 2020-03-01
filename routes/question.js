@@ -36,7 +36,7 @@ module.exports = (app) => {
             const responseObject = {
                 ...newQuestion._doc,
                 author: req.user,
-                topics: chosenTopics,
+                topics: chosenTopics || [],
             };
             emailNotify('newQuestion', responseObject, {
                 author: req.user,
@@ -244,29 +244,69 @@ module.exports = (app) => {
 
     app.get('/api/v1/related-questions', loginMiddleware, queryMiddleware, async(req, res) => {
         const {
-            custom,
+            query,
         } = req.queryParams;
 
-        const query = {};
+        const { questionID } = query;
 
-        if (custom._topics) {
-            const fields = custom._topics.split(',');
-            query.topics = { $in: fields.map((field) => mongoose.Types.ObjectId(field)) };
-        }
         try {
-            const questions = await Question.aggregate([
-                { $match: query },
-                { $limit: 10 },
-                {
-                    $project: {
-                        question: 1,
-                    },
-                },
-            ]);
+            const question = await Question.findById(questionID);
 
-            res
-                .status(200)
-                .json(questions);
+            if (question) {
+                let results = await Question.aggregate([
+                    {
+                        $match: {
+                            $and: [
+                                { _id: { $ne: mongoose.Types.ObjectId(questionID) } },
+                                { $text: { $search: question.question } },
+                            ],
+                        },
+                    },
+                    { $limit: 10 },
+                    { $addFields: { score: { $meta: 'textScore' } } },
+                    { $sort: { score: { $meta: 'textScore' } } },
+                    {
+                        $project: {
+                            question: 1,
+                        },
+                    },
+                ]);
+
+                if (results.length < 10) {
+                    const topicsMatch = await Question.aggregate([
+                        {
+                            $match: {
+                                $and: [
+                                    { _id: { $ne: mongoose.Types.ObjectId(questionID) } },
+                                    { topics: { $in: question.topics.map((topic) => mongoose.Types.ObjectId(topic)) } },
+                                ],
+                            },
+                        },
+                        { $limit: 10 - results.length },
+                        {
+                            $project: {
+                                question: 1,
+                            },
+                        },
+                    ]);
+
+                    results = [
+                        ...results,
+                        ...topicsMatch,
+                    ];
+                }
+                res
+                    .status(200)
+                    .json(results);
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: QUESTION_NOT_FOUND,
+                    });
+            }
         }
         catch (e) {
             res
