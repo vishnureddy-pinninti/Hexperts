@@ -24,16 +24,13 @@ function Question(props) {
  relatedQuestions
     } = props;
 
-    const topics = question && question.topics && question.topics.map((topic) => topic._id).join(',');
-
     useEffect(() => {
         requestQuestion(questionId);
-        requestRelatedQuestions(topics);
+        requestRelatedQuestions(questionId);
     }, [
         questionId,
         requestQuestion,
         requestRelatedQuestions,
-        topics,
     ]);
 
     const renderAnswers = () => question.answers.results.map((answer) => (
@@ -88,8 +85,8 @@ const mapDispatchToProps = (dispatch) => {
         requestQuestion: (questionId) => {
             dispatch(requestQuestionById(questionId));
         },
-        requestRelatedQuestions: (topics) => {
-            dispatch(requestRelatedQuestions(topics));
+        requestRelatedQuestions: (questionId) => {
+            dispatch(requestRelatedQuestions(questionId));
         },
     };
 };

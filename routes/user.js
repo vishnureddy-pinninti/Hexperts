@@ -78,7 +78,7 @@ module.exports = (app) => {
 
                 await newUser.save();
 
-                cookieUser = newUser;
+                cookieUser = newUser._doc;
             }
 
             const notifications = await Notification.find({
