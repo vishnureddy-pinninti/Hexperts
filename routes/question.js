@@ -176,6 +176,43 @@ module.exports = (app) => {
                                 },
                             },
                             { $limit: 1 },
+                            {
+                                $lookup: {
+                                    from: 'comments',
+                                    let: { id: '$_id' },
+                                    pipeline: [
+                                        {
+                                            $match: {
+                                                $expr: {
+                                                    $eq: [
+                                                        '$$id',
+                                                        '$targetID',
+                                                    ],
+                                                },
+                                            },
+                                        },
+                                    ],
+                                    as: 'comments',
+                                },
+                            },
+                            {
+                                $project: {
+                                    comments: {
+                                        $cond: {
+                                            if: { $isArray: '$comments' },
+                                            then: { $size: '$comments' },
+                                            else: 0,
+                                        },
+                                    },
+                                    answer: 1,
+                                    author: 1,
+                                    downvoters: 1,
+                                    postedDate: 1,
+                                    questionID: 1,
+                                    upvoters: 1,
+                                    upvotersCount: 1,
+                                },
+                            },
                         ],
                         as: 'answers',
                     },
