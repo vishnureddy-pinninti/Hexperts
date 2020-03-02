@@ -3,10 +3,22 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const bodyParser = require('body-parser');
+const fs = require('fs');
+
+const httpx = require('./httpx');
 
 const app = express();
-const http = require('http').createServer(app);
 const { PORT } = require('./utils/constants');
+
+const ensureSecure = (req, res, next) => {
+    if (req.secure) {
+        return next();
+    }
+    res.redirect(`https://${req.hostname}:${PORT}${req.url}`);
+    return null;
+};
+
+app.all('*', ensureSecure);
 
 app.use(cookieParser());
 
@@ -21,7 +33,16 @@ app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
 });
 
-http.listen(PORT, () => {
+
+const options = {
+    cert: fs.readFileSync('./certs/wildcard_intergraph_com2018.crt'),
+    ca: fs.readFileSync('./certs/DigiCertCA.crt'),
+    key: fs.readFileSync('./certs/wildcard_intergraph_com2018.key'),
+};
+
+const server = httpx.createServer(options, app);
+
+server.listen(PORT, () => {
     // eslint-disable-next-line no-console
     console.log(`Listening on port ${PORT}`);
 });
