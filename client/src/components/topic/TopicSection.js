@@ -75,7 +75,7 @@ const TopicSection = (props) => {
                         { topic.topic }
                     </Box>
                 }
-                subheader={ `${topic.following} followers` } />
+                subheader={ `${followers.length} followers` } />
             <CardActions disableSpacing>
                 <Button
                     size="small"
@@ -87,6 +87,10 @@ const TopicSection = (props) => {
             </CardActions>
         </Card>
     );
+};
+
+TopicSection.defaultProps = {
+    followers: [],
 };
 
 const mapStateToProps = (state) => {

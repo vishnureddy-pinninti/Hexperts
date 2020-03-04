@@ -39,12 +39,12 @@ export default (state = initialState, action) => {
             };
         case RECEIVE_FOLLOWED_TOPIC:
             followers = [ ...state.topic.followers ];
-            index = followers.indexOf(action.res.follower);
+            index = followers.indexOf(action.res._id);
             if (index >= 0){
                 followers.splice(index, 1);
             }
             else {
-                followers.push(action.res.follower);
+                followers.push(action.res._id);
             }
             return {
                 ...state,
