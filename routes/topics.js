@@ -80,8 +80,13 @@ module.exports = (app) => {
                                     },
                                 },
                             },
+                            {
+                                $project: {
+                                    _id: 1,
+                                },
+                            },
                         ],
-                        as: 'following',
+                        as: 'followers',
                     },
                 },
                 {
@@ -176,11 +181,17 @@ module.exports = (app) => {
                         createdDate: 1,
                         imageUrl: 1,
                         description: 1,
-                        following: {
+                        followers: {
                             $cond: {
-                                if: { $isArray: '$following' },
-                                then: { $size: '$following' },
-                                else: 0,
+                                if: { $isArray: '$followers' },
+                                then: {
+                                    $map: {
+                                        input: '$followers',
+                                        as: 'follower',
+                                        in: '$$follower._id',
+                                    },
+                                },
+                                else: [],
                             },
                         },
                         questions: 1,
