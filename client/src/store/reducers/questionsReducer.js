@@ -21,6 +21,8 @@ const initialState = {
 export default (state = initialState, action) => {
     let answers = [];
     let question = {};
+    let index;
+    let followers = [];
     switch (action.type) {
         case RECEIVE_USER_QUESTIONS:
             return {
@@ -61,7 +63,10 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 pending: false,
-                question: action.question,
+                question: {
+                    ...state.question,
+                    topics: action.question.topics,
+                },
             };
         case RECEIVE_QUESTION_BY_ID:
             return {
@@ -71,15 +76,20 @@ export default (state = initialState, action) => {
                 pending: false,
             };
         case RECEIVE_FOLLOWED_QUESTION:
-            question = { ...state.question };
-            question.following = action.res.unfollow;
-            question.followers = [
-                ...question.followers,
-                action.res.follower,
-            ];
+            followers = [ ...state.question.followers ];
+            index = followers.indexOf(action.res.follower);
+            if (index >= 0){
+                followers.splice(index, 1);
+            }
+            else {
+                followers.push(action.res.follower);
+            }
             return {
                 ...state,
-                question,
+                question: {
+                    ...state.question,
+                    followers,
+                },
             };
         case RECEIVE_ADDED_ANSWER:
             if (state.question && state.question.answers && state.question.answers.results){
@@ -91,6 +101,14 @@ export default (state = initialState, action) => {
                             action.answer,
                             ...answers,
                         ],
+                    },
+                };
+            }
+            else {
+                question = {
+                    ...state.question,
+                    answers: {
+                        results: [ action.answer ],
                     },
                 };
             }

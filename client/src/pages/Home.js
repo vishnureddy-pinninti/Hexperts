@@ -109,9 +109,12 @@ function Home(props) {
                     key={ question._id }
                     questionId={ question._id }
                     answer={ answer }
+                    answerId={ answer._id }
                     question={ question.question }
+                    upvoters={ answer.upvoters }
+                    downvoters={ answer.downvoters }
                     author={ question.author }
-                    topics={ question.topics }
+                    topics={ question.topics } // modifiedAnswers={ modifiedAnswers }
                     date={ answer.postedDate } />
             );
         }

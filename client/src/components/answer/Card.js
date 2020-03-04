@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -9,12 +9,18 @@ import { red } from '@material-ui/core/colors';
 import ChatBubbleOutlineRoundedIcon from '@material-ui/icons/ChatBubbleOutlineRounded';
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import { Link } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
+import { connect } from 'react-redux';
+import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
 import ReadMore from '../base/ReadMore';
 import Avatar from '../base/Avatar';
+import { upvoteAnswer, addAnswerToCache, downvoteAnswer } from '../../store/actions/answer';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -74,6 +80,7 @@ const AnswerCard = (props) => {
         question,
         questionId,
         answer,
+        answerId,
         hideHeader,
         author: {
  name,
@@ -81,6 +88,13 @@ const AnswerCard = (props) => {
  mail 
 },
         topics,
+        downvoters,
+        upvoters,
+        upvoteAnswer,
+        downvoteAnswer,
+        modifiedAnswers,
+        addAnswerToCache,
+        user,
     } = props;
 
     const renderAnswer = (answer) => (
@@ -110,6 +124,9 @@ const AnswerCard = (props) => {
             { topic.topic }
         </Link>
     ));
+
+    const upvoted = upvoters.indexOf(user._id) >= 0;
+    const downvoted = downvoters.indexOf(user._id) >= 0;
 
     return (
         <Card
@@ -157,8 +174,9 @@ const AnswerCard = (props) => {
             <CardActions disableSpacing>
                 <Button
                     size="small"
-                    startIcon={ <ThumbUpOutlinedIcon /> }>
-                    Upvote
+                    onClick={ () => upvoteAnswer(answerId, answer) }
+                    startIcon={ upvoted ? <ThumbUpAltIcon color="primary" /> : <ThumbUpOutlinedIcon /> }>
+                    { upvoters.length }
                 </Button>
                 <Button
                     size="small"
@@ -168,7 +186,8 @@ const AnswerCard = (props) => {
                 <Button
                     size="small"
                     style={ { marginLeft: 'auto' } }
-                    endIcon={ <ThumbDownOutlinedIcon /> } />
+                    onClick={ () => downvoteAnswer(answerId, answer) }
+                    startIcon={ downvoted ? <ThumbDownAltIcon color="primary" /> : <ThumbDownOutlinedIcon /> } />
             </CardActions>
         </Card>
     );
@@ -178,4 +197,28 @@ AnswerCard.defaultProps = {
     hideHeader: false,
 };
 
-export default AnswerCard;
+const mapStateToProps = (state) => {
+    return {
+        pending: state.answer.pending,
+        user: state.user.user,
+        modifiedAnswers: state.answer.modifiedAnswers,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        upvoteAnswer: (answerId, answer) => {
+            dispatch(addAnswerToCache(answer));
+            dispatch(upvoteAnswer(answerId));
+        },
+        downvoteAnswer: (answerId, answer) => {
+            dispatch(addAnswerToCache(answer));
+            dispatch(downvoteAnswer(answerId));
+        },
+        addAnswerToCache: (answer) => {
+            dispatch(addAnswerToCache(answer));
+        },
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AnswerCard);

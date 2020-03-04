@@ -69,10 +69,10 @@ export const requestTopicById = (id) => {
     };
 };
 
-const receiveFollowedTopic = (question) => {
+const receiveFollowedTopic = (res) => {
     return {
         type: RECEIVE_FOLLOWED_TOPIC,
-        question,
+        res,
     };
 };
 

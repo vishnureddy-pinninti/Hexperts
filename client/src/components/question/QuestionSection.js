@@ -47,7 +47,7 @@ const QuestionSection = (props) => {
         followQuestion,
         answers,
         topics,
-        following,
+        user,
         followers,
     } = props;
 
@@ -60,11 +60,6 @@ const QuestionSection = (props) => {
         answer,
         setAnswer,
     ] = React.useState(null);
-
-    const [
-        followed,
-        setFollowed,
-    ] = React.useState(false);
 
     const handleOpen = () => {
         setOpen(true);
@@ -101,6 +96,8 @@ const QuestionSection = (props) => {
     const handleFollowClick = () => {
         followQuestion({ questionID: id });
     };
+
+    const following = followers.indexOf(user._id) >= 0;
 
     return (
         <Card className={ classes.root }>
@@ -181,6 +178,7 @@ const QuestionSection = (props) => {
 const mapStateToProps = (state) => {
     return {
         pending: state.answer.pending,
+        user: state.user.user,
         following: state.questions.question.following,
         followers: state.questions.question.followers,
     };

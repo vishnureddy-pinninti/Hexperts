@@ -36,7 +36,10 @@ function Question(props) {
     const renderAnswers = () => question.answers.results.map((answer) => (
         <Answer
             key={ answer._id }
+            answerId={ answer._id }
             hideHeader
+            upvoters={ answer.upvoters }
+            downvoters={ answer.downvoters }
             author={ answer.author }
             date={ answer.postedDate }
             answer={ answer } />
