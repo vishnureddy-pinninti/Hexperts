@@ -49,11 +49,15 @@ const TopicSection = (props) => {
         pending,
         followTopic,
         topic,
+        followers,
+        user,
     } = props;
 
     const handleFollowClick = () => {
         followTopic({ interestId: id });
     };
+
+    const following = followers.indexOf(user._id) >= 0;
 
     return (
         <Card className={ classes.root }>
@@ -77,7 +81,7 @@ const TopicSection = (props) => {
                     size="small"
                     onClick={ handleFollowClick }
                     startIcon={ <RssFeedSharpIcon /> }
-                    color="primary">
+                    color={ following ? 'primary' : 'default' }>
                     Follow
                 </Button>
             </CardActions>
@@ -88,6 +92,8 @@ const TopicSection = (props) => {
 const mapStateToProps = (state) => {
     return {
         pending: state.answer.pending,
+        followers: state.topic.topic.followers || [],
+        user: state.user.user,
     };
 };
 

@@ -11,6 +11,8 @@ import Chip from '@material-ui/core/Chip';
 const useStyles = makeStyles((theme) => {
     return {
         root: {
+            position: 'fixed',
+            width: 100,
         },
         small: {
             width: theme.spacing(3),

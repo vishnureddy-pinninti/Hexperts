@@ -1,4 +1,4 @@
-import { ADD_TOPIC_PENDING, RECEIVE_ADDED_TOPIC, RECEIVE_TOPICS, RECEIVE_TOPIC_BY_ID } from '../actions/topic';
+import { ADD_TOPIC_PENDING, RECEIVE_ADDED_TOPIC, RECEIVE_TOPICS, RECEIVE_TOPIC_BY_ID, RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
 
 const initialState = {
     topic: {},
@@ -8,6 +8,8 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
+    let index;
+    let followers = [];
     switch (action.type) {
         case ADD_TOPIC_PENDING:
             return {
@@ -34,6 +36,22 @@ export default (state = initialState, action) => {
                 ...state,
                 topic: action.topic,
                 pending: false,
+            };
+        case RECEIVE_FOLLOWED_TOPIC:
+            followers = [ ...state.topic.followers ];
+            index = followers.indexOf(action.res.follower);
+            if (index >= 0){
+                followers.splice(index, 1);
+            }
+            else {
+                followers.push(action.res.follower);
+            }
+            return {
+                ...state,
+                topic: {
+                    ...state.topic,
+                    followers,
+                },
             };
         default:
             return state;

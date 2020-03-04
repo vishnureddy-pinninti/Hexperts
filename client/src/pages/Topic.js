@@ -4,6 +4,7 @@ import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import Topics from '../components/topic/TopicsList';
 import TopicSection from '../components/topic/TopicSection';
+import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
@@ -18,6 +19,8 @@ function Topic(props) {
         },
         requestTopic,
         onLogout,
+        pending,
+        followedTopics,
     } = props;
 
     useEffect(() => {
@@ -26,6 +29,26 @@ function Topic(props) {
         requestTopic,
         topicID,
     ]);
+
+    const [
+        openFollowTopicsModal,
+        setOpenFollowTopicsModal,
+    ] = React.useState(false);
+
+
+    useEffect(() => {
+        if (!pending) {
+            setOpenFollowTopicsModal(pending);
+        }
+    }, [ pending ]);
+
+    const handleFollowTopicsModalOpen = () => {
+        setOpenFollowTopicsModal(true);
+    };
+
+    const handleFollowTopicsModalClose = () => {
+        setOpenFollowTopicsModal(false);
+    };
 
     const { topic, topic: { questions } } = props;
 
@@ -37,6 +60,9 @@ function Topic(props) {
                     key={ question._id }
                     questionId={ question._id }
                     answer={ answer }
+                    answerId={ answer._id }
+                    upvoters={ answer.upvoters }
+                    downvoters={ answer.downvoters }
                     question={ question.question }
                     author={ question.author }
                     topics={ question.topics }
@@ -64,7 +90,7 @@ function Topic(props) {
                     <Grid
                         item
                         xs={ 2 }>
-                        <Topics />
+                        <Topics handleFollowTopicsModalOpen={ handleFollowTopicsModalOpen } />
                     </Grid>
                     <Grid
                         item
@@ -79,6 +105,10 @@ function Topic(props) {
                         xs={ 3 } />
                 </Grid>
             </Container>
+            <FollowTopicsModal
+                open={ openFollowTopicsModal }
+                followedTopics={ followedTopics }
+                handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
         </div>
     );
 }
@@ -86,6 +116,8 @@ function Topic(props) {
 const mapStateToProps = (state) => {
     return {
         topic: state.topic.topic,
+        pending: state.user.pending,
+        followedTopics: state.user.user.interests,
     };
 };
 
