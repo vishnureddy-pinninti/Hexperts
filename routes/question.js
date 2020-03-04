@@ -118,14 +118,6 @@ module.exports = (app) => {
                 {
                     $lookup: {
                         from: 'users',
-                        localField: 'followers',
-                        foreignField: '_id',
-                        as: 'followers',
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'users',
                         localField: 'suggestedExperts',
                         foreignField: '_id',
                         as: 'suggestedExperts',
@@ -381,14 +373,6 @@ module.exports = (app) => {
                 {
                     $lookup: {
                         from: 'users',
-                        localField: 'followers',
-                        foreignField: '_id',
-                        as: 'followers',
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'users',
                         localField: 'suggestedExperts',
                         foreignField: '_id',
                         as: 'suggestedExperts',
@@ -419,22 +403,6 @@ module.exports = (app) => {
                         $unwind: {
                             path: '$author',
                             preserveNullAndEmptyArrays: true,
-                        },
-                    },
-                    {
-                        $lookup: {
-                            from: 'users',
-                            localField: 'downvoters',
-                            foreignField: '_id',
-                            as: 'downvoters',
-                        },
-                    },
-                    {
-                        $lookup: {
-                            from: 'users',
-                            localField: 'upvoters',
-                            foreignField: '_id',
-                            as: 'upvoters',
                         },
                     },
                     { $addFields: { upvotersCount: { $size: '$upvoters' } } },
@@ -660,7 +628,10 @@ module.exports = (app) => {
 
                 res
                     .status(200)
-                    .json(responseObject);
+                    .json({
+                        ...responseObject,
+                        follower: _id,
+                    });
             }
             else {
                 res

@@ -31,14 +31,6 @@ module.exports = (app) => {
                 { $match: { userid: id } },
                 {
                     $lookup: {
-                        from: 'users',
-                        localField: 'followers',
-                        foreignField: '_id',
-                        as: 'followers',
-                    },
-                },
-                {
-                    $lookup: {
                         from: 'topics',
                         localField: 'interests',
                         foreignField: '_id',
@@ -309,7 +301,7 @@ module.exports = (app) => {
                     .status(200)
                     .json({
                         _id,
-                        follower: req.user,
+                        follower: req.user._id,
                         unfollow: Boolean(isFollowing),
                     });
             }
