@@ -1,24 +1,28 @@
 require('./models/db');
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const http = require('http');
 
 const httpx = require('./httpx');
 
 const app = express();
 const { PORT } = require('./utils/constants');
 
-const ensureSecure = (req, res, next) => {
-    if (req.secure) {
-        return next();
-    }
-    res.redirect(`https://${req.hostname}:${PORT}${req.url}`);
-    return null;
-};
+if (process.env.NODE_ENV === 'production') {
+    const ensureSecure = (req, res, next) => {
+        if (req.secure) {
+            return next();
+        }
+        return res.redirect(`https://${req.hostname}:${PORT}${req.url}`);
+    };
 
-app.all('*', ensureSecure);
+    app.all('*', ensureSecure);
+}
 
 app.use(cookieParser());
 
@@ -33,16 +37,25 @@ app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
 });
 
+if (process.env.NODE_ENV === 'production') {
+    const options = {
+        cert: fs.readFileSync('./certs/wildcard_intergraph_com2018.crt'),
+        ca: fs.readFileSync('./certs/DigiCertCA.crt'),
+        key: fs.readFileSync('./certs/wildcard_intergraph_com2018.key'),
+    };
 
-const options = {
-    cert: fs.readFileSync('./certs/wildcard_intergraph_com2018.crt'),
-    ca: fs.readFileSync('./certs/DigiCertCA.crt'),
-    key: fs.readFileSync('./certs/wildcard_intergraph_com2018.key'),
-};
+    const server = httpx.createServer(options, app);
 
-const server = httpx.createServer(options, app);
+    server.listen(PORT, () => {
+        // eslint-disable-next-line no-console
+        console.log(`Running in PROD mode. Listening on port ${PORT}`);
+    });
+}
+else {
+    const server = http.createServer(app);
 
-server.listen(PORT, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Listening on port ${PORT}`);
-});
+    server.listen(PORT, () => {
+        // eslint-disable-next-line no-console
+        console.log(`Running in DEV mode. Listening on port ${PORT}`);
+    });
+}
