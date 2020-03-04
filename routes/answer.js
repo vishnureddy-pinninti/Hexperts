@@ -227,7 +227,10 @@ module.exports = (app) => {
 
                 res
                     .status(200)
-                    .json(responseObject);
+                    .json({
+                        ...responseObject,
+                        upvoter: _id,
+                    });
             }
             else {
                 res
@@ -275,7 +278,10 @@ module.exports = (app) => {
 
                 res
                     .status(200)
-                    .json(responseObject);
+                    .json({
+                        ...responseObject,
+                        downvoter: _id,
+                    });
             }
             else {
                 res
