@@ -1,88 +1,52 @@
-const mongoose = require('mongoose');
-const Question = mongoose.model('questions');
-const Topic = mongoose.model('topics');
+const request = require('request-promise');
 
 const loginMiddleware = require('../middlewares/loginMiddleware');
+const queryMiddleware = require('../middlewares/queryMiddleware');
+const {
+    getSearchFields,
+    getHighlightFields,
+    getRequestUrl,
+    parseResult,
+} = require('../utils/search');
 
 module.exports = (app) => {
-    app.post('/api/v1/search', loginMiddleware, async(req, res) => {
-        const { text } = req.body;
-        try {
-            const results = await Question.aggregate([
-                { $match: { $text: { $search: text } } },
-                { $addFields: { score: { $meta: 'textScore' } } },
-                { $sort: { score: { $meta: 'textScore' } } },
-                {
-                    $lookup: {
-                        from: 'answers',
-                        let: { id: '$_id' },
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $eq: [
-                                            '$$id',
-                                            '$questionID',
-                                        ],
-                                    },
-                                },
-                            },
-                        ],
-                        as: 'answers',
+    app.post('/api/v1/search', loginMiddleware, queryMiddleware, async(req, res) => {
+        const {
+            text,
+            categories = [],
+        } = req.body;
+        const {
+            pagination,
+        } = req.queryParams;
+        const searchFields = getSearchFields(categories);
+        const highlightFields = getHighlightFields(searchFields);
+        const requestUrl = getRequestUrl(categories);
+
+        const results = await request.get(requestUrl, {
+            json: true,
+            body: {
+                _source: {
+                    excludes: searchFields,
+                },
+                query: {
+                    multi_match: {
+                        query: text,
+                        fields: searchFields,
                     },
                 },
-                {
-                    $project: {
-                        question: 1,
-                        score: 1,
-                        answers: {
-                            $cond: {
-                                if: { $isArray: '$answers' },
-                                then: { $size: '$answers' },
-                                else: 0,
-                            },
-                        },
-                    },
+                highlight: {
+                    pre_tags: [ '<span class=\'highlighter\'>' ],
+                    post_tags: [ '</span>' ],
+                    fields: highlightFields,
                 },
-            ]);
-            res
-                .status(200)
-                .json(results);
-        }
-        catch (e) {
-            res
-                .status(500)
-                .json({
-                    error: true,
-                    response: e,
-                });
-        }
-    });
+                from: pagination.skip || 0,
+                size: pagination.limit || 10,
+            },
+        });
 
-    app.post('/api/v1/topic-search', loginMiddleware, async(req, res) => {
-        const { text } = req.body;
-        try {
-            let results = await Topic.aggregate([
-                { $match: { $text: { $search: text } } },
-                { $addFields: { score: { $meta: 'textScore' } } },
-                { $sort: { score: { $meta: 'textScore' } } },
-            ]);
-
-            if (!results.length) {
-                results = await Topic.find({ topic: new RegExp(text, 'gi') });
-            }
-
-            res
-                .status(200)
-                .json(results);
-        }
-        catch (e) {
-            res
-                .status(500)
-                .json({
-                    error: true,
-                    response: e,
-                });
-        }
+        const parsedResults = parseResult(results);
+        res
+            .status(200)
+            .json(parsedResults);
     });
 };
