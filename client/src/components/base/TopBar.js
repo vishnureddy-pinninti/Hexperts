@@ -10,8 +10,6 @@ import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Grid from '@material-ui/core/Grid';
-import SearchIcon from '@material-ui/icons/Search';
-import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
@@ -21,9 +19,9 @@ import HomeIcon from '@material-ui/icons/Home';
 import EditIcon from '@material-ui/icons/Edit';
 import GroupIcon from '@material-ui/icons/Group';
 import Snackbar from '@material-ui/core/Snackbar';
-import QuestionModal from './QuestionModal';
 import Avatar from './Avatar';
-
+import QuestionModal from './QuestionModal';
+import SearchBar from './SearchBar';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -77,7 +75,7 @@ const useStyles = makeStyles((theme) => {
                 marginLeft: theme.spacing(3),
                 width: 'auto',
             },
-            border: '2px solid #e2e2e2',
+            // border: '2px solid #e2e2e2',
         },
         searchIcon: {
             width: theme.spacing(7),
@@ -367,16 +365,7 @@ const TopBar = (props) => {
                                 </Link>
                             </div>
                             <div className={ classes.search }>
-                                <div className={ classes.searchIcon }>
-                                    <SearchIcon />
-                                </div>
-                                <InputBase
-                                    placeholder="Search…"
-                                    classes={ {
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    } }
-                                    inputProps={ { 'aria-label': 'search' } } />
+                                <SearchBar />
                             </div>
                             <div className={ classes.inline }>
                                 <Button

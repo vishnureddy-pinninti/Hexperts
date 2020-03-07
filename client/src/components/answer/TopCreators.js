@@ -46,7 +46,7 @@ function TopCreators(props) {
                 <ListItemAvatar>
                     <Avatar
                         alt={ user.name }
-                        user={ user.mail } />
+                        user={ user.email } />
                 </ListItemAvatar>
                 <ListItemText
                     primary={ user.name }

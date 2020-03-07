@@ -1,7 +1,13 @@
-import { RECEIVE_ADDED_ANSWER, ADD_ANSWER_PENDING, RECEIVE_UPVOTE_ANSWER, RECEIVE_ANSWER_FOR_CACHE, RECEIVE_DOWNVOTE_ANSWER } from '../actions/answer';
+import { RECEIVE_ADDED_ANSWER,
+    ADD_ANSWER_PENDING,
+    RECEIVE_UPVOTE_ANSWER,
+    RECEIVE_ANSWER_FOR_CACHE,
+    RECEIVE_ANSWER_BY_ID,
+    RECEIVE_DOWNVOTE_ANSWER } from '../actions/answer';
 
 const initialState = {
     answer: {},
+    newAnswer: {},
     pending: true,
     modifiedAnswers: {},
 };
@@ -16,11 +22,17 @@ export default (state = initialState, action) => {
                 ...state,
                 pending: true,
             };
+        case RECEIVE_ANSWER_BY_ID:
+            return {
+                ...state,
+                answer: action.answer,
+                pending: false,
+            };
         case RECEIVE_ADDED_ANSWER:
             return {
                 ...state,
                 pending: false,
-                answer: action.answer,
+                newAnswer: action.answer,
             };
         case RECEIVE_UPVOTE_ANSWER:
             answer = state.modifiedAnswers;

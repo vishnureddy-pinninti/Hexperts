@@ -6,6 +6,8 @@ export const RECEIVE_UPVOTE_ANSWER = 'RECEIVE_UPVOTE_ANSWER';
 export const REQUEST_DOWNVOTE_ANSWER = 'REQUEST_DOWNVOTE_ANSWER';
 export const RECEIVE_DOWNVOTE_ANSWER = 'RECEIVE_DOWNVOTE_ANSWER';
 export const RECEIVE_ANSWER_FOR_CACHE = 'RECEIVE_ANSWER_FOR_CACHE';
+export const REQUEST_ANSWER_BY_ID = 'REQUEST_ANSWER_BY_ID';
+export const RECEIVE_ANSWER_BY_ID = 'RECEIVE_ANSWER_BY_ID';
 
 export function addAnswerPending() {
     return {
@@ -71,6 +73,24 @@ export const downvoteAnswer = (id) => {
             url: `/api/v1/answer-downvote/${id}`,
             method: 'GET',
             success: receiveDownvotedAnswer,
+        },
+    };
+};
+
+const receiveAnswerById = (answer) => {
+    return {
+        type: RECEIVE_ANSWER_BY_ID,
+        answer,
+    };
+};
+
+export const requestAnswerById = (id) => {
+    return {
+        type: REQUEST_ANSWER_BY_ID,
+        makeApiRequest: {
+            url: `/api/v1/answers/${id}`,
+            method: 'GET',
+            success: receiveAnswerById,
         },
     };
 };
