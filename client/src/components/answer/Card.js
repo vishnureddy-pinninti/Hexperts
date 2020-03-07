@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => {
         },
         avatar: {
             backgroundColor: red[500],
+            cursor: 'pointer',
         },
         link: {
             textDecoration: 'none',
@@ -166,22 +167,26 @@ const AnswerCard = (props) => {
                         </Typography>
                                    </>
                 }
-                <CardActionArea>
-                    <CardHeader
-                        className={ classes.headerRoot }
-                        onClick={ onProfileClick }
-                        avatar={
-                            <Avatar
-                                aria-label="recipe"
-                                alt={ name }
-                                user={ mail }
-                                className={ classes.avatar }>
-                                { name.match(/\b(\w)/g).join('') }
-                            </Avatar>
-                        }
-                        title={ `${name},${jobTitle}` }
-                        subheader={ `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` } />
-                </CardActionArea>
+                <CardHeader
+                    className={ classes.headerRoot }
+                    avatar={
+                        <Avatar
+                            aria-label="recipe"
+                            alt={ name }
+                            user={ mail }
+                            onClick={ onProfileClick }
+                            className={ classes.avatar }>
+                            { name.match(/\b(\w)/g).join('') }
+                        </Avatar>
+                    }
+                    title={ `${name},${jobTitle}` }
+                    subheader={
+                        <Link
+                            className={ classes.link }
+                            to={ `/answer/${answerId}` }>
+                            { `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` }
+                        </Link>
+                    } />
                 { answer && answer.answer && renderAnswer(answer.answer) }
             </CardContent>
             <CardActions disableSpacing>

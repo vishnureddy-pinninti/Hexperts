@@ -172,7 +172,7 @@ function Profile(props) {
                         xs={ 8 }>
                         <ProfileHeader
                             name={ userProfile.name }
-                            mail={ userProfile.mail }
+                            mail={ userProfile.email }
                             jobTitle={ userProfile.jobTitle }
                             id={ userId } />
                         <ProfileBody />

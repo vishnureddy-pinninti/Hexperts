@@ -5,6 +5,7 @@ import user from './userReducer';
 import questions from './questionsReducer';
 import answer from './answerReducer';
 import topic from './topicReducer';
+import search from './searchReducer';
 
 export default combineReducers({
     form: formReducer,
@@ -12,4 +13,5 @@ export default combineReducers({
     user,
     answer,
     topic,
+    search,
 });

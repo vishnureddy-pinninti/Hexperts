@@ -5,6 +5,7 @@ import Profile from '../pages/Profile';
 import Notifications from '../pages/Notifications';
 import Answer from '../pages/Answer';
 import Spaces from '../pages/Spaces';
+import AnswerWithQuestion from '../pages/AnswerWithQuestion';
 
 const routes = [
     {
@@ -21,6 +22,11 @@ const routes = [
         path: '/Profile/:userId',
         component: Profile,
         key: 'Profile',
+    },
+    {
+        path: '/answer/:answerId',
+        component: AnswerWithQuestion,
+        key: 'AnswerWithQuestion',
     },
     {
         path: '/Answer',
