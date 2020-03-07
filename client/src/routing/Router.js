@@ -3,8 +3,9 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Fab from '@material-ui/core/Fab';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Zoom from '@material-ui/core/Zoom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import green from '@material-ui/core/colors/green';
 import TopBar from '../components/base/TopBar';
 import routes from './routes';
 
@@ -16,6 +17,17 @@ const useStyles = makeStyles((theme) => {
             right: theme.spacing(2),
         },
     };
+});
+
+const theme = createMuiTheme({
+    // palette: {
+    //     primary: green,
+    // },
+    typography: {
+        button: {
+            textTransform: 'none',
+        },
+    },
 });
 
 
@@ -56,28 +68,30 @@ function ScrollTop(props) {
 
 
 const RouteWithSubRoutes = (route) => (
-    <Route
-        path={ route.path }
-        render={ (props) => (
+    <ThemeProvider theme={ theme }>
+        <Route
+            path={ route.path }
+            render={ (props) => (
             // pass the sub-routes down to keep nesting
-            <div>
-                <div id="back-to-top-anchor" />
-                <TopBar onLogout={ route.handleLogout } />
+                <div>
+                    <div id="back-to-top-anchor" />
+                    <TopBar onLogout={ route.handleLogout } />
 
-                <route.component
-                    { ...props }
-                    routes={ route.routes } />
+                    <route.component
+                        { ...props }
+                        routes={ route.routes } />
 
-                <ScrollTop { ...props }>
-                    <Fab
-                        color="secondary"
-                        size="small"
-                        aria-label="scroll back to top">
-                        <KeyboardArrowUpIcon />
-                    </Fab>
-                </ScrollTop>
-            </div>
-        ) } />
+                    <ScrollTop { ...props }>
+                        <Fab
+                            color="secondary"
+                            size="small"
+                            aria-label="scroll back to top">
+                            <KeyboardArrowUpIcon />
+                        </Fab>
+                    </ScrollTop>
+                </div>
+            ) } />
+    </ThemeProvider>
 );
 
 const Router = (props) => (

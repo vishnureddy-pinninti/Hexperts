@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -158,7 +158,6 @@ const EditTopicsModal = (props) => {
                 return (
                     <ListItem
                         key={ value._id }
-                        role={ undefined }
                         dense
                         button
                         onClick={ handleToggle(value) }>

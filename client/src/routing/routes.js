@@ -1,6 +1,7 @@
 import Home from '../pages/Home';
 import Question from '../pages/Question';
 import Topic from '../pages/Topic';
+import Profile from '../pages/Profile';
 import Notifications from '../pages/Notifications';
 import Answer from '../pages/Answer';
 import Spaces from '../pages/Spaces';
@@ -15,6 +16,11 @@ const routes = [
         path: '/Topic/:topicID',
         component: Topic,
         key: 'Topic',
+    },
+    {
+        path: '/Profile/:userId',
+        component: Profile,
+        key: 'Profile',
     },
     {
         path: '/Answer',
