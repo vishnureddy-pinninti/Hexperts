@@ -1,10 +1,17 @@
-import { RECEIVE_USER_SESSION, RECEIVE_TOP_CREATORS, RECEIVE_USER_PREFERENCES, ADD_PREFERENCES_PENDING } from '../actions/auth';
+import { RECEIVE_USER_SESSION,
+    RECEIVE_TOP_CREATORS,
+    RECEIVE_USER_PREFERENCES,
+    ADD_PREFERENCES_PENDING,
+    RECEIVE_USER_BY_ID,
+    RECEIVE_QUESTIONS_BY_USER_ID,
+    RECEIVE_USER_ANSWERS } from '../actions/auth';
 
 const initialState = {
     isAuthenticated: false,
     user: {},
     topUsers: [],
     pending: true,
+    feed: [],
 };
 
 export default (state = initialState, action) => {
@@ -16,6 +23,11 @@ export default (state = initialState, action) => {
                 user: action.user,
                 interests: action.user.interests,
                 expertIn: action.user.expertIn,
+            };
+        case RECEIVE_USER_BY_ID:
+            return {
+                ...state,
+                userProfile: action.profile,
             };
         case RECEIVE_TOP_CREATORS:
             return {
@@ -39,6 +51,16 @@ export default (state = initialState, action) => {
                     ...state.expertIn,
                     ...action.user.expertIn,
                 ],
+            };
+        case RECEIVE_QUESTIONS_BY_USER_ID:
+            return {
+                ...state,
+                feed: action.res.questions,
+            };
+        case RECEIVE_USER_ANSWERS:
+            return {
+                ...state,
+                feed: action.res.answers,
             };
         default:
             return state;

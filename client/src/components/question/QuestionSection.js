@@ -18,6 +18,7 @@ import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import Collapse from '@material-ui/core/Collapse';
 
 import QuestionTags from './QuestionTags';
+import EditSuggestedWriters from './EditSuggestedWriters';
 import { addAnswerToQuestion, addAnswerPending } from '../../store/actions/answer';
 import { followQuestion } from '../../store/actions/questions';
 
@@ -49,6 +50,7 @@ const QuestionSection = (props) => {
         topics,
         user,
         followers,
+        questionPending,
     } = props;
 
     const [
@@ -97,6 +99,25 @@ const QuestionSection = (props) => {
         followQuestion({ questionID: id });
     };
 
+    const [
+        openEditSuggestedWritersModal,
+        setOpenEditSuggestedWritersModal,
+    ] = React.useState(false);
+
+    const handleEditSuggestedWriterssModalOpen = () => {
+        setOpenEditSuggestedWritersModal(true);
+    };
+
+    const handleEditSuggestedWritersModalClose = () => {
+        setOpenEditSuggestedWritersModal(false);
+    };
+
+    useEffect(() => {
+        if (!questionPending) {
+            setOpenEditSuggestedWritersModal(questionPending);
+        }
+    }, [ questionPending ]);
+
     const following = followers.indexOf(user._id) >= 0;
 
     return (
@@ -137,7 +158,7 @@ const QuestionSection = (props) => {
                 </Button>
                 <Button
                     size="small"
-                    onClick={ handleOpen }
+                    onClick={ handleEditSuggestedWriterssModalOpen }
                     startIcon={ <RecordVoiceOverIcon /> }
                     color="default">
                     Request
@@ -171,6 +192,12 @@ const QuestionSection = (props) => {
                     </Button>
                 </CardActions>
             </Collapse>
+            <EditSuggestedWriters
+                open={ openEditSuggestedWritersModal }
+                question={ question }
+                topics={ topics }
+                questionID={ id }
+                handleClose={ handleEditSuggestedWritersModalClose } />
         </Card>
     );
 };
@@ -178,6 +205,7 @@ const QuestionSection = (props) => {
 const mapStateToProps = (state) => {
     return {
         pending: state.answer.pending,
+        questionPending: state.questions.pending,
         user: state.user.user,
         following: state.questions.question.following,
         followers: state.questions.question.followers,

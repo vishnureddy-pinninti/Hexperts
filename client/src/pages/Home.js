@@ -85,13 +85,6 @@ function Home(props) {
         setOpenExpertInModal,
     ] = React.useState(user.interests.length && user.expertIn.length === 0);
 
-    // useEffect(() => {
-    //     if (user.expertIn.length) {
-    //         setOpenExpertInModal(false);
-    //     }
-    // }, [ user ]);
-
-
     const handleExpertInModalOpen = () => {
         setOpenExpertInModal(true);
     };

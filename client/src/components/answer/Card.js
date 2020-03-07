@@ -4,6 +4,7 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import ChatBubbleOutlineRoundedIcon from '@material-ui/icons/ChatBubbleOutlineRounded';
@@ -13,11 +14,9 @@ import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
 import { connect } from 'react-redux';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
 import ReadMore from '../base/ReadMore';
 import Avatar from '../base/Avatar';
 import { upvoteAnswer, addAnswerToCache, downvoteAnswer } from '../../store/actions/answer';
@@ -82,7 +81,9 @@ const AnswerCard = (props) => {
         answer,
         answerId,
         hideHeader,
+        history,
         author: {
+ _id,
  name,
  jobTitle,
  mail 
@@ -94,6 +95,7 @@ const AnswerCard = (props) => {
         downvoteAnswer,
         modifiedAnswers,
         addAnswerToCache,
+        hideHeaderHelperText,
         user,
     } = props;
 
@@ -116,6 +118,10 @@ const AnswerCard = (props) => {
         </ReadMore>
     );
 
+    const onProfileClick = () => {
+        history.push(`/profile/${_id}`);
+    };
+
     const renderTopics = () => topics.map((topic) => (
         <Link
             key={ topic._id }
@@ -124,6 +130,17 @@ const AnswerCard = (props) => {
             { topic.topic }
         </Link>
     ));
+
+    const renderHeaderHelperText = () => (
+        <Typography
+            variant="body2"
+            color="textSecondary"
+            className={ classes.topics }
+            component="p">
+            Answer -
+            { topics && topics.length ? renderTopics() : ' Recommended to you' }
+        </Typography>
+    );
 
     const upvoted = upvoters.indexOf(user._id) >= 0;
     const downvoted = downvoters.indexOf(user._id) >= 0;
@@ -135,14 +152,7 @@ const AnswerCard = (props) => {
             <CardContent>
                 {
                     !hideHeader && <>
-                        <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            className={ classes.topics }
-                            component="p">
-                            Answer -
-                            { topics.length ? renderTopics() : ' Recommended to you' }
-                        </Typography>
+                        { !hideHeaderHelperText && renderHeaderHelperText() }
                         <Typography>
                             <Link
                                 to={ `/question/${questionId}` }
@@ -154,21 +164,24 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </Typography>
-                    </>
+                                   </>
                 }
-                <CardHeader
-                    className={ classes.headerRoot }
-                    avatar={
-                        <Avatar
-                            aria-label="recipe"
-                            alt={ name }
-                            user={ mail }
-                            className={ classes.avatar }>
-                            { name.match(/\b(\w)/g).join('') }
-                        </Avatar>
-                    }
-                    title={ `${name},${jobTitle}` }
-                    subheader={ `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` } />
+                <CardActionArea>
+                    <CardHeader
+                        className={ classes.headerRoot }
+                        onClick={ onProfileClick }
+                        avatar={
+                            <Avatar
+                                aria-label="recipe"
+                                alt={ name }
+                                user={ mail }
+                                className={ classes.avatar }>
+                                { name.match(/\b(\w)/g).join('') }
+                            </Avatar>
+                        }
+                        title={ `${name},${jobTitle}` }
+                        subheader={ `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` } />
+                </CardActionArea>
                 { answer && answer.answer && renderAnswer(answer.answer) }
             </CardContent>
             <CardActions disableSpacing>
@@ -195,6 +208,7 @@ const AnswerCard = (props) => {
 
 AnswerCard.defaultProps = {
     hideHeader: false,
+    hideHeaderHelperText: false,
 };
 
 const mapStateToProps = (state) => {
@@ -221,4 +235,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnswerCard);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AnswerCard));

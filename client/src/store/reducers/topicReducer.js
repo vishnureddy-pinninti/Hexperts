@@ -1,10 +1,16 @@
-import { ADD_TOPIC_PENDING, RECEIVE_ADDED_TOPIC, RECEIVE_TOPICS, RECEIVE_TOPIC_BY_ID, RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
+import { ADD_TOPIC_PENDING,
+    RECEIVE_ADDED_TOPIC,
+    RECEIVE_TOPICS,
+    RECEIVE_TOPIC_BY_ID,
+    RECEIVE_SUGGESTED_EXPERTS,
+    RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
 
 const initialState = {
     topic: {},
     topics: [],
     newTopic: {},
     pending: true,
+    suggestedExperts: [],
 };
 
 export default (state = initialState, action) => {
@@ -15,6 +21,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 pending: true,
+            };
+        case RECEIVE_SUGGESTED_EXPERTS:
+            return {
+                ...state,
+                suggestedExperts: action.res,
             };
         case RECEIVE_ADDED_TOPIC:
             return {

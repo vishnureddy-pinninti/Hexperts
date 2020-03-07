@@ -164,6 +164,7 @@ const TopBar = (props) => {
         history,
         newQuestion,
         answerPending,
+        user,
     } = props;
 
     useEffect(() => {
@@ -193,6 +194,10 @@ const TopBar = (props) => {
         setValue(newValue);
     };
 
+    const handleProfileClick = () => {
+        history.push(`/profile/${user._id}`);
+    };
+
     const menuId = 'primary-search-account-menu';
 
     const renderMenu = (
@@ -210,7 +215,7 @@ const TopBar = (props) => {
             } }
             open={ isMenuOpen }
             onClose={ handleMenuClose }>
-            <MenuItem onClick={ handleMenuClose }>Profile</MenuItem>
+            <MenuItem onClick={ handleProfileClick }>Profile</MenuItem>
             <MenuItem onClick={ props.onLogout }>Logout</MenuItem>
         </Menu>
     );
@@ -423,7 +428,7 @@ TopBar.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user,
+        user: state.user.user,
         pending: state.questions.pending,
         answerPending: state.answer.pending,
         newQuestion: state.questions.newQuestion,

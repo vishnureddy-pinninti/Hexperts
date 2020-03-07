@@ -9,7 +9,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { connect } from 'react-redux';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import { Link } from 'react-router-dom';
 import { requestTopCreators } from '../../store/actions/auth';
 import Avatar from '../base/Avatar';
 
@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme) => {
         },
         inline: {
             display: 'inline',
+        },
+        userLink: {
+            textDecoration: 'none',
+            color: 'inherit',
         },
     };
 });
@@ -33,34 +37,34 @@ function TopCreators(props) {
     }, [ requestTopCreators ]);
 
     const renderUsers = () => topUsers.map((user) => (
-        <ListItem
-            alignItems="flex-start"
-            key={ user._id }>
-            <ListItemAvatar>
-                <Avatar
-                    alt={ user.name }
-                    user={ user.mail }
-                    src="/static/images/avatar/1.jpg" />
-            </ListItemAvatar>
-            <ListItemText
-                primary={ user.name }
-                secondary={
-                    <>
-                        <Typography
-                            component="div"
-                            variant="body2"
-                            color="textPrimary">
-                            { user.jobTitle }
-                        </Typography>
-                        { `${user.answers} answers` }
-                        <br />
-                        { `${user.reputation} points` }
-                        <LinearProgress
-                            variant="buffer"
-                            value={ 50 } />
-                    </>
-                } />
-        </ListItem>
+        <Link
+            key={ user._id }
+            className={ classes.userLink }
+            to={ `/profile/${user._id}` }>
+            <ListItem
+                alignItems="flex-start">
+                <ListItemAvatar>
+                    <Avatar
+                        alt={ user.name }
+                        user={ user.mail } />
+                </ListItemAvatar>
+                <ListItemText
+                    primary={ user.name }
+                    secondary={
+                        <>
+                            <Typography
+                                component="div"
+                                variant="body2"
+                                color="textPrimary">
+                                { user.jobTitle }
+                            </Typography>
+                            { `${user.answers} answers` }
+                            <br />
+                            { `${user.reputation} points` }
+                        </>
+                    } />
+            </ListItem>
+        </Link>
     ));
 
     return (

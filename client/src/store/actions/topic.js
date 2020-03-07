@@ -7,6 +7,8 @@ export const REQUEST_TOPIC_BY_ID = 'REQUEST_TOPIC_BY_ID';
 export const RECEIVE_TOPIC_BY_ID = 'RECEIVE_TOPIC_BY_ID';
 export const FOLLOW_TOPIC = 'FOLLOW_TOPIC';
 export const RECEIVE_FOLLOWED_TOPIC = 'RECEIVE_FOLLOWED_TOPIC';
+export const REQUEST_SUGGESTED_EXPERTS = 'REQUEST_SUGGESTED_EXPERTS';
+export const RECEIVE_SUGGESTED_EXPERTS = 'RECEIVE_SUGGESTED_EXPERTS';
 
 export function addTopicPending() {
     return {
@@ -84,6 +86,24 @@ export const followTopic = (postData) => {
             method: 'POST',
             body: postData,
             success: receiveFollowedTopic,
+        },
+    };
+};
+
+const receiveSuggestedExperts = (res) => {
+    return {
+        type: RECEIVE_SUGGESTED_EXPERTS,
+        res,
+    };
+};
+
+export const requestSuggestedExperts = (id) => {
+    return {
+        type: REQUEST_SUGGESTED_EXPERTS,
+        makeApiRequest: {
+            url: `/api/v1/suggested-experts/${id}`,
+            method: 'GET',
+            success: receiveSuggestedExperts,
         },
     };
 };
