@@ -267,7 +267,7 @@ const TopBar = (props) => {
                     aria-label="show 11 new notifications"
                     color="inherit">
                     <Badge
-                        badgeContent={ 11 }
+                        badgeContent={ user.notificationCount }
                         color="secondary">
                         <NotificationsIcon />
                     </Badge>
@@ -335,7 +335,7 @@ const TopBar = (props) => {
                                     to="/answer"
                                     className={ classes.link }>
                                     <Badge
-                                        badgeContent={ 2 }
+                                        badgeContent={ 0 }
                                         color="secondary">
                                         <Button
                                             startIcon={ <EditIcon /> }>
@@ -355,7 +355,7 @@ const TopBar = (props) => {
                                     to="/notifications"
                                     className={ classes.link }>
                                     <Badge
-                                        badgeContent={ 17 }
+                                        badgeContent={ user.notificationCount }
                                         color="secondary">
                                         <Button
                                             startIcon={ <NotificationsIcon /> }>

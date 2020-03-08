@@ -46,6 +46,7 @@ const TopicSection = (props) => {
         topic,
         followers,
         user,
+        isOwner,
     } = props;
 
     const handleFollowClick = () => {
@@ -64,13 +65,13 @@ const TopicSection = (props) => {
                 color="textSecondary">
                 { jobTitle }
             </Typography>
-            <Button
+            { !isOwner && <Button
                 size="small"
                 onClick={ handleFollowClick }
                 startIcon={ <RssFeedSharpIcon /> }
                 color={ following ? 'primary' : 'default' }>
                 Follow
-            </Button>
+            </Button> }
         </>
     );
 

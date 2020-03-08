@@ -14,6 +14,7 @@ export const REQUEST_TRENDING_QUESTIONS = 'REQUEST_TRENDING_QUESTIONS';
 export const RECEIVE_TRENDING_QUESTIONS = 'RECEIVE_TRENDING_QUESTIONS';
 export const REQUEST_RELATED_QUESTIONS = 'REQUEST_RELATED_QUESTIONS';
 export const RECEIVE_RELATED_QUESTIONS = 'RECEIVE_RELATED_QUESTIONS';
+export const RECEIVE_QUESTION_FOR_CACHE = 'RECEIVE_QUESTION_FOR_CACHE';
 
 const receiveUserQuestions = (questions) => {
     return {
@@ -154,5 +155,12 @@ export const editQuestion = (id, postData) => {
             body: postData,
             success: receiveEditedQuestion,
         },
+    };
+};
+
+export const addQuestionToCache = (question) => {
+    return {
+        type: RECEIVE_QUESTION_FOR_CACHE,
+        question,
     };
 };

@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import { red } from '@material-ui/core/colors';
 import Box from '@material-ui/core/Box';
 import Avatar from '../base/Avatar';
-import QuestionModal from '../base/QuestionModal';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -41,30 +40,7 @@ const useStyles = makeStyles((theme) => {
 function AskQuestionCard(props) {
     const classes = useStyles();
     const { user: { name }, pending } = props;
-    const [
-        openQModal,
-        setOpenQModal,
-    ] = React.useState(false);
-
-    const handleClickQuestionModalOpen = () => {
-        setOpenQModal(true);
-    };
-
-    const handleQuestionModalClose = () => {
-        setOpenQModal(false);
-    };
-
-    const renderQuestionModal = (
-        <QuestionModal
-            open={ openQModal }
-            handleClose={ handleQuestionModalClose } />
-    );
-
-    useEffect(() => {
-        if (!pending) {
-            setOpenQModal(pending);
-        }
-    }, [ pending ]);
+    const { handleClickQuestionModalOpen } = props;
 
     return (
         <Card
@@ -95,8 +71,6 @@ function AskQuestionCard(props) {
                     </Typography>
                 </Link>
             </CardContent>
-
-            { renderQuestionModal }
         </Card>
     );
 }
