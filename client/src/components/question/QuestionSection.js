@@ -202,6 +202,10 @@ const QuestionSection = (props) => {
     );
 };
 
+QuestionSection.defaultProps = {
+    followers: [],
+};
+
 const mapStateToProps = (state) => {
     return {
         pending: state.answer.pending,

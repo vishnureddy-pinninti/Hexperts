@@ -58,7 +58,7 @@ function Home(props) {
                 key={ question._id }
                 id={ question._id }
                 date={ question.postedDate }
-                question={ question.question } />
+                question={ question } />
         );
     });
 

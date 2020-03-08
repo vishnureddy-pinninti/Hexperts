@@ -77,7 +77,8 @@ function ProfileBody(props) {
                 key={ item._id }
                 id={ item._id }
                 date={ item.postedDate }
-                question={ item.question } />
+                answersCount={ item.answers }
+                question={ item } />
         );
     });
 

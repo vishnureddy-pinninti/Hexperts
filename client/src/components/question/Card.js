@@ -14,21 +14,19 @@ import draftToHtml from 'draftjs-to-html';
 import { connect } from 'react-redux';
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import RssFeedSharpIcon from '@material-ui/icons/RssFeedSharp';
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import Collapse from '@material-ui/core/Collapse';
 import { Link } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import { formatDistance } from 'date-fns';
 
 import { addAnswerToQuestion, addAnswerPending } from '../../store/actions/answer';
-import { followQuestion } from '../../store/actions/questions';
+import { followQuestion, addQuestionToCache } from '../../store/actions/questions';
 
 
 const useStyles = makeStyles({
     root: {
         overflow: 'visible',
         marginTop: 10,
-        border: '1px solid #efefef',
     },
     media: {
 
@@ -58,6 +56,10 @@ const QuestionCard = (props) => {
         pending,
         followQuestion,
         date,
+        followers,
+        modifiedQuestions,
+        user,
+        answersCount,
     } = props;
 
     const [
@@ -94,8 +96,9 @@ const QuestionCard = (props) => {
         addAnswerToQuestion(
             {
                 answer: draftToHtml(convertToRaw(answer.getCurrentContent())),
-                questionID: id,
-            }
+                questionID: question._id,
+            },
+            question
         );
     };
 
@@ -108,8 +111,10 @@ const QuestionCard = (props) => {
     };
 
     const handleFollowClick = () => {
-        followQuestion({ questionID: id });
+        followQuestion({ questionID: question._id }, question);
     };
+
+    const following = question.followers.indexOf(user._id) >= 0;
 
     return (
         <Card
@@ -131,8 +136,18 @@ const QuestionCard = (props) => {
                         <Box
                             fontWeight="fontWeightBold"
                             fontSize={ 20 }>
-                            { question }
+                            { question.question }
                         </Box>
+                    </Link>
+                </Typography>
+                <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p">
+                    <Link
+                        to={ `/question/${id}` }
+                        className={ classes.link }>
+                        { answersCount ? `${answersCount} answers` : 'No answers yet' }
                     </Link>
                 </Typography>
             </CardContent>
@@ -148,15 +163,10 @@ const QuestionCard = (props) => {
                     size="small"
                     onClick={ handleFollowClick }
                     startIcon={ <RssFeedSharpIcon /> }
-                    color="default">
+                    color={ following ? 'primary' : 'default' }>
                     Follow
-                </Button>
-                <Button
-                    size="small"
-                    onClick={ handleOpen }
-                    startIcon={ <RecordVoiceOverIcon /> }
-                    color="default">
-                    Request
+                    { ' ' }
+                    { question.followers.length }
                 </Button>
             </CardActions>
             <Collapse
@@ -194,16 +204,20 @@ const QuestionCard = (props) => {
 const mapStateToProps = (state) => {
     return {
         pending: state.answer.pending,
+        user: state.user.user,
+        modifiedQuestions: state.questions.modifiedQuestions,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addAnswerToQuestion: (body) => {
+        addAnswerToQuestion: (body, question) => {
+            dispatch(addQuestionToCache(question));
             dispatch(addAnswerPending());
             dispatch(addAnswerToQuestion(body));
         },
-        followQuestion: (body) => {
+        followQuestion: (body, question) => {
+            dispatch(addQuestionToCache(question));
             dispatch(followQuestion(body));
         },
     };

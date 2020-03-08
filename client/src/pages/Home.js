@@ -13,6 +13,7 @@ import AskQuestionCard from '../components/question/AskQuestionCard';
 import QuestionsList from '../components/question/QuestionsList';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
+import QuestionModal from '../components/base/QuestionModal';
 
 
 const useStyles = makeStyles((theme) => {
@@ -93,6 +94,31 @@ function Home(props) {
         setOpenExpertInModal(false);
     };
 
+    const [
+        openQModal,
+        setOpenQModal,
+    ] = React.useState(false);
+
+    const handleClickQuestionModalOpen = () => {
+        setOpenQModal(true);
+    };
+
+    const handleQuestionModalClose = () => {
+        setOpenQModal(false);
+    };
+
+    const renderQuestionModal = (
+        <QuestionModal
+            open={ openQModal }
+            handleClose={ handleQuestionModalClose } />
+    );
+
+    useEffect(() => {
+        if (!pending) {
+            setOpenQModal(pending);
+        }
+    }, [ pending ]);
+
 
     const renderQuestions = () => questions.map((question) => {
         if (question.answers && question.answers.length){
@@ -116,7 +142,7 @@ function Home(props) {
                 key={ question._id }
                 id={ question._id }
                 date={ question.postedDate }
-                question={ question.question } />
+                question={ question } />
         );
     });
 
@@ -138,7 +164,9 @@ function Home(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        <AskQuestionCard user={ user } />
+                        <AskQuestionCard
+                            user={ user }
+                            handleClickQuestionModalOpen={ handleClickQuestionModalOpen } />
                         { renderQuestions() }
                     </Grid>
                     <Grid
@@ -160,6 +188,7 @@ function Home(props) {
                 open={ openExpertInModal }
                 followedTopics={ followedTopics }
                 handleFollowTopicsModalClose={ handleExpertInModalClose } />
+            { renderQuestionModal }
         </div>
     );
 }

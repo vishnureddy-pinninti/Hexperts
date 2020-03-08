@@ -107,6 +107,7 @@ function SearchBar(props) {
             options={ results }
             renderOption={ renderResults }
             style={ { width: 300 } }
+            filterOptions={ (options, params) => options }
             renderInput={ (params) => (
                 <TextField
                     ref={ params.InputProps.ref }

@@ -7,18 +7,14 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
-import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ProfileHeader from '../components/profile/ProfileHeader';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
-
-import AnswerCard from '../components/answer/Card';
-import QuestionCard from '../components/question/Card';
 import { requestUserById } from '../store/actions/auth';
 import ProfileBody from '../components/profile/ProfileBody';
 
@@ -28,6 +24,9 @@ const useStyles = makeStyles((theme) => {
         root: {
             position: 'fixed',
             width: 100,
+        },
+        heading: {
+            display: 'flex',
         },
         small: {
             width: theme.spacing(3),
@@ -73,6 +72,8 @@ function Profile(props) {
         requestUser,
         userId,
     ]);
+
+    const isOwner = user._id === userProfile._id;
 
     const [
         openFollowTopicsModal,
@@ -136,22 +137,18 @@ function Profile(props) {
 
     const renderSection = (title, items = [], handleEdit) => (
         <>
-            <Typography
-                component="div"
-                className={ classes.heading }>
-                <Box
-                    fontWeight="fontWeightBold"
-                    m={ 1 }>
-                    { title }
+            <FormControlLabel
+                control={
                     <IconButton
                         aria-label="edit"
+                        disabled={ !isOwner }
                         onClick={ handleEdit }
                         className={ classes.margin }>
                         <EditIcon fontSize="small" />
                     </IconButton>
-                </Box>
-
-            </Typography>
+                }
+                labelPlacement="start"
+                label={ title } />
             <List className={ classes.list }>
                 { renderTopics(items) }
             </List>
@@ -173,6 +170,7 @@ function Profile(props) {
                         <ProfileHeader
                             name={ userProfile.name }
                             mail={ userProfile.email }
+                            isOwner={ isOwner }
                             jobTitle={ userProfile.jobTitle }
                             id={ userId } />
                         <ProfileBody />
@@ -208,7 +206,6 @@ const mapStateToProps = (state) => {
         pending: state.user.pending,
         followedTopics: state.user.user.interests,
         userProfile: state.user.userProfile,
-
         questions: state.questions.questions,
         user: state.user.user,
         expertIn: state.user.expertIn,
