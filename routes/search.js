@@ -7,6 +7,7 @@ const {
     getHighlightFields,
     getRequestUrl,
     parseResult,
+    getExcludeFields,
 } = require('../utils/search');
 
 module.exports = (app) => {
@@ -19,6 +20,7 @@ module.exports = (app) => {
             pagination,
         } = req.queryParams;
         const searchFields = getSearchFields(categories);
+        const excludeFields = getExcludeFields(categories);
         const highlightFields = getHighlightFields(searchFields);
         const requestUrl = getRequestUrl(categories);
 
@@ -26,7 +28,7 @@ module.exports = (app) => {
             json: true,
             body: {
                 _source: {
-                    excludes: searchFields,
+                    excludes: excludeFields,
                 },
                 query: {
                     multi_match: {

@@ -25,7 +25,7 @@ const spaceSchema = new Schema({
     imageUrl: {
         type: String,
         trim: true,
-        es_indexed: false,
+        es_indexed: true,
     },
     description: {
         type: String,
