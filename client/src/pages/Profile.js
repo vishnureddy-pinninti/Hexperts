@@ -45,7 +45,8 @@ const useStyles = makeStyles((theme) => {
             marginBottom: 10,
         },
         list: {
-            width: 200,
+            display: 'flex',
+            flexDirection: 'column',
         },
     };
 });
@@ -155,7 +156,6 @@ function Profile(props) {
         </>
     );
 
-
     return (
         <div className="App">
             <Container fixed>
@@ -178,9 +178,9 @@ function Profile(props) {
                     <Grid
                         item
                         xs={ 2 }>
-                        { renderSection('Following', userProfile.interests, handleFollowTopicsModalOpen) }
+                        { renderSection('Following', followedTopics, handleFollowTopicsModalOpen) }
                         <Divider />
-                        { renderSection('Knows about', userProfile.expertIn, handleExpertInModalOpen) }
+                        { renderSection('Knows about', expertIn, handleExpertInModalOpen) }
                     </Grid>
                 </Grid>
             </Container>
@@ -190,7 +190,7 @@ function Profile(props) {
                 handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
             <ExpertInModal
                 open={ openExpertInModal }
-                followedTopics={ followedTopics }
+                expertIn={ expertIn }
                 handleFollowTopicsModalClose={ handleExpertInModalClose } />
         </div>
     );
@@ -204,7 +204,7 @@ const mapStateToProps = (state) => {
     return {
         topic: state.topic.topic,
         pending: state.user.pending,
-        followedTopics: state.user.user.interests,
+        followedTopics: state.user.interests,
         userProfile: state.user.userProfile,
         questions: state.questions.questions,
         user: state.user.user,

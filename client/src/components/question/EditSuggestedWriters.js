@@ -17,11 +17,19 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import Avatar from '../base/Avatar';
 
 import { addNewTopic, requestTopics, requestSuggestedExperts } from '../../store/actions/topic';
 import { editQuestion, editQuestionPending } from '../../store/actions/questions';
 
+function a11yProps(index) {
+    return {
+        id: `full-width-tab-${index}`,
+        'aria-controls': `full-width-tabpanel-${index}`,
+    };
+}
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -51,11 +59,43 @@ const validate = (values) => {
     return errors;
 };
 
+function TabPanel(props) {
+    const {
+        children,
+        value,
+        index,
+        ...other
+    } = props;
+
+    return (
+        <Typography
+            component="div"
+            role="tabpanel"
+            hidden={ value !== index }
+            id={ `wrapped-tabpanel-${index}` }
+            aria-labelledby={ `wrapped-tab-${index}` }
+            { ...other }>
+            { value === index && <Box p={ 3 }>
+                { children }
+            </Box> }
+        </Typography>
+    );
+}
+
 
 const EditSuggestedWriters = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const [
+        value,
+        setValue,
+    ] = React.useState('one');
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
 
     const {
         addNewTopic,
@@ -69,6 +109,7 @@ const EditSuggestedWriters = (props) => {
         newTopic,
         suggestedExperts,
         requestSuggestedExperts,
+        askedExperts,
     } = props;
 
     useEffect(() => {
@@ -80,10 +121,25 @@ const EditSuggestedWriters = (props) => {
         setChecked,
     ] = React.useState([]);
 
+    const [
+        selectedTopic,
+        setSelectedTopic,
+    ] = React.useState('all');
+
     useEffect(() => {
-        const topicslist = '';
-        requestSuggestedExperts(topicslist);
+        requestAllTopicsExperts();
     }, []);
+
+    const requestAllTopicsExperts = () => {
+        const topicsString = `${topics.map((topic) => `${topic._id}`)}`;
+        setSelectedTopic('all');
+        requestSuggestedExperts(topicsString);
+    };
+
+    const getTopicExperts = (topicId) => {
+        setSelectedTopic(topicId);
+        requestSuggestedExperts(topicId);
+    };
 
     const handleToggle = ((value) => () => {
         const currentIndex = checked.indexOf(value._id);
@@ -106,6 +162,8 @@ const EditSuggestedWriters = (props) => {
     const renderTopics = () => topics.map((topic) => (
         <ListItem
             button
+            selected={ selectedTopic === topic._id }
+            onClick={ () => getTopicExperts(topic._id) }
             key={ topic._id }>
             <ListItemText primary={ topic.topic } />
         </ListItem>
@@ -127,8 +185,9 @@ const EditSuggestedWriters = (props) => {
                 component="nav"
                 aria-label="main mailbox folders">
                 <ListItem
-                    button
-                    selected>
+                    onClick={ requestAllTopicsExperts }
+                    selected={ selectedTopic === 'all' }
+                    button>
                     <ListItemText primary="All Topics" />
                 </ListItem>
                 { renderTopics() }
@@ -190,6 +249,46 @@ const EditSuggestedWriters = (props) => {
         </div>
     );
 
+    const renderAskedExperts = () => (
+        <div className={ classes.userList }>
+            <Typography
+                component="div"
+                className={ classes.heading }>
+                <Box
+                    fontWeight="fontWeightBold"
+                    m={ 1 }>
+                    Experts
+                </Box>
+            </Typography>
+            <List className={ classes.list }>
+                { askedExperts.map((user) => (
+                    <ListItem
+                        key={ user._id }
+                        dense>
+                        <ListItemAvatar>
+                            <Avatar
+                                alt={ user.name }
+                                user={ user.email } />
+                        </ListItemAvatar>
+                        <ListItemText
+                            primary={ user.name }
+                            secondary={
+                                <>
+                                    <Typography
+                                        component="div"
+                                        variant="body2"
+                                        color="textPrimary">
+                                        { user.jobTitle }
+                                    </Typography>
+                                    { `${user.reputation} points` }
+                                </>
+                            } />
+                    </ListItem>
+                )) }
+            </List>
+        </div>
+    );
+
     return (
         <Dialog
             className={ classes.root }
@@ -204,20 +303,42 @@ const EditSuggestedWriters = (props) => {
                 { question }
             </DialogTitle>
             <DialogContent>
-                <Grid
-                    container
-                    spacing={ 3 }>
+                <Tabs
+                    value={ value }
+                    onChange={ handleChange }
+                    aria-label="wrapped label tabs example">
+                    <Tab
+                        value="one"
+                        label="Suggested Experts"
+                        { ...a11yProps('one') } />
+                    <Tab
+                        value="two"
+                        label="Sent Requests"
+                        { ...a11yProps('two') } />
+                </Tabs>
+                <TabPanel
+                    value={ value }
+                    index="one">
                     <Grid
-                        item
-                        xs={ 4 }>
-                        { renderTopicList() }
+                        container
+                        spacing={ 3 }>
+                        <Grid
+                            item
+                            xs={ 4 }>
+                            { renderTopicList() }
+                        </Grid>
+                        <Grid
+                            item
+                            xs={ 8 }>
+                            { renderTopicExperts() }
+                        </Grid>
                     </Grid>
-                    <Grid
-                        item
-                        xs={ 8 }>
-                        { renderTopicExperts() }
-                    </Grid>
-                </Grid>
+                </TabPanel>
+                <TabPanel
+                    value={ value }
+                    index="two">
+                    { renderAskedExperts() }
+                </TabPanel>
             </DialogContent>
 
             <DialogActions>
@@ -248,6 +369,7 @@ const mapStateToProps = (state) => {
         newTopic: state.topic.newTopic,
         topicsList: state.topic.topics,
         suggestedExperts: state.topic.suggestedExperts,
+        askedExperts: state.questions.question.suggestedExperts,
     };
 };
 

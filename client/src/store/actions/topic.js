@@ -101,7 +101,7 @@ export const requestSuggestedExperts = (id) => {
     return {
         type: REQUEST_SUGGESTED_EXPERTS,
         makeApiRequest: {
-            url: `/api/v1/suggested-experts/${id}`,
+            url: `/api/v1/suggested-experts/?_topics=${id}`,
             method: 'GET',
             success: receiveSuggestedExperts,
         },

@@ -12,7 +12,8 @@ const useStyles = makeStyles((theme) => {
     return {
         root: {
             position: 'fixed',
-            width: 100,
+            display: 'flex',
+            flexDirection: 'column',
         },
         small: {
             width: theme.spacing(3),

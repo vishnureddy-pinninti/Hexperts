@@ -5,8 +5,7 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_USER_BY_ID,
     RECEIVE_QUESTIONS_BY_USER_ID,
     RECEIVE_USER_ANSWERS,
-    SET_IMAGE,
-} from '../actions/auth';
+    SET_IMAGE } from '../actions/auth';
 
 const initialState = {
     isAuthenticated: false,
@@ -31,6 +30,8 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 userProfile: action.profile,
+                interests: action.profile.interests,
+                expertIn: action.profile.expertIn,
             };
         case RECEIVE_TOP_CREATORS:
             return {
@@ -66,11 +67,14 @@ export default (state = initialState, action) => {
                 feed: action.res.answers,
             };
         case SET_IMAGE: {
-            const existingImages = state.images.filter(image => image.user !== action.image.user);
+            const existingImages = state.images.filter((image) => image.user !== action.image.user);
             return {
                 ...state,
-                images: [ ...existingImages, action.image ],
-            }
+                images: [
+                    ...existingImages,
+                    action.image,
+                ],
+            };
         }
         default:
             return state;
