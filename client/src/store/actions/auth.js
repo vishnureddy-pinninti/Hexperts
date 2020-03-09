@@ -11,6 +11,7 @@ export const REQUEST_QUESTIONS_BY_USER_ID = 'REQUEST_QUESTIONS_BY_USER_ID';
 export const RECEIVE_QUESTIONS_BY_USER_ID = 'RECEIVE_QUESTIONS_BY_USER_ID';
 export const REQUEST_USER_ANSWERS = 'REQUEST_USER_ANSWERS';
 export const RECEIVE_USER_ANSWERS = 'RECEIVE_USER_ANSWERS';
+export const SET_IMAGE = 'SET_IMAGE';
 
 const receiveUserSession = (user) => {
     return {
@@ -128,3 +129,10 @@ export const requestUserAnswers = (userId) => {
         },
     };
 };
+
+export const setImage = (image) => {
+    return {
+        type: SET_IMAGE,
+        image,
+    }
+}

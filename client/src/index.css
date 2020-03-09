@@ -15,4 +15,5 @@ code {
 
 .highlighter{
   font-weight: bold;
+  border-bottom: 4px solid #ebdb64;
 }
