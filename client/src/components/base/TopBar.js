@@ -280,7 +280,7 @@ const TopBar = (props) => {
                     aria-controls="primary-search-account-menu"
                     aria-haspopup="true"
                     color="inherit">
-                    <Avatar />
+                    <Avatar user={ user.email }/>
                 </IconButton>
                 <p>Profile</p>
             </MenuItem>
@@ -384,7 +384,7 @@ const TopBar = (props) => {
                                     aria-haspopup="true"
                                     onClick={ handleProfileMenuOpen }
                                     color="inherit">
-                                    <Avatar />
+                                    <Avatar user={ user.email } />
                                 </IconButton>
                             </div>
                             <div className={ classes.sectionMobile }>

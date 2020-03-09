@@ -4,7 +4,9 @@ import { RECEIVE_USER_SESSION,
     ADD_PREFERENCES_PENDING,
     RECEIVE_USER_BY_ID,
     RECEIVE_QUESTIONS_BY_USER_ID,
-    RECEIVE_USER_ANSWERS } from '../actions/auth';
+    RECEIVE_USER_ANSWERS,
+    SET_IMAGE,
+} from '../actions/auth';
 
 const initialState = {
     isAuthenticated: false,
@@ -12,6 +14,7 @@ const initialState = {
     topUsers: [],
     pending: true,
     feed: [],
+    images: [],
 };
 
 export default (state = initialState, action) => {
@@ -62,6 +65,13 @@ export default (state = initialState, action) => {
                 ...state,
                 feed: action.res.answers,
             };
+        case SET_IMAGE: {
+            const existingImages = state.images.filter(image => image.user !== action.image.user);
+            return {
+                ...state,
+                images: [ ...existingImages, action.image ],
+            }
+        }
         default:
             return state;
     }

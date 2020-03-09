@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => {
 
 function AskQuestionCard(props) {
     const classes = useStyles();
-    const { user: { name }, pending } = props;
+    const { user: { name, email }, pending } = props;
     const { handleClickQuestionModalOpen } = props;
 
     return (
@@ -51,7 +51,8 @@ function AskQuestionCard(props) {
                 avatar={
                     <Avatar
                         aria-label="recipe"
-                        className={ classes.avatar }>
+                        className={ classes.avatar }
+                        user={ email }>
                         { name.match(/\b(\w)/g).join('') }
                     </Avatar>
                 }
