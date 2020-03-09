@@ -24,3 +24,4 @@ require('./topic');
 require('./space');
 require('./blog');
 require('./notification');
+require('./external');

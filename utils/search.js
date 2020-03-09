@@ -82,23 +82,23 @@ const fields = {
         text: 'name',
         subtext: 'email',
     },
-    // externals: {
-    //     searchFields: [
-    //         'link',
-    //         'title',
-    //         'content',
-    //     ],
-    //     highlightFields: [
-    //         'title',
-    //         'content',
-    //     ],
-    //     excludeSourceFields: [
-    //         'title',
-    //         'content',
-    //     ],
-    //     text: 'title',
-    //     subtext: 'content',
-    // },
+    externals: {
+        searchFields: [
+            'link',
+            'title',
+            'content',
+        ],
+        highlightFields: [
+            'title',
+            'content',
+        ],
+        excludeSourceFields: [
+            'title',
+            'content',
+        ],
+        text: 'title',
+        subtext: 'content',
+    },
 };
 
 const onlyUnique = (value, index, self) => value && self.indexOf(value) === index;

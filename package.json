@@ -21,10 +21,12 @@
   "homepage": "https://github.com/creddaiah/expertise-exchange-platform#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cheerio": "^1.0.0-rc.3",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.2.0",
     "email-templates": "^7.0.4",
     "express": "^4.17.1",
+    "keyword-extractor": "0.0.18",
     "mongoosastic": "^4.5.1",
     "mongoose": "^5.8.11",
     "multer": "^1.4.2",
@@ -32,6 +34,7 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "pug": "^2.0.4",
     "request-promise": "^4.2.5",
+    "url-parse": "^1.4.7",
     "uuid": "^3.4.0"
   },
   "devDependencies": {

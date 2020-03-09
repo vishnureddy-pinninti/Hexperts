@@ -7,6 +7,7 @@ module.exports = (app) => {
     app.get('/api/v1/top-contributors', loginMiddleware, async(req, res) => {
         try {
             const users = await User.aggregate([
+                { $match: { reputation: { $gt: 0 } } },
                 { $sort: { reputation: -1 } },
                 { $limit: 3 },
                 {
