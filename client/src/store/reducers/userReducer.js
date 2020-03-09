@@ -65,11 +65,13 @@ export default (state = initialState, action) => {
                 ...state,
                 feed: action.res.answers,
             };
-        case SET_IMAGE:
+        case SET_IMAGE: {
+            const existingImages = state.images.filter(image => image.user !== action.image.user);
             return {
                 ...state,
-                images: [ ...state.images, action.image ],
+                images: [ ...existingImages, action.image ],
             }
+        }
         default:
             return state;
     }
