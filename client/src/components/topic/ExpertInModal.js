@@ -93,17 +93,21 @@ const ExpertInModal = (props) => {
         question,
         questionID,
         topics,
-        followedTopics,
         requestTopics,
         editQuestion,
         addUserPreferences,
+        expertIn,
         open,
     } = props;
 
 
-    useEffect(() => {
-        requestTopics();
-    }, [ requestTopics ]);
+    for (let i = topics.length - 1; i >= 0; i--){
+        for (let j = 0; j < expertIn.length; j++){
+            if (topics[i] && (topics[i]._id === expertIn[j]._id)){
+                topics.splice(i, 1);
+            }
+        }
+    }
 
     const [
         filteredTopics,
@@ -131,10 +135,6 @@ const ExpertInModal = (props) => {
             fullWidth />
     );
 
-    const onAddNewTopic = (values) => {
-        addNewTopic({ topics: [ values.topic ] });
-    };
-
     const [
         checked,
         setChecked,
@@ -144,21 +144,6 @@ const ExpertInModal = (props) => {
         selectedTopics,
         setSelectedTopics,
     ] = React.useState(topics);
-
-    const handleToggle = (value) => () => {
-        const currentIndex = checked.indexOf(value._id);
-        const newChecked = [ ...checked ];
-
-        if (currentIndex === -1) {
-            newChecked.push(value._id);
-        }
-        else {
-            newChecked.splice(currentIndex, 1);
-        }
-
-        setChecked(newChecked);
-    };
-
 
     const selectTopic = (value) => {
         if (value){
@@ -210,39 +195,6 @@ const ExpertInModal = (props) => {
                 );
             }) }
         </List>
-    );
-
-
-    const renderTopicsOld = () => (
-        <div className={ classes.root }>
-            <GridList
-                className={ classes.gridList }>
-                { filteredTopics.map((topic) => (
-                    <GridListTile key={ topic._id }>
-                        <img
-                            src={ topic.imageUrl || '/placeholder.png' }
-                            alt={ topic.topic } />
-                        <GridListTileBar
-                            title={ topic.topic }
-                            classes={ {
-                                root: classes.titleBar,
-                                title: classes.title,
-                            } }
-                            actionIcon={
-                                <IconButton
-                                    aria-label={ `star ${topic.topic}` }
-                                    onClick={ () => { selectTopic(topic); } }>
-                                    <WhiteCheckbox
-                                        icon={ <CheckCircleOutlinedIcon /> }
-                                        checkedIcon={ <CheckCircleRoundedIcon /> }
-                                        checked={ checked.indexOf(topic._id) !== -1 }
-                                        className={ classes.checkbox } />
-                                </IconButton>
-                            } />
-                    </GridListTile>
-                )) }
-            </GridList>
-        </div>
     );
 
     return (

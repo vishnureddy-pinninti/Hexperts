@@ -35,7 +35,9 @@ function SearchBar(props) {
     }, [ requestSearch ]);
 
     const handleSearch = debounce((event, text) => {
-        requestSearch({ text });
+        if (text && text.length > 2){
+            requestSearch({ text });
+        }
     }, 250);
 
     const topic = (item) => (

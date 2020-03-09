@@ -38,6 +38,7 @@ function Home(props) {
         followedTopics,
         pending,
         expertIn,
+        topics,
     } = props;
 
     const classes = useStyles();
@@ -119,7 +120,6 @@ function Home(props) {
         }
     }, [ pending ]);
 
-
     const renderQuestions = () => questions.map((question) => {
         if (question.answers && question.answers.length){
             const answer = question.answers[0];
@@ -186,7 +186,7 @@ function Home(props) {
                 handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
             <ExpertInModal
                 open={ openExpertInModal }
-                followedTopics={ followedTopics }
+                expertIn={ expertIn }
                 handleFollowTopicsModalClose={ handleExpertInModalClose } />
             { renderQuestionModal }
         </div>
@@ -199,8 +199,9 @@ const mapStateToProps = (state) => {
         user: state.user.user,
         expertIn: state.user.expertIn,
         pending: state.user.pending,
-        followedTopics: state.user.user.interests,
+        followedTopics: state.user.interests,
         trendingQuestions: state.questions.trendingQuestions,
+        topics: state.topic.topics,
     };
 };
 

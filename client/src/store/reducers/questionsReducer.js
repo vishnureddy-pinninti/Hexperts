@@ -92,15 +92,14 @@ export default (state = initialState, action) => {
             }
             question = state.modifiedQuestions;
             id = action.res._id;
-            if (!question[id]){
-                question[id] = {};
-            }
-            index = question[id].followers.indexOf(action.res.follower);
-            if (index >= 0){
-                question[id].followers.splice(index, 1);
-            }
-            else {
-                question[id].followers.push(action.res.follower);
+            if (question[id]){
+                index = question[id].followers.indexOf(action.res.follower);
+                if (index >= 0){
+                    question[id].followers.splice(index, 1);
+                }
+                else {
+                    question[id].followers.push(action.res.follower);
+                }
             }
             return {
                 ...state,
