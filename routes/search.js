@@ -31,9 +31,19 @@ module.exports = (app) => {
                     excludes: excludeFields,
                 },
                 query: {
-                    multi_match: {
-                        query: text,
-                        fields: searchFields,
+                    boosting: {
+                        positive: {
+                            multi_match: {
+                                query: text,
+                                fields: searchFields,
+                            },
+                        },
+                        negative: {
+                            terms: {
+                                _index: [ 'externals' ],
+                            },
+                        },
+                        negative_boost: 0.2,
                     },
                 },
                 highlight: {

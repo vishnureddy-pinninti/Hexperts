@@ -10,4 +10,5 @@ module.exports = (app) => {
     require('./blogs')(app);
     require('./notification')(app);
     require('./contributors')(app);
+    require('./crawl')(app);
 };
