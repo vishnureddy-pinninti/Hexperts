@@ -172,7 +172,8 @@ function Profile(props) {
                             mail={ userProfile.email }
                             isOwner={ isOwner }
                             jobTitle={ userProfile.jobTitle }
-                            id={ userId } />
+                            followers={ userProfile.followers }
+                            id={ userProfile._id } />
                         <ProfileBody />
                     </Grid>
                     <Grid

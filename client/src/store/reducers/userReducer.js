@@ -5,6 +5,7 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_USER_BY_ID,
     RECEIVE_QUESTIONS_BY_USER_ID,
     RECEIVE_USER_ANSWERS,
+    RECEIVE_FOLLOWED_USER,
     SET_IMAGE } from '../actions/auth';
 
 const initialState = {
@@ -17,6 +18,8 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
+    let followers = [];
+    let index;
     switch (action.type) {
         case RECEIVE_USER_SESSION:
             return {
@@ -65,6 +68,22 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 feed: action.res.answers,
+            };
+        case RECEIVE_FOLLOWED_USER:
+            followers = [ ...state.userProfile.followers ];
+            index = followers.indexOf(action.res.follower);
+            if (index >= 0){
+                followers.splice(index, 1);
+            }
+            else {
+                followers.push(action.res.follower);
+            }
+            return {
+                ...state,
+                userProfile: {
+                    ...state.userProfile,
+                    followers,
+                },
             };
         case SET_IMAGE: {
             const existingImages = state.images.filter((image) => image.user !== action.image.user);

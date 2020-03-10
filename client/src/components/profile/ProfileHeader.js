@@ -9,7 +9,7 @@ import RssFeedSharpIcon from '@material-ui/icons/RssFeedSharp';
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '../base/Avatar';
 import { addAnswerToQuestion, addAnswerPending } from '../../store/actions/answer';
-import { followTopic } from '../../store/actions/topic';
+import { followUser } from '../../store/actions/auth';
 
 
 const useStyles = makeStyles((theme) => {
@@ -47,11 +47,14 @@ const TopicSection = (props) => {
         followers,
         user,
         isOwner,
+        followUser,
     } = props;
 
     const handleFollowClick = () => {
-        followTopic({ interestId: id });
+        followUser({ _id: id });
     };
+
+    const following = followers.indexOf(user._id) >= 0;
 
     const renderTitle = () => (
         <>
@@ -71,11 +74,11 @@ const TopicSection = (props) => {
                 startIcon={ <RssFeedSharpIcon /> }
                 color={ following ? 'primary' : 'default' }>
                 Follow
+                { ' ' }
+                { followers.length }
             </Button> }
         </>
     );
-
-    const following = followers.indexOf(user._id) >= 0;
 
     return (
         <Card className={ classes.root }>
@@ -101,7 +104,6 @@ TopicSection.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         pending: state.answer.pending,
-        followers: state.topic.topic.followers || [],
         user: state.user.user,
     };
 };
@@ -112,8 +114,8 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(addAnswerPending());
             dispatch(addAnswerToQuestion(body));
         },
-        followTopic: (body) => {
-            dispatch(followTopic(body));
+        followUser: (body) => {
+            dispatch(followUser(body));
         },
     };
 };
