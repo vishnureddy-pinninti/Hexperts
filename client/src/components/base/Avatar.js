@@ -5,21 +5,13 @@ import { connect } from 'react-redux';
 import { setImage } from '../../store/actions/auth';
 
 class Avatar extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            image: props.currentUserImage,
-        }
-    }
-
     render() {
-        const { image } = this.state;
+        const { currentUserImage } = this.props;
         return (
             <MuiAvatar
                 { ...this.props }
                 alt="Avatar Image"
-                src={ image } />
+                src={ currentUserImage } />
         );
     }
 
@@ -30,9 +22,6 @@ class Avatar extends Component {
             setImage({
                 image,
                 user,
-            });
-            this.setState({
-                image,
             });
         }
 
