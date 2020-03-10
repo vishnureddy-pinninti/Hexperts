@@ -179,7 +179,15 @@ const AnswerCard = (props) => {
                             { name.match(/\b(\w)/g).join('') }
                         </Avatar>
                     }
-                    title={ `${name},${jobTitle}` }
+                    title={
+                        <Link
+                            className={ classes.link }
+                            onClick={ onProfileClick }>
+                            { name }
+                            ,
+                            { jobTitle }
+                        </Link>
+                    }
                     subheader={
                         <Link
                             className={ classes.link }

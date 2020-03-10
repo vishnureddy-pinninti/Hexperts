@@ -49,7 +49,7 @@ function TopicList(props) {
                 avatar={ <Avatar
                     className={ classes.avatar }
                     alt={ topic.topic }
-                    src={ topic.imageUrl } /> }
+                    src={ topic.imageUrl || '/placeholder.png' } /> }
                 label={ topic.topic }
                 className={ classes.chip }
                 clickable />

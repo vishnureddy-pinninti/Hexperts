@@ -65,7 +65,7 @@ const TopicSection = (props) => {
                 avatar={
                     <Avatar
                         alt="Remy Sharp"
-                        src={ topic.imageUrl }
+                        src={ topic.imageUrl || '/placeholder.png' }
                         className={ classes.large } />
                 }
                 title={
