@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => {
 
         chip: {
             marginBottom: 10,
+            maxWidth: 150,
         },
     };
 });

@@ -3,12 +3,15 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
+import LinkIcon from '@material-ui/icons/Link';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { connect } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Link } from 'react-router-dom';
 import { requestSearch } from '../../store/actions/search';
 import debounce from './debounce';
+import Avatar from './Avatar';
+import { Avatar as MuiAvatar } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -17,6 +20,15 @@ const useStyles = makeStyles((theme) => {
         link: {
             textDecoration: 'none',
             color: 'inherit',
+        },
+        searchItem: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+        avatar: {
+            height: 25,
+            width: 25,
         },
     };
 });
@@ -44,10 +56,15 @@ function SearchBar(props) {
         <Link
             className={ classes.link }
             to={ `/topic/${item._id}` }>
-            <div>
-                Topic:
-                { ' ' }
-                <span dangerouslySetInnerHTML={ { __html: item.text } } />
+            <div className={ classes.searchItem }>
+                <MuiAvatar
+                    alt="Remy Sharp"
+                    src={ item.options.imageUrl || '/placeholder.png' }
+                    className={ classes.avatar } />
+                <div style={{ marginLeft: 10 }}>
+                    <span>Topic: </span>
+                    <span dangerouslySetInnerHTML={ { __html: item.text } } />
+                </div>
             </div>
         </Link>
     );
@@ -77,12 +94,31 @@ function SearchBar(props) {
         <Link
             className={ classes.link }
             to={ `/profile/${item._id}` }>
-            <div>
-                User:
-                { ' ' }
-                <span dangerouslySetInnerHTML={ { __html: item.text } } />
+            <div className={ classes.searchItem }>
+                <Avatar user={ item.options.email } className={ classes.avatar }/>
+                <div style={{ marginLeft: 10 }}>
+                    <span>Profile: </span>
+                    <span dangerouslySetInnerHTML={ { __html: item.text } } />
+                </div>
             </div>
         </Link>
+    );
+
+    const externals = (item) => (
+        <a
+            className={ classes.link }
+            target="_blank"
+            href={ item.options.link }>
+            <div className={ classes.searchItem }>
+                <MuiAvatar className={ classes.avatar }>
+                    <LinkIcon style={{ backgroundColor: '#0097ba' }}/>
+                </MuiAvatar>
+                <div style={{ marginLeft: 10 }}>
+                    <span>External: </span>
+                    <span dangerouslySetInnerHTML={ { __html: item.text } } />
+                </div>
+            </div>
+        </a>
     );
 
     const renderResults = (item) => {
@@ -95,6 +131,8 @@ function SearchBar(props) {
                 return answer(item);
             case 'users':
                 return profile(item);
+            case 'externals':
+                return externals(item);
             default:
                 return question(item);
         }
