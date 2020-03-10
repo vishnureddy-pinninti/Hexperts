@@ -104,7 +104,7 @@ function ProfileBody(props) {
                 className={ classes.chip }
                 clickable />
             <Chip
-                label={ `Followers ${userProfile.followers}` }
+                label={ `Followers ${userProfile.followers && userProfile.followers.length}` }
                 className={ classes.chip }
                 clickable />
             <Chip

@@ -69,6 +69,7 @@ export default (state = initialState, action) => {
                 pending: false,
                 question: {
                     ...state.question,
+                    suggestedExperts: action.question.suggestedExperts || state.question.suggestedExperts,
                     topics: action.question.topics,
                 },
             };
