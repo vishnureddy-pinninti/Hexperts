@@ -13,7 +13,7 @@ const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const {
     errors: {
-        USER_NOT_FOUND, TOPIC_NOT_FOUND, SPACE_NOT_FOUND,
+        USER_NOT_FOUND, TOPIC_NOT_FOUND, SPACE_NOT_FOUND, UNAUTHORIZED,
     },
 } = require('../utils/constants');
 
@@ -100,7 +100,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -270,7 +271,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -319,7 +321,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -354,7 +357,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -377,7 +381,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -431,7 +436,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -485,7 +491,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -533,7 +540,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -577,7 +585,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -614,7 +623,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -705,7 +715,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -787,7 +798,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -884,7 +896,100 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
+    app.post('/api/v1/grant-admin-access', loginMiddleware, async(req, res) => {
+        const { role } = req.user;
+
+        if (role === 'admin') {
+            try {
+                const { userid } = req.body;
+                const user = await User.findById(mongoose.Types.ObjectId(userid));
+
+                if (user) {
+                    user.role = 'admin';
+
+                    await user.save();
+
+                    res
+                        .status(200)
+                        .json(user);
+                }
+                else {
+                    res
+                        .status(404)
+                        .json({
+                            error: true,
+                            response: USER_NOT_FOUND,
+                        });
+                }
+            }
+            catch (e) {
+                res
+                    .status(500)
+                    .json({
+                        error: true,
+                        response: String(e),
+                        stack: e.stack,
+                    });
+            }
+        }
+        else {
+            res
+                .status(403)
+                .json({
+                    error: true,
+                    response: UNAUTHORIZED,
+                });
+        }
+    });
+
+    app.post('/api/v1/revoke-admin-access', loginMiddleware, async(req, res) => {
+        const { role } = req.user;
+
+        if (role === 'admin') {
+            try {
+                const { userid } = req.body;
+                const user = await User.findById(mongoose.Types.ObjectId(userid));
+
+                if (user) {
+                    user.role = 'user';
+
+                    await user.save();
+
+                    res
+                        .status(200)
+                        .json(user);
+                }
+                else {
+                    res
+                        .status(404)
+                        .json({
+                            error: true,
+                            response: USER_NOT_FOUND,
+                        });
+                }
+            }
+            catch (e) {
+                res
+                    .status(500)
+                    .json({
+                        error: true,
+                        response: String(e),
+                        stack: e.stack,
+                    });
+            }
+        }
+        else {
+            res
+                .status(403)
+                .json({
+                    error: true,
+                    response: UNAUTHORIZED,
                 });
         }
     });

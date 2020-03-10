@@ -42,7 +42,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -270,7 +271,8 @@ module.exports = (app) => {
                     .status(500)
                     .json({
                         error: true,
-                        response: e,
+                        response: String(e),
+                        stack: e.stack,
                     });
             }
         }
@@ -322,7 +324,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -362,7 +365,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -392,7 +396,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -443,7 +448,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
@@ -494,7 +500,8 @@ module.exports = (app) => {
                 .status(500)
                 .json({
                     error: true,
-                    response: e,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });

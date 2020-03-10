@@ -45,6 +45,11 @@ const userSchema = new Schema({
         default: 0,
         es_indexed: false,
     },
+    role: {
+        type: String,
+        default: 'user',
+        es_indexed: false,
+    },
 });
 
 userSchema.plugin(mongoosastic, {

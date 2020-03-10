@@ -24,41 +24,53 @@ module.exports = (app) => {
         const highlightFields = getHighlightFields(searchFields);
         const requestUrl = getRequestUrl(categories);
 
-        const results = await request.get(requestUrl, {
-            json: true,
-            body: {
-                _source: {
-                    excludes: excludeFields,
-                },
-                query: {
-                    boosting: {
-                        positive: {
-                            multi_match: {
-                                query: text,
-                                fields: searchFields,
-                            },
-                        },
-                        negative: {
-                            terms: {
-                                _index: [ 'externals' ],
-                            },
-                        },
-                        negative_boost: 0.2,
+        try {
+            const results = await request.get(requestUrl, {
+                json: true,
+                body: {
+                    _source: {
+                        excludes: excludeFields,
                     },
+                    query: {
+                        boosting: {
+                            positive: {
+                                multi_match: {
+                                    query: text,
+                                    fields: searchFields,
+                                },
+                            },
+                            negative: {
+                                terms: {
+                                    _index: [ 'externals' ],
+                                },
+                            },
+                            negative_boost: 0.2,
+                        },
+                    },
+                    highlight: {
+                        pre_tags: [ '<span class=\'highlighter\'>' ],
+                        post_tags: [ '</span>' ],
+                        fields: highlightFields,
+                    },
+                    from: pagination.skip || 0,
+                    size: pagination.limit || 10,
                 },
-                highlight: {
-                    pre_tags: [ '<span class=\'highlighter\'>' ],
-                    post_tags: [ '</span>' ],
-                    fields: highlightFields,
-                },
-                from: pagination.skip || 0,
-                size: pagination.limit || 10,
-            },
-        });
+            });
 
-        const parsedResults = parseResult(results);
-        res
-            .status(200)
-            .json(parsedResults);
+            const parsedResults = parseResult(results);
+            res
+                .status(200)
+                .json(parsedResults);
+        }
+        catch (e) {
+            res
+                .status(200)
+                .json({
+                    totalCount: 0,
+                    results: [],
+                    error: true,
+                    message: e.error,
+                });
+        }
     });
 };
