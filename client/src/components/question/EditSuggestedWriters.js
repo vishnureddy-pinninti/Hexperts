@@ -77,7 +77,7 @@ function TabPanel(props) {
             { ...other }>
             { value === index && <Box p={ 3 }>
                 { children }
-            </Box> }
+                                 </Box> }
         </Typography>
     );
 }
@@ -103,7 +103,6 @@ const EditSuggestedWriters = (props) => {
         question,
         questionID,
         topics,
-        topicsList,
         requestTopics,
         editQuestion,
         newTopic,
@@ -111,6 +110,14 @@ const EditSuggestedWriters = (props) => {
         requestSuggestedExperts,
         askedExperts,
     } = props;
+
+    for (let i = suggestedExperts.length - 1; i >= 0; i--){
+        for (let j = 0; j < askedExperts.length; j++){
+            if (suggestedExperts[i] && (suggestedExperts[i]._id === askedExperts[j]._id)){
+                suggestedExperts.splice(i, 1);
+            }
+        }
+    }
 
     useEffect(() => {
         requestTopics();
@@ -126,15 +133,15 @@ const EditSuggestedWriters = (props) => {
         setSelectedTopic,
     ] = React.useState('all');
 
-    useEffect(() => {
-        requestAllTopicsExperts();
-    }, []);
-
     const requestAllTopicsExperts = () => {
         const topicsString = `${topics.map((topic) => `${topic._id}`)}`;
         setSelectedTopic('all');
         requestSuggestedExperts(topicsString);
     };
+
+    useEffect(() => {
+        requestAllTopicsExperts();
+    }, [ requestAllTopicsExperts ]);
 
     const getTopicExperts = (topicId) => {
         setSelectedTopic(topicId);
@@ -313,7 +320,7 @@ const EditSuggestedWriters = (props) => {
                         { ...a11yProps('one') } />
                     <Tab
                         value="two"
-                        label="Sent Requests"
+                        label={ `Sent Requests (${askedExperts.length})` }
                         { ...a11yProps('two') } />
                 </Tabs>
                 <TabPanel
@@ -367,7 +374,6 @@ const mapStateToProps = (state) => {
     return {
         user: state.user,
         newTopic: state.topic.newTopic,
-        topicsList: state.topic.topics,
         suggestedExperts: state.topic.suggestedExperts,
         askedExperts: state.questions.question.suggestedExperts,
     };
