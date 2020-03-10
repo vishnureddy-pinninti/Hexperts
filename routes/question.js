@@ -517,8 +517,11 @@ module.exports = (app) => {
 
             if (question) {
                 if (suggestedExperts) {
-                    const experts = await User.find({ _id: { $in: suggestedExperts.map((expert) => mongoose.Types.ObjectId(expert)) } });
-                    question.suggestedExperts = suggestedExperts;
+                    question.suggestedExperts = [
+                        ...question.suggestedExperts,
+                        ...suggestedExperts,
+                    ];
+                    const experts = await User.find({ _id: { $in: question.suggestedExperts.map((expert) => mongoose.Types.ObjectId(expert)) } });
                     responseObject.suggestedExperts = experts;
                 }
 
