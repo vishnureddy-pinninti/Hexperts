@@ -140,8 +140,8 @@ const EditSuggestedWriters = (props) => {
     };
 
     useEffect(() => {
-        requestAllTopicsExperts();
-    }, [ requestAllTopicsExperts ]);
+        requestSuggestedExperts('');
+    }, [ requestSuggestedExperts ]);
 
     const getTopicExperts = (topicId) => {
         setSelectedTopic(topicId);
