@@ -5,6 +5,7 @@ const User = mongoose.model('users');
 const { errors: { TOPIC_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
+const htmlToText = require('../utils/htmlToText');
 
 module.exports = (app) => {
     app.post('/api/v1/topics.add', loginMiddleware, async(req, res) => {
@@ -241,6 +242,7 @@ module.exports = (app) => {
 
                 if (description) {
                     topic.description = description;
+                    topic.plainText = htmlToText(description);
                     responseObject.description = description;
                 }
 

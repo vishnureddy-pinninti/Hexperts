@@ -8,6 +8,7 @@ const { errors: { QUESTION_NOT_FOUND } } = require('../utils/constants');
 const emailNotify = require('../services/email/emailService');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
+const htmlToText = require('../utils/htmlToText');
 
 module.exports = (app) => {
     app.post('/api/v1/question.add', loginMiddleware, async(req, res) => {
@@ -29,6 +30,7 @@ module.exports = (app) => {
                 topics,
                 question,
                 description,
+                plainText: htmlToText(description),
             });
 
             await newQuestion.save();
@@ -565,6 +567,7 @@ module.exports = (app) => {
 
                 if (description) {
                     question.description = description;
+                    question.plainText = htmlToText(description);
                     responseObject.description = description;
                 }
 
