@@ -27,7 +27,7 @@ export const requestUserQuestions = () => {
     return {
         type: REQUEST_USER_QUESTIONS,
         makeApiRequest: {
-            url: '/api/v1/questions?_ownQuestions=true',
+            url: '/api/v1/questions?_onlyInterests=true',
             method: 'GET',
             success: receiveUserQuestions,
         },

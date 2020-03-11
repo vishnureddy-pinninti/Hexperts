@@ -59,8 +59,6 @@ function TopCreators(props) {
                                 { user.jobTitle }
                             </Typography>
                             { `${user.answers} answers` }
-                            <br />
-                            { `${user.reputation} points` }
                         </>
                     } />
             </ListItem>
