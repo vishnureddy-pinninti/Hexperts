@@ -19,6 +19,8 @@ const {
     },
 } = require('../../utils/constants');
 
+const keys = require('../../config/keys');
+
 const emailMap = {
     newQuestion: async(data, options) => {
         // Emails to experts, author followers and topic followers
@@ -50,7 +52,7 @@ const emailMap = {
                     name: author.name,
                     data: question,
                     dataDescription: 'added below question to you.',
-                    link: `http://localhost:1515/question/${_id}`,
+                    link: `${keys.emailUrl}question/${_id}`,
                     subject: 'New Question for you',
                 },
                 recipients,
@@ -91,7 +93,7 @@ const emailMap = {
                     name: owner.name,
                     data: answer,
                     dataDescription: 'answered your question.',
-                    link: `http://localhost:1515/answer/${_id}`,
+                    link: `${keys.emailUrl}answer/${_id}`,
                     subject: 'New Answer to your question',
                 },
                 recipients,
@@ -126,7 +128,7 @@ const emailMap = {
                 locals: {
                     name: follower.name,
                     data: unfollow ? 'Unfollowed your question' : 'Started following your question',
-                    link: `http://localhost:1515/question/${questionID}`,
+                    link: `${keys.emailUrl}question/${questionID}`,
                 },
                 recipients,
                 user: follower,
@@ -158,7 +160,7 @@ const emailMap = {
                 locals: {
                     name: upvoter.name,
                     data: removeVoting ? 'Removed voting for your answer' : 'Upvoted your answer',
-                    link: `http://localhost:1515/answer/${answerID}`,
+                    link: `${keys.emailUrl}answer/${answerID}`,
                     vote: 'Upvote',
                     type: 'Answer',
                 },
@@ -196,7 +198,7 @@ const emailMap = {
                 locals: {
                     name: downvoter.name,
                     data: removeVoting ? 'Removed voting for your answer' : 'Downvoted your answer',
-                    link: `http://localhost:1515/answer/${answerID}`,
+                    link: `${keys.emailUrl}answer/${answerID}`,
                     vote: 'Downvote',
                     type: 'Answer',
                 },
@@ -234,7 +236,7 @@ const emailMap = {
                     name: author.name,
                     data: comment,
                     dataDescription: 'added below comment to your answer.',
-                    link: `http://localhost:1515/comment/${_id}`,
+                    link: `${keys.emailUrl}comment/${_id}`,
                     subject: 'New comment to your answer',
                 },
                 recipients,
@@ -271,7 +273,7 @@ const emailMap = {
                 locals: {
                     name: upvoter.name,
                     data: removeVoting ? 'Removed voting for your comment' : 'Upvoted your comment',
-                    link: `http://localhost:1515/comment/${commentID}`,
+                    link: `${keys.emailUrl}comment/${commentID}`,
                     vote: 'Upvote',
                     type: 'Comment',
                 },
@@ -309,7 +311,7 @@ const emailMap = {
                 locals: {
                     name: downvoter.name,
                     data: removeVoting ? 'Removed voting for your comment' : 'Downvoted your comment',
-                    link: `http://localhost:1515/comment/${commentID}`,
+                    link: `${keys.emailUrl}comment/${commentID}`,
                     vote: 'Downvote',
                     type: 'Comment',
                 },
@@ -351,7 +353,7 @@ const emailMap = {
                     name: author.name,
                     data: title,
                     dataDescription: 'added below blog.',
-                    link: `http://localhost:1515/blog/${_id}`,
+                    link: `${keys.emailUrl}blog/${_id}`,
                     subject: 'New Blog for you',
                 },
                 recipients,
@@ -388,7 +390,7 @@ const emailMap = {
                 locals: {
                     name: upvoter.name,
                     data: removeVoting ? 'Removed voting for your blog' : 'Upvoted your blog',
-                    link: `http://localhost:1515/blog/${blogID}`,
+                    link: `${keys.emailUrl}blog/${blogID}`,
                     vote: 'Upvote',
                     type: 'Blog',
                 },
@@ -426,7 +428,7 @@ const emailMap = {
                 locals: {
                     name: downvoter.name,
                     data: removeVoting ? 'Removed voting for your blog' : 'Downvoted your blog',
-                    link: `http://localhost:1515/blog/${blogID}`,
+                    link: `${keys.emailUrl}blog/${blogID}`,
                     vote: 'Downvote',
                     type: 'Blog',
                 },
