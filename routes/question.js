@@ -70,23 +70,50 @@ module.exports = (app) => {
         } = req.user;
 
         const aggregationMatch = Object.keys(query).map((key) => { return { [key]: query[key] }; });
-        const dbUser = await User.findById(_id);
+        const dbUser = await User.aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(_id) } },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: { id: '$_id' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $in: [
+                                        '$$id',
+                                        '$followers',
+                                    ],
+                                },
+                            },
+                        },
+                    ],
+                    as: 'following',
+                },
+            },
+        ]);
 
         if (custom._onlyInterests) {
             aggregationMatch.push({
                 $or: [
-                    { 'topics': { $in: dbUser.interests } },
-                    { 'followers': mongoose.Types.ObjectId(_id) },
+                    {
+                        $or: [
+                            { topics: { $in: dbUser[0].interests } },
+                            { topics: { $in: dbUser[0].expertIn } },
+                        ],
+                    },
+                    { followers: mongoose.Types.ObjectId(_id) },
+                    { author: { $in: dbUser[0].following.map((f) => mongoose.Types.ObjectId(f._id)) } },
                 ],
             });
         }
 
         if (custom._onlySuggested) {
-            aggregationMatch.push({ 'suggestedExperts': mongoose.Types.ObjectId(_id) });
+            aggregationMatch.push({ suggestedExperts: mongoose.Types.ObjectId(_id) });
         }
 
         if (custom._ownQuestions) {
-            aggregationMatch.push({ 'author': mongoose.Types.ObjectId(_id) });
+            aggregationMatch.push({ author: mongoose.Types.ObjectId(_id) });
         }
 
         if (!aggregationMatch.length) {
