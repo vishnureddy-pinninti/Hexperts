@@ -75,7 +75,7 @@ module.exports = (app) => {
         if (custom._onlyInterests) {
             aggregationMatch.push({
                 $or: [
-                    { 'topics': { $in: interests.map((interest) => mongoose.Types.ObjectId(interest)) } },
+                    { 'topics': { $in: interests } },
                     { 'followers': mongoose.Types.ObjectId(_id) },
                 ],
             });

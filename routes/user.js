@@ -221,13 +221,7 @@ module.exports = (app) => {
                                 else: 0,
                             },
                         },
-                        followers: {
-                            $cond: {
-                                if: { $isArray: '$followers' },
-                                then: { $size: '$followers' },
-                                else: 0,
-                            },
-                        },
+                        followers: 1,
                         emailSubscription: 1,
                         name: 1,
                         email: 1,
