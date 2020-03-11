@@ -66,16 +66,16 @@ module.exports = (app) => {
             pagination,
         } = req.queryParams;
         const {
-            interests,
             _id,
         } = req.user;
 
         const aggregationMatch = Object.keys(query).map((key) => { return { [key]: query[key] }; });
+        const dbUser = await User.findById(_id);
 
         if (custom._onlyInterests) {
             aggregationMatch.push({
                 $or: [
-                    { 'topics': { $in: interests } },
+                    { 'topics': { $in: dbUser.interests } },
                     { 'followers': mongoose.Types.ObjectId(_id) },
                 ],
             });
