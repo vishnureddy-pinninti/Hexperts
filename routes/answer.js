@@ -5,6 +5,7 @@ const { errors: { ANSWER_NOT_FOUND } } = require('../utils/constants');
 const voting = require('../utils/voting');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const emailNotify = require('../services/email/emailService');
+const htmlToText = require('../utils/htmlToText');
 
 module.exports = (app) => {
     app.post('/api/v1/answer.add', loginMiddleware, async(req, res) => {
@@ -18,6 +19,7 @@ module.exports = (app) => {
         const newAnswer = new Answer({
             answer,
             author: mongoose.Types.ObjectId(_id),
+            plainText: htmlToText(answer),
             questionID: mongoose.Types.ObjectId(questionID),
         });
 
@@ -141,6 +143,7 @@ module.exports = (app) => {
             if (answer) {
                 if (answerString) {
                     answer.answer = answerString;
+                    answer.plainText = htmlToText(answerString);
                     answer.lastModified = Date.now();
                 }
 

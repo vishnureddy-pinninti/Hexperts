@@ -26,6 +26,11 @@ const topicSchema = new Schema({
     description: {
         type: String,
         trim: true,
+        es_indexed: false,
+    },
+    plainText: {
+        type: String,
+        trim: true,
         es_indexed: true,
     },
 });

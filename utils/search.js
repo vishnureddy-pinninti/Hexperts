@@ -1,73 +1,73 @@
 const fields = {
     answers: {
-        searchFields: [ 'answer' ],
-        highlightFields: [ 'answer' ],
-        excludeSourceFields: [ 'answer' ],
-        text: 'answer',
+        searchFields: [ 'plainText' ],
+        highlightFields: [ 'plainText' ],
+        excludeSourceFields: [ 'plainText' ],
+        text: 'plainText',
     },
     blogs: {
         searchFields: [
             'title',
-            'description',
+            'plainText',
         ],
         highlightFields: [
             'title',
-            'description',
+            'plainText',
         ],
         excludeSourceFields: [
             'title',
-            'description',
+            'plainText',
         ],
         text: 'title',
-        subtext: 'description',
+        subtext: 'plainText',
     },
     questions: {
         searchFields: [
             'question',
-            'description',
+            'plainText',
         ],
         highlightFields: [
             'question',
-            'description',
+            'plainText',
         ],
         excludeSourceFields: [
             'question',
-            'description',
+            'plainText',
         ],
         text: 'question',
-        subtext: 'description',
+        subtext: 'plainText',
     },
     spaces: {
         searchFields: [
             'name',
-            'description',
+            'plainText',
         ],
         highlightFields: [
             'name',
-            'description',
+            'plainText',
         ],
         excludeSourceFields: [
             'name',
-            'description',
+            'plainText',
         ],
         text: 'name',
-        subtext: 'description',
+        subtext: 'plainText',
     },
     topics: {
         searchFields: [
             'topic',
-            'description',
+            'plainText',
         ],
         highlightFields: [
             'topic',
-            'description',
+            'plainText',
         ],
         excludeSourceFields: [
             'topic',
-            'description',
+            'plainText',
         ],
         text: 'topic',
-        subtext: 'description',
+        subtext: 'plainText',
     },
     users: {
         searchFields: [
@@ -128,7 +128,7 @@ const getSearchFields = (categories) => {
 const getHighlightFields = (searchFields) => {
     const highlightMap = {
         'require_field_match': 'false',
-        'fragment_size': 512,
+        'fragment_size': 256,
         'number_of_fragments': 1,
         'no_match_size': 256,
     };

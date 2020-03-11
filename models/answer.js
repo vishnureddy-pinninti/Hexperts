@@ -7,7 +7,7 @@ const answerSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        es_indexed: true,
+        es_indexed: false,
     },
     author: {
         type: mongoose.Types.ObjectId,
@@ -20,6 +20,11 @@ const answerSchema = new Schema({
     lastModified: {
         type: Date,
         es_indexed: false,
+    },
+    plainText: {
+        type: String,
+        trim: true,
+        es_indexed: true,
     },
     postedDate: {
         type: Date,
