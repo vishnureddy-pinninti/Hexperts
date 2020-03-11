@@ -14,6 +14,10 @@ export const RECEIVE_USER_ANSWERS = 'RECEIVE_USER_ANSWERS';
 export const SET_IMAGE = 'SET_IMAGE';
 export const FOLLOW_USER = 'FOLLOW_USER';
 export const RECEIVE_FOLLOWED_USER = 'RECEIVE_FOLLOWED_USER';
+export const REQUEST_NOTIFICATIONS = 'REQUEST_NOTIFICATIONS';
+export const RECEIVE_NOTIFICATIONS = 'RECEIVE_NOTIFICATIONS';
+export const MARK_NOTIFICATION_READ = 'MARK_NOTIFICATION_READ';
+export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
 
 const receiveUserSession = (user) => {
     return {
@@ -154,6 +158,34 @@ export const followUser = (postData) => {
             method: 'POST',
             body: postData,
             success: receiveFollowedUser,
+        },
+    };
+};
+
+const receiveNotifications = (notifications) => {
+    return {
+        type: RECEIVE_NOTIFICATIONS,
+        notifications,
+    };
+};
+
+export const requestNotifications = () => {
+    return {
+        type: REQUEST_NOTIFICATIONS,
+        makeApiRequest: {
+            url: 'api/v1/notifications',
+            method: 'GET',
+            success: receiveNotifications,
+        },
+    };
+};
+
+export const markNotificationRead = (id) => {
+    return {
+        type: MARK_NOTIFICATION_READ,
+        makeApiRequest: {
+            url: `/api/v1/notification-mark-read/${id}`,
+            method: 'GET',
         },
     };
 };

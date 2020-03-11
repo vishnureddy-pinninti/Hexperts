@@ -5,7 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => {
             display: 'inline-block',
             fontWeight: 'bold',
             color: theme.palette.primary.dark,
+            paddingRight: 30,
         },
         menu: {
             '& > *': {
@@ -163,6 +164,7 @@ const TopBar = (props) => {
         newQuestion,
         answerPending,
         user,
+        notificationCount,
     } = props;
 
     useEffect(() => {
@@ -280,7 +282,7 @@ const TopBar = (props) => {
                     aria-controls="primary-search-account-menu"
                     aria-haspopup="true"
                     color="inherit">
-                    <Avatar user={ user.email }/>
+                    <Avatar user={ user.email } />
                 </IconButton>
                 <p>Profile</p>
             </MenuItem>
@@ -307,7 +309,7 @@ const TopBar = (props) => {
                         <Toolbar>
                             <div className={ classes.inline }>
                                 <Typography
-                                    variant="h6"
+                                    variant="h4"
                                     color="inherit"
                                     noWrap>
                                     <Link
@@ -318,10 +320,15 @@ const TopBar = (props) => {
                                             className={ classes.logo }
                                             width={ 180 }
                                             alt="logo" /> */ }
-                                        <span className={ classes.logo }>HexagonQA</span>
+                                        <span className={ classes.logo }>
+                                            <LocalLibraryIcon />
+                                            { ' ' }
+                                            hexWiki
+                                        </span>
                                     </Link>
                                 </Typography>
                             </div>
+                            <div className={ classes.grow } />
                             <div className={ classes.menu }>
                                 <Link
                                     to="/"
@@ -348,14 +355,14 @@ const TopBar = (props) => {
                                     className={ classes.link }>
                                     <Button
                                         startIcon={ <GroupIcon /> }>
-                                        Spaces
+                                        Blogs
                                     </Button>
                                 </Link>
                                 <Link
                                     to="/notifications"
                                     className={ classes.link }>
                                     <Badge
-                                        badgeContent={ user.notificationCount }
+                                        badgeContent={ notificationCount }
                                         color="secondary">
                                         <Button
                                             startIcon={ <NotificationsIcon /> }>
@@ -421,6 +428,7 @@ const mapStateToProps = (state) => {
         pending: state.questions.pending,
         answerPending: state.answer.pending,
         newQuestion: state.questions.newQuestion,
+        notificationCount: state.user.notificationCount,
     };
 };
 

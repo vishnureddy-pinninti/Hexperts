@@ -1,98 +1,100 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import { withRouter } from 'react-router-dom';
-import { requestUserQuestions } from '../store/actions/questions';
-import QuestionCard from '../components/question/Card';
-import AnswerCard from '../components/answer/Card';
+import { connect } from 'react-redux';
 
-const useStyles = makeStyles({
-    root: {
-        width: 1000,
-    },
-    media: {
-        height: 550,
-    },
+import Card from '@material-ui/core/Card';
+import Typography from '@material-ui/core/Typography';
+import CardContent from '@material-ui/core/CardContent';
+import { Link } from 'react-router-dom';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import { formatDistanceToNow } from 'date-fns';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
+
+import { Divider } from '@material-ui/core';
+import { requestNotifications, markNotificationRead } from '../store/actions/auth';
+
+
+const useStyles = makeStyles((theme) => {
+    return {
+        root: {
+            backgroundColor: theme.palette.background.paper,
+            padding: 0,
+        },
+        link: {
+            textDecoration: 'none',
+            color: 'inherit',
+        },
+    };
 });
 
 
-function Home(props) {
+function Notifications(props) {
     const {
-        requestUserQuestions,
+        requestNotifications,
+        markNotificationRead,
+        notifications,
         user,
-        onLogout,
-        questions,
     } = props;
 
     const classes = useStyles();
 
     useEffect(() => {
-        requestUserQuestions();
-    }, [ requestUserQuestions ]);
+        requestNotifications();
+    }, []);
 
-    const renderQuestions = () => questions.map((question) => {
-        if (question.answers && question.answers.length){
-            const answer = question.answers[0];
-            return (
-                <AnswerCard
-                    key={ question._id }
-                    questionId={ question._id }
-                    answer={ answer }
-                    question={ question.question }
-                    author={ question.author }
-                    topics={ question.topics }
-                    date={ answer.postedDate } />
-            );
-        }
-        return (
-            <QuestionCard
-                key={ question._id }
-                id={ question._id }
-                date={ question.postedDate }
-                question={ question } />
-        );
-    });
+    const handleNotificationClick = (notification) => {
+        markNotificationRead(notification._id);
+    };
+
+    const renderNotifications = () => (
+        <List className={ classes.root }>
+            { notifications.map((notification) => (
+                <Link
+                    key={ notification._id }
+                    className={ classes.link }
+                    to={ notification.link }>
+                    <ListItem
+                        onClick={ () => { handleNotificationClick(notification); } }
+                        key={ notification._id }
+                        selected={ !notification.read }
+                        button>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <NotificationsNoneIcon />
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                            primary={ <div dangerouslySetInnerHTML={ { __html: notification.message } } /> }
+                            secondary={ formatDistanceToNow(new Date(notification.postedDate), { addSuffix: true }) } />
+                    </ListItem>
+                    <Divider />
+                </Link>
+            )) }
+        </List>
+    );
+
 
     return (
-        <div>
-            <Container>
+        <div className="App">
+            <Container fixed>
                 <Grid
                     container
-                    style={ { marginTop: 90 } }
-                    justify="center">
-                    <Card className={ classes.root }>
-                        <CardActionArea>
-                            <CardContent>
-                                <Typography
-                                    gutterBottom
-                                    variant="h5"
-                                    component="h2">
-                                    Notifications
-                                </Typography>
-                                <CardMedia
-                                    className={ classes.media }
-                                    image="/underconstruction.gif"
-                                    title="Contemplative Reptile" />
-                            </CardContent>
-                        </CardActionArea>
-                        <CardActions>
-                            <Button
-                                size="small"
-                                color="primary"
-                                onClick={ props.history.goBack }>
-                                Go Back
-                            </Button>
-                        </CardActions>
-                    </Card>
+                    justify="center"
+                    style={ { marginTop: 70 } }
+                    spacing={ 3 }>
+                    <Grid
+                        item
+                        xs={ 7 }>
+                        { notifications && renderNotifications() }
+                    </Grid>
                 </Grid>
             </Container>
         </div>
@@ -101,17 +103,20 @@ function Home(props) {
 
 const mapStateToProps = (state) => {
     return {
-        questions: state.questions.questions,
         user: state.user.user,
+        notifications: state.user.notifications,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestUserQuestions: () => {
-            dispatch(requestUserQuestions());
+        requestNotifications: () => {
+            dispatch(requestNotifications());
+        },
+        markNotificationRead: (id) => {
+            dispatch(markNotificationRead(id));
         },
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Home));
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
