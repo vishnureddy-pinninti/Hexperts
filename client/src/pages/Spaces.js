@@ -76,7 +76,7 @@ function Home(props) {
                                     gutterBottom
                                     variant="h5"
                                     component="h2">
-                                    Spaces
+                                    Blogs
                                 </Typography>
                                 <CardMedia
                                     className={ classes.media }

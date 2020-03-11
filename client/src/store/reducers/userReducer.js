@@ -6,6 +6,7 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_QUESTIONS_BY_USER_ID,
     RECEIVE_USER_ANSWERS,
     RECEIVE_FOLLOWED_USER,
+    RECEIVE_NOTIFICATIONS,
     SET_IMAGE } from '../actions/auth';
 
 const initialState = {
@@ -26,6 +27,7 @@ export default (state = initialState, action) => {
                 ...state,
                 isAuthenticated: true,
                 user: action.user,
+                notificationCount: action.user.notificationCount,
                 interests: action.user.interests,
                 expertIn: action.user.expertIn,
             };
@@ -93,6 +95,13 @@ export default (state = initialState, action) => {
                     ...existingImages,
                     action.image,
                 ],
+            };
+        }
+        case RECEIVE_NOTIFICATIONS: {
+            return {
+                ...state,
+                notifications: action.notifications,
+                notificationCount: 0,
             };
         }
         default:
