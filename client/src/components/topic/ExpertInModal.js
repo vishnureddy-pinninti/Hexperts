@@ -232,10 +232,14 @@ const ExpertInModal = (props) => {
     );
 };
 
+ExpertInModal.defaultProps = {
+    expertIn: [],
+};
+
 const mapStateToProps = (state) => {
     return {
         user: state.user,
-        topics: state.topic.topics,
+        topics: [ ...state.topic.topics ],
     };
 };
 

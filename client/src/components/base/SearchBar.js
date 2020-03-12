@@ -8,10 +8,10 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import { connect } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Link } from 'react-router-dom';
+import { Avatar as MuiAvatar } from '@material-ui/core';
 import { requestSearch } from '../../store/actions/search';
 import debounce from './debounce';
 import Avatar from './Avatar';
-import { Avatar as MuiAvatar } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -61,7 +61,7 @@ function SearchBar(props) {
                     alt="Remy Sharp"
                     src={ item.options.imageUrl || '/placeholder.png' }
                     className={ classes.avatar } />
-                <div style={{ marginLeft: 10 }}>
+                <div style={ { marginLeft: 10 } }>
                     <span>Topic: </span>
                     <span dangerouslySetInnerHTML={ { __html: item.text } } />
                 </div>
@@ -95,8 +95,10 @@ function SearchBar(props) {
             className={ classes.link }
             to={ `/profile/${item._id}` }>
             <div className={ classes.searchItem }>
-                <Avatar user={ item.options.email } className={ classes.avatar }/>
-                <div style={{ marginLeft: 10 }}>
+                <Avatar
+                    user={ item.options.email }
+                    className={ classes.avatar } />
+                <div style={ { marginLeft: 10 } }>
                     <span>Profile: </span>
                     <span dangerouslySetInnerHTML={ { __html: item.text } } />
                 </div>
@@ -111,9 +113,9 @@ function SearchBar(props) {
             href={ item.options.link }>
             <div className={ classes.searchItem }>
                 <MuiAvatar className={ classes.avatar }>
-                    <LinkIcon style={{ backgroundColor: '#0097ba' }}/>
+                    <LinkIcon style={ { backgroundColor: '#0097ba' } } />
                 </MuiAvatar>
-                <div style={{ marginLeft: 10 }}>
+                <div style={ { marginLeft: 10 } }>
                     <span>External: </span>
                     <span dangerouslySetInnerHTML={ { __html: item.text } } />
                 </div>
@@ -146,7 +148,7 @@ function SearchBar(props) {
             id="free-solo-with-text-demo"
             options={ results }
             renderOption={ renderResults }
-            style={ { width: 300 } }
+            style={ { width: 350 } }
             filterOptions={ (options, params) => options }
             renderInput={ (params) => (
                 <TextField

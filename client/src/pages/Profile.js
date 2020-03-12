@@ -62,10 +62,10 @@ function Profile(props) {
         onLogout,
         pending,
         userProfile,
-        followedTopics,
         user,
-        expertIn,
     } = props;
+
+    const { expertIn, interests: followedTopics } = userProfile;
 
     useEffect(() => {
         requestUser(userId);
@@ -205,11 +205,9 @@ const mapStateToProps = (state) => {
     return {
         topic: state.topic.topic,
         pending: state.user.pending,
-        followedTopics: state.user.interests,
         userProfile: state.user.userProfile,
         questions: state.questions.questions,
         user: state.user.user,
-        expertIn: state.user.expertIn,
     };
 };
 
