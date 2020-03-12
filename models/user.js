@@ -27,7 +27,7 @@ const userSchema = new Schema({
         type: [ mongoose.Types.ObjectId ],
         es_indexed: false,
     },
-    spaces: {
+    blogs: {
         type: [ mongoose.Types.ObjectId ],
         es_indexed: false,
     },
@@ -37,7 +37,7 @@ const userSchema = new Schema({
     },
     emailSubscription: {
         type: Boolean,
-        default: true,
+        default: false,
         es_indexed: false,
     },
     reputation: {

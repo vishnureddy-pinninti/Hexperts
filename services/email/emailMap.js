@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Comment = mongoose.model('comments');
 const Answer = mongoose.model('answers');
 const Question = mongoose.model('questions');
-const Blog = mongoose.model('blogs');
+const Post = mongoose.model('posts');
 const User = mongoose.model('users');
 
 const {
@@ -11,12 +11,12 @@ const {
     getSuggestedExperts,
     getTopicFollowers,
     getUserFollowers,
-    getSpaceFollowers,
+    getBlogFollowers,
 } = require('./emailUtils');
 
 const {
     scores: {
-        NEW_ANSWER, UPVOTE_ANSWER, DOWNVOTE_ANSWER, NEW_BLOG, UPVOTE_BLOG, DOWNVOTE_BLOG, NEW_COMMENT, UPVOTE_COMMENT, DOWNVOTE_COMMENT,
+        NEW_ANSWER, UPVOTE_ANSWER, DOWNVOTE_ANSWER, NEW_POST, UPVOTE_POST, DOWNVOTE_POST, NEW_COMMENT, UPVOTE_COMMENT, DOWNVOTE_COMMENT,
     },
 } = require('../../utils/constants');
 
@@ -331,20 +331,20 @@ const emailMap = {
             },
         };
     },
-    newBlog: async(data) => {
+    newPost: async(data) => {
         // Emails to experts, author followers and topic followers
         const {
             author,
-            space,
+            blog,
             title,
             _id,
         } = data;
 
         const userFollowers = await getUserFollowers(author._id);
-        const spaceFollowers = await getSpaceFollowers(space._id);
+        const blogFollowers = await getBlogFollowers(blog._id);
         const recipients = [
             ...userFollowers,
-            ...spaceFollowers,
+            ...blogFollowers,
         ];
 
         return {
@@ -353,98 +353,98 @@ const emailMap = {
                 locals: {
                     name: author.name,
                     data: title,
-                    dataDescription: 'added below blog.',
-                    link: `${keys.emailUrl}blog/${_id}`,
-                    subject: 'New Blog for you',
+                    dataDescription: 'added below post.',
+                    link: `${keys.emailUrl}post/${_id}`,
+                    subject: 'New Post for you',
                 },
                 recipients,
                 user: author,
             },
             notification: {
                 recipients,
-                message: `<b>${author.name}</b> added a new blog.`,
-                link: `/blog/${_id}`,
+                message: `<b>${author.name}</b> added a new post.`,
+                link: `/post/${_id}`,
                 user: author,
             },
             reputation: {
                 user: author,
-                score: NEW_BLOG,
+                score: NEW_POST,
             },
         };
     },
-    upvoteBlog: async(data) => {
+    upvotePost: async(data) => {
         // Emails to comment author
         const {
-            _id: blogID,
+            _id: postID,
             upvoter,
             removeVoting,
             secondaryVoted,
         } = data;
 
-        const author = await getAuthor(blogID, Blog);
+        const author = await getAuthor(postID, Post);
         const recipients = [ author ];
-        const secondaryScore = secondaryVoted ? DOWNVOTE_BLOG * -1 : 0;
+        const secondaryScore = secondaryVoted ? DOWNVOTE_POST * -1 : 0;
 
         return {
             email: {
                 template: 'vote',
                 locals: {
                     name: upvoter.name,
-                    data: removeVoting ? 'Removed voting for your blog' : 'Upvoted your blog',
-                    link: `${keys.emailUrl}blog/${blogID}`,
+                    data: removeVoting ? 'Removed voting for your post' : 'Upvoted your post',
+                    link: `${keys.emailUrl}post/${postID}`,
                     vote: 'Upvote',
-                    type: 'Blog',
+                    type: 'Post',
                 },
                 recipients,
                 user: upvoter,
             },
             notification: {
                 recipients,
-                message: removeVoting ? `<b>${upvoter.name}</b> removed voting for your blog.` : `<b>${upvoter.name}</b> upvoted your blog.`,
-                link: `/blog/${blogID}`,
+                message: removeVoting ? `<b>${upvoter.name}</b> removed voting for your post.` : `<b>${upvoter.name}</b> upvoted your post.`,
+                link: `/post/${postID}`,
                 user: upvoter,
             },
             reputation: {
                 user: author,
-                score: removeVoting ? -UPVOTE_BLOG : (UPVOTE_BLOG + secondaryScore),
+                score: removeVoting ? -UPVOTE_POST : (UPVOTE_POST + secondaryScore),
             },
         };
     },
-    downvoteBlog: async(data) => {
+    downvotePost: async(data) => {
         // Emails to answer author
         const {
-            _id: blogID,
+            _id: postID,
             downvoter,
             removeVoting,
             secondaryVoted,
         } = data;
 
-        const author = await getAuthor(blogID, Blog);
+        const author = await getAuthor(postID, Post);
         const recipients = [ author ];
-        const secondaryScore = secondaryVoted ? UPVOTE_BLOG * -1 : 0;
+        const secondaryScore = secondaryVoted ? UPVOTE_POST * -1 : 0;
 
         return {
             email: {
                 template: 'vote',
                 locals: {
                     name: downvoter.name,
-                    data: removeVoting ? 'Removed voting for your blog' : 'Downvoted your blog',
-                    link: `${keys.emailUrl}blog/${blogID}`,
+                    data: removeVoting ? 'Removed voting for your post' : 'Downvoted your post',
+                    link: `${keys.emailUrl}post/${postID}`,
                     vote: 'Downvote',
-                    type: 'Blog',
+                    type: 'Post',
                 },
                 recipients,
                 user: downvoter,
             },
             notification: {
                 recipients,
-                message: removeVoting ? `<b>${downvoter.name}</b> removed voting for your blog.` : `<b>${downvoter.name}</b> downvoted your blog.`,
-                link: `/blog/${blogID}`,
+                message: removeVoting ? `<b>${downvoter.name}</b> removed voting for your post.` : `<b>${downvoter.name}</b> downvoted your post.`,
+                link: `/post/${postID}`,
                 user: downvoter,
             },
             reputation: {
                 user: author,
-                score: removeVoting ? -DOWNVOTE_BLOG : (DOWNVOTE_BLOG + secondaryScore),
+                score: removeVoting ? -DOWNVOTE_POST : (DOWNVOTE_POST + secondaryScore),
             },
         };
     },

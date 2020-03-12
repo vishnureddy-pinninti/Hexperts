@@ -114,6 +114,10 @@ module.exports = (app) => {
             aggregationMatch.push({ suggestedExperts: mongoose.Types.ObjectId(_id) });
         }
 
+        if (custom._onlyExpertIn) {
+            aggregationMatch.push({ topics: { $in: dbUser[0].expertIn } });
+        }
+
         if (custom._ownQuestions) {
             aggregationMatch.push({ author: mongoose.Types.ObjectId(_id) });
         }
