@@ -7,6 +7,8 @@ import { RECEIVE_USER_QUESTIONS,
     EDIT_QUESTION_PENDING,
     RECEIVE_RELATED_QUESTIONS,
     RECEIVE_QUESTION_FOR_CACHE,
+    RECEIVE_QUESTIONS_FOR_USER,
+    RECEIVE_ANSWER_REQUESTS,
     RECEIVE_EDITED_QUESTION } from '../actions/questions';
 import { RECEIVE_ADDED_ANSWER } from '../actions/answer';
 
@@ -29,6 +31,16 @@ export default (state = initialState, action) => {
     let id;
     switch (action.type) {
         case RECEIVE_USER_QUESTIONS:
+            return {
+                ...state,
+                questions: action.questions,
+            };
+        case RECEIVE_QUESTIONS_FOR_USER:
+            return {
+                ...state,
+                questions: action.questions,
+            };
+        case RECEIVE_ANSWER_REQUESTS:
             return {
                 ...state,
                 questions: action.questions,
