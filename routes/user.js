@@ -11,6 +11,7 @@ const { encrypt } = require('../utils/crypto');
 const config = require('../config/keys');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
+const emailNotify = require('../services/email/emailService');
 const {
     errors: {
         USER_NOT_FOUND, TOPIC_NOT_FOUND, SPACE_NOT_FOUND, UNAUTHORIZED,
@@ -293,6 +294,14 @@ module.exports = (app) => {
                 }
 
                 await user.save();
+
+                const responseObject = {
+                    _id,
+                    follower: req.user,
+                    unfollow: Boolean(isFollowing),
+                };
+                emailNotify('followUser', responseObject);
+
                 res
                     .status(200)
                     .json({
