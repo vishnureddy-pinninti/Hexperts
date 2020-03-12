@@ -77,7 +77,7 @@ function TabPanel(props) {
             { ...other }>
             { value === index && <Box p={ 3 }>
                 { children }
-                                 </Box> }
+            </Box> }
         </Typography>
     );
 }
@@ -140,8 +140,12 @@ const EditSuggestedWriters = (props) => {
     };
 
     useEffect(() => {
-        requestSuggestedExperts('');
-    }, [ requestSuggestedExperts ]);
+        const topicsString = `${topics.map((topic) => `${topic._id}`)}`;
+        requestSuggestedExperts(topicsString);
+    }, [
+        requestSuggestedExperts,
+        topics,
+    ]);
 
     const getTopicExperts = (topicId) => {
         setSelectedTopic(topicId);
