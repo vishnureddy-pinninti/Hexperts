@@ -5,7 +5,7 @@ const fields = {
         excludeSourceFields: [ 'plainText' ],
         text: 'plainText',
     },
-    blogs: {
+    posts: {
         searchFields: [
             'title',
             'plainText',
@@ -37,7 +37,7 @@ const fields = {
         text: 'question',
         subtext: 'plainText',
     },
-    spaces: {
+    blogs: {
         searchFields: [
             'name',
             'plainText',

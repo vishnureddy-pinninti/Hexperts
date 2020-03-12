@@ -21,7 +21,7 @@ require('./question');
 require('./user');
 require('./comment');
 require('./topic');
-require('./space');
 require('./blog');
+require('./post');
 require('./notification');
 require('./external');

@@ -79,7 +79,7 @@ const getAuthor = async(id, model) => {
     return records[0].author;
 };
 
-const getSpaceFollowers = async(space) => await User.find({ 'space': mongoose.Types.ObjectId(space) });
+const getBlogFollowers = async(blog) => await User.find({ 'blog': mongoose.Types.ObjectId(blog) });
 
 module.exports = {
     getUserFollowers,
@@ -87,5 +87,5 @@ module.exports = {
     getSuggestedExperts,
     getQuestionFollowers,
     getAuthor,
-    getSpaceFollowers,
+    getBlogFollowers,
 };

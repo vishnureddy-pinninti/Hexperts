@@ -6,6 +6,7 @@ const { errors: { TOPIC_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const htmlToText = require('../utils/htmlToText');
+const upload = require('../utils/uploads');
 
 module.exports = (app) => {
     app.post('/api/v1/topics.add', loginMiddleware, async(req, res) => {
@@ -217,12 +218,11 @@ module.exports = (app) => {
         }
     });
 
-    app.put('/api/v1/topic/:topicID', loginMiddleware, async(req, res) => {
+    app.put('/api/v1/topic/:topicID', loginMiddleware, upload.any(), async(req, res) => {
         try {
             const { topicID } = req.params;
             const {
                 topic: topicString,
-                imageUrl,
                 description,
             } = req.body;
 
@@ -235,9 +235,9 @@ module.exports = (app) => {
                     responseObject.topic = topicString;
                 }
 
-                if (imageUrl) {
-                    topic.imageUrl = imageUrl;
-                    responseObject.imageUrl = imageUrl;
+                if (req.files.length) {
+                    topic.imageUrl = `/api/v1/images/${req.files[0].filename}`;
+                    responseObject.imageUrl = `/api/v1/images/${req.files[0].filename}`;
                 }
 
                 if (description) {

@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const Topic = mongoose.model('topics');
-const Space = mongoose.model('spaces');
+const Blog = mongoose.model('blogs');
 const Notification = mongoose.model('notifications');
 const Question = mongoose.model('questions');
 const Answer = mongoose.model('answers');
-const Blog = mongoose.model('blogs');
+const Post = mongoose.model('posts');
 
 const { encrypt } = require('../utils/crypto');
 const config = require('../config/keys');
@@ -14,7 +14,7 @@ const queryMiddleware = require('../middlewares/queryMiddleware');
 const emailNotify = require('../services/email/emailService');
 const {
     errors: {
-        USER_NOT_FOUND, TOPIC_NOT_FOUND, SPACE_NOT_FOUND, UNAUTHORIZED,
+        USER_NOT_FOUND, TOPIC_NOT_FOUND, BLOG_NOT_FOUND, UNAUTHORIZED,
     },
 } = require('../utils/constants');
 
@@ -48,10 +48,10 @@ module.exports = (app) => {
                 },
                 {
                     $lookup: {
-                        from: 'spaces',
-                        localField: 'spaces',
+                        from: 'blogs',
+                        localField: 'blogs',
                         foreignField: '_id',
-                        as: 'spaces',
+                        as: 'blogs',
                     },
                 },
             ]);
@@ -131,10 +131,10 @@ module.exports = (app) => {
                 },
                 {
                     $lookup: {
-                        from: 'spaces',
-                        localField: 'spaces',
+                        from: 'blogs',
+                        localField: 'blogs',
                         foreignField: '_id',
-                        as: 'spaces',
+                        as: 'blogs',
                     },
                 },
                 {
@@ -196,7 +196,7 @@ module.exports = (app) => {
                 },
                 {
                     $lookup: {
-                        from: 'blogs',
+                        from: 'posts',
                         let: { id: '$_id' },
                         pipeline: [
                             {
@@ -210,7 +210,7 @@ module.exports = (app) => {
                                 },
                             },
                         ],
-                        as: 'blogs',
+                        as: 'posts',
                     },
                 },
                 {
@@ -229,7 +229,7 @@ module.exports = (app) => {
                         jobTitle: 1,
                         userid: 1,
                         reputation: 1,
-                        spaces: 1,
+                        blogs: 1,
                         expertIn: 1,
                         interests: 1,
                         questions: {
@@ -246,10 +246,10 @@ module.exports = (app) => {
                                 else: 0,
                             },
                         },
-                        blogs: {
+                        posts: {
                             $cond: {
-                                if: { $isArray: '$blogs' },
-                                then: { $size: '$blogs' },
+                                if: { $isArray: '$posts' },
+                                then: { $size: '$posts' },
                                 else: 0,
                             },
                         },
@@ -445,9 +445,9 @@ module.exports = (app) => {
         }
     });
 
-    app.post('/api/v1/user-spaces.manage', loginMiddleware, async(req, res) => {
+    app.post('/api/v1/user-blogs.manage', loginMiddleware, async(req, res) => {
         const {
-            spaceId,
+            blogID,
         } = req.body;
 
         const {
@@ -456,18 +456,18 @@ module.exports = (app) => {
 
         try {
             const user = await User.findById(_id);
-            const space = await Space.findById(spaceId);
+            const space = await Blog.findById(blogID);
 
             if (user && space) {
-                const isFollowing = user.spaces.find((uspace) => uspace.equals(spaceId));
+                const isFollowing = user.blogs.find((blog) => blog.equals(blogID));
 
                 if (isFollowing) {
-                    user.spaces = user.spaces.filter((uspace) => !uspace.equals(spaceId));
+                    user.blogs = user.blogs.filter((blog) => !blog.equals(blogID));
                 }
                 else {
-                    user.spaces = [
-                        ...user.spaces,
-                        spaceId,
+                    user.blogs = [
+                        ...user.blogs,
+                        blogID,
                     ];
                 }
 
@@ -477,7 +477,7 @@ module.exports = (app) => {
                     .json({
                         _id,
                         space,
-                        spaceRemoved: Boolean(isFollowing),
+                        blogRemoved: Boolean(isFollowing),
                     });
             }
             else {
@@ -485,7 +485,7 @@ module.exports = (app) => {
                     .status(404)
                     .json({
                         error: true,
-                        response: SPACE_NOT_FOUND,
+                        response: BLOG_NOT_FOUND,
                     });
             }
         }
@@ -807,14 +807,14 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/user-blogs/:userID', loginMiddleware, queryMiddleware, async(req, res) => {
+    app.get('/api/v1/user-posts/:userID', loginMiddleware, queryMiddleware, async(req, res) => {
         const { userID } = req.params;
         const {
             pagination,
         } = req.queryParams;
 
         try {
-            const blogs = await Blog.aggregate([
+            const posts = await Post.aggregate([
                 { $match: { author: mongoose.Types.ObjectId(userID) } },
                 { $sort: { postedDate: -1 } },
                 { $skip: pagination.skip || 0 },
@@ -854,15 +854,15 @@ module.exports = (app) => {
                 },
                 {
                     $lookup: {
-                        from: 'spaces',
-                        localField: 'space',
+                        from: 'blogs',
+                        localField: 'blog',
                         foreignField: '_id',
-                        as: 'space',
+                        as: 'blog',
                     },
                 },
                 {
                     $unwind: {
-                        path: '$space',
+                        path: '$blog',
                         preserveNullAndEmptyArrays: true,
                     },
                 },
@@ -872,7 +872,7 @@ module.exports = (app) => {
                         downvoters: 1,
                         lastModified: 1,
                         postedDate: 1,
-                        space: 1,
+                        blog: 1,
                         title: 1,
                         description: 1,
                         upvoters: 1,
@@ -891,7 +891,7 @@ module.exports = (app) => {
                 .status(200)
                 .json({
                     _id: userID,
-                    blogs,
+                    posts,
                 });
         }
         catch (e) {

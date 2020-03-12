@@ -208,7 +208,7 @@ module.exports = (app) => {
                         },
                         {
                             $lookup: {
-                                from: 'blogs',
+                                from: 'posts',
                                 let: { id: '$targetID' },
                                 pipeline: [
                                     {
@@ -237,25 +237,25 @@ module.exports = (app) => {
                                     },
                                     {
                                         $lookup: {
-                                            from: 'spaces',
-                                            localField: 'space',
+                                            from: 'blogs',
+                                            localField: 'blog',
                                             foreignField: '_id',
-                                            as: 'space',
+                                            as: 'blog',
                                         },
                                     },
                                     {
                                         $unwind: {
-                                            path: '$space',
+                                            path: '$blog',
                                             preserveNullAndEmptyArrays: true,
                                         },
                                     },
                                 ],
-                                as: 'blog',
+                                as: 'post',
                             },
                         },
                         {
                             $unwind: {
-                                path: '$blog',
+                                path: '$post',
                                 preserveNullAndEmptyArrays: true,
                             },
                         },

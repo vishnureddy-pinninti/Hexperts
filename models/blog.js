@@ -7,40 +7,35 @@ const blogSchema = new Schema({
         type: mongoose.Types.ObjectId,
         es_indexed: false,
     },
-    downvoters: {
-        type: [ mongoose.Types.ObjectId ],
-        es_indexed: false,
+    name: {
+        type: String,
+        required: true,
+        trim: true,
+        es_indexed: true,
     },
     lastModified: {
         type: Date,
         es_indexed: false,
     },
-    postedDate: {
+    createdDate: {
         type: Date,
         default: Date.now,
         es_indexed: false,
     },
-    space: {
-        type: mongoose.Types.ObjectId,
-        es_indexed: false,
-    },
-    title: {
+    imageUrl: {
         type: String,
         trim: true,
         es_indexed: true,
     },
     description: {
         type: String,
+        trim: true,
         es_indexed: false,
     },
     plainText: {
         type: String,
         trim: true,
         es_indexed: true,
-    },
-    upvoters: {
-        type: [ mongoose.Types.ObjectId ],
-        es_indexed: false,
     },
 });
 
