@@ -323,7 +323,7 @@ const TopBar = (props) => {
                                         <span className={ classes.logo }>
                                             <LocalLibraryIcon />
                                             { ' ' }
-                                            hexWiki
+                                            hExpert
                                         </span>
                                     </Link>
                                 </Typography>

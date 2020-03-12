@@ -15,6 +15,10 @@ export const RECEIVE_TRENDING_QUESTIONS = 'RECEIVE_TRENDING_QUESTIONS';
 export const REQUEST_RELATED_QUESTIONS = 'REQUEST_RELATED_QUESTIONS';
 export const RECEIVE_RELATED_QUESTIONS = 'RECEIVE_RELATED_QUESTIONS';
 export const RECEIVE_QUESTION_FOR_CACHE = 'RECEIVE_QUESTION_FOR_CACHE';
+export const REQUEST_QUESTIONS_FOR_USER = 'REQUEST_QUESTIONS_FOR_USER';
+export const RECEIVE_QUESTIONS_FOR_USER = 'RECEIVE_QUESTIONS_FOR_USER';
+export const REQUEST_ANSWER_REQUESTS = 'REQUEST_ANSWER_REQUESTS';
+export const RECEIVE_ANSWER_REQUESTS = 'RECEIVE_ANSWER_REQUESTS';
 
 const receiveUserQuestions = (questions) => {
     return {
@@ -30,6 +34,42 @@ export const requestUserQuestions = () => {
             url: '/api/v1/questions?_onlyInterests=true',
             method: 'GET',
             success: receiveUserQuestions,
+        },
+    };
+};
+
+const receiveQuestionsForUser = (questions) => {
+    return {
+        type: RECEIVE_QUESTIONS_FOR_USER,
+        questions,
+    };
+};
+
+export const requestQuestionsForUser = () => {
+    return {
+        type: REQUEST_QUESTIONS_FOR_USER,
+        makeApiRequest: {
+            url: '/api/v1/questions?_onlyExpertIn=true',
+            method: 'GET',
+            success: receiveQuestionsForUser,
+        },
+    };
+};
+
+const receiveAnswerRequests = (questions) => {
+    return {
+        type: RECEIVE_ANSWER_REQUESTS,
+        questions,
+    };
+};
+
+export const requestAnswerRequests = () => {
+    return {
+        type: REQUEST_ANSWER_REQUESTS,
+        makeApiRequest: {
+            url: '/api/v1/questions?_onlySuggested=true',
+            method: 'GET',
+            success: receiveAnswerRequests,
         },
     };
 };
