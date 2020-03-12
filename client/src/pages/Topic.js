@@ -64,7 +64,7 @@ function Topic(props) {
                     upvoters={ answer.upvoters }
                     downvoters={ answer.downvoters }
                     question={ question.question }
-                    author={ question.author }
+                    author={ answer.author }
                     topics={ question.topics }
                     date={ answer.postedDate } />
             );

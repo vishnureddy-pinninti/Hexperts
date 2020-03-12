@@ -48,7 +48,7 @@ function Home(props) {
                     questionId={ question._id }
                     answer={ answer }
                     question={ question.question }
-                    author={ question.author }
+                    author={ answer.author }
                     topics={ question.topics }
                     date={ answer.postedDate } />
             );

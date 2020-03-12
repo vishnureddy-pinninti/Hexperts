@@ -132,7 +132,7 @@ function Home(props) {
                     question={ question.question }
                     upvoters={ answer.upvoters }
                     downvoters={ answer.downvoters }
-                    author={ question.author }
+                    author={ answer.author }
                     topics={ question.topics } // modifiedAnswers={ modifiedAnswers }
                     date={ answer.postedDate } />
             );
