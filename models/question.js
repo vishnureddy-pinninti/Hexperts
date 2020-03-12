@@ -31,7 +31,7 @@ const questionSchema = new Schema({
     question: {
         type: String,
         trim: true,
-        es_indexed: false,
+        es_indexed: true,
     },
     plainText: {
         type: String,
@@ -40,7 +40,7 @@ const questionSchema = new Schema({
     },
     description: {
         type: String,
-        es_indexed: true,
+        es_indexed: false,
     },
 });
 
