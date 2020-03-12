@@ -7,6 +7,7 @@ const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const voting = require('../utils/voting');
 const emailNotify = require('../services/email/emailService');
+const htmlToText = require('../utils/htmlToText');
 
 module.exports = (app) => {
     app.post('/api/v1/blog.add', loginMiddleware, async(req, res) => {
@@ -26,6 +27,7 @@ module.exports = (app) => {
                 space,
                 title,
                 description,
+                plainText: htmlToText(description),
             });
 
             await newBlog.save();
@@ -253,6 +255,7 @@ module.exports = (app) => {
 
                 if (description) {
                     blog.description = description;
+                    blog.plainText = htmlToText(description);
                     responseObject.description = description;
                 }
 

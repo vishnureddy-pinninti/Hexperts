@@ -31,6 +31,11 @@ const blogSchema = new Schema({
     },
     description: {
         type: String,
+        es_indexed: false,
+    },
+    plainText: {
+        type: String,
+        trim: true,
         es_indexed: true,
     },
     upvoters: {
