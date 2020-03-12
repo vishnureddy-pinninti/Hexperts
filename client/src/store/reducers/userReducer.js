@@ -35,8 +35,6 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 userProfile: action.profile,
-                interests: action.profile.interests,
-                expertIn: action.profile.expertIn,
             };
         case RECEIVE_TOP_CREATORS:
             return {
