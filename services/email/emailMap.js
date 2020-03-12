@@ -3,6 +3,7 @@ const Comment = mongoose.model('comments');
 const Answer = mongoose.model('answers');
 const Question = mongoose.model('questions');
 const Blog = mongoose.model('blogs');
+const User = mongoose.model('users');
 
 const {
     getAuthor,
@@ -135,7 +136,7 @@ const emailMap = {
             },
             notification: {
                 recipients,
-                message: unfollow ? `<b>${follower.name}</b> unfollowed your question` : `<b>${follower.name}</b> stated following your question.`,
+                message: unfollow ? `<b>${follower.name}</b> unfollowed your question` : `<b>${follower.name}</b> started following your question.`,
                 link: `/question/${questionID}`,
                 user: follower,
             },
@@ -444,6 +445,36 @@ const emailMap = {
             reputation: {
                 user: author,
                 score: removeVoting ? -DOWNVOTE_BLOG : (DOWNVOTE_BLOG + secondaryScore),
+            },
+        };
+    },
+    followUser: async(data) => {
+        // Emails to user
+        const {
+            _id: userID,
+            follower,
+            unfollow,
+        } = data;
+
+        const user = await User.findById(mongoose.Types.ObjectId(userID));
+        const recipients = [ user ];
+
+        return {
+            email: {
+                template: 'followQuestion',
+                locals: {
+                    name: follower.name,
+                    data: unfollow ? 'Unfollowed you' : 'Started following you',
+                    link: `${keys.emailUrl}profile/${follower._id}`,
+                },
+                recipients,
+                user: follower,
+            },
+            notification: {
+                recipients,
+                message: unfollow ? `<b>${follower.name}</b> Unfollowed you` : `<b>${follower.name}</b> started following you.`,
+                link: `/profile/${follower._id}`,
+                user: follower,
             },
         };
     },
