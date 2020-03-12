@@ -9,6 +9,8 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_NOTIFICATIONS,
     SET_IMAGE } from '../actions/auth';
 
+import { RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
+
 const initialState = {
     isAuthenticated: false,
     user: {},
@@ -16,11 +18,23 @@ const initialState = {
     pending: true,
     feed: [],
     images: [],
+    userProfile: {},
 };
+
+function searchTopic(topicId, array) {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i]._id === topicId) {
+            return i;
+        }
+    }
+    return -1;
+}
 
 export default (state = initialState, action) => {
     let followers = [];
     let index;
+    let profile;
+    let userInterests;
     switch (action.type) {
         case RECEIVE_USER_SESSION:
             return {
@@ -46,7 +60,44 @@ export default (state = initialState, action) => {
                 ...state,
                 pending: true,
             };
+        case RECEIVE_FOLLOWED_TOPIC:
+            profile = state.userProfile;
+            if (profile && !profile.interests){
+                profile.interests = [];
+            }
+            index = searchTopic(action.res.interest._id, profile.interests);
+            if (index < 0) {
+                profile.interests.push(action.res.interest);
+            }
+            else {
+                profile.interests.splice(index, 1);
+            }
+            userInterests = state.interests;
+            index = searchTopic(action.res.interest._id, userInterests);
+            if (index < 0) {
+                userInterests.push(action.res.interest);
+            }
+            else {
+                userInterests.splice(index, 1);
+            }
+            return {
+                ...state,
+                interests: [ ...userInterests ],
+                userProfile: { ...profile },
+            };
+
         case RECEIVE_USER_PREFERENCES:
+            profile = state.userProfile;
+            if (profile){
+                profile.interests = [
+                    ...profile.interests,
+                    ...action.user.interests,
+                ];
+                profile.expertIn = [
+                    ...state.expertIn,
+                    ...action.user.expertIn,
+                ];
+            }
             return {
                 ...state,
                 pending: false,
@@ -58,6 +109,7 @@ export default (state = initialState, action) => {
                     ...state.expertIn,
                     ...action.user.expertIn,
                 ],
+                userProfile: { ...profile },
             };
         case RECEIVE_QUESTIONS_BY_USER_ID:
             return {
