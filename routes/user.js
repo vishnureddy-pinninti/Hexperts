@@ -300,7 +300,10 @@ module.exports = (app) => {
                     follower: req.user,
                     unfollow: Boolean(isFollowing),
                 };
-                emailNotify('followUser', responseObject);
+                emailNotify('followUser', {
+                    ...responseObject,
+                    req: req.io,
+                });
 
                 res
                     .status(200)
@@ -504,6 +507,7 @@ module.exports = (app) => {
         const {
             interests = [],
             expertIn = [],
+            blogs = [],
         } = req.body;
 
         const {
@@ -514,10 +518,12 @@ module.exports = (app) => {
             const user = await User.findById(_id);
             const interestedTopics = await Topic.find({ _id: { $in: interests } });
             const expertInTopics = await Topic.find({ _id: { $in: expertIn } });
+            const chosenBlogs = await Blog.find({ _id: { $in: blogs } });
 
             if (user) {
                 interests.forEach((interest) => user.interests.addToSet(interest));
                 expertIn.forEach((expert) => user.expertIn.addToSet(expert));
+                blogs.forEach((blog) => user.blogs.addToSet(blog));
 
                 await user.save();
 
@@ -527,6 +533,7 @@ module.exports = (app) => {
                         _id,
                         interests: interestedTopics,
                         expertIn: expertInTopics,
+                        blogs: chosenBlogs,
                     });
             }
             else {
