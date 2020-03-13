@@ -7,7 +7,9 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_USER_ANSWERS,
     RECEIVE_FOLLOWED_USER,
     RECEIVE_NOTIFICATIONS,
-    SET_IMAGE } from '../actions/auth';
+    SET_IMAGE,
+    RECEIVE_MARK_NOTIFICATION_READ
+ } from '../actions/auth';
 
 import { RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
 
@@ -150,8 +152,14 @@ export default (state = initialState, action) => {
         case RECEIVE_NOTIFICATIONS: {
             return {
                 ...state,
-                notifications: action.notifications,
-                notificationCount: 0,
+                notifications: action.notifications.notifications,
+                notificationCount: action.notifications.unread,
+            };
+        }
+        case RECEIVE_MARK_NOTIFICATION_READ: {
+            return {
+                ...state,
+                notificationCount: state.notificationCount - 1,
             };
         }
         default:

@@ -30,7 +30,10 @@ module.exports = (app) => {
                 ...newAnswer._doc,
                 author: req.user,
             };
-            emailNotify('newAnswer', responseObject, {
+            emailNotify('newAnswer', {
+                ...responseObject,
+                req: req.io,
+            }, {
                 author: req.user,
             });
 
@@ -229,6 +232,7 @@ module.exports = (app) => {
                 };
                 emailNotify('upvoteAnswer', {
                     ...responseObject,
+                    req: req.io,
                     secondaryVoted,
                 });
 
@@ -281,6 +285,7 @@ module.exports = (app) => {
                 };
                 emailNotify('downvoteAnswer', {
                     ...responseObject,
+                    req: req.io,
                     secondaryVoted,
                 });
 

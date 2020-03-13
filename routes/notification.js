@@ -13,6 +13,10 @@ module.exports = (app) => {
         } = req.queryParams;
 
         try {
+            const unreadNotifications = await Notification.find({
+                recipient: mongoose.Types.ObjectId(_id),
+                read: false,
+            });
             const notifications = await Notification.aggregate([
                 { $match: { recipient: mongoose.Types.ObjectId(_id) } },
                 { $sort: { postedDate: -1 } },
@@ -22,7 +26,10 @@ module.exports = (app) => {
 
             res
                 .status(200)
-                .json(notifications);
+                .json({
+                    unread: unreadNotifications.length,
+                    notifications,
+                });
         }
         catch (e) {
             res

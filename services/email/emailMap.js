@@ -29,6 +29,7 @@ const emailMap = {
             author,
             question,
             _id,
+            req,
         } = data;
 
         const {
@@ -64,6 +65,7 @@ const emailMap = {
                 message: `<b>${author.name}</b> added a new question.`,
                 link: `/question/${_id}`,
                 user: owner,
+                req,
             },
         };
     },
@@ -73,6 +75,7 @@ const emailMap = {
             answer,
             _id,
             questionID,
+            req,
         } = data;
 
         const {
@@ -105,6 +108,7 @@ const emailMap = {
                 message: `<b>${owner.name}</b> answered a question.`,
                 link: `/answer/${_id}`,
                 user: owner,
+                req,
             },
             reputation: {
                 user: owner,
@@ -118,6 +122,7 @@ const emailMap = {
             _id: questionID,
             follower,
             unfollow,
+            req,
         } = data;
 
         const questionFollowers = await getAuthor(questionID, Question);
@@ -139,6 +144,7 @@ const emailMap = {
                 message: unfollow ? `<b>${follower.name}</b> unfollowed your question` : `<b>${follower.name}</b> started following your question.`,
                 link: `/question/${questionID}`,
                 user: follower,
+                req,
             },
         };
     },
@@ -149,6 +155,7 @@ const emailMap = {
             upvoter,
             removeVoting,
             secondaryVoted,
+            req,
         } = data;
 
         const answerAuthor = await getAuthor(answerID, Answer);
@@ -173,6 +180,7 @@ const emailMap = {
                 message: removeVoting ? `<b>${upvoter.name}</b> removed voting for your answer.` : `<b>${upvoter.name}</b> upvoted your answer.`,
                 link: `/answer/${answerID}`,
                 user: upvoter,
+                req,
             },
             reputation: {
                 user: answerAuthor,
@@ -187,6 +195,7 @@ const emailMap = {
             downvoter,
             removeVoting,
             secondaryVoted,
+            req,
         } = data;
 
         const answerAuthor = await getAuthor(answerID, Answer);
@@ -211,6 +220,7 @@ const emailMap = {
                 message: removeVoting ? `<b>${downvoter.name}</b> removed voting for your answer.` : `<b>${downvoter.name}</b> downvoted your answer.`,
                 link: `/answer/${answerID}`,
                 user: downvoter,
+                req,
             },
             reputation: {
                 user: answerAuthor,
@@ -225,6 +235,7 @@ const emailMap = {
             author,
             comment,
             targetID,
+            req,
         } = data;
 
         const answerAuthor = await getAuthor(targetID, Answer);
@@ -248,6 +259,7 @@ const emailMap = {
                 message: `<b>${author.name}</b> commented on your answer`,
                 link: `/comment/${_id}`,
                 user: author,
+                req,
             },
             reputation: {
                 user: author,
@@ -262,6 +274,7 @@ const emailMap = {
             upvoter,
             removeVoting,
             secondaryVoted,
+            req,
         } = data;
 
         const author = await getAuthor(commentID, Comment);
@@ -286,6 +299,7 @@ const emailMap = {
                 message: removeVoting ? `<b>${upvoter.name}</b> removed voting for your comment.` : `<b>${upvoter.name}</b> upvoted your comment.`,
                 link: `/comment/${commentID}`,
                 user: upvoter,
+                req,
             },
             reputation: {
                 user: author,
@@ -300,6 +314,7 @@ const emailMap = {
             downvoter,
             removeVoting,
             secondaryVoted,
+            req,
         } = data;
 
         const author = await getAuthor(commentID, Comment);
@@ -324,6 +339,7 @@ const emailMap = {
                 message: removeVoting ? `<b>${downvoter.name}</b> removed voting for your comment.` : `<b>${downvoter.name}</b> downvoted your comment.`,
                 link: `/comment/${commentID}`,
                 user: downvoter,
+                req,
             },
             reputation: {
                 user: author,
@@ -338,6 +354,7 @@ const emailMap = {
             blog,
             title,
             _id,
+            req,
         } = data;
 
         const userFollowers = await getUserFollowers(author._id);
@@ -365,6 +382,7 @@ const emailMap = {
                 message: `<b>${author.name}</b> added a new post.`,
                 link: `/post/${_id}`,
                 user: author,
+                req,
             },
             reputation: {
                 user: author,
@@ -379,6 +397,7 @@ const emailMap = {
             upvoter,
             removeVoting,
             secondaryVoted,
+            req,
         } = data;
 
         const author = await getAuthor(postID, Post);
@@ -403,6 +422,7 @@ const emailMap = {
                 message: removeVoting ? `<b>${upvoter.name}</b> removed voting for your post.` : `<b>${upvoter.name}</b> upvoted your post.`,
                 link: `/post/${postID}`,
                 user: upvoter,
+                req,
             },
             reputation: {
                 user: author,
@@ -417,6 +437,7 @@ const emailMap = {
             downvoter,
             removeVoting,
             secondaryVoted,
+            req,
         } = data;
 
         const author = await getAuthor(postID, Post);
@@ -441,6 +462,7 @@ const emailMap = {
                 message: removeVoting ? `<b>${downvoter.name}</b> removed voting for your post.` : `<b>${downvoter.name}</b> downvoted your post.`,
                 link: `/post/${postID}`,
                 user: downvoter,
+                req,
             },
             reputation: {
                 user: author,
@@ -454,6 +476,7 @@ const emailMap = {
             _id: userID,
             follower,
             unfollow,
+            req,
         } = data;
 
         const user = await User.findById(mongoose.Types.ObjectId(userID));
@@ -475,6 +498,7 @@ const emailMap = {
                 message: unfollow ? `<b>${follower.name}</b> Unfollowed you` : `<b>${follower.name}</b> started following you.`,
                 link: `/profile/${follower._id}`,
                 user: follower,
+                req,
             },
         };
     },

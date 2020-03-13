@@ -31,7 +31,10 @@ module.exports = (app) => {
                 ...newComment._doc,
                 author: req.user,
             };
-            emailNotify('newComment', responseObject);
+            emailNotify('newComment', {
+                ...responseObject,
+                req: req.io,
+            });
 
             res
                 .status(201)
@@ -424,6 +427,7 @@ module.exports = (app) => {
                 };
                 emailNotify('upvoteComment', {
                     ...responseObject,
+                    req: req.io,
                     secondaryVoted,
                 });
 
@@ -476,6 +480,7 @@ module.exports = (app) => {
                 };
                 emailNotify('downvoteComment', {
                     ...responseObject,
+                    req: req.io,
                     secondaryVoted,
                 });
 
