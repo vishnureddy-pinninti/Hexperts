@@ -16,11 +16,11 @@ module.exports = (app) => {
 
         try {
             const existingTopics = await Topic.distinct('topic');
+            const ciTopics = existingTopics.map((topic) => topic.toLowerCase());
             let newTopics;
 
             if (existingTopics.length) {
-                const regex = new RegExp( existingTopics.join( '|' ), 'i');
-                newTopics = topics.filter((topic) => !regex.test( topic ) ).map((topic) => { return { topic }; });
+                newTopics = topics.filter((topic) => !ciTopics.includes( topic.toLowerCase() ) ).map((topic) => { return { topic }; });
             }
             else {
                 newTopics = topics.map((topic) => { return { topic }; });

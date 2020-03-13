@@ -51,7 +51,9 @@ function Notifications(props) {
     }, []);
 
     const handleNotificationClick = (notification) => {
-        markNotificationRead(notification._id);
+        if (!notification.read) {
+            markNotificationRead(notification._id);
+        }
     };
 
     const renderNotifications = () => (

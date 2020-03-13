@@ -7,9 +7,11 @@ const notificationService = async(data) => {
         link,
         recipients,
         user,
+        req,
     } = data;
 
-    const notifications = recipients.filter((follower) => follower.email !== user.email).map((recipient) => {
+    const filteredRecipients = recipients.filter((follower) => follower.email !== user.email);
+    const notifications = filteredRecipients.map((recipient) => {
         return {
             recipient: recipient._id,
             message,
@@ -18,6 +20,11 @@ const notificationService = async(data) => {
     });
 
     await Notification.insertMany(notifications);
+    req.emit('notification', {
+        message,
+        link,
+        recipients: filteredRecipients,
+    });
 };
 
 module.exports = notificationService;

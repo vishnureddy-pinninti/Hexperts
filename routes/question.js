@@ -40,7 +40,10 @@ module.exports = (app) => {
                 author: req.user,
                 topics: chosenTopics || [],
             };
-            emailNotify('newQuestion', responseObject, {
+            emailNotify('newQuestion', {
+                ...responseObject,
+                req: req.io,
+            }, {
                 author: req.user,
                 suggestedExperts,
                 topics,
@@ -668,7 +671,10 @@ module.exports = (app) => {
                     follower: req.user,
                     unfollow: Boolean(isFollowing),
                 };
-                emailNotify('followQuestion', responseObject);
+                emailNotify('followQuestion', {
+                    ...responseObject,
+                    req: req.io,
+                });
 
                 res
                     .status(200)

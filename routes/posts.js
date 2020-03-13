@@ -38,7 +38,10 @@ module.exports = (app) => {
                 blog: chosenBlog,
             };
 
-            emailNotify('newPost', responseObject);
+            emailNotify('newPost', {
+                ...responseObject,
+                req: req.io,
+            });
 
             res
                 .status(201)
@@ -343,6 +346,7 @@ module.exports = (app) => {
 
                 emailNotify('upvotePost', {
                     ...responseObject,
+                    req: req.io,
                     secondaryVoted,
                 });
 
@@ -396,6 +400,7 @@ module.exports = (app) => {
 
                 emailNotify('downvotePost', {
                     ...responseObject,
+                    req: req.io,
                     secondaryVoted,
                 });
 

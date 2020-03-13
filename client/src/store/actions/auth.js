@@ -17,6 +17,7 @@ export const RECEIVE_FOLLOWED_USER = 'RECEIVE_FOLLOWED_USER';
 export const REQUEST_NOTIFICATIONS = 'REQUEST_NOTIFICATIONS';
 export const RECEIVE_NOTIFICATIONS = 'RECEIVE_NOTIFICATIONS';
 export const MARK_NOTIFICATION_READ = 'MARK_NOTIFICATION_READ';
+export const RECEIVE_MARK_NOTIFICATION_READ = 'RECEIVE_MARK_NOTIFICATION_READ';
 export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
 
 const receiveUserSession = (user) => {
@@ -180,12 +181,19 @@ export const requestNotifications = () => {
     };
 };
 
+const receiveMarkNotificationRead = () => {
+    return {
+        type: RECEIVE_MARK_NOTIFICATION_READ,
+    }
+};
+
 export const markNotificationRead = (id) => {
     return {
         type: MARK_NOTIFICATION_READ,
         makeApiRequest: {
             url: `/api/v1/notification-mark-read/${id}`,
             method: 'GET',
+            success: receiveMarkNotificationRead,
         },
     };
 };
