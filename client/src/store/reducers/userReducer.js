@@ -9,10 +9,10 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_NOTIFICATIONS,
     SET_IMAGE,
     RECEIVE_MARK_NOTIFICATION_READ,
-    REQUEST_ADD_NOTIFICATION,
- } from '../actions/auth';
+    REQUEST_ADD_NOTIFICATION } from '../actions/auth';
 
 import { RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
+import { RECEIVE_FOLLOWED_BLOG } from '../actions/blog';
 
 const initialState = {
     isAuthenticated: false,
@@ -24,7 +24,17 @@ const initialState = {
     userProfile: {},
     notificationCount: 0,
     notifications: [],
+    blogs: [],
 };
+
+function searchBlog(blogId, array) {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i]._id === blogId) {
+            return i;
+        }
+    }
+    return -1;
+}
 
 function searchTopic(topicId, array) {
     for (let i = 0; i < array.length; i++) {
@@ -40,6 +50,7 @@ export default (state = initialState, action) => {
     let index;
     let profile;
     let userInterests;
+    let userBlogs;
     switch (action.type) {
         case RECEIVE_USER_SESSION:
             return {
@@ -49,6 +60,7 @@ export default (state = initialState, action) => {
                 notificationCount: action.user.notificationCount,
                 interests: action.user.interests,
                 expertIn: action.user.expertIn,
+                blogs: action.user.blogs,
             };
         case RECEIVE_USER_BY_ID:
             return {
@@ -90,10 +102,33 @@ export default (state = initialState, action) => {
                 interests: [ ...userInterests ],
                 userProfile: { ...profile },
             };
-
+        case RECEIVE_FOLLOWED_BLOG:
+            profile = state.userProfile;
+            if (profile && profile.blogs){
+                index = searchBlog(action.res.blog._id, profile.interests);
+                if (index < 0) {
+                    profile.blogs.push(action.res.blog);
+                }
+                else {
+                    profile.blogs.splice(index, 1);
+                }
+            }
+            userBlogs = state.blogs;
+            index = searchBlog(action.res.blog._id, userBlogs);
+            if (index < 0) {
+                userBlogs.push(action.res.blog);
+            }
+            else {
+                userBlogs.splice(index, 1);
+            }
+            return {
+                ...state,
+                blogs: [ ...userBlogs ],
+                userProfile: { ...profile },
+            };
         case RECEIVE_USER_PREFERENCES:
             profile = state.userProfile;
-            if (profile){
+            if (profile && profile.interests){
                 profile.interests = [
                     ...profile.interests,
                     ...action.user.interests,
@@ -101,6 +136,10 @@ export default (state = initialState, action) => {
                 profile.expertIn = [
                     ...state.expertIn,
                     ...action.user.expertIn,
+                ];
+                profile.blogs = [
+                    ...state.blogs,
+                    ...action.user.blogs,
                 ];
             }
             return {
@@ -113,6 +152,10 @@ export default (state = initialState, action) => {
                 expertIn: [
                     ...state.expertIn,
                     ...action.user.expertIn,
+                ],
+                blogs: [
+                    ...state.blogs,
+                    ...action.user.blogs,
                 ],
                 userProfile: { ...profile },
             };
@@ -168,9 +211,12 @@ export default (state = initialState, action) => {
         case REQUEST_ADD_NOTIFICATION: {
             return {
                 ...state,
-                notifications: [ action.notification, ...state.notifications ],
+                notifications: [
+                    action.notification,
+                    ...state.notifications,
+                ],
                 notificationCount: state.notificationCount + 1,
-            }
+            };
         }
         default:
             return state;

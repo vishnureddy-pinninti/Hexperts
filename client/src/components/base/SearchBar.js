@@ -61,6 +61,22 @@ function SearchBar(props) {
             </div>
         </Link>
     );
+    const blog = (item) => (
+        <Link
+            className={ classes.link }
+            to={ `/blog/${item._id}` }>
+            <div className={ classes.searchItem }>
+                <MuiAvatar
+                    alt="Remy Sharp"
+                    src={ item.options.imageUrl || '/blog-placeholder.png' }
+                    className={ classes.avatar } />
+                <div style={ { marginLeft: 10 } }>
+                    <span>Blog: </span>
+                    <span dangerouslySetInnerHTML={ { __html: item.text } } />
+                </div>
+            </div>
+        </Link>
+    );
     const question = (item) => (
         <Link
             className={ classes.link }
@@ -80,6 +96,17 @@ function SearchBar(props) {
                 Answer:
                 { ' ' }
                 <span dangerouslySetInnerHTML={ { __html: item.text } } />
+            </div>
+        </Link>
+    );
+    const post = (item) => (
+        <Link
+            className={ classes.link }
+            to={ `/post/${item._id}` }>
+            <div>
+                Post:
+                { ' ' }
+                <span dangerouslySetInnerHTML={ { __html: item.subtext } } />
             </div>
         </Link>
     );
@@ -125,6 +152,10 @@ function SearchBar(props) {
                 return question(item);
             case 'answers':
                 return answer(item);
+            case 'blogs':
+                return blog(item);
+            case 'posts':
+                return post(item);
             case 'users':
                 return profile(item);
             case 'externals':

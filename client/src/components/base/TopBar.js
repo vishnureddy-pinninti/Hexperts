@@ -351,7 +351,7 @@ const TopBar = (props) => {
                                     </Badge>
                                 </Link>
                                 <Link
-                                    to="/spaces"
+                                    to="/blogs"
                                     className={ classes.link }>
                                     <Button
                                         startIcon={ <GroupIcon /> }>
