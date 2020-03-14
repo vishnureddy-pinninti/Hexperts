@@ -121,9 +121,19 @@ module.exports = (app) => {
                 },
             ]);
 
-            res
-                .status(200)
-                .json(answer[0]);
+            if (answer[0]) {
+                res
+                    .status(200)
+                    .json(answer[0]);
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: ANSWER_NOT_FOUND,
+                    });
+            }
         }
         catch (e) {
             res

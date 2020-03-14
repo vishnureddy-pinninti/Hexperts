@@ -31,11 +31,6 @@ const questionSchema = new Schema({
     question: {
         type: String,
         trim: true,
-        es_indexed: false,
-    },
-    plainText: {
-        type: String,
-        trim: true,
         es_indexed: true,
     },
     plainText: {

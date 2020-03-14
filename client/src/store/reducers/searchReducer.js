@@ -1,7 +1,7 @@
 import { RECEIVE_SEARCH } from '../actions/search';
 
 const initialState = {
-    results: {},
+    results: [],
 };
 
 export default (state = initialState, action) => {

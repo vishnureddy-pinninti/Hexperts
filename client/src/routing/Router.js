@@ -10,7 +10,7 @@ import green from '@material-ui/core/colors/green';
 import { connect } from 'react-redux';
 import TopBar from '../components/base/TopBar';
 import routes from './routes';
-import { requestNotifications } from '../store/actions/auth';
+import { requestAddNotification } from '../store/actions/auth';
 import config from '../utils/config';
 
 const useStyles = makeStyles((theme) => {
@@ -117,28 +117,32 @@ class Router extends Component {
     componentDidMount() {
         const socket = socketIOClient(config.socketUri);
 
-        socket.on('notification', data => {
-            const user = data.recipients.find(r => r._id = this.props.userid);
+        socket.on('notification', (data) => {
+            const { recipients, ...rest } = data;
+            const recipient = recipients.find((r) => r._id = this.props.userid);
 
-            if (user) {
-                this.props.requestNotifications();
+            if (recipient) {
+                this.props.requestAddNotification({
+                    ...rest,
+                    recipient,
+                });
             }
         });
     }
-};
+}
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         userid: state.user.user._id,
-    }
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-        requestNotifications: () => {
-            dispatch(requestNotifications());
-        }
     };
-}
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        requestAddNotification: (notification) => {
+            dispatch(requestAddNotification(notification));
+        },
+    };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Router);

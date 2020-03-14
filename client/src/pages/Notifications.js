@@ -51,7 +51,7 @@ function Notifications(props) {
     }, []);
 
     const handleNotificationClick = (notification) => {
-        if (!notification.read) {
+        if (!notification.recipient.read) {
             markNotificationRead(notification._id);
         }
     };
@@ -66,7 +66,7 @@ function Notifications(props) {
                     <ListItem
                         onClick={ () => { handleNotificationClick(notification); } }
                         key={ notification._id }
-                        selected={ !notification.read }
+                        selected={ !notification.recipient.read }
                         button>
                         <ListItemAvatar>
                             <Avatar>

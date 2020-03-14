@@ -19,6 +19,7 @@ export const RECEIVE_NOTIFICATIONS = 'RECEIVE_NOTIFICATIONS';
 export const MARK_NOTIFICATION_READ = 'MARK_NOTIFICATION_READ';
 export const RECEIVE_MARK_NOTIFICATION_READ = 'RECEIVE_MARK_NOTIFICATION_READ';
 export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
+export const REQUEST_ADD_NOTIFICATION = 'REQUEST_ADD_NOTIFICATION';
 
 const receiveUserSession = (user) => {
     return {
@@ -181,10 +182,17 @@ export const requestNotifications = () => {
     };
 };
 
+export const requestAddNotification = (notification) => {
+    return {
+        type: REQUEST_ADD_NOTIFICATION,
+        notification,
+    };
+};
+
 const receiveMarkNotificationRead = () => {
     return {
         type: RECEIVE_MARK_NOTIFICATION_READ,
-    }
+    };
 };
 
 export const markNotificationRead = (id) => {

@@ -34,6 +34,7 @@
         } ],
         "arrow-body-style": [ "error", "as-needed", { "requireReturnForObjectLiteral": true } ],
         "arrow-parens": [ "error", "always" ],
+        "no-shadow": "off",
         "arrow-spacing": "error",
         "block-spacing": [ "error", "always" ],
         "brace-style": [ "error", "stroustrup", { "allowSingleLine": true } ],
@@ -98,7 +99,7 @@
         "no-nested-ternary": "error",
         "no-plusplus": "error",
         "no-trailing-spaces": "error",
-        "no-underscore-dangle": "error",
+        "no-underscore-dangle": "off",
         "no-unneeded-ternary": "error",
         "no-useless-constructor": "error",
         "no-var": "error",
@@ -135,7 +136,6 @@
         "putout/align-spaces": "off",
         "quotes": [ "error", "single" ],
         "react/destructuring-assignment": [ "error", "always" ],
-        "react/forbid-prop-types": [ "error", { "forbid": [ "any" ] } ],
         "react/jsx-closing-bracket-location": [ "error", "after-props" ],
         "react/jsx-curly-brace-presence": [ "error", {
             "props": "never",
@@ -161,15 +161,16 @@
             "logical": "ignore",
             "prop": "ignore"
         } ],
+        "react/no-danger": "off",
         "react/no-access-state-in-setstate": "error",
         "react/no-array-index-key": "error",
         "react/no-did-mount-set-state": "error",
         "react/no-did-update-set-state": "error",
-        "react/no-unused-prop-types": "error",
         "react/no-unused-state": "error",
         "react/prefer-es6-class": "error",
         "react/prefer-stateless-function": "error",
         "react/require-default-props": [ "off" ],
+        "react/prop-types": [ "off" ],
         "react/self-closing-comp": [ "error", {
             "component": true,
             "html": true
@@ -192,9 +193,6 @@
                 "/^render.+$/",
                 "everything-else"
             ]
-        } ],
-        "react/sort-prop-types": [ "error", {
-            "noSortAlphabetically": false
         } ],
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn",
