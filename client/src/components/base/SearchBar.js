@@ -13,13 +13,14 @@ import { requestSearch } from '../../store/actions/search';
 import debounce from './debounce';
 import Avatar from './Avatar';
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(() => {
     return {
         textField: {
         },
         link: {
             textDecoration: 'none',
             color: 'inherit',
+            width: '100%',
         },
         searchItem: {
             display: 'flex',
@@ -35,16 +36,8 @@ const useStyles = makeStyles((theme) => {
 
 function SearchBar(props) {
     const classes = useStyles();
-    const [
-        value,
-        setValue,
-    ] = React.useState(null);
 
     const { requestSearch, results } = props;
-
-    React.useEffect(() => {
-        requestSearch({ text: '' });
-    }, [ requestSearch ]);
 
     const handleSearch = debounce((event, text) => {
         if (text && text.length > 1){
@@ -110,6 +103,7 @@ function SearchBar(props) {
         <a
             className={ classes.link }
             target="_blank"
+            rel="noopener noreferrer"
             href={ item.options.link }>
             <div className={ classes.searchItem }>
                 <MuiAvatar className={ classes.avatar }>
@@ -142,14 +136,13 @@ function SearchBar(props) {
 
     return (
         <Autocomplete
-            value={ value }
             onInputChange={ handleSearch }
             freeSolo
             id="free-solo-with-text-demo"
             options={ results }
             renderOption={ renderResults }
             style={ { width: 350 } }
-            filterOptions={ (options, params) => options }
+            filterOptions={ (options) => options }
             renderInput={ (params) => (
                 <TextField
                     ref={ params.InputProps.ref }

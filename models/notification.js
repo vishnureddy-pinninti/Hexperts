@@ -1,8 +1,16 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+const recipientSchema = new Schema({
+    user: mongoose.Types.ObjectId,
+    read: {
+        type: Boolean,
+        default: false,
+    },
+});
+
 const notificationSchema = new Schema({
-    recipient: mongoose.Types.ObjectId,
+    recipients: [ recipientSchema ],
     message: {
         type: String,
         trim: true,
@@ -13,13 +21,6 @@ const notificationSchema = new Schema({
     },
     link: {
         type: String,
-    },
-    read: {
-        type: Boolean,
-        default: false,
-    },
-    lastModified: {
-        type: Date,
     },
 });
 

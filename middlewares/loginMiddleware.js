@@ -1,8 +1,10 @@
+const mongoose = require('mongoose');
+const User = mongoose.model('users');
 const { decrypt } = require('../utils/crypto');
 const config = require('../config/keys');
 const constants = require('../utils/constants');
 
-module.exports = (req, res, next) => {
+module.exports = async(req, res, next) => {
     const COOKIEKEY = config.cookieKey;
     const unauthorize = () => {
         delete req.user;
@@ -13,13 +15,19 @@ module.exports = (req, res, next) => {
                 response: constants.errors.UNAUTHORIZED,
             });
     };
-    if (req.cookies && req.cookies[COOKIEKEY] && req.headers && req.headers.userid) {
+    if (req.cookies && req.cookies[COOKIEKEY] && req.headers && req.headers._id) {
         const user = JSON.parse(decrypt(req.cookies[COOKIEKEY]));
-        if (req.headers.userid === user.userid) {
-            req.user = user;
-            next();
+        try {
+            const dbUser = await User.findById(user._id);
+            if (mongoose.Types.ObjectId(req.headers._id).equals(dbUser._id)) {
+                req.user = dbUser;
+                next();
+            }
+            else {
+                unauthorize();
+            }
         }
-        else {
+        catch (e) {
             unauthorize();
         }
     }

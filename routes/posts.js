@@ -64,13 +64,12 @@ module.exports = (app) => {
             pagination,
         } = req.queryParams;
         const {
-            _id,
+            blogs = [],
         } = req.user;
 
         try {
-            const user = await User.findById(_id);
             const posts = await Post.aggregate([
-                { $match: { 'blog': { $in: (user.blogs || []).map((blog) => mongoose.Types.ObjectId(blog)) } } },
+                { $match: { 'blog': { $in: blogs.map((blog) => mongoose.Types.ObjectId(blog)) } } },
                 { $sort: { postedDate: -1 } },
                 { $skip: pagination.skip || 0 },
                 { $limit: pagination.limit || 10 },

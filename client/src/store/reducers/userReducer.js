@@ -8,7 +8,8 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_FOLLOWED_USER,
     RECEIVE_NOTIFICATIONS,
     SET_IMAGE,
-    RECEIVE_MARK_NOTIFICATION_READ
+    RECEIVE_MARK_NOTIFICATION_READ,
+    REQUEST_ADD_NOTIFICATION,
  } from '../actions/auth';
 
 import { RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
@@ -21,6 +22,8 @@ const initialState = {
     feed: [],
     images: [],
     userProfile: {},
+    notificationCount: 0,
+    notifications: [],
 };
 
 function searchTopic(topicId, array) {
@@ -161,6 +164,13 @@ export default (state = initialState, action) => {
                 ...state,
                 notificationCount: state.notificationCount - 1,
             };
+        }
+        case REQUEST_ADD_NOTIFICATION: {
+            return {
+                ...state,
+                notifications: [ action.notification, ...state.notifications ],
+                notificationCount: state.notificationCount + 1,
+            }
         }
         default:
             return state;
