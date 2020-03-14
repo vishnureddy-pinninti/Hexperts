@@ -4,8 +4,10 @@ import Topic from '../pages/Topic';
 import Profile from '../pages/Profile';
 import Notifications from '../pages/Notifications';
 import Answer from '../pages/Answer';
-import Spaces from '../pages/Spaces';
+import Blogs from '../pages/BlogsHome';
+import Blog from '../pages/Blog';
 import AnswerWithQuestion from '../pages/AnswerWithQuestion';
+import Post from '../pages/Post';
 
 const routes = [
     {
@@ -39,9 +41,19 @@ const routes = [
         key: 'Notifications',
     },
     {
-        path: '/Spaces',
-        component: Spaces,
-        key: 'Spaces',
+        path: '/Blog/:blogId',
+        component: Blog,
+        key: 'Blog',
+    },
+    {
+        path: '/Post/:postId',
+        component: Post,
+        key: 'Post',
+    },
+    {
+        path: '/Blogs',
+        component: Blogs,
+        key: 'Blogs',
     },
     {
         path: '/',

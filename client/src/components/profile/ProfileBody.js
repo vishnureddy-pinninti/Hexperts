@@ -100,7 +100,12 @@ function ProfileBody(props) {
                 onClick={ () => { requestUserAnswers(userProfile._id); } }
                 clickable />
             <Chip
-                label={ `Blogs ${userProfile.blogs}` }
+                label={ `Posts ${userProfile.posts}` }
+                className={ classes.chip }
+                onClick={ () => { requestUserAnswers(userProfile._id); } }
+                clickable />
+            <Chip
+                label={ `Blogs ${userProfile.blogs && userProfile.blogs.length}` }
                 className={ classes.chip }
                 clickable />
             <Chip
