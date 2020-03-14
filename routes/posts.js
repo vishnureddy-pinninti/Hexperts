@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Blog = mongoose.model('blogs');
 const Post = mongoose.model('posts');
+const User = mongoose.model('users');
 
 const { errors: { POST_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
@@ -63,12 +64,13 @@ module.exports = (app) => {
             pagination,
         } = req.queryParams;
         const {
-            blogs,
+            _id,
         } = req.user;
 
         try {
+            const user = await User.findById(_id);
             const posts = await Post.aggregate([
-                { $match: { 'blog': { $in: blogs.map((blog) => mongoose.Types.ObjectId(blog)) } } },
+                { $match: { 'blog': { $in: (user.blogs || []).map((blog) => mongoose.Types.ObjectId(blog)) } } },
                 { $sort: { postedDate: -1 } },
                 { $skip: pagination.skip || 0 },
                 { $limit: pagination.limit || 10 },
