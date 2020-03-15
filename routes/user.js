@@ -459,9 +459,9 @@ module.exports = (app) => {
 
         try {
             const user = await User.findById(_id);
-            const space = await Blog.findById(blogID);
+            const blog = await Blog.findById(blogID);
 
-            if (user && space) {
+            if (user && blog) {
                 const isFollowing = user.blogs.find((blog) => blog.equals(blogID));
 
                 if (isFollowing) {
@@ -479,7 +479,7 @@ module.exports = (app) => {
                     .status(200)
                     .json({
                         _id,
-                        space,
+                        blog,
                         blogRemoved: Boolean(isFollowing),
                     });
             }

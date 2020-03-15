@@ -10,12 +10,21 @@ const notificationService = async(data) => {
         req,
     } = data;
 
-    const filteredRecipients = recipients.filter((follower) => follower.email !== user.email).map((r) => { return { user: r._id }; });
+    const filteredRecipients = recipients
+        .filter((follower) => follower.email !== user.email)
+        .map((r) => { return { user: r._id }; });
+
+    const uniqueRecipients = filteredRecipients.reduce((unique, o) => {
+        if (!unique.some((obj) => obj.user.equals(o.user))) {
+            unique.push(o);
+        }
+        return unique;
+    }, []);
 
     const notification = new Notification({
         message,
         link,
-        recipients: filteredRecipients,
+        recipients: uniqueRecipients,
     });
 
     await notification.save();

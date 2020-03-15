@@ -79,7 +79,7 @@ const getAuthor = async(id, model) => {
     return records[0].author;
 };
 
-const getBlogFollowers = async(blog) => await User.find({ 'blog': mongoose.Types.ObjectId(blog) });
+const getBlogFollowers = async(blog) => await User.find({ 'blogs': mongoose.Types.ObjectId(blog) });
 
 module.exports = {
     getUserFollowers,
