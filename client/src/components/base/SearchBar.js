@@ -7,7 +7,7 @@ import LinkIcon from '@material-ui/icons/Link';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { connect } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { Avatar as MuiAvatar } from '@material-ui/core';
 import { requestSearch } from '../../store/actions/search';
 import debounce from './debounce';
@@ -21,6 +21,7 @@ const useStyles = makeStyles(() => {
             textDecoration: 'none',
             color: 'inherit',
             width: '100%',
+            padding: 10,
         },
         searchItem: {
             display: 'flex',
@@ -37,13 +38,27 @@ const useStyles = makeStyles(() => {
 function SearchBar(props) {
     const classes = useStyles();
 
-    const { requestSearch, results } = props;
+    const {
+        requestSearch,
+        results,
+        match: {
+            params: { query 
+},
+        },
+        history,
+    } = props;
 
     const handleSearch = debounce((event, text) => {
-        if (text && text.length > 1){
+        if (text){
             requestSearch({ text });
         }
     }, 250);
+
+    const showSearchResults = (event, text) => {
+        if (typeof text === 'string'){
+            history.push(`/search/${text}`);
+        }
+    };
 
     const topic = (item) => (
         <Link
@@ -167,6 +182,8 @@ function SearchBar(props) {
 
     return (
         <Autocomplete
+            value={ query }
+            onChange={ showSearchResults }
             onInputChange={ handleSearch }
             freeSolo
             id="free-solo-with-text-demo"
@@ -180,6 +197,7 @@ function SearchBar(props) {
                     placeholder="Search…"
                     variant="outlined"
                     fullWidth
+                    required
                     size="small"
                     InputProps={ {
                         startAdornment: (
@@ -212,4 +230,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);
+export default (connect(mapStateToProps, mapDispatchToProps)(withRouter(SearchBar)));

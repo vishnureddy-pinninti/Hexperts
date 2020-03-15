@@ -8,6 +8,7 @@ import Blogs from '../pages/BlogsHome';
 import Blog from '../pages/Blog';
 import AnswerWithQuestion from '../pages/AnswerWithQuestion';
 import Post from '../pages/Post';
+import Search from '../pages/Search';
 
 const routes = [
     {
@@ -54,6 +55,11 @@ const routes = [
         path: '/Blogs',
         component: Blogs,
         key: 'Blogs',
+    },
+    {
+        path: '/Search/:query',
+        component: Search,
+        key: 'PoSearchst',
     },
     {
         path: '/',
