@@ -348,7 +348,11 @@ const EditSuggestedWriters = (props) => {
                 <TabPanel
                     value={ value }
                     index="two">
-                    { renderAskedExperts() }
+                    <Grid
+                        container
+                        spacing={ 3 }>
+                        { renderAskedExperts() }
+                    </Grid>
                 </TabPanel>
             </DialogContent>
 

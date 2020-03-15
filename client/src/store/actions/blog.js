@@ -28,10 +28,10 @@ export function addBlogPending() {
     };
 }
 
-const receiveAddedBlog = (topic) => {
+const receiveAddedBlog = (blog) => {
     return {
         type: RECEIVE_ADDED_BLOG,
-        topic,
+        blog,
     };
 };
 

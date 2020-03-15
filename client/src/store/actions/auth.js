@@ -20,6 +20,8 @@ export const MARK_NOTIFICATION_READ = 'MARK_NOTIFICATION_READ';
 export const RECEIVE_MARK_NOTIFICATION_READ = 'RECEIVE_MARK_NOTIFICATION_READ';
 export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
 export const REQUEST_ADD_NOTIFICATION = 'REQUEST_ADD_NOTIFICATION';
+export const REQUEST_USER_POSTS = 'REQUEST_USER_POSTS';
+export const RECEIVE_USER_POSTS = 'RECEIVE_USER_POSTS';
 
 const receiveUserSession = (user) => {
     return {
@@ -137,6 +139,25 @@ export const requestUserAnswers = (userId) => {
         },
     };
 };
+
+const receiveUserPosts = (res) => {
+    return {
+        type: RECEIVE_USER_POSTS,
+        res,
+    };
+};
+
+export const requestUserPosts = (userId) => {
+    return {
+        type: REQUEST_USER_POSTS,
+        makeApiRequest: {
+            url: `/api/v1/user-posts/${userId}`,
+            method: 'GET',
+            success: receiveUserPosts,
+        },
+    };
+};
+
 
 export const setImage = (image) => {
     return {
