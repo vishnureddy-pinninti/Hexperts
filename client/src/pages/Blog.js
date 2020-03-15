@@ -82,7 +82,7 @@ function Topic(props) {
                     </Grid>
                     <Grid
                         item
-                        xs={ 3 } />
+                        xs={ 2 } />
                 </Grid>
             </Container>
             <FollowBlogsModal
