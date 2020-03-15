@@ -5,7 +5,6 @@ const User = mongoose.model('users');
 const { errors: { TOPIC_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
-const htmlToText = require('../utils/htmlToText');
 const upload = require('../utils/uploads');
 
 module.exports = (app) => {
@@ -242,7 +241,7 @@ module.exports = (app) => {
 
                 if (description) {
                     topic.description = description;
-                    topic.plainText = htmlToText(description);
+                    topic.plainText = description;
                     responseObject.description = description;
                 }
 

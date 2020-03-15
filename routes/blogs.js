@@ -4,11 +4,10 @@ const Blog = mongoose.model('blogs');
 const { errors: { BLOG_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
-const htmlToText = require('../utils/htmlToText');
 const upload = require('../utils/uploads');
 
 module.exports = (app) => {
-    app.post('/api/v1/blog.add', loginMiddleware, async(req, res) => {
+    app.post('/api/v1/blog.add', loginMiddleware, upload.any(), async(req, res) => {
         const {
             name,
             description,
@@ -31,8 +30,9 @@ module.exports = (app) => {
             const newBlog = new Blog({
                 name,
                 description,
-                plainText: htmlToText(description),
+                plainText: description,
                 author: _id,
+                imageUrl: req.files && req.files.length && `/api/v1/images/${req.files[0].filename}`,
             });
 
             await newBlog.save();
@@ -275,7 +275,7 @@ module.exports = (app) => {
 
                 if (description) {
                     blog.description = description;
-                    blog.plainText = htmlToText(description);
+                    blog.plainText = description;
                     responseObject.description = description;
                 }
 
