@@ -119,7 +119,7 @@ class Router extends Component {
 
         socket.on('notification', (data) => {
             const { recipients, ...rest } = data;
-            const recipient = recipients.find((r) => r._id = this.props.userid);
+            const recipient = recipients.find((r) => r.user === this.props.userid);
 
             if (recipient) {
                 this.props.requestAddNotification({
