@@ -7,8 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import AnswerCard from '../answer/Card';
+import PostCard from '../blog/Card';
 import QuestionCard from '../question/Card';
-import { requestUserQuestions, requestUserAnswers } from '../../store/actions/auth';
+import { requestUserQuestions, requestUserAnswers, requestUserPosts } from '../../store/actions/auth';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -44,6 +45,7 @@ function ProfileBody(props) {
         userFeed,
         userProfile,
         followedTopics,
+        requestUserPosts,
     } = props;
 
     useEffect(() => {
@@ -55,32 +57,34 @@ function ProfileBody(props) {
         userProfile,
     ]);
 
-    const renderQuestions = () => userFeed.map((item) => {
-        if (item.answer){
-            return (
-                <AnswerCard
-                    key={ item._id }
-                    questionId={ item.questionID }
-                    answer={ item }
-                    hideHeaderHelperText
-                    answerId={ item._id }
-                    upvoters={ item.upvoters }
-                    downvoters={ item.downvoters }
-                    question={ item.question }
-                    author={ item.author }
-                    topics={ item.topics }
-                    date={ item.postedDate } />
-            );
-        }
-        return (
-            <QuestionCard
-                key={ item._id }
-                id={ item._id }
-                date={ item.postedDate }
-                answersCount={ item.answers }
-                question={ item } />
-        );
-    });
+    const renderAnswers = (items) => items.map((item) => (
+        <AnswerCard
+            key={ item._id }
+            questionId={ item.questionID }
+            answer={ item }
+            hideHeaderHelperText
+            answerId={ item._id }
+            upvoters={ item.upvoters }
+            downvoters={ item.downvoters }
+            question={ item.question }
+            author={ item.author }
+            topics={ item.topics }
+            date={ item.postedDate } />
+    ));
+    const renderQuestions = (items) => items.map((item) => (
+        <QuestionCard
+            key={ item._id }
+            id={ item._id }
+            date={ item.postedDate }
+            answersCount={ item.answers }
+            question={ item } />
+    ));
+    const renderPosts = (items) => items.map((item) => (
+        <PostCard
+            key={ item._id }
+            post={ item }
+            hideHeaderHelperText />
+    ));
 
     const renderMenu = () => (
         <List>
@@ -102,7 +106,7 @@ function ProfileBody(props) {
             <Chip
                 label={ `Posts ${userProfile.posts}` }
                 className={ classes.chip }
-                onClick={ () => { requestUserAnswers(userProfile._id); } }
+                onClick={ () => { requestUserPosts(userProfile._id); } }
                 clickable />
             <Chip
                 label={ `Blogs ${userProfile.blogs && userProfile.blogs.length}` }
@@ -119,6 +123,7 @@ function ProfileBody(props) {
         </List>
     );
 
+    const { type, items } = userFeed;
 
     return (
         <Grid
@@ -142,7 +147,9 @@ function ProfileBody(props) {
             <Grid
                 item
                 xs={ 10 }>
-                { userFeed && renderQuestions() }
+                { type === 'questions' && renderQuestions(items) }
+                { type === 'answers' && renderAnswers(items) }
+                { type === 'posts' && renderPosts(items) }
             </Grid>
         </Grid>
     );
@@ -170,6 +177,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         requestUserAnswers: (userId) => {
             dispatch(requestUserAnswers(userId));
+        },
+        requestUserPosts: (userId) => {
+            dispatch(requestUserPosts(userId));
         },
     };
 };

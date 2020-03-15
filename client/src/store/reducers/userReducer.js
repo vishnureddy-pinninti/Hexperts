@@ -8,6 +8,7 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_FOLLOWED_USER,
     RECEIVE_NOTIFICATIONS,
     SET_IMAGE,
+    RECEIVE_USER_POSTS,
     RECEIVE_MARK_NOTIFICATION_READ,
     REQUEST_ADD_NOTIFICATION } from '../actions/auth';
 
@@ -162,12 +163,26 @@ export default (state = initialState, action) => {
         case RECEIVE_QUESTIONS_BY_USER_ID:
             return {
                 ...state,
-                feed: action.res.questions,
+                feed: {
+                    type: 'questions',
+                    items: action.res.questions,
+                },
             };
         case RECEIVE_USER_ANSWERS:
             return {
                 ...state,
-                feed: action.res.answers,
+                feed: {
+                    type: 'answers',
+                    items: action.res.answers,
+                },
+            };
+        case RECEIVE_USER_POSTS:
+            return {
+                ...state,
+                feed: {
+                    type: 'posts',
+                    items: action.res.posts,
+                },
             };
         case RECEIVE_FOLLOWED_USER:
             followers = [ ...state.userProfile.followers ];

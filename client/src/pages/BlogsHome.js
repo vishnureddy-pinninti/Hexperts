@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import { Link, withRouter } from 'react-router-dom';
 import BlogCard from '../components/blog/Card';
 import Blogs from '../components/blog/BlogsList';
 import { requestPosts } from '../store/actions/blog';
@@ -37,7 +38,10 @@ function Home(props) {
         followedBlogs,
         pending,
         expertIn,
+        history,
+        newBlog,
         blogs,
+        blogPending,
         posts,
 
     } = props;
@@ -99,10 +103,11 @@ function Home(props) {
     };
 
     useEffect(() => {
-        if (!pending) {
-            setOpenQModal(pending);
+        if (!blogPending && newBlog && newBlog._id) {
+            setOpenQModal(blogPending);
+            history.push(`/blog/${newBlog._id}`);
         }
-    }, [ pending ]);
+    }, [ blogPending ]);
 
     const renderQuestions = () => posts.map((post) => (
         <BlogCard
@@ -175,11 +180,10 @@ const mapStateToProps = (state) => {
     return {
         posts: state.blog.posts,
         user: state.user.user,
-        expertIn: state.user.expertIn,
         pending: state.user.pending,
+        blogPending: state.blog.pending,
         followedBlogs: state.user.blogs,
-        trendingQuestions: state.questions.trendingQuestions,
-        topics: state.topic.topics,
+        newBlog: state.blog.newBlog,
     };
 };
 
@@ -191,4 +195,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Home));

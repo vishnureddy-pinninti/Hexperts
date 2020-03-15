@@ -54,11 +54,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 pending: false,
-                topics: [
-                    ...action.topic,
-                    ...state.topics,
+                blogs: [
+                    action.blog,
+                    ...state.blogs,
                 ],
-                newTopic: action.topic[0],
+                newBlog: action.blog,
             };
         case RECEIVE_BLOGS:
             return {
@@ -68,6 +68,7 @@ export default (state = initialState, action) => {
         case RECEIVE_BLOG_BY_ID:
             return {
                 ...state,
+                newBlog: {},
                 blog: action.blog,
                 pending: false,
             };
