@@ -121,7 +121,7 @@ function SearchBar(props) {
             <div>
                 Post:
                 { ' ' }
-                <span dangerouslySetInnerHTML={ { __html: item.subtext } } />
+                <span dangerouslySetInnerHTML={ { __html: item.text } } />
             </div>
         </Link>
     );
