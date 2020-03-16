@@ -15,7 +15,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import { Avatar as MuiAvatar, Divider } from '@material-ui/core';
 import LinkIcon from '@material-ui/icons/Link';
 import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
-import { requestSearch } from '../store/actions/search';
+import { requestAdvancedSearch } from '../store/actions/search';
 
 
 const useStyles = makeStyles((theme) => {
@@ -235,14 +235,14 @@ function Search(props) {
 
 const mapStateToProps = (state) => {
     return {
-        results: state.search.results,
+        results: state.search.advancedResults,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         requestSearch: (body) => {
-            dispatch(requestSearch(body));
+            dispatch(requestAdvancedSearch(body));
         },
     };
 };
