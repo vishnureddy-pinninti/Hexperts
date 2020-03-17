@@ -110,11 +110,11 @@ const QuestionTags = (props) => {
                     onClick={ handleEditTopicsModalOpen }
                     aria-label="upload picture">
                     <EditIcon />
-                </IconButton>
+                                         </IconButton>
             }
             <EditTopicsModal
                 open={ openEditTopicsModal }
-                question={ question }
+                question={ question.question }
                 topics={ topics }
                 questionID={ id }
                 handleClose={ handleEditTopicsModalClose } />

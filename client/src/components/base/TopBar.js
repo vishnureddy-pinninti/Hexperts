@@ -22,6 +22,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Avatar from './Avatar';
 import QuestionModal from './QuestionModal';
 import SearchBar from './SearchBar';
+import EditTopicsModal from '../topic/EditTopicsModal';
+import EditSuggestedWriters from '../question/EditSuggestedWriters';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -145,17 +147,58 @@ const TopBar = (props) => {
     };
 
     const [
+        skipTopics,
+        setSkipTopics,
+    ] = React.useState(false);
+
+    const [
+        skipExperts,
+        setSkipExperts,
+    ] = React.useState(false);
+
+    const [
         openQModal,
         setOpenQModal,
     ] = React.useState(false);
 
     const handleClickQuestionModalOpen = () => {
+        setSkipExperts(false);
+        setSkipTopics(false);
         setOpenQModal(true);
     };
 
     const handleQuestionModalClose = () => {
         setOpenQModal(false);
     };
+
+    const [
+        openEditTopicsModal,
+        setOpenEditTopicsModal,
+    ] = React.useState(false);
+
+    const handleEditTopicsModalOpen = () => {
+        setOpenEditTopicsModal(true);
+    };
+
+    const handleEditTopicsModalClose = () => {
+        setOpenEditTopicsModal(false);
+        setSkipTopics(true);
+    };
+
+    const [
+        openEditSuggestedWritersModal,
+        setOpenEditSuggestedWritersModal,
+    ] = React.useState(false);
+
+    const handleEditSuggestedWriterssModalOpen = () => {
+        setOpenEditSuggestedWritersModal(true);
+    };
+
+    const handleEditSuggestedWritersModalClose = () => {
+        setOpenEditSuggestedWritersModal(false);
+        setSkipExperts(true);
+    };
+
 
     const {
         pending,
@@ -167,32 +210,31 @@ const TopBar = (props) => {
         notificationCount,
     } = props;
 
-    useEffect(() => {
-        if (!pending) {
-            setOpenQModal(pending);
-        }
-    }, [ pending ]);
-
 
     useEffect(() => {
         if (!pending && newQuestion && newQuestion._id) {
-            history.push(`/question/${newQuestion._id}`);
+            setOpenQModal(pending);
+            setOpenEditTopicsModal(true);
+            if ((newQuestion.topics.length || skipTopics) && (newQuestion.suggestedExperts.length || skipExperts)){
+                setOpenEditSuggestedWritersModal(false);
+                setOpenEditTopicsModal(false);
+                history.push(`/question/${newQuestion._id}`);
+                return;
+            }
+            if (newQuestion.topics.length || skipTopics){
+                setOpenEditTopicsModal(false);
+                setOpenEditSuggestedWritersModal(true);
+            }
         }
     }, [
         history,
         newQuestion,
         newQuestion._id,
         pending,
+        skipTopics,
+        skipExperts,
     ]);
 
-    const [
-        value,
-        setValue,
-    ] = React.useState(2);
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
 
     const handleProfileClick = () => {
         history.push(`/profile/${user._id}`);
@@ -276,7 +318,9 @@ const TopBar = (props) => {
                 </IconButton>
                 <p>Notifications</p>
             </MenuItem>
-            <MenuItem onClick={ handleProfileMenuOpen }>
+            <MenuItem
+                onClick={ handleProfileClick }
+                onMouseHover={ handleProfileMenuOpen }>
                 <IconButton
                     aria-label="account of current user"
                     aria-controls="primary-search-account-menu"
@@ -389,7 +433,8 @@ const TopBar = (props) => {
                                     aria-label="account of current user"
                                     aria-controls={ menuId }
                                     aria-haspopup="true"
-                                    onClick={ handleProfileMenuOpen }
+                                    onClick={ handleProfileClick }
+                                    onMouseHover={ handleProfileMenuOpen }
                                     color="inherit">
                                     <Avatar user={ user.email } />
                                 </IconButton>
@@ -411,6 +456,18 @@ const TopBar = (props) => {
             { renderMobileMenu }
             { renderMenu }
             { renderQuestionModal }
+            { newQuestion.question && <EditTopicsModal
+                open={ openEditTopicsModal }
+                question={ newQuestion.question }
+                topics={ newQuestion.topics }
+                questionID={ newQuestion._id }
+                handleClose={ handleEditTopicsModalClose } /> }
+            { newQuestion.question && <EditSuggestedWriters
+                open={ openEditSuggestedWritersModal }
+                question={ newQuestion.question }
+                topics={ newQuestion.topics }
+                questionID={ newQuestion._id }
+                handleClose={ handleEditSuggestedWritersModalClose } /> }
             <Snackbar
                 open={ newQuestion._id }
                 message="Adding Question" />

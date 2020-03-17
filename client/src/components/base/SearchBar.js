@@ -1,143 +1,171 @@
-/* eslint-disable no-use-before-define */
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
+import Popper from '@material-ui/core/Popper';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import LinkIcon from '@material-ui/icons/Link';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import HelpIcon from '@material-ui/icons/Help';
+import { Avatar as MuiAvatar, Divider } from '@material-ui/core';
+import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
+import Paper from '@material-ui/core/Paper';
 import { connect } from 'react-redux';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Link, withRouter } from 'react-router-dom';
-import { Avatar as MuiAvatar } from '@material-ui/core';
-import { requestSearch } from '../../store/actions/search';
-import debounce from './debounce';
 import Avatar from './Avatar';
+import { requestSearch } from '../../store/actions/search';
 
-const useStyles = makeStyles(() => {
+
+const useStyles = makeStyles((theme) => {
     return {
-        textField: {
+        backdrop: {
+            marginTop: 70,
+        },
+        paper: {
+            width: 500,
+            maxHeight: 700,
+            overflow: 'scroll',
+            marginTop: 15,
+        },
+        root: {
+            backgroundColor: theme.palette.background.paper,
+            padding: 0,
         },
         link: {
             textDecoration: 'none',
             color: 'inherit',
-            width: '100%',
-            padding: 10,
-        },
-        searchItem: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-        },
-        avatar: {
-            height: 25,
-            width: 25,
         },
     };
 });
 
 function SearchBar(props) {
-    const classes = useStyles();
-
     const {
-        requestSearch,
         results,
-        match: {
-            params: { query 
-},
-        },
+        requestSearch,
         history,
     } = props;
 
-    const handleSearch = debounce((event, text) => {
-        if (text){
-            requestSearch({ text });
-        }
-    }, 250);
+    const classes = useStyles();
 
-    const showSearchResults = (event, text) => {
-        if (typeof text === 'string'){
-            history.push(`/search/${text}`);
-        }
+    const [
+        anchorEl,
+        setAnchorEl,
+    ] = React.useState(null);
+
+    const handleClick = (event) => {
+        requestSearch({ text: event.target.value });
+        setAnchorEl(event.currentTarget);
     };
+
+    const handleClose = (event) => {
+        if (event && event.relatedTarget && event.relatedTarget.parentElement.id === 'search-results') { return; }
+
+        if (anchorEl) {
+            anchorEl.focus();
+        }
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
 
     const topic = (item) => (
         <Link
             className={ classes.link }
             to={ `/topic/${item._id}` }>
-            <div className={ classes.searchItem }>
-                <MuiAvatar
-                    alt="Remy Sharp"
-                    src={ item.options.imageUrl || '/placeholder.png' }
-                    className={ classes.avatar } />
-                <div style={ { marginLeft: 10 } }>
-                    <span>Topic: </span>
-                    <span dangerouslySetInnerHTML={ { __html: item.text } } />
-                </div>
-            </div>
+            <ListItem>
+                <ListItemAvatar>
+                    <Avatar
+                        alt="Remy Sharp"
+                        src={ item.options.imageUrl || '/placeholder.png' }
+                        className={ classes.avatar } />
+                </ListItemAvatar>
+                <ListItemText
+                    primary="Topic"
+                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+            </ListItem>
         </Link>
     );
+
     const blog = (item) => (
         <Link
             className={ classes.link }
             to={ `/blog/${item._id}` }>
-            <div className={ classes.searchItem }>
-                <MuiAvatar
-                    alt="Remy Sharp"
-                    src={ item.options.imageUrl || '/blog-placeholder.png' }
-                    className={ classes.avatar } />
-                <div style={ { marginLeft: 10 } }>
-                    <span>Blog: </span>
-                    <span dangerouslySetInnerHTML={ { __html: item.text } } />
-                </div>
-            </div>
+            <ListItem>
+                <ListItemAvatar>
+                    <Avatar
+                        alt="Remy Sharp"
+                        src={ item.options.imageUrl || '/blog-placeholder.png' }
+                        className={ classes.avatar } />
+                </ListItemAvatar>
+                <ListItemText
+                    primary="Blog"
+                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+            </ListItem>
         </Link>
     );
+
     const question = (item) => (
         <Link
             className={ classes.link }
             to={ `/question/${item._id}` }>
-            <div>
-                Question:
-                { ' ' }
-                <span dangerouslySetInnerHTML={ { __html: item.text } } />
-            </div>
+            <ListItem>
+                <ListItemAvatar>
+                    <Avatar>
+                        <HelpIcon />
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+            </ListItem>
         </Link>
     );
+
     const answer = (item) => (
         <Link
             className={ classes.link }
             to={ `/answer/${item._id}` }>
-            <div>
-                Answer:
-                { ' ' }
-                <span dangerouslySetInnerHTML={ { __html: item.text } } />
-            </div>
+            <ListItem>
+                <ListItemAvatar>
+                    <Avatar>
+                        <QuestionAnswerOutlinedIcon />
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+            </ListItem>
         </Link>
     );
+
     const post = (item) => (
         <Link
             className={ classes.link }
             to={ `/post/${item._id}` }>
-            <div>
-                Post:
-                { ' ' }
-                <span dangerouslySetInnerHTML={ { __html: item.subtext } } />
-            </div>
+            <ListItem>
+                <ListItemAvatar>
+                    Post:
+                </ListItemAvatar>
+                <ListItemText
+                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+            </ListItem>
         </Link>
     );
+
     const profile = (item) => (
         <Link
             className={ classes.link }
             to={ `/profile/${item._id}` }>
-            <div className={ classes.searchItem }>
-                <Avatar
-                    user={ item.options.email }
-                    className={ classes.avatar } />
-                <div style={ { marginLeft: 10 } }>
-                    <span>Profile: </span>
-                    <span dangerouslySetInnerHTML={ { __html: item.text } } />
-                </div>
-            </div>
+            <ListItem>
+                <ListItemAvatar>
+                    <Avatar
+                        user={ item.options.email }
+                        className={ classes.avatar } />
+                </ListItemAvatar>
+                <ListItemText
+                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+            </ListItem>
         </Link>
     );
 
@@ -159,7 +187,7 @@ function SearchBar(props) {
         </a>
     );
 
-    const renderResults = (item) => {
+    const renderResult = (item) => {
         switch (item.type){
             case 'topics':
                 return topic(item);
@@ -180,41 +208,81 @@ function SearchBar(props) {
         }
     };
 
+    const renderSearchResults = () => (
+        <List
+            className={ classes.root }
+            id="search-results">
+            { results.map((item) => (
+                <>
+                    { renderResult(item) }
+                    <Divider />
+                </>
+            )) }
+        </List>
+    );
+
+    const id = open ? 'simple-popper' : undefined;
+
     return (
-        <Autocomplete
-            value={ query }
-            onChange={ showSearchResults }
-            onInputChange={ handleSearch }
-            freeSolo
-            id="free-solo-with-text-demo"
-            options={ results }
-            renderOption={ renderResults }
-            style={ { width: 350 } }
-            filterOptions={ (options) => options }
-            renderInput={ (params) => (
+        <>
+            <div className={ classes.root }>
                 <TextField
-                    ref={ params.InputProps.ref }
+                    aria-describedby={ id }
                     placeholder="Search…"
                     variant="outlined"
                     fullWidth
+                    style={ { width: 350 } }
                     required
+                    onBlur={ handleClose }
+                    autoFocus
+                    onClick={ handleClick }
+                    onChange={ handleClick }
                     size="small"
+                    onKeyPress={ (ev) => {
+                        if (ev.key === 'Enter') {
+                            if (typeof ev.target.value === 'string'){
+                                history.push(`/search/${ev.target.value}`);
+                            }
+                        }
+                    } }
                     InputProps={ {
                         startAdornment: (
                             <InputAdornment position="start">
                                 <SearchIcon />
                             </InputAdornment>
                         ),
-                        ...params.inputProps,
                     } } />
-            ) } />
+            </div>
+            <Popper
+                id={ id }
+                open={ open }
+                placement="bottom-end"
+                modifiers={ {
+                    flip: {
+                        enabled: true,
+                    },
+                    preventOverflow: {
+                        enabled: false,
+                        boundariesElement: 'scrollParent',
+                    },
+                    arrow: {
+                        enabled: true,
+                    },
+                } }
+                anchorEl={ anchorEl }>
+                <Paper
+                    elevation={ 10 }
+                    className={ classes.paper }>
+                    { results && renderSearchResults() }
+                </Paper>
+            </Popper>
+        </>
     );
 }
 
 SearchBar.defaultProps = {
     results: [],
 };
-
 
 const mapStateToProps = (state) => {
     return {

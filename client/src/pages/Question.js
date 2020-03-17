@@ -57,7 +57,7 @@ function Question(props) {
                         item
                         xs={ 8 }>
                         { question && <QuestionSection
-                            question={ question.question }
+                            question={ question }
                             id={ question._id }
                             answers={ question.answers }
                             topics={ question.topics } /> }

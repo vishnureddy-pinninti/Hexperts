@@ -8,8 +8,8 @@ import { connect } from 'react-redux';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
-import { Link } from 'react-router-dom';
-import CardActionArea from '@material-ui/core/CardActionArea';
+import { Link, withRouter } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
 import { formatDistanceToNow } from 'date-fns';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => {
         root: {
             backgroundColor: theme.palette.background.paper,
             padding: 0,
+            textAlign: 'center',
         },
         link: {
             textDecoration: 'none',
@@ -80,6 +81,29 @@ function Notifications(props) {
                     <Divider />
                 </Link>
             )) }
+            { notifications.length === 0
+            && <Card className={ classes.root }>
+                <CardContent>
+                    <Typography
+                        className={ classes.title }
+                        gutterBottom>
+                        You don't have any notifications right now.
+                    </Typography>
+                    <Typography
+                        className={ classes.title }
+                        color="textSecondary"
+                        gutterBottom>
+                        When someone follows you, upvotes, comments, you will see it here.
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={ props.history.goBack }
+                        className={ classes.margin }>
+                        Go Back
+                    </Button>
+                </CardContent>
+            </Card> }
         </List>
     );
 
@@ -121,4 +145,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Notifications));

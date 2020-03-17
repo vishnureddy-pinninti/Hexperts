@@ -77,7 +77,7 @@ function TabPanel(props) {
             { ...other }>
             { value === index && <Box p={ 3 }>
                 { children }
-            </Box> }
+                                 </Box> }
         </Typography>
     );
 }
@@ -105,7 +105,6 @@ const EditSuggestedWriters = (props) => {
         topics,
         requestTopics,
         editQuestion,
-        newTopic,
         suggestedExperts,
         requestSuggestedExperts,
         askedExperts,
@@ -380,10 +379,8 @@ EditSuggestedWriters.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user,
-        newTopic: state.topic.newTopic,
         suggestedExperts: state.topic.suggestedExperts,
-        askedExperts: state.questions.question.suggestedExperts,
+        askedExperts: state.questions.question.suggestedExperts || [],
     };
 };
 
