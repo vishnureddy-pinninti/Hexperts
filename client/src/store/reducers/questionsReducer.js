@@ -16,7 +16,7 @@ const initialState = {
     questions: [],
     pending: true,
     newQuestion: {},
-    question: null,
+    question: {},
     trendingQuestions: [],
     modifiedQuestions: {},
     relatedQuestions: [],
@@ -83,6 +83,11 @@ export default (state = initialState, action) => {
                     ...state.question,
                     suggestedExperts: action.question.suggestedExperts || state.question.suggestedExperts,
                     topics: action.question.topics,
+                },
+                newQuestion: {
+                    ...state.newQuestion,
+                    suggestedExperts: action.question.suggestedExperts || state.newQuestion.suggestedExperts,
+                    topics: action.question.topics || state.newQuestion.topics,
                 },
             };
         case RECEIVE_QUESTION_BY_ID:

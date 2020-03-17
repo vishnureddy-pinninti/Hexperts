@@ -130,7 +130,7 @@ const QuestionSection = (props) => {
                 <Typography
                     variant="h5"
                     component="h2">
-                    { question }
+                    { question.question }
                 </Typography>
                 <Typography
                     variant="body2"
@@ -194,7 +194,7 @@ const QuestionSection = (props) => {
             </Collapse>
             <EditSuggestedWriters
                 open={ openEditSuggestedWritersModal }
-                question={ question }
+                question={ question.question }
                 topics={ topics }
                 questionID={ id }
                 handleClose={ handleEditSuggestedWritersModalClose } />
