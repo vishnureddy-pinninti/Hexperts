@@ -246,7 +246,7 @@ const TopBar = (props) => {
         <Menu
             anchorEl={ anchorEl }
             anchorOrigin={ {
-                vertical: 'top',
+                vertical: 'bottom',
                 horizontal: 'right',
             } }
             id={ menuId }
@@ -257,7 +257,6 @@ const TopBar = (props) => {
             } }
             open={ isMenuOpen }
             onClose={ handleMenuClose }>
-            <MenuItem onClick={ handleProfileClick }>Profile</MenuItem>
             <MenuItem onClick={ props.onLogout }>Logout</MenuItem>
         </Menu>
     );
@@ -437,6 +436,14 @@ const TopBar = (props) => {
                                     onMouseHover={ handleProfileMenuOpen }
                                     color="inherit">
                                     <Avatar user={ user.email } />
+                                </IconButton>
+                                <IconButton
+                                    aria-label="show more"
+                                    aria-controls={ mobileMenuId }
+                                    aria-haspopup="true"
+                                    onClick={ handleProfileMenuOpen }
+                                    color="inherit">
+                                    <MoreIcon />
                                 </IconButton>
                             </div>
                             <div className={ classes.sectionMobile }>
