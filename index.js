@@ -7,8 +7,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const http = require('http');
-
-const httpx = require('./httpx');
+const httpolyglot = require('httpolyglot');
 
 const app = express();
 const { PORT } = require('./utils/constants');
@@ -16,23 +15,22 @@ const { PORT } = require('./utils/constants');
 let server;
 let mode = 'DEV';
 
-if (process.env.NODE_ENV === 'production') {
-    const ensureSecure = (req, res, next) => {
-        if (req.secure) {
-            return next();
-        }
-        return res.redirect(`https://${req.hostname}:${PORT}${req.url}`);
-    };
+const ensureSecure = (req, res, next) => {
+    if (req.secure) {
+        return next();
+    }
+    return res.redirect(`https://${req.hostname}:${PORT}${req.url}`);
+};
 
+if (process.env.NODE_ENV === 'production') {
     mode = 'PROD';
     const options = {
         cert: fs.readFileSync('./certs/wildcard_intergraph_com2018.crt'),
         ca: fs.readFileSync('./certs/DigiCertCA.crt'),
         key: fs.readFileSync('./certs/wildcard_intergraph_com2018.key'),
     };
-    server = httpx.createServer(options, app);
-
     app.all('*', ensureSecure);
+    server = httpolyglot.createServer(options, app);
 }
 else {
     server = http.createServer(app);
