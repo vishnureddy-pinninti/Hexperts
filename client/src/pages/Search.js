@@ -15,6 +15,8 @@ import HelpIcon from '@material-ui/icons/Help';
 import { Avatar as MuiAvatar, Divider } from '@material-ui/core';
 import LinkIcon from '@material-ui/icons/Link';
 import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
+import EmptyResults from '../components/base/EmptyResults';
+
 import { requestAdvancedSearch } from '../store/actions/search';
 
 
@@ -200,6 +202,11 @@ function Search(props) {
                     <Divider />
                 </>
             )) }
+            { results.length === 0
+            && <EmptyResults
+                showBackButton={ false }
+                title=" Oops! No results matching with your criteria."
+                description="Try different or less specific keywords and reset your filters." /> }
         </List>
     );
 

@@ -77,7 +77,7 @@ function TabPanel(props) {
             { ...other }>
             { value === index && <Box p={ 3 }>
                 { children }
-                                 </Box> }
+            </Box> }
         </Typography>
     );
 }
@@ -108,6 +108,7 @@ const EditSuggestedWriters = (props) => {
         suggestedExperts,
         requestSuggestedExperts,
         askedExperts,
+        cancelText,
     } = props;
 
     for (let i = suggestedExperts.length - 1; i >= 0; i--){
@@ -360,7 +361,7 @@ const EditSuggestedWriters = (props) => {
                     autoFocus
                     onClick={ props.handleClose }
                     color="primary">
-                    Cancel
+                    { cancelText }
                 </Button>
                 <Button
                     color="primary"
@@ -375,6 +376,7 @@ const EditSuggestedWriters = (props) => {
 
 EditSuggestedWriters.defaultProps = {
     topics: [],
+    cancelText: 'Cancel',
 };
 
 const mapStateToProps = (state) => {
