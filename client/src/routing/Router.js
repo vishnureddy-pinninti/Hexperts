@@ -12,6 +12,7 @@ import TopBar from '../components/base/TopBar';
 import routes from './routes';
 import { requestAddNotification } from '../store/actions/auth';
 import config from '../utils/config';
+import ErrorBoundary from '../components/base/ErrorBoundary';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -81,18 +82,20 @@ const RouteWithSubRoutes = (route) => (
                     <div id="back-to-top-anchor" />
                     <TopBar onLogout={ route.handleLogout } />
 
-                    <route.component
-                        { ...props }
-                        routes={ route.routes } />
+                    <ErrorBoundary>
+                        <route.component
+                            { ...props }
+                            routes={ route.routes } />
 
-                    <ScrollTop { ...props }>
-                        <Fab
-                            color="secondary"
-                            size="small"
-                            aria-label="scroll back to top">
-                            <KeyboardArrowUpIcon />
-                        </Fab>
-                    </ScrollTop>
+                        <ScrollTop { ...props }>
+                            <Fab
+                                color="secondary"
+                                size="small"
+                                aria-label="scroll back to top">
+                                <KeyboardArrowUpIcon />
+                            </Fab>
+                        </ScrollTop>
+                    </ErrorBoundary>
                 </div>
             ) } />
     </ThemeProvider>
@@ -101,16 +104,18 @@ const RouteWithSubRoutes = (route) => (
 class Router extends Component {
     render() {
         return (
-            <BrowserRouter>
-                <Switch>
-                    { routes.map((route) => (
-                        <RouteWithSubRoutes
-                            key={ route.key }
-                            { ...this.props }
-                            { ...route } />
-                    )) }
-                </Switch>
-            </BrowserRouter>
+            <ErrorBoundary>
+                <BrowserRouter>
+                    <Switch>
+                        { routes.map((route) => (
+                            <RouteWithSubRoutes
+                                key={ route.key }
+                                { ...this.props }
+                                { ...route } />
+                        )) }
+                    </Switch>
+                </BrowserRouter>
+            </ErrorBoundary>
         );
     }
 
