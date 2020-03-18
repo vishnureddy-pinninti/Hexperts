@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import BlogsList from '../components/blog/BlogsList';
 import Header from '../components/blog/BlogHeader';
 import FollowBlogsModal from '../components/blog/FollowBlogsModal';
+import EmptyResults from '../components/base/EmptyResults';
 
 import BlogCard from '../components/blog/Card';
 import { requestBlogById } from '../store/actions/blog';
@@ -79,6 +80,9 @@ function Topic(props) {
                             blog={ blog }
                             id={ blogId } />
                         { posts && renderPosts() }
+                        { posts && posts.length === 0 && <EmptyResults
+                            title="No blog posts yet."
+                            description="Feel free to contribute to this blog and earn points." /> }
                     </Grid>
                     <Grid
                         item

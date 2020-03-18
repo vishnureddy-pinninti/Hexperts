@@ -366,7 +366,7 @@ const TopBar = (props) => {
                                         <span className={ classes.logo }>
                                             <LocalLibraryIcon />
                                             { ' ' }
-                                            hExpert
+                                            hExperts
                                         </span>
                                     </Link>
                                 </Typography>
@@ -468,12 +468,14 @@ const TopBar = (props) => {
                 question={ newQuestion.question }
                 topics={ newQuestion.topics }
                 questionID={ newQuestion._id }
+                cancelText="Skip"
                 handleClose={ handleEditTopicsModalClose } /> }
             { newQuestion.question && <EditSuggestedWriters
                 open={ openEditSuggestedWritersModal }
                 question={ newQuestion.question }
                 topics={ newQuestion.topics }
                 questionID={ newQuestion._id }
+                cancelText="Skip"
                 handleClose={ handleEditSuggestedWritersModalClose } /> }
             <Snackbar
                 open={ newQuestion._id }

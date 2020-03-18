@@ -9,21 +9,21 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import TextField from '@material-ui/core/TextField';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Field, reduxForm, reset } from 'redux-form';
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import { addNewTopic, requestTopics } from '../../store/actions/topic';
 import { editQuestion, editQuestionPending } from '../../store/actions/questions';
 
+
+const filter = createFilterOptions();
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -57,7 +57,6 @@ const EditTopicsModal = (props) => {
 
     const {
         addNewTopic,
-        handleSubmit,
         question,
         questionID,
         topics,
@@ -65,24 +64,8 @@ const EditTopicsModal = (props) => {
         requestTopics,
         editQuestion,
         newTopic,
+        cancelText,
     } = props;
-
-    const renderTextField = ({ input }) => (
-        <TextField
-            { ...input }
-            margin="dense"
-            id="name"
-            label="Topic"
-            type="text"
-            className={ classes.textfield }
-            required
-            autoFocus
-            fullWidth />
-    );
-
-    const onAddNewTopic = (values) => {
-        addNewTopic({ topics: [ values.topic ] });
-    };
 
     useEffect(() => {
         requestTopics();
@@ -99,22 +82,29 @@ const EditTopicsModal = (props) => {
     ] = React.useState(topics);
 
     useEffect(() => {
-        const temp = [];
         const newChecked = [];
         topics.map((topic) => (newChecked.push(topic._id)));
+        setChecked(newChecked);
+    }, [ topics ]);
+
+    useEffect(() => {
+        const temp = [];
+        const newChecked = [ ];
+
         if (newTopic && newTopic._id){
             newChecked.push(newTopic._id);
             temp.push(newTopic);
         }
+
         setSelectedTopics([
-            ...topics,
+            ...selectedTopics,
             ...temp,
         ]);
-        setChecked(newChecked);
-    }, [
-        topics,
-        newTopic,
-    ]);
+        setChecked([
+            ...checked,
+            ...newChecked,
+        ]);
+    }, [ newTopic ]);
 
     const handleToggle = ((value) => () => {
         const currentIndex = checked.indexOf(value._id);
@@ -131,6 +121,11 @@ const EditTopicsModal = (props) => {
     });
 
     const onTopicSelect = (obj, value) => {
+        if (value && value.inputValue) {
+            addNewTopic({ topics: [ value.inputValue ] });
+            return;
+        }
+
         if (value){
             const currentIndex = checked.indexOf(value._id);
             const newChecked = [ ...checked ];
@@ -198,41 +193,30 @@ const EditTopicsModal = (props) => {
                         { question }
                     </b>
                 </DialogContentText>
-                <form
-                    id="topic"
-                    onSubmit={ handleSubmit(onAddNewTopic) }>
-                    <div className={ classes.container }>
-                        <Field
-                            name="topic"
-                            component={ renderTextField } />
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={ classes.submit }
-                            type="submit">
-                            Add New Topic
-                        </Button>
-                    </div>
-                </form>
-                <Typography component="div">
-                    <Box
-                        textAlign="center"
-                        m={ 1 }>
-                        or
-                    </Box>
-                </Typography>
+
                 <div className={ classes.container }>
                     <Autocomplete
                         id="highlights-demo"
                         options={ topicsList }
                         onChange={ onTopicSelect }
-                        getOptionLabel={ (option) => option.topic }
-                        noOptionsText="Oops! That topic can not be found. Feel free to create new topic."
+                        // getOptionLabel={ (option) => {} }
+                        filterOptions={ (options, params) => {
+                            const filtered = filter(options, params);
+
+                            if (params.inputValue !== '') {
+                                filtered.push({
+                                    inputValue: params.inputValue,
+                                    topic: `Create "${params.inputValue}"`,
+                                });
+                            }
+
+                            return filtered;
+                        } }
+
                         renderInput={ (params) => (
                             <TextField
                                 { ...params }
-                                label="Choose existing Topics"
+                                label="Choose Topics"
                                 variant="outlined"
                                 margin="normal" />
                         ) }
@@ -260,7 +244,7 @@ const EditTopicsModal = (props) => {
                     autoFocus
                     onClick={ props.handleClose }
                     color="primary">
-                    Cancel
+                    { cancelText }
                 </Button>
                 <Button
                     color="primary"
@@ -275,6 +259,7 @@ const EditTopicsModal = (props) => {
 
 EditTopicsModal.defaultProps = {
     topics: [],
+    cancelText: 'Cancel',
 };
 
 const mapStateToProps = (state) => {
@@ -289,6 +274,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         addNewTopic: (body) => {
             dispatch(addNewTopic(body));
+            dispatch(reset('topic'));
         },
         requestTopics: (body) => {
             dispatch(requestTopics(body));
