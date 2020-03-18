@@ -19,6 +19,7 @@ import Avatar from '@material-ui/core/Avatar';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 
 import { Divider } from '@material-ui/core';
+import EmptyResults from '../components/base/EmptyResults';
 import { requestNotifications, markNotificationRead } from '../store/actions/auth';
 
 
@@ -82,28 +83,9 @@ function Notifications(props) {
                 </Link>
             )) }
             { notifications.length === 0
-            && <Card className={ classes.root }>
-                <CardContent>
-                    <Typography
-                        className={ classes.title }
-                        gutterBottom>
-                        You don't have any notifications right now.
-                    </Typography>
-                    <Typography
-                        className={ classes.title }
-                        color="textSecondary"
-                        gutterBottom>
-                        When someone follows you, upvotes, comments, you will see it here.
-                    </Typography>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={ props.history.goBack }
-                        className={ classes.margin }>
-                        Go Back
-                    </Button>
-                </CardContent>
-            </Card> }
+            && <EmptyResults
+                title="You don't have any notifications right now."
+                description="When someone follows you, upvotes, comments, you will see it here." /> }
         </List>
     );
 
