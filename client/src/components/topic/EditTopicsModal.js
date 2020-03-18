@@ -85,6 +85,7 @@ const EditTopicsModal = (props) => {
         const newChecked = [];
         topics.map((topic) => (newChecked.push(topic._id)));
         setChecked(newChecked);
+        setSelectedTopics(topics);
     }, [ topics ]);
 
     useEffect(() => {
