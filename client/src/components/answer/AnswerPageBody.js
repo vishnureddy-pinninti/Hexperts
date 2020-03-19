@@ -91,6 +91,7 @@ function AnswerPageBody(props) {
     };
 
     useEffect(() => {
+        setItems([]);
         loadMore();
     }, []);
 
@@ -100,6 +101,7 @@ function AnswerPageBody(props) {
             index: 0,
             hasMore: true,
         });
+        setItems([]);
         if (type === 'questions') {
             requestQuestionsForUser({ skip: 0 });
         }

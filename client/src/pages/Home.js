@@ -45,14 +45,6 @@ function Home(props) {
     const classes = useStyles();
 
     useEffect(() => {
-        requestUserQuestions();
-        requestTrendingQuestions();
-    }, [
-        requestTrendingQuestions,
-        requestUserQuestions,
-    ]);
-
-    useEffect(() => {
         if (!pending) {
             setOpenFollowTopicsModal(pending);
             if (expertIn.length) {
@@ -133,6 +125,15 @@ function Home(props) {
         index: 0,
         hasMore: true,
     });
+
+    useEffect(() => {
+        setItems([]);
+        requestUserQuestions();
+        requestTrendingQuestions();
+    }, [
+        requestTrendingQuestions,
+        requestUserQuestions,
+    ]);
 
     useEffect(() => {
         if (questions.length) {

@@ -50,10 +50,6 @@ function Home(props) {
     const classes = useStyles();
 
     useEffect(() => {
-        requestPostsFeed();
-    }, [ requestPostsFeed ]);
-
-    useEffect(() => {
         if (!pending) {
             setOpenFollowTopicsModal(pending);
             requestPostsFeed();
@@ -122,6 +118,11 @@ function Home(props) {
         index: 0,
         hasMore: true,
     });
+
+    useEffect(() => {
+        setItems([]);
+        requestPostsFeed();
+    }, [ requestPostsFeed ]);
 
     useEffect(() => {
         if (posts.length) {
