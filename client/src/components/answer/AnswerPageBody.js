@@ -52,7 +52,7 @@ function AnswerPageBody(props) {
     const [
         requestType,
         setRequestType,
-    ] = React.useState('questions');
+    ] = React.useState('answerRequests');
 
     const [
         pagination,
@@ -92,10 +92,7 @@ function AnswerPageBody(props) {
 
     useEffect(() => {
         loadMore();
-    }, [
-        requestType,
-        loadMore,
-    ]);
+    }, []);
 
     const getData = (type = 'questions') => {
         setRequestType(type);
@@ -103,6 +100,12 @@ function AnswerPageBody(props) {
             index: 0,
             hasMore: true,
         });
+        if (type === 'questions') {
+            requestQuestionsForUser({ skip: 0 });
+        }
+        else {
+            requestAnswerRequests({ skip: 0 });
+        }
     };
 
     const renderQuestions = (items) => items.map((item) => {
@@ -135,14 +138,14 @@ function AnswerPageBody(props) {
     const renderMenu = () => (
         <List>
             <Chip
-                label="Questions For You"
-                className={ classes.chip }
-                onClick={ () => { getData(); } }
-                clickable />
-            <Chip
                 label="Answer Requests"
                 className={ classes.chip }
                 onClick={ () => { getData('answerRequests'); } }
+                clickable />
+            <Chip
+                label="Questions For You"
+                className={ classes.chip }
+                onClick={ () => { getData(); } }
                 clickable />
         </List>
     );
@@ -177,7 +180,7 @@ function AnswerPageBody(props) {
                             <b>Yay! You have seen it all</b>
                         </p>
                     }>
-                    { items.length && renderQuestions(items) }
+                    { renderQuestions(items) }
                 </InfiniteScroll>
             </Grid>
             <Grid
