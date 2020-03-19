@@ -90,21 +90,20 @@ const EditTopicsModal = (props) => {
 
     useEffect(() => {
         const temp = [];
-        const newChecked = [ ];
+        const newChecked = [];
 
         if (newTopic && newTopic._id){
             newChecked.push(newTopic._id);
             temp.push(newTopic);
+            setChecked([
+                ...checked,
+                ...newChecked,
+            ]);
+            setSelectedTopics([
+                ...selectedTopics,
+                ...temp,
+            ]);
         }
-
-        setSelectedTopics([
-            ...selectedTopics,
-            ...temp,
-        ]);
-        setChecked([
-            ...checked,
-            ...newChecked,
-        ]);
     }, [ newTopic ]);
 
     const handleToggle = ((value) => () => {
@@ -143,6 +142,10 @@ const EditTopicsModal = (props) => {
     };
 
     const addTopicsToQuestion = () => {
+        const { handleDone } = props;
+        if (handleDone){
+            handleDone();
+        }
         editQuestion(questionID, { topics: checked });
     };
 
@@ -180,6 +183,7 @@ const EditTopicsModal = (props) => {
             fullScreen={ fullScreen }
             style={ { minWidth: 1000 } }
             open={ props.open }
+            disableBackdropClick={ props.disableBackdropClick }
             onClose={ props.handleClose }
             aria-labelledby="responsive-dialog-title">
 

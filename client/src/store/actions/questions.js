@@ -27,11 +27,11 @@ const receiveUserQuestions = (questions) => {
     };
 };
 
-export const requestUserQuestions = () => {
+export const requestUserQuestions = (params = { skip: 0 }) => {
     return {
         type: REQUEST_USER_QUESTIONS,
         makeApiRequest: {
-            url: '/api/v1/questions?_onlyInterests=true',
+            url: `/api/v1/questions?_onlyInterests=true&skip=${params.skip}`,
             method: 'GET',
             success: receiveUserQuestions,
         },
@@ -45,11 +45,11 @@ const receiveQuestionsForUser = (questions) => {
     };
 };
 
-export const requestQuestionsForUser = () => {
+export const requestQuestionsForUser = (params = { skip: 0 }) => {
     return {
         type: REQUEST_QUESTIONS_FOR_USER,
         makeApiRequest: {
-            url: '/api/v1/questions?_onlyExpertIn=true',
+            url: `/api/v1/questions?_onlyExpertIn=true&skip=${params.skip}`,
             method: 'GET',
             success: receiveQuestionsForUser,
         },
@@ -63,11 +63,11 @@ const receiveAnswerRequests = (questions) => {
     };
 };
 
-export const requestAnswerRequests = () => {
+export const requestAnswerRequests = (params = { skip: 0 }) => {
     return {
         type: REQUEST_ANSWER_REQUESTS,
         makeApiRequest: {
-            url: '/api/v1/questions?_onlySuggested=true',
+            url: `/api/v1/questions?_onlySuggested=true&skip=${params.skip}`,
             method: 'GET',
             success: receiveAnswerRequests,
         },
