@@ -67,7 +67,7 @@ function AskQuestionCard(props) {
                         <Box
                             fontWeight="fontWeightBold"
                             fontSize={ 20 }>
-                            What is your question or link?
+                            What is your question?
                         </Box>
                     </Typography>
                 </Link>

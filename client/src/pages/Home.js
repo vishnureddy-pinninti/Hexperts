@@ -127,15 +127,6 @@ function Home(props) {
     });
 
     useEffect(() => {
-        setItems([]);
-        requestUserQuestions();
-        requestTrendingQuestions();
-    }, [
-        requestTrendingQuestions,
-        requestUserQuestions,
-    ]);
-
-    useEffect(() => {
         if (questions.length) {
             setItems([
                 ...items,
@@ -153,6 +144,15 @@ function Home(props) {
             });
         }
     }, [ questions ]);
+
+    useEffect(() => {
+        setItems([]);
+        requestUserQuestions();
+        requestTrendingQuestions();
+    }, [
+        requestTrendingQuestions,
+        requestUserQuestions,
+    ]);
 
     const loadMore = () => {
         requestUserQuestions({ skip: pagination.index * 10 });

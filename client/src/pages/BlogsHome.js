@@ -120,11 +120,6 @@ function Home(props) {
     });
 
     useEffect(() => {
-        setItems([]);
-        requestPostsFeed();
-    }, [ requestPostsFeed ]);
-
-    useEffect(() => {
         if (posts.length) {
             setItems([
                 ...items,
@@ -142,6 +137,11 @@ function Home(props) {
             });
         }
     }, [ posts ]);
+
+    useEffect(() => {
+        setItems([]);
+        requestPostsFeed();
+    }, [ requestPostsFeed ]);
 
     const loadMore = () => {
         requestPostsFeed({ skip: pagination.index * 10 });
