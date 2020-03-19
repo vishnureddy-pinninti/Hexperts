@@ -8,6 +8,7 @@ const notificationService = async(data) => {
         recipients,
         user,
         req,
+        type,
     } = data;
 
     const filteredRecipients = recipients
@@ -25,6 +26,7 @@ const notificationService = async(data) => {
         message,
         link,
         recipients: uniqueRecipients,
+        type,
     });
 
     await notification.save();

@@ -9,6 +9,7 @@ const emailNotify = require('../services/email/emailService');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const htmlToText = require('../utils/htmlToText');
+const { search } = require('../utils/search');
 
 module.exports = (app) => {
     app.post('/api/v1/question.add', loginMiddleware, async(req, res) => {
@@ -22,12 +23,14 @@ module.exports = (app) => {
         const { _id } = req.user;
 
         try {
-            const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
+            const { results: searchResults } = await search(question, [ 'topics' ], {}, false);
+            const searchTopics = searchResults.map((result) => result._id);
+            const chosenTopics = await Topic.find({ _id: { $in: searchTopics.map((topic) => mongoose.Types.ObjectId(topic)) } });
 
             const newQuestion = new Question({
                 author: _id,
                 suggestedExperts,
-                topics,
+                topics: chosenTopics.map((t) => t._id),
                 question,
                 description,
                 plainText: htmlToText(description),
@@ -345,8 +348,15 @@ module.exports = (app) => {
                         {
                             $match: {
                                 $and: [
-                                    { _id: { $ne: mongoose.Types.ObjectId(questionID) } },
                                     { topics: { $in: question.topics.map((topic) => mongoose.Types.ObjectId(topic)) } },
+                                    {
+                                        _id: {
+                                            $nin: [
+                                                mongoose.Types.ObjectId(questionID),
+                                                ...results.map((r) => r._id),
+                                            ],
+                                        },
+                                    },
                                 ],
                             },
                         },
