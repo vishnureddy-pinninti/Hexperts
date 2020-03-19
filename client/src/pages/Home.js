@@ -214,7 +214,7 @@ function Home(props) {
                                     <b>Yay! You have seen it all</b>
                                 </p>
                             }>
-                            { items.length && renderQuestions(items) }
+                            { renderQuestions(items) }
                         </InfiniteScroll>
                     </Grid>
                     <Grid
