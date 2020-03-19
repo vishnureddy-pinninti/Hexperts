@@ -18,6 +18,9 @@ const {
     scores: {
         NEW_ANSWER, UPVOTE_ANSWER, DOWNVOTE_ANSWER, NEW_POST, UPVOTE_POST, DOWNVOTE_POST, NEW_COMMENT, UPVOTE_COMMENT, DOWNVOTE_COMMENT,
     },
+    notificationTypes: {
+        QUESTION_NOTIFICATION, ANSWER_NOTIFICATION, COMMENT_NOTIFICATION, POST_NOTIFICATION, USER_NOTIFICATION,
+    },
 } = require('../../utils/constants');
 
 const keys = require('../../config/keys');
@@ -66,6 +69,7 @@ const emailMap = {
                 link: `/question/${_id}`,
                 user: owner,
                 req,
+                type: QUESTION_NOTIFICATION,
             },
         };
     },
@@ -109,6 +113,7 @@ const emailMap = {
                 link: `/answer/${_id}`,
                 user: owner,
                 req,
+                type: ANSWER_NOTIFICATION,
             },
             reputation: {
                 user: owner,
@@ -145,6 +150,7 @@ const emailMap = {
                 link: `/question/${questionID}`,
                 user: follower,
                 req,
+                type: QUESTION_NOTIFICATION,
             },
         };
     },
@@ -181,6 +187,7 @@ const emailMap = {
                 link: `/answer/${answerID}`,
                 user: upvoter,
                 req,
+                type: ANSWER_NOTIFICATION,
             },
             reputation: {
                 user: answerAuthor,
@@ -221,6 +228,7 @@ const emailMap = {
                 link: `/answer/${answerID}`,
                 user: downvoter,
                 req,
+                type: ANSWER_NOTIFICATION,
             },
             reputation: {
                 user: answerAuthor,
@@ -260,6 +268,7 @@ const emailMap = {
                 link: `/comment/${_id}`,
                 user: author,
                 req,
+                type: COMMENT_NOTIFICATION,
             },
             reputation: {
                 user: author,
@@ -300,6 +309,7 @@ const emailMap = {
                 link: `/comment/${commentID}`,
                 user: upvoter,
                 req,
+                type: COMMENT_NOTIFICATION,
             },
             reputation: {
                 user: author,
@@ -340,6 +350,7 @@ const emailMap = {
                 link: `/comment/${commentID}`,
                 user: downvoter,
                 req,
+                type: COMMENT_NOTIFICATION,
             },
             reputation: {
                 user: author,
@@ -383,6 +394,7 @@ const emailMap = {
                 link: `/post/${_id}`,
                 user: author,
                 req,
+                type: POST_NOTIFICATION,
             },
             reputation: {
                 user: author,
@@ -423,6 +435,7 @@ const emailMap = {
                 link: `/post/${postID}`,
                 user: upvoter,
                 req,
+                type: POST_NOTIFICATION,
             },
             reputation: {
                 user: author,
@@ -463,6 +476,7 @@ const emailMap = {
                 link: `/post/${postID}`,
                 user: downvoter,
                 req,
+                type: POST_NOTIFICATION,
             },
             reputation: {
                 user: author,
@@ -499,6 +513,7 @@ const emailMap = {
                 link: `/profile/${follower._id}`,
                 user: follower,
                 req,
+                type: USER_NOTIFICATION,
             },
         };
     },

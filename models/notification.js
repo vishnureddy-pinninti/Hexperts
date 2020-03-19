@@ -18,6 +18,11 @@ const notificationSchema = new Schema({
     postedDate: {
         type: Date,
         default: Date.now,
+        expires: 30 * 24 * 60 * 60, // 30 days
+    },
+    type: {
+        type: String,
+        trim: true,
     },
     link: {
         type: String,

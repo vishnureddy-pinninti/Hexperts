@@ -1,3 +1,5 @@
+const request = require('request-promise');
+
 const fields = {
     answers: {
         searchFields: [ 'plainText' ],
@@ -153,8 +155,6 @@ const getRequestUrl = (categories) => {
     return `http://localhost:9200/${realCategories}/_search`;
 };
 
-const externalSearchUrl = 'http://localhost:9200/externals/_search';
-
 const parseResult = (result) => {
     const response = {};
     response.totalCount = result.hits.total.value;
@@ -193,12 +193,57 @@ const parseResult = (result) => {
     return response;
 };
 
+const search = async(text, categories = [], pagination = {}, exclude = true) => {
+    const searchFields = getSearchFields(categories);
+    const excludeFields = exclude ? getExcludeFields(categories) : [];
+    const highlightFields = getHighlightFields(searchFields);
+    const requestUrl = getRequestUrl(categories);
+
+    try {
+        const results = await request.get(requestUrl, {
+            json: true,
+            body: {
+                _source: {
+                    excludes: excludeFields,
+                },
+                query: {
+                    boosting: {
+                        positive: {
+                            multi_match: {
+                                query: text,
+                                fields: searchFields,
+                            },
+                        },
+                        negative: {
+                            terms: {
+                                _index: [ 'externals' ],
+                            },
+                        },
+                        negative_boost: 0.2,
+                    },
+                },
+                highlight: {
+                    pre_tags: [ '<span class=\'highlighter\'>' ],
+                    post_tags: [ '</span>' ],
+                    fields: highlightFields,
+                },
+                from: pagination.skip || 0,
+                size: pagination.limit || 10,
+            },
+        });
+
+        return parseResult(results);
+    }
+    catch (e) {
+        return {
+            totalCount: 0,
+            results: [],
+            error: true,
+            message: e.error,
+        };
+    }
+};
+
 module.exports = {
-    fields,
-    getSearchFields,
-    getHighlightFields,
-    getRequestUrl,
-    parseResult,
-    externalSearchUrl,
-    getExcludeFields,
+    search,
 };

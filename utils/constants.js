@@ -23,4 +23,11 @@ module.exports = {
         UPVOTE_COMMENT: 0,
         DOWNVOTE_COMMENT: 0,
     },
+    notificationTypes: {
+        QUESTION_NOTIFICATION: 'Question',
+        ANSWER_NOTIFICATION: 'Answer',
+        COMMENT_NOTIFICATION: 'Comment',
+        POST_NOTIFICATION: 'Post',
+        USER_NOTIFICATION: 'User',
+    },
 };
