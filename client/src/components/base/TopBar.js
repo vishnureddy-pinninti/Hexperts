@@ -184,6 +184,9 @@ const TopBar = (props) => {
         setOpenEditTopicsModal(false);
         setSkipTopics(true);
     };
+    const handleEditTopicsModalSubmit = () => {
+        setSkipTopics(true);
+    };
 
     const [
         openEditSuggestedWritersModal,
@@ -199,6 +202,9 @@ const TopBar = (props) => {
         setSkipExperts(true);
     };
 
+    const handleEditSuggestedWritersModalSubmit = () => {
+        setSkipExperts(true);
+    };
 
     const {
         pending,
@@ -215,13 +221,13 @@ const TopBar = (props) => {
         if (!pending && newQuestion && newQuestion._id) {
             setOpenQModal(pending);
             setOpenEditTopicsModal(true);
-            if ((newQuestion.topics.length || skipTopics) && (newQuestion.suggestedExperts.length || skipExperts)){
+            if (skipTopics && skipExperts){
                 setOpenEditSuggestedWritersModal(false);
                 setOpenEditTopicsModal(false);
                 history.push(`/question/${newQuestion._id}`);
                 return;
             }
-            if (newQuestion.topics.length || skipTopics){
+            if (skipTopics){
                 setOpenEditTopicsModal(false);
                 setOpenEditSuggestedWritersModal(true);
             }
@@ -469,6 +475,8 @@ const TopBar = (props) => {
                 topics={ newQuestion.topics }
                 questionID={ newQuestion._id }
                 cancelText="Skip"
+                disableBackdropClick
+                handleDone={ handleEditTopicsModalSubmit }
                 handleClose={ handleEditTopicsModalClose } /> }
             { newQuestion.question && <EditSuggestedWriters
                 open={ openEditSuggestedWritersModal }
@@ -476,6 +484,8 @@ const TopBar = (props) => {
                 topics={ newQuestion.topics }
                 questionID={ newQuestion._id }
                 cancelText="Skip"
+                disableBackdropClick
+                handleDone={ handleEditSuggestedWritersModalSubmit }
                 handleClose={ handleEditSuggestedWritersModalClose } /> }
             <Snackbar
                 open={ newQuestion._id }

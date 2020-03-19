@@ -167,6 +167,10 @@ const EditSuggestedWriters = (props) => {
     });
 
     const addTopicsToQuestion = () => {
+        const { handleDone } = props;
+        if (handleDone){
+            handleDone();
+        }
         editQuestion(questionID, { suggestedExperts: checked });
     };
 
@@ -306,6 +310,7 @@ const EditSuggestedWriters = (props) => {
             fullScreen={ fullScreen }
             open={ props.open }
             onClose={ props.handleClose }
+            disableBackdropClick={ props.disableBackdropClick }
             aria-labelledby="responsive-dialog-title">
 
             <DialogTitle id="responsive-dialog-title">

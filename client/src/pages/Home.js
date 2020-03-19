@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
 import Topics from '../components/topic/TopicsList';
@@ -120,7 +121,43 @@ function Home(props) {
         }
     }, [ pending ]);
 
-    const renderQuestions = () => questions.map((question) => {
+    const [
+        items,
+        setItems,
+    ] = React.useState([]);
+
+    const [
+        pagination,
+        setPagination,
+    ] = React.useState({
+        index: 0,
+        hasMore: true,
+    });
+
+    useEffect(() => {
+        if (questions.length) {
+            setItems([
+                ...items,
+                ...questions,
+            ]);
+            setPagination({
+                index: pagination.index + 1,
+                hasMore: true,
+            });
+        }
+        else {
+            setPagination({
+                ...pagination,
+                hasMore: false,
+            });
+        }
+    }, [ questions ]);
+
+    const loadMore = () => {
+        requestUserQuestions({ skip: pagination.index * 10 });
+    };
+
+    const renderQuestions = (items) => items.map((question) => {
         if (question.answers && question.answers.length){
             const answer = question.answers[0];
             return (
@@ -167,7 +204,18 @@ function Home(props) {
                         <AskQuestionCard
                             user={ user }
                             handleClickQuestionModalOpen={ handleClickQuestionModalOpen } />
-                        { renderQuestions() }
+                        <InfiniteScroll
+                            dataLength={ items.length }
+                            next={ loadMore }
+                            hasMore={ pagination.hasMore }
+                            loader={ <h4>Loading...</h4> }
+                            endMessage={
+                                <p style={ { textAlign: 'center' } }>
+                                    <b>Yay! You have seen it all</b>
+                                </p>
+                            }>
+                            { items.length && renderQuestions(items) }
+                        </InfiniteScroll>
                     </Grid>
                     <Grid
                         item
@@ -207,8 +255,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestUserQuestions: () => {
-            dispatch(requestUserQuestions());
+        requestUserQuestions: (params) => {
+            dispatch(requestUserQuestions(params));
         },
         requestTrendingQuestions: () => {
             dispatch(requestTrendingQuestions());

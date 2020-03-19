@@ -135,11 +135,11 @@ const receivePosts = (posts) => {
     };
 };
 
-export const requestPosts = () => {
+export const requestPosts = (params = { skip: 0 }) => {
     return {
         type: REQUEST_POSTS,
         makeApiRequest: {
-            url: '/api/v1/posts',
+            url: `/api/v1/posts?skip=${params.skip}`,
             method: 'GET',
             success: receivePosts,
         },

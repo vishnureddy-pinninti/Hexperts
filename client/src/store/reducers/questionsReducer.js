@@ -98,7 +98,7 @@ export default (state = initialState, action) => {
                 pending: false,
             };
         case RECEIVE_FOLLOWED_QUESTION:
-            if (state.question){
+            if (state.question && state.question.followers){
                 followers = [ ...state.question.followers ];
                 index = followers.indexOf(action.res.follower);
                 if (index >= 0){

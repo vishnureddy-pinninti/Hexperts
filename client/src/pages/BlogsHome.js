@@ -9,6 +9,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { Link, withRouter } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import BlogCard from '../components/blog/Card';
 import Blogs from '../components/blog/BlogsList';
 import { requestPosts } from '../store/actions/blog';
@@ -109,7 +110,43 @@ function Home(props) {
         }
     }, [ blogPending ]);
 
-    const renderQuestions = () => posts.map((post) => (
+    const [
+        items,
+        setItems,
+    ] = React.useState([]);
+
+    const [
+        pagination,
+        setPagination,
+    ] = React.useState({
+        index: 0,
+        hasMore: true,
+    });
+
+    useEffect(() => {
+        if (posts.length) {
+            setItems([
+                ...items,
+                ...posts,
+            ]);
+            setPagination({
+                index: pagination.index + 1,
+                hasMore: true,
+            });
+        }
+        else {
+            setPagination({
+                ...pagination,
+                hasMore: false,
+            });
+        }
+    }, [ posts ]);
+
+    const loadMore = () => {
+        requestPostsFeed({ skip: pagination.index * 10 });
+    };
+
+    const renderQuestions = (posts) => posts.map((post) => (
         <BlogCard
             key={ post._id }
             post={ post }
@@ -134,7 +171,18 @@ function Home(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        { renderQuestions() }
+                        <InfiniteScroll
+                            dataLength={ items.length }
+                            next={ loadMore }
+                            hasMore={ pagination.hasMore }
+                            loader={ <h4>Loading...</h4> }
+                            endMessage={
+                                <p style={ { textAlign: 'center' } }>
+                                    <b>Yay! You have seen it all</b>
+                                </p>
+                            }>
+                            { items.length && renderQuestions(items) }
+                        </InfiniteScroll>
                     </Grid>
                     <Grid
                         item
@@ -189,8 +237,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestPostsFeed: () => {
-            dispatch(requestPosts());
+        requestPostsFeed: (params) => {
+            dispatch(requestPosts(params));
         },
     };
 };
