@@ -23,7 +23,6 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-    let answers = [];
     let modifiedQuestions = {};
     let question = {};
     let index;
@@ -140,27 +139,6 @@ export default (state = initialState, action) => {
                 modifiedQuestions: { ...question },
             };
         case RECEIVE_ADDED_ANSWER:
-            if (state.question && state.question.answers && state.question.answers.results){
-                answers = [ ...state.question.answers.results ];
-                question = {
-                    ...state.question,
-                    answers: {
-                        results: [
-                            action.answer,
-                            ...answers,
-                        ],
-                        totalCount: state.question.answers.totalCount + 1,
-                    },
-                };
-            }
-            else {
-                question = {
-                    ...state.question,
-                    answers: {
-                        results: [ action.answer ],
-                    },
-                };
-            }
             modifiedQuestions = { ...state.modifiedQuestions };
             id = action.answer.questionID;
             if (modifiedQuestions[id]){
@@ -168,7 +146,6 @@ export default (state = initialState, action) => {
             }
             return {
                 ...state,
-                question,
                 modifiedQuestions: { ...modifiedQuestions },
                 questions: [ ...state.questions ],
             };

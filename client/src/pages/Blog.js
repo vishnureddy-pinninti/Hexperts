@@ -22,6 +22,7 @@ function Topic(props) {
         onLogout,
         pending,
         followedBlogs,
+        newPost,
     } = props;
 
     const [
@@ -99,6 +100,16 @@ function Topic(props) {
         blogId,
     ]);
 
+    useEffect(() => {
+        if (newPost && newPost._id){
+            setItems([
+                newPost,
+                ...items,
+            ]);
+        }
+    }, [ newPost ]);
+
+
     const loadMore = () => {
         requestBlog(blogId, { skip: pagination.index * 10 });
     };
@@ -165,6 +176,7 @@ const mapStateToProps = (state) => {
         blog: state.blog.blog,
         pending: state.user.pending,
         followedBlogs: state.user.user.blogs,
+        newPost: state.blog.newPost,
     };
 };
 
