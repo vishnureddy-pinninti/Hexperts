@@ -26,6 +26,7 @@ import { followQuestion } from '../../store/actions/questions';
 const useStyles = makeStyles({
     root: {
         overflow: 'visible',
+        marginBottom: 10,
     },
     media: {
 

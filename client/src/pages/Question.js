@@ -2,9 +2,12 @@ import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import Questions from '../components/question/QuestionsList';
 import QuestionSection from '../components/question/QuestionSection';
 import Answer from '../components/answer/Card';
+import EmptyResults from '../components/base/EmptyResults';
+
 import { requestQuestionById, requestRelatedQuestions } from '../store/actions/questions';
 
 function Question(props) {
@@ -24,16 +27,72 @@ function Question(props) {
  relatedQuestions
     } = props;
 
+    const [
+        items,
+        setItems,
+    ] = React.useState([]);
+
+    const [
+        pagination,
+        setPagination,
+    ] = React.useState({
+        index: 0,
+        hasMore: true,
+    });
+
+
     useEffect(() => {
+        if (question.answers && question.answers.results){
+            const { answers: { results } } = question;
+            if (results.length) {
+                setItems([
+                    ...items,
+                    ...results,
+                ]);
+                setPagination({
+                    index: pagination.index + 1,
+                    hasMore: true,
+                });
+            }
+            else {
+                setPagination({
+                    ...pagination,
+                    hasMore: false,
+                });
+            }
+        }
+        else {
+            setPagination({
+                index: 0,
+                hasMore: false,
+            });
+        }
+    }, [ question ]);
+
+    useEffect(() => {
+        setItems([]);
+        setPagination({
+            index: 0,
+            hasMore: false,
+        });
         requestQuestion(questionId);
-        requestRelatedQuestions(questionId);
     }, [
         questionId,
         requestQuestion,
+    ]);
+
+    const loadMore = () => {
+        requestQuestion(questionId, { skip: pagination.index * 10 });
+    };
+
+    useEffect(() => {
+        requestRelatedQuestions(questionId);
+    }, [
+        questionId,
         requestRelatedQuestions,
     ]);
 
-    const renderAnswers = () => question.answers.results.map((answer) => (
+    const renderAnswers = (items) => items.map((answer) => (
         <Answer
             key={ answer._id }
             answerId={ answer._id }
@@ -61,7 +120,23 @@ function Question(props) {
                             id={ question._id }
                             answers={ question.answers }
                             topics={ question.topics } /> }
-                        { question && question.answers && renderAnswers() }
+                        { items.length > 0
+                        && <InfiniteScroll
+                            dataLength={ items.length }
+                            next={ loadMore }
+                            hasMore={ pagination.hasMore }
+                            loader={ <h4>Loading...</h4> }
+                            endMessage={
+                                <p style={ { textAlign: 'center' } }>
+                                    <b>Yay! You have seen it all</b>
+                                </p>
+                            }>
+                            { renderAnswers(items) }
+                        </InfiniteScroll> }
+                        { items.length === 0 && <EmptyResults
+                            title="No answer posted yet."
+                            description="Feel free to add an answer to this question."
+                            showBackButton={ false } /> }
                     </Grid>
                     <Grid
                         item
@@ -76,6 +151,10 @@ function Question(props) {
     );
 }
 
+Question.defaultProps = {
+    question: { answers: { results: [] } },
+};
+
 const mapStateToProps = (state) => {
     return {
         question: state.questions.question,
@@ -85,8 +164,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestQuestion: (questionId) => {
-            dispatch(requestQuestionById(questionId));
+        requestQuestion: (questionId, params) => {
+            dispatch(requestQuestionById(questionId, params));
         },
         requestRelatedQuestions: (questionId) => {
             dispatch(requestRelatedQuestions(questionId));

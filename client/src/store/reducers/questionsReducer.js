@@ -16,7 +16,7 @@ const initialState = {
     questions: [],
     pending: true,
     newQuestion: {},
-    question: {},
+    question: { answers: { results: [] } },
     trendingQuestions: [],
     modifiedQuestions: {},
     relatedQuestions: [],
@@ -149,6 +149,7 @@ export default (state = initialState, action) => {
                             action.answer,
                             ...answers,
                         ],
+                        totalCount: state.question.answers.totalCount + 1,
                     },
                 };
             }

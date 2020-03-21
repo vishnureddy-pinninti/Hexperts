@@ -241,7 +241,7 @@ function SearchBar(props) {
                     placeholder="Search…"
                     variant="outlined"
                     fullWidth
-                    style={ { width: 350 } }
+                    style={ { width: 400 } }
                     required
                     onBlur={ handleClose }
                     autoFocus

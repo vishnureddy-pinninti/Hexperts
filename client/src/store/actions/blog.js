@@ -72,11 +72,11 @@ const receiveBlogById = (blog) => {
     };
 };
 
-export const requestBlogById = (id) => {
+export const requestBlogById = (id, params = { skip: 0 }) => {
     return {
         type: REQUEST_BLOG_BY_ID,
         makeApiRequest: {
-            url: `/api/v1/blogs/${id}`,
+            url: `/api/v1/blogs/${id}?skip=${params.skip}`,
             method: 'GET',
             success: receiveBlogById,
         },

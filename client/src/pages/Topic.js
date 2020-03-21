@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import Topics from '../components/topic/TopicsList';
 import TopicSection from '../components/topic/TopicSection';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
@@ -22,14 +23,8 @@ function Topic(props) {
         onLogout,
         pending,
         followedTopics,
+        topic,
     } = props;
-
-    useEffect(() => {
-        requestTopic(topicID);
-    }, [
-        requestTopic,
-        topicID,
-    ]);
 
     const [
         openFollowTopicsModal,
@@ -51,9 +46,66 @@ function Topic(props) {
         setOpenFollowTopicsModal(false);
     };
 
-    const { topic, topic: { questions } } = props;
+    const [
+        items,
+        setItems,
+    ] = React.useState([]);
 
-    const renderQuestions = () => questions.map((question) => {
+    const [
+        pagination,
+        setPagination,
+    ] = React.useState({
+        index: 0,
+        hasMore: true,
+    });
+
+
+    useEffect(() => {
+        if (topic && topic.questions){
+            const { questions } = topic;
+            if (questions.length) {
+                setItems([
+                    ...items,
+                    ...questions,
+                ]);
+                setPagination({
+                    index: pagination.index + 1,
+                    hasMore: true,
+                });
+            }
+            else {
+                setPagination({
+                    ...pagination,
+                    hasMore: false,
+                });
+            }
+        }
+        else {
+            setPagination({
+                index: 0,
+                hasMore: false,
+            });
+        }
+    }, [ topic ]);
+
+    useEffect(() => {
+        setItems([]);
+        setPagination({
+            index: 0,
+            hasMore: false,
+        });
+        requestTopic(topicID);
+    }, [
+        requestTopic,
+        topicID,
+    ]);
+
+    const loadMore = () => {
+        requestTopic(topicID, { skip: pagination.index * 10 });
+    };
+
+
+    const renderQuestions = (items) => items.map((question) => {
         if (question.answers && question.answers.length){
             const answer = question.answers[0];
             return (
@@ -99,8 +151,20 @@ function Topic(props) {
                         <TopicSection
                             topic={ topic }
                             id={ topicID } />
-                        { questions && renderQuestions() }
-                        { questions && questions.length === 0 && <EmptyResults
+                        { items.length > 0
+                        && <InfiniteScroll
+                            dataLength={ items.length }
+                            next={ loadMore }
+                            hasMore={ pagination.hasMore }
+                            loader={ <h4>Loading...</h4> }
+                            endMessage={
+                                <p style={ { textAlign: 'center' } }>
+                                    <b>Yay! You have seen it all</b>
+                                </p>
+                            }>
+                            { renderQuestions(items) }
+                        </InfiniteScroll> }
+                        { items.length === 0 && <EmptyResults
                             title="No questions posted yet."
                             description="Feel free to ask a question to this topic." /> }
                     </Grid>
@@ -127,8 +191,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestTopic: (topicID) => {
-            dispatch(requestTopicById(topicID));
+        requestTopic: (topicID, params) => {
+            dispatch(requestTopicById(topicID, params));
         },
     };
 };

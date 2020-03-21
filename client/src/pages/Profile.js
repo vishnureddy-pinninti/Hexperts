@@ -173,7 +173,8 @@ function Profile(props) {
                             isOwner={ isOwner }
                             jobTitle={ userProfile.jobTitle }
                             followers={ userProfile.followers }
-                            id={ userProfile._id } />
+                            id={ userProfile._id }
+                            onLogout={ props.onLogout } />
                         <ProfileBody />
                     </Grid>
                     <Grid

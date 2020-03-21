@@ -60,11 +60,11 @@ const receiveTopicById = (topic) => {
     };
 };
 
-export const requestTopicById = (id) => {
+export const requestTopicById = (id, params = { skip: 0 }) => {
     return {
         type: REQUEST_TOPIC_BY_ID,
         makeApiRequest: {
-            url: `/api/v1/topic/${id}`,
+            url: `/api/v1/topic/${id}?skip=${params.skip}`,
             method: 'GET',
             success: receiveTopicById,
         },
