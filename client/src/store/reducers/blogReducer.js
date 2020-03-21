@@ -41,13 +41,6 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 pending: false,
-                blog: {
-                    ...state.blog,
-                    posts: [
-                        action.post,
-                        ...state.blog.posts,
-                    ],
-                },
                 newPost: action.post,
             };
         case RECEIVE_ADDED_BLOG:
