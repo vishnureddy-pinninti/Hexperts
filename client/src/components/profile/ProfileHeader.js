@@ -81,9 +81,8 @@ const TopicSection = (props) => {
     );
 
     return (
-        <Card className={ classes.root }>
+        <Card>
             <CardHeader
-                className={ classes.headerRoot }
                 avatar={
                     <Avatar
                         aria-label="recipe"

@@ -10,11 +10,11 @@ const receiveSearchResults = (res) => {
     };
 };
 
-export const requestSearch = (body) => {
+export const requestSearch = (body, params = { skip: 0 }) => {
     return {
         type: REQUEST_SEARCH,
         makeApiRequest: {
-            url: '/api/v1/search',
+            url: `/api/v1/search?skip=${params.skip}`,
             method: 'POST',
             body,
             success: receiveSearchResults,
@@ -29,11 +29,14 @@ const receiveAdvancedSearchResults = (res) => {
     };
 };
 
-export const requestAdvancedSearch = (body) => {
+export const requestAdvancedSearch = (body, params = {
+    skip: 0,
+    limit: 10,
+}) => {
     return {
         type: REQUEST_ADVANCED_SEARCH,
         makeApiRequest: {
-            url: '/api/v1/search',
+            url: `/api/v1/search?skip=${params.skip}&limit=${params.limit || 10}`,
             method: 'POST',
             body,
             success: receiveAdvancedSearchResults,

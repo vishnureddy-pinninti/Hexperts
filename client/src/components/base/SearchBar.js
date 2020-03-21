@@ -43,6 +43,10 @@ const useStyles = makeStyles((theme) => {
 
 function SearchBar(props) {
     const {
+        match: {
+            params: { query 
+},
+        },
         results,
         requestSearch,
         history,
@@ -55,8 +59,14 @@ function SearchBar(props) {
         setAnchorEl,
     ] = React.useState(null);
 
+    const [
+        value,
+        setValue,
+    ] = React.useState(query);
+
     const handleClick = (event) => {
         requestSearch({ text: event.target.value });
+        setValue(event.target.value);
         setAnchorEl(event.currentTarget);
     };
 
@@ -237,10 +247,15 @@ function SearchBar(props) {
                     autoFocus
                     onClick={ handleClick }
                     onChange={ handleClick }
+                    value={ value }
                     size="small"
                     onKeyPress={ (ev) => {
                         if (ev.key === 'Enter') {
                             if (typeof ev.target.value === 'string'){
+                                if (anchorEl) {
+                                    anchorEl.focus();
+                                }
+                                setAnchorEl(null);
                                 history.push(`/search/${ev.target.value}`);
                             }
                         }

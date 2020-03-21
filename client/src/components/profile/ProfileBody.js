@@ -6,10 +6,16 @@ import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+
 import AnswerCard from '../answer/Card';
-import PostCard from '../blog/Card';
+import PostCard from '../blog/PostCard';
+import EmptyResults from '../base/EmptyResults';
 import QuestionCard from '../question/Card';
-import { requestUserQuestions, requestUserAnswers, requestUserPosts } from '../../store/actions/auth';
+import BlogCard from '../blog/BlogCard';
+import UserCard from './UserCard';
+
+import { requestUserQuestions, requestUserAnswers, requestUserPosts, requestUserFollowers, requestUserFollowing } from '../../store/actions/auth';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -46,6 +52,8 @@ function ProfileBody(props) {
         userProfile,
         followedTopics,
         requestUserPosts,
+        requestUserFollowers,
+        requestUserFollowing,
     } = props;
 
     useEffect(() => {
@@ -56,6 +64,22 @@ function ProfileBody(props) {
         requestUserAnswers,
         userProfile,
     ]);
+
+    const [
+        feed,
+        setFeed,
+    ] = React.useState([]);
+
+    useEffect(() => {
+        setFeed(userFeed);
+    }, [ userFeed ]);
+
+    const requestUserBlogs = () => {
+        setFeed({
+            type: 'blogs',
+            items: userProfile.blogs,
+        });
+    };
 
     const renderAnswers = (items) => items.map((item) => (
         <AnswerCard
@@ -86,6 +110,18 @@ function ProfileBody(props) {
             hideHeaderHelperText />
     ));
 
+    const renderUsers = (items) => items.map((item) => (
+        <UserCard
+            key={ item._id }
+            user={ item } />
+    ));
+
+    const renderBlogs = (items) => items.map((item) => (
+        <BlogCard
+            key={ item._id }
+            blog={ item } />
+    ));
+
     const renderMenu = () => (
         <List>
             <Chip
@@ -111,19 +147,22 @@ function ProfileBody(props) {
             <Chip
                 label={ `Blogs ${userProfile.blogs && userProfile.blogs.length}` }
                 className={ classes.chip }
+                onClick={ () => { requestUserBlogs(userProfile._id); } }
                 clickable />
             <Chip
                 label={ `Followers ${userProfile.followers && userProfile.followers.length}` }
                 className={ classes.chip }
+                onClick={ () => { requestUserFollowers(userProfile._id); } }
                 clickable />
             <Chip
                 label={ `Following ${userProfile.following}` }
                 className={ classes.chip }
+                onClick={ () => { requestUserFollowing(userProfile._id); } }
                 clickable />
         </List>
     );
 
-    const { type, items } = userFeed;
+    const { type, items } = feed;
 
     return (
         <Grid
@@ -150,6 +189,12 @@ function ProfileBody(props) {
                 { type === 'questions' && renderQuestions(items) }
                 { type === 'answers' && renderAnswers(items) }
                 { type === 'posts' && renderPosts(items) }
+                { type === 'users' && renderUsers(items) }
+                { type === 'blogs' && renderBlogs(items) }
+                { items && items.length === 0 && <EmptyResults
+                    title={ <SentimentVeryDissatisfiedIcon /> }
+                    description="No Results to display."
+                    showBackButton={ false } /> }
             </Grid>
         </Grid>
     );
@@ -180,6 +225,12 @@ const mapDispatchToProps = (dispatch) => {
         },
         requestUserPosts: (userId) => {
             dispatch(requestUserPosts(userId));
+        },
+        requestUserFollowing: (userId) => {
+            dispatch(requestUserFollowing(userId));
+        },
+        requestUserFollowers: (userId) => {
+            dispatch(requestUserFollowers(userId));
         },
     };
 };

@@ -5,6 +5,8 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_USER_BY_ID,
     RECEIVE_QUESTIONS_BY_USER_ID,
     RECEIVE_USER_ANSWERS,
+    RECEIVE_USER_FOLLOWING,
+    RECEIVE_USER_FOLLOWERS,
     RECEIVE_FOLLOWED_USER,
     RECEIVE_NOTIFICATIONS,
     SET_IMAGE,
@@ -182,6 +184,22 @@ export default (state = initialState, action) => {
                 feed: {
                     type: 'posts',
                     items: action.res.posts,
+                },
+            };
+        case RECEIVE_USER_FOLLOWERS:
+            return {
+                ...state,
+                feed: {
+                    type: 'users',
+                    items: action.res.followers,
+                },
+            };
+        case RECEIVE_USER_FOLLOWING:
+            return {
+                ...state,
+                feed: {
+                    type: 'users',
+                    items: action.res.following,
                 },
             };
         case RECEIVE_FOLLOWED_USER:

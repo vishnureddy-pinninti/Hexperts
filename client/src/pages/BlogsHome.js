@@ -10,7 +10,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { Link, withRouter } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import BlogCard from '../components/blog/Card';
+import PostCard from '../components/blog/PostCard';
 import Blogs from '../components/blog/BlogsList';
 import { requestPosts } from '../store/actions/blog';
 import FollowBlogsModal from '../components/blog/FollowBlogsModal';
@@ -49,15 +49,6 @@ function Home(props) {
 
     const classes = useStyles();
 
-    useEffect(() => {
-        if (!pending) {
-            setOpenFollowTopicsModal(pending);
-            requestPostsFeed();
-        }
-    }, [
-        pending,
-        requestPostsFeed,
-    ]);
 
     const [
         openFollowTopicsModal,
@@ -139,6 +130,21 @@ function Home(props) {
     }, [ posts ]);
 
     useEffect(() => {
+        if (!pending && openFollowTopicsModal) {
+            setOpenFollowTopicsModal(pending);
+            setItems([]);
+            setPagination({
+                index: 0,
+                hasMore: true,
+            });
+            requestPostsFeed();
+        }
+    }, [
+        pending,
+        requestPostsFeed,
+    ]);
+
+    useEffect(() => {
         setItems([]);
         requestPostsFeed();
     }, [ requestPostsFeed ]);
@@ -148,7 +154,7 @@ function Home(props) {
     };
 
     const renderQuestions = (posts) => posts.map((post) => (
-        <BlogCard
+        <PostCard
             key={ post._id }
             post={ post }
             hideHeaderHelperText />
