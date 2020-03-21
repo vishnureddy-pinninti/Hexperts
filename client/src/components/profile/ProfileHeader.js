@@ -7,6 +7,9 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { connect } from 'react-redux';
 import RssFeedSharpIcon from '@material-ui/icons/RssFeedSharp';
 import CardHeader from '@material-ui/core/CardHeader';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import IconButton from '@material-ui/core/IconButton';
+
 import Avatar from '../base/Avatar';
 import { addAnswerToQuestion, addAnswerPending } from '../../store/actions/answer';
 import { followUser } from '../../store/actions/auth';
@@ -90,6 +93,15 @@ const TopicSection = (props) => {
                         user={ mail }
                         className={ classes.large } />
                 }
+                action={ <>
+                    { isOwner
+                    && <IconButton
+                        aria-label="logout"
+                        title="Logout"
+                        onClick={ props.onLogout }>
+                        <ExitToAppIcon />
+                    </IconButton> }
+                </> }
                 title={ renderTitle() } />
         </Card>
     );

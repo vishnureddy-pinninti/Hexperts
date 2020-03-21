@@ -85,6 +85,7 @@ const RouteWithSubRoutes = (route) => (
                     <ErrorBoundary>
                         <route.component
                             { ...props }
+                            onLogout={ route.handleLogout }
                             routes={ route.routes } />
 
                         <ScrollTop { ...props }>

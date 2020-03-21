@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import BlogsList from '../components/blog/BlogsList';
 import Header from '../components/blog/BlogHeader';
 import FollowBlogsModal from '../components/blog/FollowBlogsModal';
@@ -23,13 +24,6 @@ function Topic(props) {
         followedBlogs,
     } = props;
 
-    useEffect(() => {
-        requestBlog(blogId);
-    }, [
-        requestBlog,
-        blogId,
-    ]);
-
     const [
         openFollowTopicsModal,
         setOpenFollowTopicsModal,
@@ -50,15 +44,71 @@ function Topic(props) {
         setOpenFollowTopicsModal(false);
     };
 
+    const [
+        items,
+        setItems,
+    ] = React.useState([]);
 
-    const renderPosts = () => posts.map((post) => (
+    const [
+        pagination,
+        setPagination,
+    ] = React.useState({
+        index: 0,
+        hasMore: true,
+    });
+
+    const { blog } = props;
+
+    useEffect(() => {
+        if (blog && blog.posts){
+            const { posts } = blog;
+            if (posts.length) {
+                setItems([
+                    ...items,
+                    ...posts,
+                ]);
+                setPagination({
+                    index: pagination.index + 1,
+                    hasMore: true,
+                });
+            }
+            else {
+                setPagination({
+                    ...pagination,
+                    hasMore: false,
+                });
+            }
+        }
+        else {
+            setPagination({
+                index: 0,
+                hasMore: false,
+            });
+        }
+    }, [ blog ]);
+
+    useEffect(() => {
+        setItems([]);
+        setPagination({
+            index: 0,
+            hasMore: false,
+        });
+        requestBlog(blogId);
+    }, [
+        requestBlog,
+        blogId,
+    ]);
+
+    const loadMore = () => {
+        requestBlog(blogId, { skip: pagination.index * 10 });
+    };
+
+    const renderPosts = (items) => items.map((post) => (
         <PostCard
             key={ post._id }
             post={ post }
             hideHeaderHelperText />
     ));
-
-    const { blog, blog: { posts } } = props;
 
     return (
         <div className="App">
@@ -79,10 +129,23 @@ function Topic(props) {
                         <Header
                             blog={ blog }
                             id={ blogId } />
-                        { posts && renderPosts() }
-                        { posts && posts.length === 0 && <EmptyResults
+                        { items.length > 0
+                        && <InfiniteScroll
+                            dataLength={ items.length }
+                            next={ loadMore }
+                            hasMore={ pagination.hasMore }
+                            loader={ <h4>Loading...</h4> }
+                            endMessage={
+                                <p style={ { textAlign: 'center' } }>
+                                    <b>Yay! You have seen it all</b>
+                                </p>
+                            }>
+                            { renderPosts(items) }
+                           </InfiniteScroll> }
+                        { items.length === 0 && <EmptyResults
                             title="No blog posts yet."
-                            description="Feel free to contribute to this blog and earn points." /> }
+                            description="Feel free to contribute to this blog and earn points."
+                            showBackButton={ false } /> }
                     </Grid>
                     <Grid
                         item
@@ -107,8 +170,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestBlog: (blogId) => {
-            dispatch(requestBlogById(blogId));
+        requestBlog: (blogId, params) => {
+            dispatch(requestBlogById(blogId, params));
         },
     };
 };

@@ -143,11 +143,11 @@ const receiveQuestionById = (question) => {
     };
 };
 
-export const requestQuestionById = (id) => {
+export const requestQuestionById = (id, params = { skip: 0 }) => {
     return {
         type: REQUEST_QUESTION_BY_ID,
         makeApiRequest: {
-            url: `/api/v1/question/${id}`,
+            url: `/api/v1/question/${id}?skip=${params.skip}`,
             method: 'GET',
             success: receiveQuestionById,
         },

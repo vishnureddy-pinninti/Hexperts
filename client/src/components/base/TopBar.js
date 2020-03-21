@@ -443,14 +443,6 @@ const TopBar = (props) => {
                                     color="inherit">
                                     <Avatar user={ user.email } />
                                 </IconButton>
-                                <IconButton
-                                    aria-label="show more"
-                                    aria-controls={ mobileMenuId }
-                                    aria-haspopup="true"
-                                    onClick={ handleProfileMenuOpen }
-                                    color="inherit">
-                                    <MoreIcon />
-                                </IconButton>
                             </div>
                             <div className={ classes.sectionMobile }>
                                 <IconButton
