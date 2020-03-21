@@ -79,7 +79,7 @@ const TopicSection = (props) => {
                 Follow
                 { ' ' }
                 { followers.length }
-            </Button> }
+                          </Button> }
         </>
     );
 
@@ -98,10 +98,11 @@ const TopicSection = (props) => {
                     && <IconButton
                         aria-label="logout"
                         title="Logout"
+                        color="secondary"
                         onClick={ props.onLogout }>
                         <ExitToAppIcon />
-                    </IconButton> }
-                </> }
+                       </IconButton> }
+                         </> }
                 title={ renderTitle() } />
         </Card>
     );
