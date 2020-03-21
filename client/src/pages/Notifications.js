@@ -17,6 +17,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { Divider } from '@material-ui/core';
 import EmptyResults from '../components/base/EmptyResults';
@@ -48,9 +49,52 @@ function Notifications(props) {
 
     const classes = useStyles();
 
+    const [
+        items,
+        setItems,
+    ] = React.useState([]);
+
+    const [
+        pagination,
+        setPagination,
+    ] = React.useState({
+        index: 1,
+        hasMore: true,
+    });
+
     useEffect(() => {
-        requestNotifications();
+        if (notifications.length) {
+            setItems([
+                ...items,
+                ...notifications,
+            ]);
+            setPagination({
+                index: pagination.index + 1,
+                hasMore: true,
+            });
+        }
+        else {
+            setPagination({
+                ...pagination,
+                hasMore: false,
+            });
+        }
+    }, [ notifications ]);
+
+    useEffect(() => {
+        setItems([]);
+        requestNotifications({
+            skip: 0,
+            limit: 20,
+        });
     }, []);
+
+    const loadMore = () => {
+        requestNotifications({
+            skip: pagination.index * 10,
+            limit: 10,
+        });
+    };
 
     const handleNotificationClick = (notification) => {
         if (!notification.recipient.read) {
@@ -58,37 +102,28 @@ function Notifications(props) {
         }
     };
 
-    const renderNotifications = () => (
-        <List className={ classes.root }>
-            { notifications.map((notification) => (
-                <Link
-                    key={ notification._id }
-                    className={ classes.link }
-                    to={ notification.link }>
-                    <ListItem
-                        onClick={ () => { handleNotificationClick(notification); } }
-                        key={ notification._id }
-                        selected={ !notification.recipient.read }
-                        button>
-                        <ListItemAvatar>
-                            <Avatar>
-                                <NotificationsNoneIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                            primary={ <div dangerouslySetInnerHTML={ { __html: notification.message } } /> }
-                            secondary={ formatDistanceToNow(new Date(notification.postedDate), { addSuffix: true }) } />
-                    </ListItem>
-                    <Divider />
-                </Link>
-            )) }
-            { notifications.length === 0
-            && <EmptyResults
-                title="You don't have any notifications right now."
-                description="When someone follows you, upvotes, comments, you will see it here." /> }
-        </List>
-    );
-
+    const renderNotifications = (notifications) => notifications.map((notification) => (
+        <Link
+            key={ notification._id }
+            className={ classes.link }
+            to={ notification.link }>
+            <ListItem
+                onClick={ () => { handleNotificationClick(notification); } }
+                key={ notification._id }
+                selected={ !notification.recipient.read }
+                button>
+                <ListItemAvatar>
+                    <Avatar>
+                        <NotificationsNoneIcon />
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                    primary={ <div dangerouslySetInnerHTML={ { __html: notification.message } } /> }
+                    secondary={ formatDistanceToNow(new Date(notification.postedDate), { addSuffix: true }) } />
+            </ListItem>
+            <Divider />
+        </Link>
+    ));
 
     return (
         <div className="App">
@@ -101,13 +136,37 @@ function Notifications(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        { notifications && renderNotifications() }
+                        <List
+                            className={ classes.root }
+                            id="list">
+                            <InfiniteScroll
+                                dataLength={ items.length }
+                                next={ loadMore }
+                                hasMore={ pagination.hasMore }
+                                loader={ <h4>Loading...</h4> }
+                                endMessage={
+                                    <p style={ { textAlign: 'center' } }>
+                                        <b>Yay! You have seen it all</b>
+                                    </p>
+                                }>
+                                { renderNotifications(items) }
+                            </InfiniteScroll>
+                            { /* { notifications && renderNotifications(notifications) } */ }
+                            { items.length === 0
+            && <EmptyResults
+                title="You don't have any notifications right now."
+                description="When someone follows you, upvotes, comments, you will see it here." /> }
+                        </List>
                     </Grid>
                 </Grid>
             </Container>
         </div>
     );
 }
+
+Notifications.defaultProps = {
+    notifications: [],
+};
 
 const mapStateToProps = (state) => {
     return {
@@ -118,8 +177,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestNotifications: () => {
-            dispatch(requestNotifications());
+        requestNotifications: (params) => {
+            dispatch(requestNotifications(params));
         },
         markNotificationRead: (id) => {
             dispatch(markNotificationRead(id));

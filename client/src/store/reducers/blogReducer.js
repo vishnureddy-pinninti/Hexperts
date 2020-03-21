@@ -93,6 +93,7 @@ export default (state = initialState, action) => {
                     ...state.blog,
                     followers,
                 },
+                pending: false,
             };
         case RECEIVE_UPVOTE_POST:
             post = state.modifiedPosts;

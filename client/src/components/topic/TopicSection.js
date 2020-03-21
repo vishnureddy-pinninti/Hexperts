@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => {
     return {
         root: {
             overflow: 'visible',
+            marginBottom: 10,
         },
         media: {
 

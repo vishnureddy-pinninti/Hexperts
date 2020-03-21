@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 
-import BlogCard from '../components/blog/Card';
+import PostCard from '../components/blog/PostCard';
 import { requestPostById } from '../store/actions/blog';
 
 
@@ -25,7 +25,7 @@ function Post(props) {
     ]);
 
     const renderPost = () => (
-        <BlogCard
+        <PostCard
             post={ post }
             hideHeaderHelperText />
     );

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Topics from '../components/topic/TopicsList';
 import TopicSection from '../components/topic/TopicSection';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
+import EmptyResults from '../components/base/EmptyResults';
 
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
@@ -99,6 +100,9 @@ function Topic(props) {
                             topic={ topic }
                             id={ topicID } />
                         { questions && renderQuestions() }
+                        { questions && questions.length === 0 && <EmptyResults
+                            title="No questions posted yet."
+                            description="Feel free to ask a question to this topic." /> }
                     </Grid>
                     <Grid
                         item

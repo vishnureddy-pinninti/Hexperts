@@ -78,11 +78,15 @@ function TopCreators(props) {
             </Typography>
             <Divider />
             <List className={ classes.root }>
-                { renderUsers() }
+                { topUsers && renderUsers() }
             </List>
         </>
     );
 }
+
+TopCreators.defaultProps = {
+    topUsers: [],
+};
 
 const mapStateToProps = (state) => {
     return {

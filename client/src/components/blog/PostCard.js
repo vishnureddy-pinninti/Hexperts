@@ -170,7 +170,7 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </Typography>
-                    </>
+                                   </>
                 }
                 <CardHeader
                     className={ classes.headerRoot }

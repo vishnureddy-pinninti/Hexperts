@@ -7,7 +7,7 @@ import Header from '../components/blog/BlogHeader';
 import FollowBlogsModal from '../components/blog/FollowBlogsModal';
 import EmptyResults from '../components/base/EmptyResults';
 
-import BlogCard from '../components/blog/Card';
+import PostCard from '../components/blog/PostCard';
 import { requestBlogById } from '../store/actions/blog';
 
 
@@ -52,7 +52,7 @@ function Topic(props) {
 
 
     const renderPosts = () => posts.map((post) => (
-        <BlogCard
+        <PostCard
             key={ post._id }
             post={ post }
             hideHeaderHelperText />

@@ -22,6 +22,10 @@ export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
 export const REQUEST_ADD_NOTIFICATION = 'REQUEST_ADD_NOTIFICATION';
 export const REQUEST_USER_POSTS = 'REQUEST_USER_POSTS';
 export const RECEIVE_USER_POSTS = 'RECEIVE_USER_POSTS';
+export const RECEIVE_USER_FOLLOWERS = 'RECEIVE_USER_FOLLOWERS';
+export const REQUEST_USER_FOLLOWERS = 'REQUEST_USER_FOLLOWERS';
+export const RECEIVE_USER_FOLLOWING = 'RECEIVE_USER_FOLLOWING';
+export const REQUEST_USER_FOLLOWING = 'REQUEST_USER_FOLLOWING';
 
 const receiveUserSession = (user) => {
     return {
@@ -158,6 +162,42 @@ export const requestUserPosts = (userId) => {
     };
 };
 
+const receiveUserFollowers = (res) => {
+    return {
+        type: RECEIVE_USER_FOLLOWERS,
+        res,
+    };
+};
+
+export const requestUserFollowers = (userId) => {
+    return {
+        type: REQUEST_USER_FOLLOWERS,
+        makeApiRequest: {
+            url: `/api/v1/user-followers/${userId}`,
+            method: 'GET',
+            success: receiveUserFollowers,
+        },
+    };
+};
+
+const receiveUserFollowing = (res) => {
+    return {
+        type: RECEIVE_USER_FOLLOWING,
+        res,
+    };
+};
+
+export const requestUserFollowing = (userId) => {
+    return {
+        type: REQUEST_USER_FOLLOWING,
+        makeApiRequest: {
+            url: `/api/v1/user-following/${userId}`,
+            method: 'GET',
+            success: receiveUserFollowing,
+        },
+    };
+};
+
 
 export const setImage = (image) => {
     return {
@@ -192,11 +232,14 @@ const receiveNotifications = (notifications) => {
     };
 };
 
-export const requestNotifications = () => {
+export const requestNotifications = (params = {
+    skip: 0,
+    limit: 10,
+}) => {
     return {
         type: REQUEST_NOTIFICATIONS,
         makeApiRequest: {
-            url: 'api/v1/notifications',
+            url: `api/v1/notifications?skip=${params.skip}&limit=${params.limit || 10}`,
             method: 'GET',
             success: receiveNotifications,
         },

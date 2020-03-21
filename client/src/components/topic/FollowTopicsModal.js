@@ -238,6 +238,7 @@ const FollowTopicsModal = (props) => {
 
 FollowTopicsModal.defaultProps = {
     followedTopics: [],
+    topics: [],
 };
 
 const mapStateToProps = (state) => {

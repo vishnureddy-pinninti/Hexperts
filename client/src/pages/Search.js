@@ -14,6 +14,7 @@ import Avatar from '@material-ui/core/Avatar';
 import HelpIcon from '@material-ui/icons/Help';
 import { Avatar as MuiAvatar, Divider } from '@material-ui/core';
 import LinkIcon from '@material-ui/icons/Link';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
 import EmptyResults from '../components/base/EmptyResults';
 
@@ -49,13 +50,6 @@ function Search(props) {
     } = props;
 
     const classes = useStyles();
-
-    useEffect(() => {
-        requestSearch({ text: query });
-    }, [
-        requestSearch,
-        query,
-    ]);
 
     const topic = (item) => (
         <Link
@@ -193,22 +187,60 @@ function Search(props) {
         }
     };
 
+    const [
+        items,
+        setItems,
+    ] = React.useState([]);
 
-    const renderSearchResults = () => (
-        <List className={ classes.root }>
-            { results.map((item) => (
-                <>
-                    { renderResults(item) }
-                    <Divider />
-                </>
-            )) }
-            { results.length === 0
-            && <EmptyResults
-                showBackButton={ false }
-                title=" Oops! No results matching with your criteria."
-                description="Try different or less specific keywords and reset your filters." /> }
-        </List>
-    );
+    const [
+        pagination,
+        setPagination,
+    ] = React.useState({
+        index: 1,
+        hasMore: true,
+    });
+
+    useEffect(() => {
+        if (results.length) {
+            setItems([
+                ...items,
+                ...results,
+            ]);
+            setPagination({
+                index: pagination.index + 1,
+                hasMore: true,
+            });
+        }
+        else {
+            setPagination({
+                ...pagination,
+                hasMore: false,
+            });
+        }
+    }, [ results ]);
+
+    useEffect(() => {
+        setItems([]);
+        requestSearch({ text: query }, {
+            skip: 0,
+            limit: 20,
+        });
+    }, [
+        requestSearch,
+        query,
+    ]);
+
+    const loadMore = () => {
+        requestSearch({ text: query }, { skip: pagination.index * 10 });
+    };
+
+
+    const renderSearchResults = (items) => items.map((item) => (
+        <>
+            { renderResults(item) }
+            <Divider />
+        </>
+    ));
 
 
     return (
@@ -232,7 +264,25 @@ function Search(props) {
                             </b>
                         </Typography>
                         <Divider />
-                        { results && renderSearchResults() }
+                        <List className={ classes.root }>
+                            <InfiniteScroll
+                                dataLength={ items.length }
+                                next={ loadMore }
+                                hasMore={ pagination.hasMore }
+                                loader={ <h4>Loading...</h4> }
+                                endMessage={
+                                    <p style={ { textAlign: 'center' } }>
+                                        <b>Yay! You have seen it all</b>
+                                    </p>
+                                }>
+                                { renderSearchResults(items) }
+                            </InfiniteScroll>
+                            { items.length === 0
+            && <EmptyResults
+                showBackButton={ false }
+                title=" Oops! No results matching with your criteria."
+                description="Try different or less specific keywords and reset your filters." /> }
+                        </List>
                     </Grid>
                 </Grid>
             </Container>
@@ -248,8 +298,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestSearch: (body) => {
-            dispatch(requestAdvancedSearch(body));
+        requestSearch: (body, params) => {
+            dispatch(requestAdvancedSearch(body, params));
         },
     };
 };
