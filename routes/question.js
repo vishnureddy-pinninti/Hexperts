@@ -207,7 +207,6 @@ module.exports = (app) => {
                                     postedDate: -1,
                                 },
                             },
-                            { $limit: 1 },
                             {
                                 $lookup: {
                                     from: 'comments',
@@ -229,7 +228,7 @@ module.exports = (app) => {
                             },
                             {
                                 $project: {
-                                    comments: {
+                                    commentsCount: {
                                         $cond: {
                                             if: { $isArray: '$comments' },
                                             then: { $size: '$comments' },
@@ -245,8 +244,64 @@ module.exports = (app) => {
                                     upvotersCount: 1,
                                 },
                             },
+                            {
+                                $facet: {
+                                    results: [
+                                        {
+                                            $limit: 1,
+                                        },
+                                    ],
+                                    totalCount: [
+                                        {
+                                            $count: 'count',
+                                        },
+                                    ],
+                                },
+                            },
+                            {
+                                $unwind: {
+                                    path: '$totalCount',
+                                    preserveNullAndEmptyArrays: true,
+                                },
+                            },
+                            {
+                                $project: {
+                                    results: 1,
+                                    totalCount: {
+                                        $cond: {
+                                            if: {
+                                                $eq: [
+                                                    { $type: '$totalCount' },
+                                                    'object',
+                                                ],
+                                            },
+                                            then: '$totalCount.count',
+                                            else: 0,
+                                        },
+                                    },
+                                },
+                            },
                         ],
                         as: 'answers',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$answers',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $project: {
+                        followers: 1,
+                        suggestedExperts: 1,
+                        topics: 1,
+                        author: 1,
+                        question: 1,
+                        description: 1,
+                        postedDate: 1,
+                        lastModified: 1,
+                        answers: 1,
                     },
                 },
             ]);
@@ -484,9 +539,26 @@ module.exports = (app) => {
                                         postedDate: -1,
                                     },
                                 },
-                                { $count: 'commentsCount' },
                             ],
                             as: 'comments',
+                        },
+                    },
+                    {
+                        $project: {
+                            commentsCount: {
+                                $cond: {
+                                    if: { $isArray: '$comments' },
+                                    then: { $size: '$comments' },
+                                    else: 0,
+                                },
+                            },
+                            answer: 1,
+                            author: 1,
+                            downvoters: 1,
+                            postedDate: 1,
+                            questionID: 1,
+                            upvoters: 1,
+                            upvotersCount: 1,
                         },
                     },
                     {
@@ -506,11 +578,27 @@ module.exports = (app) => {
                             ],
                         },
                     },
-                    { $unwind: '$totalCount' },
+                    {
+                        $unwind: {
+                            path: '$totalCount',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
                     {
                         $project: {
                             results: 1,
-                            totalCount: '$totalCount.count',
+                            totalCount: {
+                                $cond: {
+                                    if: {
+                                        $eq: [
+                                            { $type: '$totalCount' },
+                                            'object',
+                                        ],
+                                    },
+                                    then: '$totalCount.count',
+                                    else: 0,
+                                },
+                            },
                         },
                     },
                 ]);
