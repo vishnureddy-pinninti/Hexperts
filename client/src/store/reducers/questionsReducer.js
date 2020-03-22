@@ -147,7 +147,6 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 modifiedQuestions: { ...modifiedQuestions },
-                questions: [ ...state.questions ],
             };
         default:
             return state;

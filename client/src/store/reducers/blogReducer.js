@@ -62,6 +62,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 newBlog: {},
+                newPost: {},
                 blog: action.blog,
                 pending: false,
             };
