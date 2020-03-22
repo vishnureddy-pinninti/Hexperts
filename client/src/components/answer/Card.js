@@ -17,6 +17,9 @@ import Box from '@material-ui/core/Box';
 import { Link, withRouter } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
 import { connect } from 'react-redux';
+import Collapse from '@material-ui/core/Collapse';
+import Divider from '@material-ui/core/Divider';
+import Comments from '../comment/comments';
 import ReadMore from '../base/ReadMore';
 import Avatar from '../base/Avatar';
 import { upvoteAnswer, addAnswerToCache, downvoteAnswer } from '../../store/actions/answer';
@@ -99,6 +102,11 @@ const AnswerCard = (props) => {
         hideHeaderHelperText,
         user,
     } = props;
+
+    const [
+        open,
+        setOpen,
+    ] = React.useState(false);
 
     const renderAnswer = (answer) => (
         <ReadMore
@@ -206,8 +214,9 @@ const AnswerCard = (props) => {
                 </Button>
                 <Button
                     size="small"
+                    onClick={ () => setOpen(!open) }
                     startIcon={ <ChatBubbleOutlineRoundedIcon /> }>
-                    Comment
+                    { /* { answer.comments } */ }
                 </Button>
                 <Button
                     size="small"
@@ -215,6 +224,17 @@ const AnswerCard = (props) => {
                     onClick={ () => downvoteAnswer(answerId, answer) }
                     startIcon={ downvoted ? <ThumbDownAltIcon color="primary" /> : <ThumbDownOutlinedIcon /> } />
             </CardActions>
+            <Collapse
+                in={ open }
+                timeout="auto"
+                unmountOnExit>
+                <CardContent>
+                    <Divider />
+                    <Comments
+                        answer={ answer } />
+                </CardContent>
+                <CardActions />
+            </Collapse>
         </Card>
     );
 };

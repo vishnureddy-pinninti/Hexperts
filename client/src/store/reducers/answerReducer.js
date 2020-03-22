@@ -3,7 +3,11 @@ import { RECEIVE_ADDED_ANSWER,
     RECEIVE_UPVOTE_ANSWER,
     RECEIVE_ANSWER_FOR_CACHE,
     RECEIVE_ANSWER_BY_ID,
+    RECEIVE_ANSWER_COMMENTS,
+    RECEIVE_COMMENT_ANSWER,
     RECEIVE_DOWNVOTE_ANSWER } from '../actions/answer';
+
+import { RECEIVE_QUESTION_BY_ID } from '../actions/questions';
 
 const initialState = {
     answer: {},
@@ -27,6 +31,35 @@ export default (state = initialState, action) => {
                 ...state,
                 answer: action.answer,
                 pending: false,
+            };
+        case RECEIVE_COMMENT_ANSWER:
+            answer = state.modifiedAnswers;
+            id = action.targetID;
+            if (!answer[id]){
+                answer[id] = {};
+                answer[id].commentsCache = [];
+            }
+            answer[id].commentsCache.unshift(action.res);
+            return {
+                ...state,
+                modifiedAnswers: { ...answer },
+            };
+        case RECEIVE_ANSWER_COMMENTS:
+            answer = state.modifiedAnswers;
+            id = action.targetID;
+            if (!answer[id]){
+                answer[id] = {};
+                answer[id].commentsCache = [];
+            }
+            answer[id].commentsCache = [ ...action.comments ];
+            return {
+                ...state,
+                modifiedAnswers: { ...answer },
+            };
+        case RECEIVE_QUESTION_BY_ID:
+            return {
+                ...state,
+                newAnswer: {},
             };
         case RECEIVE_ADDED_ANSWER:
             return {
