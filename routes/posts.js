@@ -124,7 +124,7 @@ module.exports = (app) => {
                         title: 1,
                         description: 1,
                         upvoters: 1,
-                        comments: {
+                        commentsCount: {
                             $cond: {
                                 if: { $isArray: '$comments' },
                                 then: { $size: '$comments' },
@@ -213,7 +213,7 @@ module.exports = (app) => {
                         title: 1,
                         description: 1,
                         upvoters: 1,
-                        comments: {
+                        commentsCount: {
                             $cond: {
                                 if: { $isArray: '$comments' },
                                 then: { $size: '$comments' },

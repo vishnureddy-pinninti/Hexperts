@@ -100,7 +100,7 @@ function ProfileBody(props) {
             key={ item._id }
             id={ item._id }
             date={ item.postedDate }
-            answersCount={ item.answers }
+            answersCount={ item.answers.totalCount }
             question={ item } />
     ));
     const renderPosts = (items) => items.map((item) => (
