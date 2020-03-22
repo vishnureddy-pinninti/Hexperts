@@ -57,9 +57,13 @@ module.exports = (app) => {
             ]);
 
             let cookieUser;
+            let resUser;
 
             if (user.length) {
-                cookieUser = user[0];
+                resUser = user[0];
+                cookieUser = {
+                    _id: user[0]._id,
+                };
             }
             else {
                 const newUser = new User({
@@ -71,7 +75,10 @@ module.exports = (app) => {
 
                 await newUser.save();
 
-                cookieUser = newUser._doc;
+                resUser = newUser._doc;
+                cookieUser = {
+                    _id: newUser._doc._id,
+                };
             }
 
             const notifications = await Notification.find({
@@ -92,7 +99,7 @@ module.exports = (app) => {
                 .cookie(config.cookieKey, encrypt(JSON.stringify(cookieUser)), cookieOptions)
                 .status(200)
                 .json({
-                    ...cookieUser,
+                    ...resUser,
                     notificationCount: notifications.length,
                 });
         }
