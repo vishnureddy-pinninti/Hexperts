@@ -146,9 +146,88 @@ module.exports = (app) => {
                                                 postedDate: -1,
                                             },
                                         },
-                                        { $limit: 1 },
+                                        {
+                                            $lookup: {
+                                                from: 'comments',
+                                                let: { id: '$_id' },
+                                                pipeline: [
+                                                    {
+                                                        $match: {
+                                                            $expr: {
+                                                                $eq: [
+                                                                    '$$id',
+                                                                    '$targetID',
+                                                                ],
+                                                            },
+                                                        },
+                                                    },
+                                                ],
+                                                as: 'comments',
+                                            },
+                                        },
+                                        {
+                                            $project: {
+                                                commentsCount: {
+                                                    $cond: {
+                                                        if: { $isArray: '$comments' },
+                                                        then: { $size: '$comments' },
+                                                        else: 0,
+                                                    },
+                                                },
+                                                answer: 1,
+                                                author: 1,
+                                                downvoters: 1,
+                                                postedDate: 1,
+                                                questionID: 1,
+                                                upvoters: 1,
+                                                upvotersCount: 1,
+                                            },
+                                        },
+                                        {
+                                            $facet: {
+                                                results: [
+                                                    {
+                                                        $limit: 1,
+                                                    },
+                                                ],
+                                                totalCount: [
+                                                    {
+                                                        $count: 'count',
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                        {
+                                            $unwind: {
+                                                path: '$totalCount',
+                                                preserveNullAndEmptyArrays: true,
+                                            },
+                                        },
+                                        {
+                                            $project: {
+                                                results: 1,
+                                                totalCount: {
+                                                    $cond: {
+                                                        if: {
+                                                            $eq: [
+                                                                { $type: '$totalCount' },
+                                                                'object',
+                                                            ],
+                                                        },
+                                                        then: '$totalCount.count',
+                                                        else: 0,
+                                                    },
+                                                },
+                                            },
+                                        },
                                     ],
                                     as: 'answers',
+                                },
+                            },
+                            {
+                                $unwind: {
+                                    path: '$answers',
+                                    preserveNullAndEmptyArrays: true,
                                 },
                             },
                             {

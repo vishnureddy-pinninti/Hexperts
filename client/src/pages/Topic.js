@@ -106,8 +106,8 @@ function Topic(props) {
 
 
     const renderQuestions = (items) => items.map((question) => {
-        if (question.answers && question.answers.length){
-            const answer = question.answers[0];
+        if (question.answers && question.answers.results){
+            const answer = question.answers.results[0];
             return (
                 <AnswerCard
                     key={ question._id }

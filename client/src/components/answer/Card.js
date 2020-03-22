@@ -216,7 +216,7 @@ const AnswerCard = (props) => {
                     size="small"
                     onClick={ () => setOpen(!open) }
                     startIcon={ <ChatBubbleOutlineRoundedIcon /> }>
-                    { /* { answer.comments } */ }
+                    { answer.commentsCount }
                 </Button>
                 <Button
                     size="small"

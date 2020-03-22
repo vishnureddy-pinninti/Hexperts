@@ -132,7 +132,7 @@ function AnswerPageBody(props) {
                 key={ item._id }
                 id={ item._id }
                 date={ item.postedDate }
-                answersCount={ item.answers && item.answers.length }
+                answersCount={ item.answers.totalCount }
                 question={ item } />
         );
     });
