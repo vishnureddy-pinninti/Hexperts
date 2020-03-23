@@ -71,8 +71,14 @@ function Question(props) {
         }
     }, [ question ]);
 
+    const [
+        newAnswers,
+        setNewAnswers,
+    ] = React.useState([]);
+
     useEffect(() => {
         setItems([]);
+        setNewAnswers([]);
         setPagination({
             index: 0,
             hasMore: false,
@@ -84,7 +90,7 @@ function Question(props) {
     ]);
 
     const loadMore = () => {
-        requestQuestion(questionId, { skip: pagination.index * 10 });
+        requestQuestion(questionId, { skip: (pagination.index * 10) + newAnswers.length });
     };
 
     useEffect(() => {
@@ -94,11 +100,12 @@ function Question(props) {
         requestRelatedQuestions,
     ]);
 
-    let newAnswers = [];
+    useEffect(() => {
+        if (modifiedQuestions && modifiedQuestions[questionId] && modifiedQuestions[questionId].newAnswers){
+            setNewAnswers([ ...modifiedQuestions[questionId].newAnswers ]);
+        }
+    }, [ modifiedQuestions ]);
 
-    if (modifiedQuestions && modifiedQuestions[questionId] && modifiedQuestions[questionId].newAnswers){
-        newAnswers = [ ...modifiedQuestions[questionId].newAnswers ];
-    }
 
     const renderAnswers = (items) => items.map((answer) => (
         <Answer

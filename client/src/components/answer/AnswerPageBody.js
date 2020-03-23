@@ -110,6 +110,11 @@ function AnswerPageBody(props) {
         }
     };
 
+    const [
+        selectedTab,
+        setSelectedTab,
+    ] = React.useState('AnswerRequests');
+
     const renderQuestions = (items) => items.map((item) => {
         if (item.answer){
             return (
@@ -142,12 +147,14 @@ function AnswerPageBody(props) {
             <Chip
                 label="Answer Requests"
                 className={ classes.chip }
-                onClick={ () => { getData('answerRequests'); } }
+                variant={ selectedTab === 'AnswerRequests' ? 'default' : 'outlined' }
+                onClick={ () => { getData('answerRequests'); setSelectedTab('AnswerRequests'); } }
                 clickable />
             <Chip
                 label="Questions For You"
                 className={ classes.chip }
-                onClick={ () => { getData(); } }
+                variant={ selectedTab === 'Questions' ? 'default' : 'outlined' }
+                onClick={ () => { getData(); setSelectedTab('Questions'); } }
                 clickable />
         </List>
     );

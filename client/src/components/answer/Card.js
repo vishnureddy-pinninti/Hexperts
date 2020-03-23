@@ -173,7 +173,7 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </Typography>
-                                   </>
+                    </>
                 }
                 <CardHeader
                     className={ classes.headerRoot }
@@ -216,7 +216,7 @@ const AnswerCard = (props) => {
                     size="small"
                     onClick={ () => setOpen(!open) }
                     startIcon={ <ChatBubbleOutlineRoundedIcon /> }>
-                    { answer.commentsCount }
+                    { /* { answer.commentsCount } */ }
                 </Button>
                 <Button
                     size="small"

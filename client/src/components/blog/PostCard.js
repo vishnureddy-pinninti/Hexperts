@@ -209,11 +209,11 @@ const AnswerCard = (props) => {
                     startIcon={ upvoted ? <ThumbUpAltIcon color="primary" /> : <ThumbUpOutlinedIcon /> }>
                     { upvoters.length }
                 </Button>
-                <Button
+                { /* <Button
                     size="small"
                     startIcon={ <ChatBubbleOutlineRoundedIcon /> }>
                     Comment
-                </Button>
+                </Button> */ }
                 <Button
                     size="small"
                     style={ { marginLeft: 'auto' } }
