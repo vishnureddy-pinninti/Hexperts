@@ -210,6 +210,7 @@ const mapStateToProps = (state) => {
         topic: state.topic.topic,
         pending: state.user.pending,
         followedTopics: state.user.user.interests,
+        modifiedQuestions: state.questions.modifiedQuestions,
         userProfile: state.user.userProfile,
         userFeed: state.user.feed,
     };

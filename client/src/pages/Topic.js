@@ -127,6 +127,7 @@ function Topic(props) {
                 key={ question._id }
                 id={ question._id }
                 date={ question.postedDate }
+                answersCount={ question.answers.totalCount }
                 question={ question } />
         );
     });
@@ -186,6 +187,7 @@ const mapStateToProps = (state) => {
         topic: state.topic.topic,
         pending: state.user.pending,
         followedTopics: state.user.user.interests,
+        modifiedQuestions: state.questions.modifiedQuestions,
     };
 };
 
