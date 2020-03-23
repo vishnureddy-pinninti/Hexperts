@@ -90,11 +90,17 @@ export default (state = initialState, action) => {
                 },
             };
         case RECEIVE_QUESTION_BY_ID:
+            modifiedQuestions = { ...state.modifiedQuestions };
+            id = action.question._id;
+            if (modifiedQuestions[id]){
+                delete modifiedQuestions[id];
+            }
             return {
                 ...state,
                 newQuestion: {},
                 question: action.question,
                 pending: false,
+                modifiedQuestions: { ...modifiedQuestions },
             };
         case RECEIVE_FOLLOWED_QUESTION:
             if (state.question && state.question.followers){
@@ -133,6 +139,9 @@ export default (state = initialState, action) => {
                 question[id] = {};
             }
             question[id].followers = action.question.followers;
+            if (!question[id].newAnswers){
+                question[id].newAnswers = [];
+            }
             if (action.question.answers && action.question.answers.results
                 && action.question.answers.results.length >= 0) { question[id].answers = action.question.answers; }
             return {
@@ -143,7 +152,7 @@ export default (state = initialState, action) => {
             modifiedQuestions = { ...state.modifiedQuestions };
             id = action.answer.questionID;
             if (modifiedQuestions[id]){
-                modifiedQuestions[id].answers.results.unshift(action.answer);
+                modifiedQuestions[id].newAnswers.unshift(action.answer);
                 modifiedQuestions[id].answers.totalCount += 1;
             }
             return {

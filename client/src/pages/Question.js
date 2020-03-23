@@ -94,11 +94,11 @@ function Question(props) {
         requestRelatedQuestions,
     ]);
 
-    useEffect(() => {
-        if (modifiedQuestions && modifiedQuestions[questionId] && modifiedQuestions[questionId].answers){
-            setItems([ ...modifiedQuestions[questionId].answers.results ]);
-        }
-    }, [ modifiedQuestions ]);
+    let newAnswers = [];
+
+    if (modifiedQuestions && modifiedQuestions[questionId] && modifiedQuestions[questionId].newAnswers){
+        newAnswers = [ ...modifiedQuestions[questionId].newAnswers ];
+    }
 
     const renderAnswers = (items) => items.map((answer) => (
         <Answer
@@ -128,6 +128,7 @@ function Question(props) {
                             id={ question._id }
                             answers={ question.answers }
                             topics={ question.topics } /> }
+                        { renderAnswers(newAnswers) }
                         { items.length > 0
                         && <InfiniteScroll
                             dataLength={ items.length }
