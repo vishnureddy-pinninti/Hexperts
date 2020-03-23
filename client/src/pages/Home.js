@@ -180,7 +180,7 @@ function Home(props) {
                 key={ question._id }
                 id={ question._id }
                 date={ question.postedDate }
-                answersCount={ question.answers.totalCount }
+                answersCount={ question.answers && question.answers.totalCount }
                 question={ question } />
         );
     });
