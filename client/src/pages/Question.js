@@ -77,6 +77,12 @@ function Question(props) {
     ] = React.useState([]);
 
     useEffect(() => {
+        if (modifiedQuestions && modifiedQuestions[questionId] && modifiedQuestions[questionId].newAnswers){
+            setNewAnswers([ ...modifiedQuestions[questionId].newAnswers ]);
+        }
+    }, [ modifiedQuestions ]);
+
+    useEffect(() => {
         setItems([]);
         setNewAnswers([]);
         setPagination({
@@ -99,12 +105,6 @@ function Question(props) {
         questionId,
         requestRelatedQuestions,
     ]);
-
-    useEffect(() => {
-        if (modifiedQuestions && modifiedQuestions[questionId] && modifiedQuestions[questionId].newAnswers){
-            setNewAnswers([ ...modifiedQuestions[questionId].newAnswers ]);
-        }
-    }, [ modifiedQuestions ]);
 
 
     const renderAnswers = (items) => items.map((answer) => (
@@ -149,7 +149,7 @@ function Question(props) {
                             }>
                             { renderAnswers(items) }
                         </InfiniteScroll> }
-                        { items.length === 0 && <EmptyResults
+                        { (items.length === 0 && newAnswers.length === 0) && <EmptyResults
                             title="No answer posted yet."
                             description="Feel free to add an answer to this question."
                             showBackButton={ false } /> }
