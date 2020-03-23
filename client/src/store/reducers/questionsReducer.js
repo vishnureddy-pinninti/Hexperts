@@ -28,6 +28,7 @@ export default (state = initialState, action) => {
     let index;
     let followers = [];
     let id;
+    let temp;
     switch (action.type) {
         case RECEIVE_USER_QUESTIONS:
             return {
@@ -90,17 +91,17 @@ export default (state = initialState, action) => {
                 },
             };
         case RECEIVE_QUESTION_BY_ID:
-            modifiedQuestions = { ...state.modifiedQuestions };
+            // modifiedQuestions = { ...state.modifiedQuestions };
             id = action.question._id;
-            if (modifiedQuestions[id]){
-                delete modifiedQuestions[id];
-            }
+            // if (modifiedQuestions[id]){
+            //     delete modifiedQuestions[id];
+            // }
             return {
                 ...state,
                 newQuestion: {},
                 question: action.question,
                 pending: false,
-                modifiedQuestions: { ...modifiedQuestions },
+                // modifiedQuestions: { ...modifiedQuestions },
             };
         case RECEIVE_FOLLOWED_QUESTION:
             if (state.question && state.question.followers){
@@ -113,6 +114,8 @@ export default (state = initialState, action) => {
                     followers.push(action.res.follower);
                 }
             }
+            temp = state.question;
+            temp.followers = followers;
             question = state.modifiedQuestions;
             id = action.res._id;
             if (question[id]){
@@ -126,10 +129,7 @@ export default (state = initialState, action) => {
             }
             return {
                 ...state,
-                question: {
-                    ...state.question,
-                    followers,
-                },
+                question: temp,
                 modifiedQuestions: { ...question },
             };
         case RECEIVE_QUESTION_FOR_CACHE:

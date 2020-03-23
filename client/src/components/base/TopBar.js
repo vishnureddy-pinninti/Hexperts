@@ -211,11 +211,13 @@ const TopBar = (props) => {
         location,
         history,
         newQuestion,
+        match,
         answerPending,
         user,
         notificationCount,
     } = props;
 
+    const { path } = match;
 
     useEffect(() => {
         if (!pending && newQuestion && newQuestion._id) {
@@ -383,7 +385,8 @@ const TopBar = (props) => {
                                     to="/"
                                     className={ classes.link }>
                                     <Button
-                                        startIcon={ <HomeIcon /> }>
+                                        startIcon={ <HomeIcon /> }
+                                        color={ path === '/' ? 'primary' : '' }>
                                         Home
                                     </Button>
                                 </Link>
@@ -394,7 +397,8 @@ const TopBar = (props) => {
                                         badgeContent={ 0 }
                                         color="secondary">
                                         <Button
-                                            startIcon={ <EditIcon /> }>
+                                            startIcon={ <EditIcon /> }
+                                            color={ path === '/Answer' ? 'primary' : '' }>
                                             Answer
                                         </Button>
                                     </Badge>
@@ -403,7 +407,8 @@ const TopBar = (props) => {
                                     to="/blogs"
                                     className={ classes.link }>
                                     <Button
-                                        startIcon={ <GroupIcon /> }>
+                                        startIcon={ <GroupIcon /> }
+                                        color={ path === '/Blogs' ? 'primary' : '' }>
                                         Blogs
                                     </Button>
                                 </Link>
@@ -414,7 +419,8 @@ const TopBar = (props) => {
                                         badgeContent={ notificationCount }
                                         color="secondary">
                                         <Button
-                                            startIcon={ <NotificationsIcon /> }>
+                                            startIcon={ <NotificationsIcon /> }
+                                            color={ path === '/Notifications' ? 'primary' : '' }>
                                             Notifications
                                         </Button>
                                     </Badge>

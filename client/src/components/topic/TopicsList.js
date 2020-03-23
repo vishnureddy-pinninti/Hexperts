@@ -39,7 +39,11 @@ const useStyles = makeStyles((theme) => {
 
 function TopicList(props) {
     const classes = useStyles();
-    const { topics, handleFollowTopicsModalOpen } = props;
+    const {
+        topics,
+        handleFollowTopicsModalOpen,
+        activeTopicId,
+    } = props;
 
     const renderTopics = () => topics.map((topic) => (
         <Link
@@ -52,6 +56,7 @@ function TopicList(props) {
                     alt={ topic.topic }
                     src={ topic.imageUrl || '/placeholder.png' } /> }
                 label={ topic.topic }
+                variant={ activeTopicId === topic._id ? 'default' : 'outlined' }
                 className={ classes.chip }
                 clickable />
         </Link>
