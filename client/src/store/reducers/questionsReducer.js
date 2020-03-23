@@ -101,7 +101,7 @@ export default (state = initialState, action) => {
                 newQuestion: {},
                 question: action.question,
                 pending: false,
-                // modifiedQuestions: { ...modifiedQuestions },
+                modifiedQuestions: {},
             };
         case RECEIVE_FOLLOWED_QUESTION:
             if (state.question && state.question.followers){
