@@ -159,7 +159,7 @@ function Home(props) {
     };
 
     const renderQuestions = (items) => items.map((question) => {
-        if (question.answers && question.answers.totalCount){
+        if (question.answers && question.answers.results && question.answers.results.length){
             const answer = question.answers.results[0];
             return (
                 <AnswerCard
