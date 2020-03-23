@@ -39,7 +39,11 @@ const useStyles = makeStyles((theme) => {
 
 function BlogsList(props) {
     const classes = useStyles();
-    const { blogs, handleFollowTopicsModalOpen } = props;
+    const {
+        blogs,
+        handleFollowTopicsModalOpen,
+        activeBlogId,
+    } = props;
 
     const renderTopics = () => blogs.map((blog) => (
         <Link
@@ -52,6 +56,7 @@ function BlogsList(props) {
                     alt={ blog.name }
                     src={ blog.imageUrl || '/blog-placeholder.png' } /> }
                 label={ blog.name }
+                variant={ activeBlogId === blog._id ? 'default' : 'outlined' }
                 className={ classes.chip }
                 clickable />
         </Link>

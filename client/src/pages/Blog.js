@@ -132,7 +132,9 @@ function Topic(props) {
                     <Grid
                         item
                         xs={ 2 }>
-                        <BlogsList handleFollowTopicsModalOpen={ handleFollowTopicsModalOpen } />
+                        <BlogsList
+                            handleFollowTopicsModalOpen={ handleFollowTopicsModalOpen }
+                            activeBlogId={ blogId } />
                     </Grid>
                     <Grid
                         item
