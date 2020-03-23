@@ -20,7 +20,7 @@ import Collapse from '@material-ui/core/Collapse';
 import QuestionTags from './QuestionTags';
 import EditSuggestedWriters from './EditSuggestedWriters';
 import { addAnswerToQuestion, addAnswerPending } from '../../store/actions/answer';
-import { followQuestion } from '../../store/actions/questions';
+import { followQuestion, addQuestionToCache } from '../../store/actions/questions';
 
 
 const useStyles = makeStyles({
@@ -84,7 +84,7 @@ const QuestionSection = (props) => {
             {
                 answer: draftToHtml(convertToRaw(answer.getCurrentContent())),
                 questionID: id,
-            }
+            }, question
         );
     };
 
@@ -219,7 +219,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addAnswerToQuestion: (body) => {
+        addAnswerToQuestion: (body, question) => {
+            dispatch(addQuestionToCache(question));
             dispatch(addAnswerPending());
             dispatch(addAnswerToQuestion(body));
         },

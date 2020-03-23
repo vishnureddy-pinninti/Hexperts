@@ -25,6 +25,7 @@ function Question(props) {
         requestRelatedQuestions,
         question,
  relatedQuestions,
+ modifiedQuestions,
  newAnswer,
     } = props;
 
@@ -94,13 +95,10 @@ function Question(props) {
     ]);
 
     useEffect(() => {
-        if (newAnswer && newAnswer._id){
-            setItems([
-                newAnswer,
-                ...items,
-            ]);
+        if (modifiedQuestions && modifiedQuestions[questionId] && modifiedQuestions[questionId].answers){
+            setItems([ ...modifiedQuestions[questionId].answers.results ]);
         }
-    }, [ newAnswer ]);
+    }, [ modifiedQuestions ]);
 
     const renderAnswers = (items) => items.map((answer) => (
         <Answer
@@ -168,6 +166,7 @@ Question.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         question: state.questions.question,
+        modifiedQuestions: state.questions.modifiedQuestions,
         relatedQuestions: state.questions.relatedQuestions,
         newAnswer: state.answer.newAnswer,
     };

@@ -199,6 +199,7 @@ AnswerPageBody.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         questions: state.questions.questions,
+        modifiedQuestions: state.questions.modifiedQuestions,
     };
 };
 

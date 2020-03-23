@@ -133,7 +133,8 @@ export default (state = initialState, action) => {
                 question[id] = {};
             }
             question[id].followers = action.question.followers;
-            if (action.question.answers && action.question.answers.length >= 0) { question[id].answers = action.question.answers; }
+            if (action.question.answers && action.question.answers.results
+                && action.question.answers.results.length >= 0) { question[id].answers = action.question.answers; }
             return {
                 ...state,
                 modifiedQuestions: { ...question },
@@ -142,7 +143,8 @@ export default (state = initialState, action) => {
             modifiedQuestions = { ...state.modifiedQuestions };
             id = action.answer.questionID;
             if (modifiedQuestions[id]){
-                modifiedQuestions[id].answers.push(action.answer);
+                modifiedQuestions[id].answers.results.unshift(action.answer);
+                modifiedQuestions[id].answers.totalCount += 1;
             }
             return {
                 ...state,

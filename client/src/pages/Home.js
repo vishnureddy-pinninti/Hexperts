@@ -180,6 +180,7 @@ function Home(props) {
                 key={ question._id }
                 id={ question._id }
                 date={ question.postedDate }
+                answersCount={ question.answers.totalCount }
                 question={ question } />
         );
     });
@@ -250,6 +251,7 @@ const mapStateToProps = (state) => {
         pending: state.user.pending,
         followedTopics: state.user.interests,
         trendingQuestions: state.questions.trendingQuestions,
+        modifiedQuestions: state.questions.modifiedQuestions,
         topics: state.topic.topics,
     };
 };
