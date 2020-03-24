@@ -42,10 +42,18 @@ const useStyles = makeStyles((theme) => {
             height: 500,
         },
         editorWrapper: {
-            border: '1px solid #F1F1F1',
-            minHeight: 300,
+            border: '1px solid gray',
+            minHeight: 400,
             padding: 10,
             marginTop: 20,
+            '&:hover': {
+                border: '2px solid',
+                borderColor: theme.palette.primary.dark,
+            },
+        },
+        small: {
+            width: theme.spacing(3),
+            height: theme.spacing(3),
         },
     };
 });
@@ -145,24 +153,32 @@ const BlogHeader = (props) => {
             editorState={ post }
             wrapperClassName={ classes.editorWrapper }
             editorClassName={ classes.root }
-            onEditorStateChange={ onEditorStateChange } />
+            onEditorStateChange={ onEditorStateChange }
+            toolbar={ {
+                inline: { inDropdown: true },
+                list: { inDropdown: true },
+                textAlign: { inDropdown: true },
+                link: { inDropdown: true },
+                history: { inDropdown: true },
+            } } />
     );
 
     const renderPostModal = () => (
         <Dialog
             open={ open }
+            scroll="paper"
             onClose={ handleClose }>
             <form
                 id="post"
                 onSubmit={ handleSubmit(addPost) }>
                 <DialogTitle id="scroll-dialog-title">Post</DialogTitle>
                 <DialogContent
-                    dividers
-                    className={ classes.post }>
+                    dividers>
                     <CardHeader
                         avatar={
                             <Avatar
                                 alt="Remy Sharp"
+                                className={ classes.small }
                                 src={ blog.imageUrl || '/blog-placeholder.png' } />
                         }
                         title={
@@ -171,7 +187,7 @@ const BlogHeader = (props) => {
                                 { blog.name }
                             </Box>
                         } />
-                    <CardContent>
+                    <CardContent className={ classes.post }>
                         <Field
                             name="title"
                             component={ renderTextField } />
@@ -263,6 +279,7 @@ const mapDispatchToProps = (dispatch) => {
         addPostToBlog: (body) => {
             dispatch(addBlogPending());
             dispatch(addPostToBlog(body));
+            dispatch(reset('post'));
         },
     };
 };

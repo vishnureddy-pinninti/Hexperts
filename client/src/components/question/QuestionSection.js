@@ -175,7 +175,14 @@ const QuestionSection = (props) => {
                         editorRef={ setEditorReference }
                         wrapperClassName={ classes.editorWrapper }
                         editorClassName={ classes.root }
-                        onEditorStateChange={ onEditorStateChange } />
+                        onEditorStateChange={ onEditorStateChange }
+                        toolbar={ {
+                            inline: { inDropdown: true },
+                            list: { inDropdown: true },
+                            textAlign: { inDropdown: true },
+                            link: { inDropdown: true },
+                            history: { inDropdown: true },
+                        } } />
                 </CardContent>
                 <CardActions>
                     <Button

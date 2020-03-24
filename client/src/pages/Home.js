@@ -118,8 +118,6 @@ function Home(props) {
             else {
                 setOpenExpertInModal(true);
             }
-            setItems([]);
-            requestUserQuestions();
         }
     }, [
         pending,
