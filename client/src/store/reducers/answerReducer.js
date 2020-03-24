@@ -38,7 +38,10 @@ export default (state = initialState, action) => {
             if (!answer[id]){
                 answer[id] = {};
                 answer[id].commentsCache = [];
+                answer[id].commentsCount = 0;
             }
+            answer[id].commentsCount += 1;
+
             answer[id].commentsCache.unshift(action.res);
             return {
                 ...state,
@@ -50,6 +53,7 @@ export default (state = initialState, action) => {
             if (!answer[id]){
                 answer[id] = {};
                 answer[id].commentsCache = [];
+                answer[id].commentsCount = 0;
             }
             answer[id].commentsCache = [ ...action.comments ];
             return {
@@ -117,6 +121,7 @@ export default (state = initialState, action) => {
             }
             answer[id].upvoters = action.answer.upvoters;
             answer[id].downvoters = action.answer.downvoters;
+            answer[id].commentsCount = action.answer.commentsCount;
             return {
                 ...state,
                 modifiedAnswers: { ...answer },

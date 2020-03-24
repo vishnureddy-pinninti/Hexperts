@@ -19,6 +19,7 @@ import { formatDistance } from 'date-fns';
 import { connect } from 'react-redux';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import Comments from '../comment/comments';
 import ReadMore from '../base/ReadMore';
 import Avatar from '../base/Avatar';
@@ -107,6 +108,12 @@ const AnswerCard = (props) => {
         open,
         setOpen,
     ] = React.useState(false);
+
+    let currentCommentsCount = answer.commentsCount;
+
+    if (modifiedAnswers && modifiedAnswers[answer._id] && modifiedAnswers[answer._id].commentsCount){
+        currentCommentsCount = modifiedAnswers[answer._id].commentsCount;
+    }
 
     const renderAnswer = (answer) => (
         <ReadMore
@@ -215,8 +222,8 @@ const AnswerCard = (props) => {
                 <Button
                     size="small"
                     onClick={ () => setOpen(!open) }
-                    startIcon={ <ChatBubbleOutlineRoundedIcon /> }>
-                    { /* { answer.commentsCount } */ }
+                    startIcon={ open ? <ChatBubbleIcon color="primary" /> : <ChatBubbleOutlineRoundedIcon /> }>
+                    { currentCommentsCount }
                 </Button>
                 <Button
                     size="small"
