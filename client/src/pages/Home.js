@@ -44,23 +44,6 @@ function Home(props) {
 
     const classes = useStyles();
 
-    useEffect(() => {
-        if (!pending) {
-            setOpenFollowTopicsModal(pending);
-            if (expertIn.length) {
-                setOpenExpertInModal(pending);
-            }
-            else {
-                setOpenExpertInModal(true);
-            }
-            requestUserQuestions();
-        }
-    }, [
-        pending,
-        requestUserQuestions,
-        expertIn,
-    ]);
-
     const [
         openFollowTopicsModal,
         setOpenFollowTopicsModal,
@@ -125,6 +108,24 @@ function Home(props) {
         index: 0,
         hasMore: true,
     });
+
+    useEffect(() => {
+        if (!pending) {
+            setOpenFollowTopicsModal(pending);
+            if (expertIn.length) {
+                setOpenExpertInModal(pending);
+            }
+            else {
+                setOpenExpertInModal(true);
+            }
+            setItems([]);
+            requestUserQuestions();
+        }
+    }, [
+        pending,
+        requestUserQuestions,
+        expertIn,
+    ]);
 
     useEffect(() => {
         if (questions.length) {

@@ -374,7 +374,7 @@ const TopBar = (props) => {
                                         <span className={ classes.logo }>
                                             <LocalLibraryIcon />
                                             { ' ' }
-                                            hExperts
+                                            Hexperts
                                         </span>
                                     </Link>
                                 </Typography>

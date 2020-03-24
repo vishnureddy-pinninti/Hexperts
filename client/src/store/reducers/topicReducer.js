@@ -18,6 +18,7 @@ const initialState = {
 export default (state = initialState, action) => {
     let index;
     let followers = [];
+    let temp;
     switch (action.type) {
         case ADD_TOPIC_PENDING:
             return {
@@ -64,12 +65,11 @@ export default (state = initialState, action) => {
             else {
                 followers.push(action.res._id);
             }
+            temp = state.topic;
+            temp.followers = followers;
             return {
                 ...state,
-                topic: {
-                    ...state.topic,
-                    followers,
-                },
+                topic: temp,
             };
         default:
             return state;
