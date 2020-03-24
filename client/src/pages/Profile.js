@@ -106,7 +106,7 @@ function Profile(props) {
     useEffect(() => {
         if (!pending) {
             setOpenFollowTopicsModal(pending);
-            if (expertIn.length) {
+            if (expertIn && expertIn.length) {
                 setOpenExpertInModal(pending);
             }
             else {
