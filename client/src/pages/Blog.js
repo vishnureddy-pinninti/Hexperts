@@ -23,6 +23,7 @@ function Topic(props) {
         pending,
         followedBlogs,
         newPost,
+        modifiedBlogs,
     } = props;
 
     const [
@@ -88,6 +89,17 @@ function Topic(props) {
         }
     }, [ blog ]);
 
+    const [
+        newPosts,
+        setNewPosts,
+    ] = React.useState([]);
+
+    useEffect(() => {
+        if (modifiedBlogs && modifiedBlogs[blogId] && modifiedBlogs[blogId].newAnswers){
+            setNewPosts([ ...modifiedBlogs[blogId].newPosts ]);
+        }
+    }, [ modifiedBlogs ]);
+
     useEffect(() => {
         setItems([]);
         setPagination({
@@ -142,6 +154,7 @@ function Topic(props) {
                         <Header
                             blog={ blog }
                             id={ blogId } />
+                        { renderPosts(newPosts) }
                         { items.length > 0
                         && <InfiniteScroll
                             dataLength={ items.length }
@@ -154,8 +167,8 @@ function Topic(props) {
                                 </p>
                             }>
                             { renderPosts(items) }
-                           </InfiniteScroll> }
-                        { items.length === 0 && <EmptyResults
+                        </InfiniteScroll> }
+                        { (items.length === 0 && newPosts.length === 0) && <EmptyResults
                             title="No blog posts yet."
                             description="Feel free to contribute to this blog and earn points."
                             showBackButton={ false } /> }
@@ -178,6 +191,7 @@ const mapStateToProps = (state) => {
         blog: state.blog.blog,
         pending: state.user.pending,
         followedBlogs: state.user.user.blogs,
+        modifiedBlogs: state.blog.modifiedBlogs,
         newPost: state.blog.newPost,
     };
 };

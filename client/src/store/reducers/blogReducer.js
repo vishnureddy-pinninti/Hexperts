@@ -19,6 +19,7 @@ const initialState = {
     pending: true,
     suggestedExperts: [],
     modifiedPosts: {},
+    modifiedBlogs: {},
 };
 
 export default (state = initialState, action) => {
@@ -26,6 +27,8 @@ export default (state = initialState, action) => {
     let post;
     let id;
     let followers = [];
+    let blogs;
+    let temp;
     switch (action.type) {
         case ADD_BLOG_PENDING:
             return {
@@ -38,10 +41,19 @@ export default (state = initialState, action) => {
                 posts: action.posts,
             };
         case RECEIVE_ADDED_POST:
+            id = action.post.blog._id;
+            blogs = { ...state.modifiedBlogs };
+            if (blogs[id]){
+                blogs[id].newPosts.unshift(action.post);
+            }
+            else {
+                blogs[id] = { newPosts: [ action.post ] };
+            }
             return {
                 ...state,
                 pending: false,
                 newPost: action.post,
+                modifiedBlogs: { ...blogs },
             };
         case RECEIVE_ADDED_BLOG:
             return {
@@ -81,12 +93,11 @@ export default (state = initialState, action) => {
             else {
                 followers.push(action.res._id);
             }
+            temp = state.blog;
+            temp.followers = followers;
             return {
                 ...state,
-                blog: {
-                    ...state.blog,
-                    followers,
-                },
+                topic: temp,
                 pending: false,
             };
         case RECEIVE_UPVOTE_POST:

@@ -132,12 +132,6 @@ function Home(props) {
     useEffect(() => {
         if (!pending && openFollowTopicsModal) {
             setOpenFollowTopicsModal(pending);
-            setItems([]);
-            setPagination({
-                index: 0,
-                hasMore: true,
-            });
-            requestPostsFeed();
         }
     }, [
         pending,
