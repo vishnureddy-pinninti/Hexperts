@@ -12,6 +12,8 @@ export const RECEIVE_COMMENT_ANSWER = 'RECEIVE_COMMENT_ANSWER';
 export const REQUEST_COMMENT_ANSWER = 'REQUEST_COMMENT_ANSWER';
 export const REQUEST_ANSWER_COMMENTS = 'REQUEST_ANSWER_COMMENTS';
 export const RECEIVE_ANSWER_COMMENTS = 'RECEIVE_ANSWER_COMMENTS';
+export const RECEIVE_COMMENT_BY_ID = 'RECEIVE_COMMENT_BY_ID';
+export const REQUEST_COMMENT_BY_ID = 'REQUEST_COMMENT_BY_ID';
 
 export function addAnswerPending() {
     return {
@@ -134,6 +136,24 @@ export const requestAnswerById = (id) => {
             url: `/api/v1/answers/${id}`,
             method: 'GET',
             success: receiveAnswerById,
+        },
+    };
+};
+
+const receiveCommentById = (comment) => {
+    return {
+        type: RECEIVE_COMMENT_BY_ID,
+        comment,
+    };
+};
+
+export const requestCommentById = (id) => {
+    return {
+        type: REQUEST_COMMENT_BY_ID,
+        makeApiRequest: {
+            url: `/api/v1/comment/${id}`,
+            method: 'GET',
+            success: receiveCommentById,
         },
     };
 };

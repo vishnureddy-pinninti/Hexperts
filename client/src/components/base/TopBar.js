@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => {
         menuButton: {
             color: 'white',
         },
+        activeMenuButton: {
+            color: theme.palette.primary.light,
+        },
         toolbar: {
             alignItems: 'center',
         },
@@ -380,8 +383,7 @@ const TopBar = (props) => {
                                     <Button
                                         startIcon={ <HomeIcon /> }
                                         size="large"
-                                        color={ path === '/' ? 'primary' : '' }
-                                        className={ path === '/' ? '' : classes.menuButton }>
+                                        className={ path === '/' ? classes.activeMenuButton : classes.menuButton }>
                                         Home
                                     </Button>
                                 </Link>
@@ -394,8 +396,7 @@ const TopBar = (props) => {
                                         <Button
                                             startIcon={ <EditIcon /> }
                                             size="large"
-                                            color={ path === '/Answer' ? 'primary' : '' }
-                                            className={ path === '/Answer' ? '' : classes.menuButton }>
+                                            className={ path === '/Answer' ? classes.activeMenuButton : classes.menuButton }>
                                             Answer
                                         </Button>
                                     </Badge>
@@ -406,8 +407,7 @@ const TopBar = (props) => {
                                     <Button
                                         startIcon={ <GroupIcon /> }
                                         size="large"
-                                        color={ path === '/Blogs' ? 'primary' : '' }
-                                        className={ path === '/Blogs' ? '' : classes.menuButton }>
+                                        className={ path === '/Blogs' ? classes.activeMenuButton : classes.menuButton }>
                                         Blogs
                                     </Button>
                                 </Link>
@@ -420,8 +420,7 @@ const TopBar = (props) => {
                                         <Button
                                             startIcon={ <NotificationsIcon /> }
                                             size="large"
-                                            color={ path === '/Notifications' ? 'primary' : '' }
-                                            className={ path === '/Notifications' ? '' : classes.menuButton }>
+                                            className={ path === '/Notifications' ? classes.activeMenuButton : classes.menuButton }>
                                             Notifications
                                         </Button>
                                     </Badge>

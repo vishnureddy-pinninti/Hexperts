@@ -13,7 +13,8 @@ import { requestUserSession } from '../store/actions/auth';
 const theme = createMuiTheme({
     palette: {
         primary: {
-            main: '#4ec53a',
+            light: '#4ec53a',
+            main: '#52B18E',
             contrastText: '#ffffff',
         },
         secondary: {
