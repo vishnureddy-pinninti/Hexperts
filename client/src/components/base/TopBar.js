@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => {
         },
         logo: {
             paddingRight: 10,
-            height: 65,
+            height: 60,
         },
         menu: {
             '& > *': {
@@ -368,7 +368,7 @@ const TopBar = (props) => {
                                     to="/"
                                     className={ classes.link }>
                                     <img
-                                        src="/logo.jpg"
+                                        src="/logo.png"
                                         className={ classes.logo }
                                         alt="logo" />
                                 </Link>
