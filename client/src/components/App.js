@@ -1,12 +1,34 @@
 import React, { Component } from 'react';
 import { UserAgentApplication } from 'msal';
 import { connect } from 'react-redux';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import SignIn from '../pages/SignIn';
 import { authService } from '../services/authService';
 import config from '../utils/config';
 import Router from '../routing/Router';
 
+
 import { requestUserSession } from '../store/actions/auth';
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#4ec53a',
+            contrastText: '#ffffff',
+        },
+        secondary: {
+            main: '#f7941e',
+            contrastText: '#ffffff',
+        },
+    },
+    typography: {
+        button: {
+            textTransform: 'none',
+            main: '#4ec53a',
+        },
+    },
+});
+
 
 class App extends Component {
     constructor(props) {
@@ -36,10 +58,16 @@ class App extends Component {
         const { user } = this.props;
         if (user.isAuthenticated) {
             return (
-                <Router handleLogout={ this.logout } />
+                <ThemeProvider theme={ theme }>
+                    <Router handleLogout={ this.logout } />
+                </ThemeProvider>
             );
         }
-        return <SignIn onLoginClick={ this.login } />;
+        return (
+            <ThemeProvider theme={ theme }>
+                <SignIn onLoginClick={ this.login } />
+            </ThemeProvider>
+        );
     }
 
     login = async() => {

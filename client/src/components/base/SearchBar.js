@@ -38,6 +38,13 @@ const useStyles = makeStyles((theme) => {
             textDecoration: 'none',
             color: 'inherit',
         },
+        inputInput: {
+            transition: theme.transitions.create('width'),
+            width: '100%',
+            [theme.breakpoints.up('md')]: {
+                width: 400,
+            },
+        },
     };
 });
 
@@ -241,10 +248,9 @@ function SearchBar(props) {
                     placeholder="Search…"
                     variant="outlined"
                     fullWidth
-                    style={ { width: 400 } }
+                    className={ classes.inputInput }
                     required
                     onBlur={ handleClose }
-                    autoFocus
                     onClick={ handleClick }
                     onChange={ handleClick }
                     value={ value }

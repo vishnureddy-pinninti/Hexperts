@@ -111,8 +111,8 @@ const AnswerCard = (props) => {
 
     let currentCommentsCount = answer.commentsCount;
 
-    if (modifiedAnswers && modifiedAnswers[answer._id] && modifiedAnswers[answer._id].commentsCount){
-        currentCommentsCount = modifiedAnswers[answer._id].commentsCount;
+    if (modifiedAnswers && modifiedAnswers[answer._id] && modifiedAnswers[answer._id].newComments){
+        currentCommentsCount = modifiedAnswers[answer._id].newComments.length + currentCommentsCount;
     }
 
     const renderAnswer = (answer) => (

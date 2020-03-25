@@ -223,6 +223,7 @@ const ExpertInModal = (props) => {
                 </Button>
                 <Button
                     color="primary"
+                    variant="contained"
                     onClick={ addTopicsToInterests }
                     type="submit">
                     Done

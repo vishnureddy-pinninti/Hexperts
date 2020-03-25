@@ -4,9 +4,8 @@ import socketIOClient from 'socket.io-client';
 import Fab from '@material-ui/core/Fab';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Zoom from '@material-ui/core/Zoom';
-import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
-import green from '@material-ui/core/colors/green';
 import { connect } from 'react-redux';
 import TopBar from '../components/base/TopBar';
 import routes from './routes';
@@ -23,18 +22,6 @@ const useStyles = makeStyles((theme) => {
         },
     };
 });
-
-const theme = createMuiTheme({
-    // palette: {
-    //     primary: green,
-    // },
-    typography: {
-        button: {
-            textTransform: 'none',
-        },
-    },
-});
-
 
 function ScrollTop(props) {
     const { children, window } = props;
@@ -73,33 +60,31 @@ function ScrollTop(props) {
 
 
 const RouteWithSubRoutes = (route) => (
-    <ThemeProvider theme={ theme }>
-        <Route
-            path={ route.path }
-            render={ (props) => (
+    <Route
+        path={ route.path }
+        render={ (props) => (
             // pass the sub-routes down to keep nesting
-                <div>
-                    <div id="back-to-top-anchor" />
-                    <TopBar onLogout={ route.handleLogout } />
+            <div>
+                <div id="back-to-top-anchor" />
+                <TopBar onLogout={ route.handleLogout } />
 
-                    <ErrorBoundary>
-                        <route.component
-                            { ...props }
-                            onLogout={ route.handleLogout }
-                            routes={ route.routes } />
+                <ErrorBoundary>
+                    <route.component
+                        { ...props }
+                        onLogout={ route.handleLogout }
+                        routes={ route.routes } />
 
-                        <ScrollTop { ...props }>
-                            <Fab
-                                color="secondary"
-                                size="small"
-                                aria-label="scroll back to top">
-                                <KeyboardArrowUpIcon />
-                            </Fab>
-                        </ScrollTop>
-                    </ErrorBoundary>
-                </div>
-            ) } />
-    </ThemeProvider>
+                    <ScrollTop { ...props }>
+                        <Fab
+                            color="secondary"
+                            size="small"
+                            aria-label="scroll back to top">
+                            <KeyboardArrowUpIcon />
+                        </Fab>
+                    </ScrollTop>
+                </ErrorBoundary>
+            </div>
+        ) } />
 );
 
 class Router extends Component {

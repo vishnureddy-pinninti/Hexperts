@@ -370,6 +370,7 @@ const EditSuggestedWriters = (props) => {
                 </Button>
                 <Button
                     color="primary"
+                    variant="contained"
                     onClick={ addTopicsToQuestion }
                     type="submit">
                     Done

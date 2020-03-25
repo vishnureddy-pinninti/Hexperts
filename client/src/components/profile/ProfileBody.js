@@ -137,36 +137,42 @@ function ProfileBody(props) {
             <Chip
                 label={ `Answers ${userProfile.answers}` }
                 className={ classes.chip }
+                color="primary"
                 variant={ selectedTab === 'Answers' ? 'default' : 'outlined' }
                 onClick={ () => { requestUserAnswers(userProfile._id); setSelectedTab('Answers'); } }
                 clickable />
             <Chip
                 label={ `Questions ${userProfile.questions}` }
                 className={ classes.chip }
+                color="primary"
                 variant={ selectedTab === 'Questions' ? 'default' : 'outlined' }
                 onClick={ () => { requestUserQuestions(userProfile._id); setSelectedTab('Questions'); } }
                 clickable />
             <Chip
                 label={ `Posts ${userProfile.posts}` }
                 className={ classes.chip }
+                color="primary"
                 variant={ selectedTab === 'Posts' ? 'default' : 'outlined' }
                 onClick={ () => { requestUserPosts(userProfile._id); setSelectedTab('Posts'); } }
                 clickable />
             <Chip
                 label={ `Blogs ${userProfile.blogs && userProfile.blogs.length}` }
                 className={ classes.chip }
+                color="primary"
                 variant={ selectedTab === 'Blogs' ? 'default' : 'outlined' }
                 onClick={ () => { requestUserBlogs(userProfile._id); setSelectedTab('Blogs'); } }
                 clickable />
             <Chip
                 label={ `Followers ${userProfile.followers && userProfile.followers.length}` }
                 className={ classes.chip }
+                color="primary"
                 variant={ selectedTab === 'Followers' ? 'default' : 'outlined' }
                 onClick={ () => { requestUserFollowers(userProfile._id); setSelectedTab('Followers'); } }
                 clickable />
             <Chip
                 label={ `Following ${userProfile.following}` }
                 className={ classes.chip }
+                color="primary"
                 variant={ selectedTab === 'Following' ? 'default' : 'outlined' }
                 onClick={ () => { requestUserFollowing(userProfile._id); setSelectedTab('Following'); } }
                 clickable />

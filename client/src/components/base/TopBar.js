@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => {
             flexGrow: 1,
         },
         menuButton: {
-            marginRight: theme.spacing(2),
+            color: 'white',
         },
         toolbar: {
             alignItems: 'center',
@@ -50,15 +50,15 @@ const useStyles = makeStyles((theme) => {
             color: 'inherit',
         },
         logo: {
-            display: 'inline-block',
-            fontWeight: 'bold',
-            color: theme.palette.primary.dark,
-            paddingRight: 30,
+            paddingRight: 10,
+            height: 65,
         },
         menu: {
             '& > *': {
                 margin: theme.spacing(1),
             },
+            paddingRight: 30,
+            paddingLeft: 30,
             display: 'none',
             [theme.breakpoints.up('md')]: {
                 display: 'flex',
@@ -111,6 +111,10 @@ const useStyles = makeStyles((theme) => {
             [theme.breakpoints.up('md')]: {
                 display: 'none',
             },
+        },
+        topBar: {
+            backgroundColor: '#046080',
+            backgroundImage: 'url(/topbar.png)',
         },
     };
 });
@@ -351,7 +355,8 @@ const TopBar = (props) => {
             <AppBar
                 position="fixed"
                 elevation={ 1 }
-                color="inherit">
+                className={ classes.topBar }
+                color="default">
                 <Grid
                     container
                     justify="center">
@@ -359,25 +364,14 @@ const TopBar = (props) => {
                         item>
                         <Toolbar>
                             <div className={ classes.inline }>
-                                <Typography
-                                    variant="h4"
-                                    color="inherit"
-                                    noWrap>
-                                    <Link
-                                        to="/"
-                                        className={ classes.link }>
-                                        { /* <img
-                                            src="/hexagon.jpg"
-                                            className={ classes.logo }
-                                            width={ 180 }
-                                            alt="logo" /> */ }
-                                        <span className={ classes.logo }>
-                                            <LocalLibraryIcon />
-                                            { ' ' }
-                                            Hexperts
-                                        </span>
-                                    </Link>
-                                </Typography>
+                                <Link
+                                    to="/"
+                                    className={ classes.link }>
+                                    <img
+                                        src="/logo.jpg"
+                                        className={ classes.logo }
+                                        alt="logo" />
+                                </Link>
                             </div>
                             <div className={ classes.grow } />
                             <div className={ classes.menu }>
@@ -386,7 +380,8 @@ const TopBar = (props) => {
                                     className={ classes.link }>
                                     <Button
                                         startIcon={ <HomeIcon /> }
-                                        color={ path === '/' ? 'primary' : '' }>
+                                        color={ path === '/' ? 'primary' : '' }
+                                        className={ path === '/' ? '' : classes.menuButton }>
                                         Home
                                     </Button>
                                 </Link>
@@ -398,7 +393,8 @@ const TopBar = (props) => {
                                         color="secondary">
                                         <Button
                                             startIcon={ <EditIcon /> }
-                                            color={ path === '/Answer' ? 'primary' : '' }>
+                                            color={ path === '/Answer' ? 'primary' : '' }
+                                            className={ path === '/Answer' ? '' : classes.menuButton }>
                                             Answer
                                         </Button>
                                     </Badge>
@@ -408,7 +404,8 @@ const TopBar = (props) => {
                                     className={ classes.link }>
                                     <Button
                                         startIcon={ <GroupIcon /> }
-                                        color={ path === '/Blogs' ? 'primary' : '' }>
+                                        color={ path === '/Blogs' ? 'primary' : '' }
+                                        className={ path === '/Blogs' ? '' : classes.menuButton }>
                                         Blogs
                                     </Button>
                                 </Link>
@@ -420,7 +417,8 @@ const TopBar = (props) => {
                                         color="secondary">
                                         <Button
                                             startIcon={ <NotificationsIcon /> }
-                                            color={ path === '/Notifications' ? 'primary' : '' }>
+                                            color={ path === '/Notifications' ? 'primary' : '' }
+                                            className={ path === '/Notifications' ? '' : classes.menuButton }>
                                             Notifications
                                         </Button>
                                     </Badge>
