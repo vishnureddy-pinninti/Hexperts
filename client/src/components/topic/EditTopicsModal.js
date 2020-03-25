@@ -253,6 +253,7 @@ const EditTopicsModal = (props) => {
                 </Button>
                 <Button
                     color="primary"
+                    variant="contained"
                     onClick={ addTopicsToQuestion }
                     type="submit">
                     Done

@@ -226,6 +226,7 @@ const FollowBlogsModal = (props) => {
                 </Button>
                 <Button
                     color="primary"
+                    variant="contained"
                     onClick={ addBlogsToInterests }
                     type="submit">
                     Done

@@ -11,7 +11,7 @@ import Chip from '@material-ui/core/Chip';
 const useStyles = makeStyles((theme) => {
     return {
         root: {
-            position: 'fixed',
+            position: 'absolute',
             display: 'flex',
             flexDirection: 'column',
         },
@@ -67,7 +67,7 @@ function TopicList(props) {
             className={ classes.root }>
             { renderTopics() }
             <Chip
-                variant="contained"
+                // variant="contained"
                 avatar={
                     <Avatar>
                         <ExploreIcon />

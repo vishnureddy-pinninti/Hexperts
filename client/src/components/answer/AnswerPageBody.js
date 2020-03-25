@@ -147,12 +147,14 @@ function AnswerPageBody(props) {
             <Chip
                 label="Answer Requests"
                 className={ classes.chip }
+                color="primary"
                 variant={ selectedTab === 'AnswerRequests' ? 'default' : 'outlined' }
                 onClick={ () => { getData('answerRequests'); setSelectedTab('AnswerRequests'); } }
                 clickable />
             <Chip
                 label="Questions For You"
                 className={ classes.chip }
+                color="primary"
                 variant={ selectedTab === 'Questions' ? 'default' : 'outlined' }
                 onClick={ () => { getData(); setSelectedTab('Questions'); } }
                 clickable />

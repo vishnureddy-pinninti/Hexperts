@@ -17,7 +17,7 @@ function Copyright() {
     return (
         <Typography
             variant="body2"
-            color="textSecondary"
+            style={ { color: 'white' } }
             align="center">
             { 'Copyright © ' }
             <Link
@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme) => {
     return {
         root: {
             height: '100vh',
+        },
+        login: {
+            backgroundColor: '#046080',
         },
         image: {
             backgroundImage: 'url(/signin.png)',
@@ -89,6 +92,7 @@ const SignIn = (props) => {
                 sm={ 8 }
                 md={ 5 }
                 component={ Paper }
+                className={ classes.login }
                 elevation={ 6 }
                 square>
                 <div className={ classes.paper }>
@@ -97,15 +101,16 @@ const SignIn = (props) => {
                     </Avatar>
                     <Typography
                         component="h1"
+                        style={ { color: 'white' } }
                         variant="h5">
                         Sign in
                     </Typography>
-                    <Paper className={ classes.logo }>
+                    <div className={ classes.logo }>
                         <img
-                            src="hexagon.jpg"
-                            width={ 250 }
+                            src="logo.jpg"
+                            width={ 200 }
                             alt="logo" />
-                    </Paper>
+                    </div>
                     <form
                         className={ classes.form }
                         noValidate>

@@ -87,6 +87,7 @@ const QuestionModal = (props) => {
                     </Button>
                     <Button
                         color="primary"
+                        variant="contained"
                         type="submit">
                         Add
                     </Button>
