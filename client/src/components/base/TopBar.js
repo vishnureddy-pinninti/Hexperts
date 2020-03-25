@@ -50,14 +50,13 @@ const useStyles = makeStyles((theme) => {
             color: 'inherit',
         },
         logo: {
-            paddingRight: 10,
             height: 60,
         },
         menu: {
             '& > *': {
                 margin: theme.spacing(1),
             },
-            paddingRight: 30,
+            paddingRight: 20,
             paddingLeft: 30,
             display: 'none',
             [theme.breakpoints.up('md')]: {
@@ -380,6 +379,7 @@ const TopBar = (props) => {
                                     className={ classes.link }>
                                     <Button
                                         startIcon={ <HomeIcon /> }
+                                        size="large"
                                         color={ path === '/' ? 'primary' : '' }
                                         className={ path === '/' ? '' : classes.menuButton }>
                                         Home
@@ -393,6 +393,7 @@ const TopBar = (props) => {
                                         color="secondary">
                                         <Button
                                             startIcon={ <EditIcon /> }
+                                            size="large"
                                             color={ path === '/Answer' ? 'primary' : '' }
                                             className={ path === '/Answer' ? '' : classes.menuButton }>
                                             Answer
@@ -404,6 +405,7 @@ const TopBar = (props) => {
                                     className={ classes.link }>
                                     <Button
                                         startIcon={ <GroupIcon /> }
+                                        size="large"
                                         color={ path === '/Blogs' ? 'primary' : '' }
                                         className={ path === '/Blogs' ? '' : classes.menuButton }>
                                         Blogs
@@ -417,6 +419,7 @@ const TopBar = (props) => {
                                         color="secondary">
                                         <Button
                                             startIcon={ <NotificationsIcon /> }
+                                            size="large"
                                             color={ path === '/Notifications' ? 'primary' : '' }
                                             className={ path === '/Notifications' ? '' : classes.menuButton }>
                                             Notifications
