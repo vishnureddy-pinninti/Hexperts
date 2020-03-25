@@ -119,6 +119,43 @@ module.exports = (app) => {
                         preserveNullAndEmptyArrays: true,
                     },
                 },
+                {
+                    $lookup: {
+                        from: 'comments',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$targetID',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'comments',
+                    },
+                },
+                {
+                    $project: {
+                        commentsCount: {
+                            $cond: {
+                                if: { $isArray: '$comments' },
+                                then: { $size: '$comments' },
+                                else: 0,
+                            },
+                        },
+                        answer: 1,
+                        author: 1,
+                        downvoters: 1,
+                        postedDate: 1,
+                        questionID: 1,
+                        question: 1,
+                        upvoters: 1,
+                    },
+                },
             ]);
 
             if (answer[0]) {
