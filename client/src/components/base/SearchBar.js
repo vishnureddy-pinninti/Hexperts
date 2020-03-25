@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => {
         },
         inputInput: {
             transition: theme.transitions.create('width'),
-            width: '100%',
+            width: 'auto',
             [theme.breakpoints.up('md')]: {
                 width: 400,
             },

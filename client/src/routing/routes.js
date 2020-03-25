@@ -9,6 +9,7 @@ import Blog from '../pages/Blog';
 import AnswerWithQuestion from '../pages/AnswerWithQuestion';
 import Post from '../pages/Post';
 import Search from '../pages/Search';
+import CommentPage from '../pages/Comment';
 
 const routes = [
     {
@@ -30,6 +31,11 @@ const routes = [
         path: '/answer/:answerId',
         component: AnswerWithQuestion,
         key: 'AnswerWithQuestion',
+    },
+    {
+        path: '/comment/:commentId',
+        component: CommentPage,
+        key: 'Comment',
     },
     {
         path: '/Answer',

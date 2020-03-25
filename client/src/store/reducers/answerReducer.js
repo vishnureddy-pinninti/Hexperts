@@ -5,6 +5,7 @@ import { RECEIVE_ADDED_ANSWER,
     RECEIVE_ANSWER_BY_ID,
     RECEIVE_ANSWER_COMMENTS,
     RECEIVE_COMMENT_ANSWER,
+    RECEIVE_COMMENT_BY_ID,
     RECEIVE_DOWNVOTE_ANSWER } from '../actions/answer';
 
 import { RECEIVE_QUESTION_BY_ID } from '../actions/questions';
@@ -30,6 +31,12 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 answer: action.answer,
+                pending: false,
+            };
+        case RECEIVE_COMMENT_BY_ID:
+            return {
+                ...state,
+                comment: action.comment,
                 pending: false,
             };
         case RECEIVE_COMMENT_ANSWER:
