@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme) => {
         },
         login: {
             backgroundColor: '#046080',
+            backgroundImage: 'url(/hexagon-bg.png)',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
         },
         image: {
             backgroundImage: 'url(/signin.png)',
@@ -107,7 +111,7 @@ const SignIn = (props) => {
                     </Typography>
                     <div className={ classes.logo }>
                         <img
-                            src="logo.jpg"
+                            src="/logo.png"
                             width={ 200 }
                             alt="logo" />
                     </div>
