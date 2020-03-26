@@ -31,7 +31,7 @@ module.exports = (app) => {
                 },
                 {
                     $lookup: {
-                        from: 'blogs',
+                        from: 'posts',
                         let: { id: '$_id' },
                         pipeline: [
                             {
@@ -45,7 +45,7 @@ module.exports = (app) => {
                                 },
                             },
                         ],
-                        as: 'blogs',
+                        as: 'posts',
                     },
                 },
                 {
@@ -76,10 +76,10 @@ module.exports = (app) => {
                                 else: 0,
                             },
                         },
-                        blogs: {
+                        posts: {
                             $cond: {
-                                if: { $isArray: '$blogs' },
-                                then: { $size: '$blogs' },
+                                if: { $isArray: '$posts' },
+                                then: { $size: '$posts' },
                                 else: 0,
                             },
                         },
