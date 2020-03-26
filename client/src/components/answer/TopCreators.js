@@ -73,7 +73,7 @@ function TopCreators(props) {
                 <Box
                     fontWeight="fontWeightBold"
                     m={ 1 }>
-                    Top Creators
+                    Top Contributors
                 </Box>
             </Typography>
             <Divider />

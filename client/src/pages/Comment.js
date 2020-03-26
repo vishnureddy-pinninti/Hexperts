@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => {
         link: {
             textDecoration: 'none',
             color: 'inherit',
+            fontWeight: 'bold',
             '&:hover': {
                 textDecoration: 'underline',
             },
@@ -39,6 +40,7 @@ function Comment(props) {
         },
        requestComent,
        comment,
+       postComment,
        history,
     } = props;
 
@@ -72,6 +74,29 @@ function Comment(props) {
                 to={ `/answer/${comment.answer._id}` }
                 className={ classes.link }>
                 { comment.question.question }
+            </Link>
+        </Typography>
+    );
+
+    const renderPostCommentTitle = (comment) => (
+        <Typography
+            variant="body2"
+            color="textSecondary"
+            className={ classes.commentTitle }
+            component="p">
+            Comment on
+            { ' ' }
+            <Link
+                to={ `/profile/${comment.post.author._id}` }
+                className={ classes.link }>
+                { comment.post.author.name }
+            </Link>
+            's post about
+            { ' ' }
+            <Link
+                to={ `/post/${comment.post._id}` }
+                className={ classes.link }>
+                { comment.post.title }
             </Link>
         </Typography>
     );
@@ -126,6 +151,8 @@ function Comment(props) {
                         xs={ 7 }>
                         { comment && comment.answer && renderTitle(comment) }
                         { comment && comment.answer && renderComment(comment) }
+                        { postComment && postComment.post && renderPostCommentTitle(postComment) }
+                        { postComment && postComment.post && renderComment(postComment) }
                     </Grid>
                     <Grid
                         item
@@ -139,6 +166,7 @@ function Comment(props) {
 const mapStateToProps = (state) => {
     return {
         comment: state.answer.comment,
+        postComment: state.blog.comment,
     };
 };
 

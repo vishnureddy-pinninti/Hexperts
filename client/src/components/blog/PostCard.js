@@ -16,6 +16,10 @@ import Box from '@material-ui/core/Box';
 import { Link, withRouter } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
 import { connect } from 'react-redux';
+import Collapse from '@material-ui/core/Collapse';
+import Divider from '@material-ui/core/Divider';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
+import Comments from '../comment/PostComments';
 import ReadMore from '../base/ReadMore';
 import Avatar from '../base/Avatar';
 import { upvotePost, addPostToCache, downvotePost } from '../../store/actions/blog';
@@ -81,8 +85,7 @@ const AnswerCard = (props) => {
         history,
         upvotePost,
         downvotePost,
-        modifiedAnswers,
-        addAnswerToCache,
+        modifiedPosts,
         hideHeaderHelperText,
         user,
     } = props;
@@ -104,6 +107,17 @@ const AnswerCard = (props) => {
         jobTitle,
         email,
     } = author;
+
+    const [
+        open,
+        setOpen,
+    ] = React.useState(false);
+
+    let currentCommentsCount = post.commentsCount;
+
+    if (modifiedPosts && modifiedPosts[post._id] && modifiedPosts[post._id].newComments){
+        currentCommentsCount = modifiedPosts[post._id].newComments.length + currentCommentsCount;
+    }
 
     const renderAnswer = (post) => (
         <ReadMore
@@ -170,7 +184,7 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </Typography>
-                                   </>
+                    </>
                 }
                 <CardHeader
                     className={ classes.headerRoot }
@@ -209,17 +223,29 @@ const AnswerCard = (props) => {
                     startIcon={ upvoted ? <ThumbUpAltIcon color="primary" /> : <ThumbUpOutlinedIcon /> }>
                     { upvoters.length }
                 </Button>
-                { /* <Button
+                <Button
                     size="small"
-                    startIcon={ <ChatBubbleOutlineRoundedIcon /> }>
-                    Comment
-                </Button> */ }
+                    onClick={ () => setOpen(!open) }
+                    startIcon={ open ? <ChatBubbleIcon color="primary" /> : <ChatBubbleOutlineRoundedIcon /> }>
+                    { currentCommentsCount }
+                </Button>
                 <Button
                     size="small"
                     style={ { marginLeft: 'auto' } }
                     onClick={ () => downvotePost(postId, post) }
                     startIcon={ downvoted ? <ThumbDownAltIcon color="primary" /> : <ThumbDownOutlinedIcon /> } />
             </CardActions>
+            <Collapse
+                in={ open }
+                timeout="auto"
+                unmountOnExit>
+                <CardContent>
+                    <Divider />
+                    <Comments
+                        post={ post } />
+                </CardContent>
+                <CardActions />
+            </Collapse>
         </Card>
     );
 };
