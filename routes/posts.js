@@ -65,11 +65,42 @@ module.exports = (app) => {
         } = req.queryParams;
         const {
             blogs = [],
+            _id,
         } = req.user;
+
+        const dbUser = await User.aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(_id) } },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: { id: '$_id' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $in: [
+                                        '$$id',
+                                        '$followers',
+                                    ],
+                                },
+                            },
+                        },
+                    ],
+                    as: 'following',
+                },
+            },
+        ]);
+
+        const query = {
+            $or: [
+                { blog: { $in: blogs.map((blog) => mongoose.Types.ObjectId(blog)) } },
+                { author: { $in: dbUser[0].following.map((f) => mongoose.Types.ObjectId(f._id)) } },
+            ],
+        };
 
         try {
             const posts = await Post.aggregate([
-                { $match: { 'blog': { $in: blogs.map((blog) => mongoose.Types.ObjectId(blog)) } } },
+                { $match: query },
                 { $sort: { postedDate: -1 } },
                 { $skip: pagination.skip || 0 },
                 { $limit: pagination.limit || 10 },
