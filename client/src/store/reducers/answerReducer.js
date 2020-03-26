@@ -15,6 +15,7 @@ const initialState = {
     newAnswer: {},
     pending: true,
     modifiedAnswers: {},
+    comment: {},
 };
 
 export default (state = initialState, action) => {
@@ -34,9 +35,16 @@ export default (state = initialState, action) => {
                 pending: false,
             };
         case RECEIVE_COMMENT_BY_ID:
+            if (action.comment.target === 'answers'){
+                return {
+                    ...state,
+                    comment: action.comment,
+                    pending: false,
+                };
+            }
             return {
                 ...state,
-                comment: action.comment,
+                comment: {},
                 pending: false,
             };
         case RECEIVE_COMMENT_ANSWER:

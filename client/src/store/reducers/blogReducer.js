@@ -8,7 +8,11 @@ import { ADD_BLOG_PENDING,
     RECEIVE_POST_FOR_CACHE,
     RECEIVE_ADDED_POST,
     RECEIVE_POST_BY_ID,
+    RECEIVE_COMMENT_POST,
+    RECEIVE_POST_COMMENTS,
     RECEIVE_FOLLOWED_BLOG } from '../actions/blog';
+
+import { RECEIVE_COMMENT_BY_ID } from '../actions/answer';
 
 const initialState = {
     blog: {},
@@ -20,6 +24,7 @@ const initialState = {
     suggestedExperts: [],
     modifiedPosts: {},
     modifiedBlogs: {},
+    comment: {},
 };
 
 export default (state = initialState, action) => {
@@ -147,12 +152,52 @@ export default (state = initialState, action) => {
             id = action.post._id;
             if (!post[id]){
                 post[id] = {};
+                post[id].newComments = [];
             }
             post[id].upvoters = action.post.upvoters;
             post[id].downvoters = action.post.downvoters;
             return {
                 ...state,
                 modifiedPosts: { ...post },
+            };
+        case RECEIVE_COMMENT_POST:
+            post = state.modifiedPosts;
+            id = action.targetID;
+            if (!post[id]){
+                post[id] = {};
+                post[id].commentsCache = [];
+            }
+            post[id].newComments.unshift(action.res);
+            post[id].commentsCache.unshift(action.res);
+            return {
+                ...state,
+                modifiedPosts: { ...post },
+            };
+        case RECEIVE_POST_COMMENTS:
+            post = state.modifiedPosts;
+            id = action.targetID;
+            if (!post[id]){
+                post[id] = {};
+                post[id].commentsCache = [];
+                post[id].newComments = [];
+            }
+            post[id].commentsCache = [ ...action.comments ];
+            return {
+                ...state,
+                modifiedPosts: { ...post },
+            };
+        case RECEIVE_COMMENT_BY_ID:
+            if (action.comment.target === 'posts'){
+                return {
+                    ...state,
+                    comment: action.comment,
+                    pending: false,
+                };
+            }
+            return {
+                ...state,
+                comment: {},
+                pending: false,
             };
         default:
             return state;
