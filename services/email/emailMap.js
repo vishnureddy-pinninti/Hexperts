@@ -242,6 +242,7 @@ const emailMap = {
             _id,
             author,
             comment,
+            target,
             targetID,
             req,
         } = data;
@@ -249,22 +250,24 @@ const emailMap = {
         const answerAuthor = await getAuthor(targetID, Answer);
         const recipients = [ answerAuthor ];
 
+        const targetName = target === 'posts' ? 'post': 'answer'
+
         return {
             email: {
                 template: 'newEntry',
                 locals: {
                     name: author.name,
                     data: comment,
-                    dataDescription: 'added below comment to your answer.',
+                    dataDescription: `added below comment to your ${targetName}.`,
                     link: `${keys.emailUrl}comment/${_id}`,
-                    subject: 'New comment to your answer',
+                    subject: `New comment to your ${targetName}`,
                 },
                 recipients,
                 user: author,
             },
             notification: {
                 recipients,
-                message: `<b>${author.name}</b> commented on your answer`,
+                message: `<b>${author.name}</b> commented on your ${targetName}`,
                 link: `/comment/${_id}`,
                 user: author,
                 req,
