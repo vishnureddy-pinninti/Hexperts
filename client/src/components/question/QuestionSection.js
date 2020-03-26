@@ -64,6 +64,11 @@ const QuestionSection = (props) => {
         setAnswer,
     ] = React.useState(null);
 
+    const [
+        disableSubmit,
+        setDisableSubmit,
+    ] = React.useState(false);
+
     const handleOpen = () => {
         setOpen(true);
     };
@@ -75,11 +80,13 @@ const QuestionSection = (props) => {
     useEffect(() => {
         if (!pending) {
             setOpen(pending);
+            setDisableSubmit(false);
             setAnswer(null);
         }
     }, [ pending ]);
 
     const addAnswer = () => {
+        setDisableSubmit(true);
         addAnswerToQuestion(
             {
                 answer: draftToHtml(convertToRaw(answer.getCurrentContent())),
@@ -188,6 +195,7 @@ const QuestionSection = (props) => {
                     <Button
                         size="small"
                         variant="contained"
+                        disabled={ disableSubmit }
                         onClick={ addAnswer }
                         color="primary">
                         Submit

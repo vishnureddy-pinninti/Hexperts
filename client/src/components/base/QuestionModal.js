@@ -56,6 +56,14 @@ const QuestionModal = (props) => {
             fullWidth />
     );
 
+    const onSubmitQuestion = (values) => {
+        let { question } = values;
+        if (values.question.slice(-1) !== '?'){
+            question += '?';
+        }
+        addUserQuestion({ question });
+    };
+
     return (
         <Dialog
             className={ classes.root }
@@ -66,7 +74,7 @@ const QuestionModal = (props) => {
             aria-labelledby="responsive-dialog-title">
             <form
                 id="question"
-                onSubmit={ handleSubmit(addUserQuestion) }>
+                onSubmit={ handleSubmit(onSubmitQuestion) }>
                 <DialogTitle>
                     Question
                 </DialogTitle>
