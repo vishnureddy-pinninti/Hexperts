@@ -8,6 +8,7 @@ import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 
+import InfiniteScroll from 'react-infinite-scroll-component';
 import AnswerCard from '../answer/Card';
 import PostCard from '../blog/PostCard';
 import EmptyResults from '../base/EmptyResults';
@@ -56,6 +57,116 @@ function ProfileBody(props) {
         requestUserFollowing,
     } = props;
 
+    const [
+        items,
+        setItems,
+    ] = React.useState([]);
+
+    const [
+        selectedTab,
+        setSelectedTab,
+    ] = React.useState('Answers');
+
+    const [
+        pagination,
+        setPagination,
+    ] = React.useState({
+        index: 0,
+        hasMore: true,
+    });
+
+    useEffect(() => {
+        if (userFeed && userFeed.items && userFeed.items.length) {
+            if (selectedTab === userFeed.type){
+                setItems([
+                    ...items,
+                    ...userFeed.items,
+                ]);
+                setPagination({
+                    index: pagination.index + 1,
+                    hasMore: true,
+                });
+            }
+            else {
+                setItems([ ...userFeed.items ]);
+                setPagination({
+                    index: pagination.index + 1,
+                    hasMore: true,
+                });
+            }
+        }
+        else {
+            setPagination({
+                ...pagination,
+                hasMore: false,
+            });
+        }
+    }, [ userFeed ]);
+
+    const requestUserBlogs = () => {
+        setItems(userProfile.blogs);
+        setPagination({
+            ...pagination,
+            hasMore: false,
+        });
+    };
+
+    const loadMore = () => {
+        switch (selectedTab){
+            case 'Questions':
+                requestUserQuestions(userProfile._id, { skip: pagination.index * 10 });
+                break;
+            case 'Answers':
+                requestUserAnswers(userProfile._id, { skip: pagination.index * 10 });
+                break;
+            case 'Blogs':
+                requestUserBlogs(userProfile._id, { skip: pagination.index * 10 });
+                break;
+            case 'Posts':
+                requestUserPosts(userProfile._id, { skip: pagination.index * 10 });
+                break;
+            case 'Followers':
+                requestUserFollowers(userProfile._id, { skip: pagination.index * 10 });
+                break;
+            case 'Following':
+                requestUserFollowing(userProfile._id, { skip: pagination.index * 10 });
+                break;
+            default:
+                requestUserQuestions(userProfile._id, { skip: pagination.index * 10 });
+        }
+    };
+
+    const getData = (type = 'Answers') => {
+        setSelectedTab(type);
+        setItems([]);
+        setPagination({
+            index: 0,
+            hasMore: true,
+        });
+        switch (type){
+            case 'Questions':
+                requestUserQuestions(userProfile._id);
+                break;
+            case 'Answers':
+                requestUserAnswers(userProfile._id);
+                break;
+            case 'Blogs':
+                requestUserBlogs(userProfile._id);
+                break;
+            case 'Posts':
+                requestUserPosts(userProfile._id);
+                break;
+            case 'Followers':
+                requestUserFollowers(userProfile._id);
+                break;
+            case 'Following':
+                requestUserFollowing(userProfile._id);
+                break;
+            default:
+                requestUserQuestions(userProfile._id);
+        }
+    };
+
     useEffect(() => {
         if (userProfile._id){
             requestUserAnswers(userProfile._id);
@@ -64,27 +175,6 @@ function ProfileBody(props) {
         requestUserAnswers,
         userProfile,
     ]);
-
-    const [
-        feed,
-        setFeed,
-    ] = React.useState([]);
-
-    const [
-        selectedTab,
-        setSelectedTab,
-    ] = React.useState('Answers');
-
-    useEffect(() => {
-        setFeed(userFeed);
-    }, [ userFeed ]);
-
-    const requestUserBlogs = () => {
-        setFeed({
-            type: 'blogs',
-            items: userProfile.blogs,
-        });
-    };
 
     const renderAnswers = (items) => items.map((item) => (
         <AnswerCard
@@ -105,7 +195,7 @@ function ProfileBody(props) {
             key={ item._id }
             id={ item._id }
             date={ item.postedDate }
-            answersCount={ item.answers.totalCount }
+            answersCount={ item.answers && item.answers.totalCount }
             question={ item } />
     ));
     const renderPosts = (items) => items.map((item) => (
@@ -139,47 +229,45 @@ function ProfileBody(props) {
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Answers' ? 'default' : 'outlined' }
-                onClick={ () => { requestUserAnswers(userProfile._id); setSelectedTab('Answers'); } }
+                onClick={ () => { getData('Answers'); } }
                 clickable />
             <Chip
                 label={ `Questions ${userProfile.questions}` }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Questions' ? 'default' : 'outlined' }
-                onClick={ () => { requestUserQuestions(userProfile._id); setSelectedTab('Questions'); } }
+                onClick={ () => { getData('Questions'); } }
                 clickable />
             <Chip
                 label={ `Posts ${userProfile.posts}` }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Posts' ? 'default' : 'outlined' }
-                onClick={ () => { requestUserPosts(userProfile._id); setSelectedTab('Posts'); } }
+                onClick={ () => { getData('Posts'); } }
                 clickable />
             <Chip
                 label={ `Blogs ${userProfile.blogs && userProfile.blogs.length}` }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Blogs' ? 'default' : 'outlined' }
-                onClick={ () => { requestUserBlogs(userProfile._id); setSelectedTab('Blogs'); } }
+                onClick={ () => { getData('Blogs'); } }
                 clickable />
             <Chip
                 label={ `Followers ${userProfile.followers && userProfile.followers.length}` }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Followers' ? 'default' : 'outlined' }
-                onClick={ () => { requestUserFollowers(userProfile._id); setSelectedTab('Followers'); } }
+                onClick={ () => { getData('Followers'); } }
                 clickable />
             <Chip
                 label={ `Following ${userProfile.following}` }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Following' ? 'default' : 'outlined' }
-                onClick={ () => { requestUserFollowing(userProfile._id); setSelectedTab('Following'); } }
+                onClick={ () => { getData('Following'); } }
                 clickable />
         </List>
     );
-
-    const { type, items } = feed;
 
     return (
         <Grid
@@ -203,15 +291,27 @@ function ProfileBody(props) {
             <Grid
                 item
                 xs={ 10 }>
-                { type === 'questions' && renderQuestions(items) }
-                { type === 'answers' && renderAnswers(items) }
-                { type === 'posts' && renderPosts(items) }
-                { type === 'users' && renderUsers(items) }
-                { type === 'blogs' && renderBlogs(items) }
-                { items && items.length === 0 && <EmptyResults
-                    title={ <SentimentVeryDissatisfiedIcon /> }
-                    description="No Results to display."
-                    showBackButton={ false } /> }
+                <InfiniteScroll
+                    dataLength={ items.length }
+                    next={ loadMore }
+                    hasMore={ pagination.hasMore }
+                    loader={ <h4 style={ { textAlign: 'center' } }>Loading...</h4> }
+                    endMessage={
+                        <p style={ { textAlign: 'center' } }>
+                            <b>Yay! You have seen it all</b>
+                        </p>
+                    }>
+                    { selectedTab === 'Questions' && renderQuestions(items) }
+                    { selectedTab === 'Answers' && renderAnswers(items) }
+                    { selectedTab === 'Posts' && renderPosts(items) }
+                    { selectedTab === 'Followers' && renderUsers(items) }
+                    { selectedTab === 'Following' && renderUsers(items) }
+                    { selectedTab === 'Blogs' && renderBlogs(items) }
+                    { items && items.length === 0 && <EmptyResults
+                        title={ <SentimentVeryDissatisfiedIcon /> }
+                        description="No Results to display."
+                        showBackButton={ false } /> }
+                </InfiniteScroll>
             </Grid>
         </Grid>
     );
@@ -235,20 +335,20 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestUserQuestions: (userId) => {
-            dispatch(requestUserQuestions(userId));
+        requestUserQuestions: (userId, params) => {
+            dispatch(requestUserQuestions(userId, params));
         },
-        requestUserAnswers: (userId) => {
-            dispatch(requestUserAnswers(userId));
+        requestUserAnswers: (userId, params) => {
+            dispatch(requestUserAnswers(userId, params));
         },
-        requestUserPosts: (userId) => {
-            dispatch(requestUserPosts(userId));
+        requestUserPosts: (userId, params) => {
+            dispatch(requestUserPosts(userId, params));
         },
-        requestUserFollowing: (userId) => {
-            dispatch(requestUserFollowing(userId));
+        requestUserFollowing: (userId, params) => {
+            dispatch(requestUserFollowing(userId, params));
         },
-        requestUserFollowers: (userId) => {
-            dispatch(requestUserFollowers(userId));
+        requestUserFollowers: (userId, params) => {
+            dispatch(requestUserFollowers(userId, params));
         },
     };
 };

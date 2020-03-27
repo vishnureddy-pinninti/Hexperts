@@ -253,6 +253,8 @@ const emailMap = {
         const answerAuthor = await getAuthor(targetID, model);
         const recipients = [ answerAuthor ];
 
+        const targetName = target === 'posts' ? 'post': 'answer'
+
         return {
             email: {
                 template: 'newEntry',

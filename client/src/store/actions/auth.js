@@ -115,11 +115,11 @@ const receiveUserQuestions = (res) => {
     };
 };
 
-export const requestUserQuestions = (userId) => {
+export const requestUserQuestions = (userId, params = { skip: 0 }) => {
     return {
         type: REQUEST_QUESTIONS_BY_USER_ID,
         makeApiRequest: {
-            url: `/api/v1/user-questions/${userId}`,
+            url: `/api/v1/user-questions/${userId}?skip=${params.skip}`,
             method: 'GET',
             success: receiveUserQuestions,
         },
@@ -133,11 +133,11 @@ const receiveUserAnswers = (res) => {
     };
 };
 
-export const requestUserAnswers = (userId) => {
+export const requestUserAnswers = (userId, params = { skip: 0 }) => {
     return {
         type: REQUEST_USER_ANSWERS,
         makeApiRequest: {
-            url: `/api/v1/user-answers/${userId}`,
+            url: `/api/v1/user-answers/${userId}?skip=${params.skip}`,
             method: 'GET',
             success: receiveUserAnswers,
         },
@@ -151,11 +151,11 @@ const receiveUserPosts = (res) => {
     };
 };
 
-export const requestUserPosts = (userId) => {
+export const requestUserPosts = (userId, params = { skip: 0 }) => {
     return {
         type: REQUEST_USER_POSTS,
         makeApiRequest: {
-            url: `/api/v1/user-posts/${userId}`,
+            url: `/api/v1/user-posts/${userId}?skip=${params.skip}`,
             method: 'GET',
             success: receiveUserPosts,
         },
@@ -169,11 +169,11 @@ const receiveUserFollowers = (res) => {
     };
 };
 
-export const requestUserFollowers = (userId) => {
+export const requestUserFollowers = (userId, params = { skip: 0 }) => {
     return {
         type: REQUEST_USER_FOLLOWERS,
         makeApiRequest: {
-            url: `/api/v1/user-followers/${userId}`,
+            url: `/api/v1/user-followers/${userId}?skip=${params.skip}`,
             method: 'GET',
             success: receiveUserFollowers,
         },
@@ -187,11 +187,11 @@ const receiveUserFollowing = (res) => {
     };
 };
 
-export const requestUserFollowing = (userId) => {
+export const requestUserFollowing = (userId, params = { skip: 0 }) => {
     return {
         type: REQUEST_USER_FOLLOWING,
         makeApiRequest: {
-            url: `/api/v1/user-following/${userId}`,
+            url: `/api/v1/user-following/${userId}?skip=${params.skip}`,
             method: 'GET',
             success: receiveUserFollowing,
         },

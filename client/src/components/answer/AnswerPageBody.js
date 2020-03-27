@@ -28,7 +28,14 @@ const useStyles = makeStyles((theme) => {
         topicLink: {
             textDecoration: 'none',
         },
-
+        menu: {
+            position: 'fixed',
+            flexDirection: 'column',
+        },
+        list: {
+            display: 'flex',
+            flexDirection: 'column',
+        },
         chip: {
             marginBottom: 10,
         },
@@ -143,7 +150,7 @@ function AnswerPageBody(props) {
     });
 
     const renderMenu = () => (
-        <List>
+        <List className={ classes.list }>
             <Chip
                 label="Answer Requests"
                 className={ classes.chip }
@@ -167,16 +174,17 @@ function AnswerPageBody(props) {
             <Grid
                 item
                 xs={ 2 }>
-                <Typography
-                    component="div"
-                    className={ classes.heading }>
-                    <Box
-                        fontWeight="fontWeightBold"
-                        m={ 1 }>
-                        Questions
-                    </Box>
-                </Typography>
-                { renderMenu() }
+                <div className={ classes.menu }>
+                    <Typography
+                        component="div">
+                        <Box
+                            fontWeight="fontWeightBold"
+                            m={ 1 }>
+                            Questions
+                        </Box>
+                    </Typography>
+                    { renderMenu() }
+                </div>
             </Grid>
             <Grid
                 item
