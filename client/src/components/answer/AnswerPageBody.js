@@ -38,6 +38,10 @@ const useStyles = makeStyles((theme) => {
         },
         chip: {
             marginBottom: 10,
+            width: 150,
+        },
+        chipLabel: {
+            padding: 10,
         },
     };
 });
@@ -152,14 +156,25 @@ function AnswerPageBody(props) {
     const renderMenu = () => (
         <List className={ classes.list }>
             <Chip
-                label="Answer Requests"
+                label={ <div className={ classes.chipLabel }>
+                    Specific answer
+                    { ' ' }
+                    <br />
+                    requests to you
+                        </div> }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'AnswerRequests' ? 'default' : 'outlined' }
                 onClick={ () => { getData('answerRequests'); setSelectedTab('AnswerRequests'); } }
                 clickable />
             <Chip
-                label="Questions For You"
+                label={ <div className={ classes.chipLabel }>
+                    Questions in your
+                    { ' ' }
+                    <br />
+                    { ' ' }
+                    area of expertise
+                        </div> }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Questions' ? 'default' : 'outlined' }
