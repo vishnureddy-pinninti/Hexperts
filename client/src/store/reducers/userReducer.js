@@ -166,7 +166,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 feed: {
-                    type: 'questions',
+                    type: 'Questions',
                     items: action.res.questions,
                 },
             };
@@ -174,7 +174,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 feed: {
-                    type: 'answers',
+                    type: 'Answers',
                     items: action.res.answers,
                 },
             };
@@ -182,7 +182,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 feed: {
-                    type: 'posts',
+                    type: 'Posts',
                     items: action.res.posts,
                 },
             };
@@ -190,7 +190,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 feed: {
-                    type: 'users',
+                    type: 'Followers',
                     items: action.res.followers,
                 },
             };
@@ -198,7 +198,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 feed: {
-                    type: 'users',
+                    type: 'Following',
                     items: action.res.following,
                 },
             };

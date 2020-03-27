@@ -146,6 +146,10 @@ function Home(props) {
 
     useEffect(() => {
         setItems([]);
+        setPagination({
+            index: 0,
+            hasMore: true,
+        });
         requestUserQuestions();
         requestTrendingQuestions();
     }, [
@@ -209,7 +213,7 @@ function Home(props) {
                             dataLength={ items.length }
                             next={ loadMore }
                             hasMore={ pagination.hasMore }
-                            loader={ <h4>Loading...</h4> }
+                            loader={ <h4 style={ { textAlign: 'center' } }>Loading...</h4> }
                             endMessage={
                                 <p style={ { textAlign: 'center' } }>
                                     <b>Yay! You have seen it all</b>
