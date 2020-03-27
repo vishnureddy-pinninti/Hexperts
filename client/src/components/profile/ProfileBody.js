@@ -120,16 +120,16 @@ function ProfileBody(props) {
                 requestUserAnswers(userProfile._id, { skip: pagination.index * 10 });
                 break;
             case 'Blogs':
-                requestUserBlogs(userProfile._id, { skip: pagination.index * 10 });
+                // requestUserBlogs(userProfile._id, { skip: pagination.index * 10 });
                 break;
             case 'Posts':
                 requestUserPosts(userProfile._id, { skip: pagination.index * 10 });
                 break;
             case 'Followers':
-                requestUserFollowers(userProfile._id, { skip: pagination.index * 10 });
+                // requestUserFollowers(userProfile._id, { skip: pagination.index * 10 });
                 break;
             case 'Following':
-                requestUserFollowing(userProfile._id, { skip: pagination.index * 10 });
+                // requestUserFollowing(userProfile._id, { skip: pagination.index * 10 });
                 break;
             default:
                 requestUserQuestions(userProfile._id, { skip: pagination.index * 10 });
@@ -169,6 +169,11 @@ function ProfileBody(props) {
 
     useEffect(() => {
         if (userProfile._id){
+            setItems([]);
+            setPagination({
+                index: 0,
+                hasMore: true,
+            });
             requestUserAnswers(userProfile._id);
         }
     }, [
@@ -296,11 +301,10 @@ function ProfileBody(props) {
                     next={ loadMore }
                     hasMore={ pagination.hasMore }
                     loader={ <h4 style={ { textAlign: 'center' } }>Loading...</h4> }
-                    endMessage={
-                        <p style={ { textAlign: 'center' } }>
+                    endMessage={ items.length !== 0
+                        && <p style={ { textAlign: 'center' } }>
                             <b>Yay! You have seen it all</b>
-                        </p>
-                    }>
+                           </p> }>
                     { selectedTab === 'Questions' && renderQuestions(items) }
                     { selectedTab === 'Answers' && renderAnswers(items) }
                     { selectedTab === 'Posts' && renderPosts(items) }
