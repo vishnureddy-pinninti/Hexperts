@@ -12,7 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import HelpIcon from '@material-ui/icons/Help';
-import { Avatar as MuiAvatar, Divider } from '@material-ui/core';
+import { Avatar as MuiAvatar, Divider, Tooltip } from '@material-ui/core';
 import LinkIcon from '@material-ui/icons/Link';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
@@ -154,15 +154,18 @@ function Search(props) {
             target="_blank"
             rel="noopener noreferrer"
             href={ item.options.link }>
-            <div className={ classes.searchItem }>
-                <MuiAvatar className={ classes.avatar }>
-                    <LinkIcon style={ { backgroundColor: '#0097ba' } } />
-                </MuiAvatar>
-                <div style={ { marginLeft: 10 } }>
-                    <span>External: </span>
-                    <span dangerouslySetInnerHTML={ { __html: item.text } } />
-                </div>
-            </div>
+            <ListItem>
+                <Tooltip title="External Source">
+                    <ListItemAvatar>
+                        <MuiAvatar className={ classes.avatar }>
+                            <LinkIcon />
+                        </MuiAvatar>
+                    </ListItemAvatar>
+                </Tooltip>
+                <ListItemText
+                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> }
+                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
+            </ListItem>
         </a>
     );
 

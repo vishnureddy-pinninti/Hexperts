@@ -10,7 +10,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import HelpIcon from '@material-ui/icons/Help';
-import { Avatar as MuiAvatar, Divider } from '@material-ui/core';
+import { Avatar as MuiAvatar, Divider, Tooltip } from '@material-ui/core';
 import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
 import Paper from '@material-ui/core/Paper';
 import { connect } from 'react-redux';
@@ -192,15 +192,18 @@ function SearchBar(props) {
             target="_blank"
             rel="noopener noreferrer"
             href={ item.options.link }>
-            <div className={ classes.searchItem }>
-                <MuiAvatar className={ classes.avatar }>
-                    <LinkIcon style={ { backgroundColor: '#0097ba' } } />
-                </MuiAvatar>
-                <div style={ { marginLeft: 10 } }>
-                    <span>External: </span>
-                    <span dangerouslySetInnerHTML={ { __html: item.text } } />
-                </div>
-            </div>
+            <ListItem>
+                <Tooltip title="External Source">
+                    <ListItemAvatar>
+                        <MuiAvatar className={ classes.avatar }>
+                            <LinkIcon />
+                        </MuiAvatar>
+                    </ListItemAvatar>
+                </Tooltip>
+                <ListItemText
+                    primary="External Source"
+                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+            </ListItem>
         </a>
     );
 
