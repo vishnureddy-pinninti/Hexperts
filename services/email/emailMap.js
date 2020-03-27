@@ -237,7 +237,7 @@ const emailMap = {
         };
     },
     newComment: async(data) => {
-        // Emails to answer author
+        // Emails to answer/post author
         const {
             _id,
             author,
@@ -247,10 +247,11 @@ const emailMap = {
             req,
         } = data;
 
-        const answerAuthor = await getAuthor(targetID, Answer);
-        const recipients = [ answerAuthor ];
+        const targetName = target === 'posts' ? 'post': 'answer';
+        const model = target === 'posts' ? Post: Answer;
 
-        const targetName = target === 'posts' ? 'post': 'answer'
+        const answerAuthor = await getAuthor(targetID, model);
+        const recipients = [ answerAuthor ];
 
         return {
             email: {
