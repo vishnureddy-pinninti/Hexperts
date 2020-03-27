@@ -65,18 +65,18 @@ function TopicList(props) {
     return (
         <div
             className={ classes.root }>
-            { renderTopics() }
             <Chip
-                // variant="contained"
                 avatar={
                     <Avatar>
                         <ExploreIcon />
                     </Avatar>
                 }
-                label="Discover More Topics"
+                label="Discover Topics"
                 onClick={ handleFollowTopicsModalOpen }
+                className={ classes.chip }
                 clickable
                 color="primary" />
+            { renderTopics() }
         </div>
     );
 }
