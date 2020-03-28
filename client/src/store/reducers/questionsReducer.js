@@ -9,9 +9,11 @@ import { RECEIVE_USER_QUESTIONS,
     RECEIVE_QUESTION_FOR_CACHE,
     RECEIVE_QUESTIONS_FOR_USER,
     RECEIVE_ANSWER_REQUESTS,
+    RECEIVE_EDITED_QUESTION,
+    REQUEST_RELATED_QUESTIONS,
     RECEIVE_QUESTION_SUGGESTIONS,
     TOGGLE_QUESTION_MODAL,
-    RECEIVE_EDITED_QUESTION } from '../actions/questions';
+ } from '../actions/questions';
 import { RECEIVE_ADDED_ANSWER } from '../actions/answer';
 
 const initialState = {
@@ -64,6 +66,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 trendingQuestions: action.questions,
+            };
+        case REQUEST_RELATED_QUESTIONS:
+            return {
+                ...state,
+                relatedQuestions: [],
             };
         case RECEIVE_RELATED_QUESTIONS:
             return {

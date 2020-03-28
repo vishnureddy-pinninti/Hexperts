@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
+import {
+    Grid,
+    Container,
+} from '@material-ui/core';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
 
 import PostCard from '../components/blog/PostCard';
@@ -10,11 +13,11 @@ import { requestPostById } from '../store/actions/blog';
 function Post(props) {
     const {
         match: {
-            params: { postId 
-},
+            params: { postId },
         },
-       requestPost,
-       post,
+        requestPost,
+        post,
+        pending,
     } = props;
 
     useEffect(() => {
@@ -29,6 +32,17 @@ function Post(props) {
             post={ post }
             hideHeaderHelperText />
     );
+
+    if (pending) {
+        return (
+            <div style={{ width: 700, margin: 'auto', marginTop: 100 }}>
+                <Skeleton
+                    variant="rect"
+                    style={ { marginTop: 70 } }
+                    height={ 400 } />
+            </div>
+        );
+    }
 
     return (
         <div className="App">
@@ -58,6 +72,7 @@ function Post(props) {
 const mapStateToProps = (state) => {
     return {
         post: state.blog.post,
+        pending: state.blog.pending,
     };
 };
 

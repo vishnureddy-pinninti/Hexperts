@@ -1,28 +1,35 @@
 import React, { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import Collapse from '@material-ui/core/Collapse';
-import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
-import TextField from '@material-ui/core/TextField';
 import { Field, reduxForm, reset } from 'redux-form';
 import { Editor } from 'react-draft-wysiwyg';
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { connect } from 'react-redux';
-import RssFeedSharpIcon from '@material-ui/icons/RssFeedSharp';
-import Box from '@material-ui/core/Box';
-import Avatar from '@material-ui/core/Avatar';
-import CardHeader from '@material-ui/core/CardHeader';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+    Card,
+    CardActions,
+    CardContent,
+    Button,
+    Collapse,
+    TextField,
+    Box,
+    Avatar,
+    CardHeader,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+} from '@material-ui/core';
+import {
+    EditTwoTone as EditTwoToneIcon,
+    RssFeedSharp as RssFeedSharpIcon,
+} from '@material-ui/icons';
 
-import { followBlog, addPostToBlog, addBlogPending } from '../../store/actions/blog';
+import {
+    followBlog,
+    addPostToBlog,
+    addBlogPending,
+} from '../../store/actions/blog';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -72,10 +79,8 @@ const validate = (values) => {
 const BlogHeader = (props) => {
     const classes = useStyles();
     const {
-        question,
         addPostToBlog,
         id,
-        description,
         pending,
         followBlog,
         blog,
@@ -109,10 +114,6 @@ const BlogHeader = (props) => {
 
     const onEditorStateChange = (value) => {
         setPost(value);
-    };
-
-    const setEditorReference = (ref) => {
-        if (ref) { ref.focus(); }
     };
 
     const [
@@ -169,6 +170,7 @@ const BlogHeader = (props) => {
                 textAlign: { inDropdown: true },
                 link: { inDropdown: true },
                 history: { inDropdown: true },
+                blockType: { inDropdown: false },
             } } />
     );
 
@@ -176,6 +178,7 @@ const BlogHeader = (props) => {
         <Dialog
             open={ open }
             scroll="paper"
+            maxWidth="md"
             onClose={ handleClose }>
             <form
                 id="post"

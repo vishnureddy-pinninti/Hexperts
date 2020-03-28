@@ -1,26 +1,34 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-
+import {
+    Card,
+    CardActions,
+    CardContent,
+    Button,
+    Typography,
+    Collapse,
+    Box,
+} from '@material-ui/core';
+import {
+    EditTwoTone as EditTwoToneIcon,
+    RssFeedSharp as RssFeedSharpIcon,
+} from '@material-ui/icons';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { connect } from 'react-redux';
-import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
-import RssFeedSharpIcon from '@material-ui/icons/RssFeedSharp';
-import Collapse from '@material-ui/core/Collapse';
 import { Link } from 'react-router-dom';
-import Box from '@material-ui/core/Box';
 import { formatDistance } from 'date-fns';
 
-import { addAnswerToQuestion, addAnswerPending } from '../../store/actions/answer';
-import { followQuestion, addQuestionToCache } from '../../store/actions/questions';
+import {
+    addAnswerToQuestion,
+    addAnswerPending,
+} from '../../store/actions/answer';
+import {
+    followQuestion,
+    addQuestionToCache,
+} from '../../store/actions/questions';
 
 
 const useStyles = makeStyles({
@@ -52,12 +60,9 @@ const QuestionCard = (props) => {
         question,
         addAnswerToQuestion,
         id,
-        description,
         pending,
         followQuestion,
         date,
-        followers,
-        modifiedQuestions,
         user,
         answersCount,
     } = props;
@@ -176,6 +181,7 @@ const QuestionCard = (props) => {
                         editorClassName={ classes.root }
                         onEditorStateChange={ onEditorStateChange }
                         toolbar={ {
+                            blockType: { inDropdown: false },
                             inline: { inDropdown: true },
                             list: { inDropdown: true },
                             textAlign: { inDropdown: true },
