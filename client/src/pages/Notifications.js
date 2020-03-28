@@ -27,9 +27,11 @@ import { requestNotifications, markNotificationRead } from '../store/actions/aut
 const useStyles = makeStyles((theme) => {
     return {
         root: {
-            backgroundColor: theme.palette.background.paper,
             padding: 0,
             textAlign: 'center',
+        },
+        listItem: {
+            backgroundColor: theme.palette.background.paper,
         },
         link: {
             textDecoration: 'none',
@@ -115,6 +117,7 @@ function Notifications(props) {
                 onClick={ () => { handleNotificationClick(notification); } }
                 key={ notification._id }
                 selected={ !notification.recipient.read }
+                className={ classes.listItem }
                 button>
                 <ListItemAvatar>
                     <Avatar>

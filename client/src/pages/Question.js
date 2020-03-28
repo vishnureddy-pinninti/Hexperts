@@ -3,9 +3,12 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Skeleton from '@material-ui/lab/Skeleton';
 import Questions from '../components/question/QuestionsList';
 import QuestionSection from '../components/question/QuestionSection';
 import Answer from '../components/answer/Card';
+import CardLoader from '../components/base/CardLoader';
+
 import EmptyResults from '../components/base/EmptyResults';
 
 import { requestQuestionById, requestRelatedQuestions } from '../store/actions/questions';
@@ -28,6 +31,16 @@ function Question(props) {
  modifiedQuestions,
  newAnswer,
     } = props;
+
+    const [
+        loading,
+        setLoading,
+    ] = React.useState(false);
+
+    const [
+        relatedQuestionsloading,
+        setRelatedQuestionsloading,
+    ] = React.useState(false);
 
     const [
         items,
@@ -69,6 +82,7 @@ function Question(props) {
                 hasMore: false,
             });
         }
+        setLoading(false);
     }, [ question ]);
 
     const [
@@ -89,7 +103,10 @@ function Question(props) {
             index: 0,
             hasMore: false,
         });
+        setLoading(true);
         requestQuestion(questionId);
+        setRelatedQuestionsloading(true);
+        requestRelatedQuestions(questionId);
     }, [
         questionId,
         requestQuestion,
@@ -99,12 +116,17 @@ function Question(props) {
         requestQuestion(questionId, { skip: (pagination.index * 10) + newAnswers.length });
     };
 
+    // useEffect(() => {
+    //     setRelatedQuestionsloading(true);
+    //     requestRelatedQuestions(questionId);
+    // }, [
+    //     questionId,
+    //     requestRelatedQuestions,
+    // ]);
+
     useEffect(() => {
-        requestRelatedQuestions(questionId);
-    }, [
-        questionId,
-        requestRelatedQuestions,
-    ]);
+        setRelatedQuestionsloading(false);
+    }, [ relatedQuestions ]);
 
 
     const renderAnswers = (items) => items.map((answer) => (
@@ -130,18 +152,26 @@ function Question(props) {
                     <Grid
                         item
                         xs={ 8 }>
-                        { question && <QuestionSection
-                            question={ question }
-                            id={ question._id }
-                            answers={ question.answers }
-                            topics={ question.topics } /> }
-                        { renderAnswers(newAnswers) }
-                        { items.length > 0
+                        { loading ? <Skeleton
+                            variant="rect"
+                            style={ { marginBottom: 10 } }
+                            height={ 200 } />
+                            : <QuestionSection
+                                question={ question }
+                                id={ question._id }
+                                answers={ question.answers }
+                                topics={ question.topics } /> }
+                        { loading ? <Skeleton
+                            variant="rect"
+                            height={ 700 } />
+                            : <>
+                                { renderAnswers(newAnswers) }
+                                { items.length > 0
                         && <InfiniteScroll
                             dataLength={ items.length }
                             next={ loadMore }
                             hasMore={ pagination.hasMore }
-                            loader={ <h4>Loading...</h4> }
+                            loader={ <CardLoader /> }
                             endMessage={
                                 <p style={ { textAlign: 'center' } }>
                                     <b>Yay! You have seen it all</b>
@@ -149,17 +179,21 @@ function Question(props) {
                             }>
                             { renderAnswers(items) }
                         </InfiniteScroll> }
-                        { (items.length === 0 && newAnswers.length === 0) && <EmptyResults
-                            title="No answer posted yet."
-                            description="Feel free to add an answer to this question."
-                            showBackButton={ false } /> }
+                                { (items.length === 0 && newAnswers.length === 0) && <EmptyResults
+                                    title="No answer posted yet."
+                                    description="Feel free to add an answer to this question."
+                                    showBackButton={ false } /> }
+                            </> }
                     </Grid>
                     <Grid
                         item
                         xs={ 4 }>
-                        <Questions
-                            title="Related Questions"
-                            questions={ relatedQuestions } />
+                        { relatedQuestionsloading ? <Skeleton
+                            variant="rect"
+                            height={ 500 } />
+                            : <Questions
+                                title="Related Questions"
+                                questions={ relatedQuestions } /> }
                     </Grid>
                 </Grid>
             </Container>
