@@ -11,6 +11,8 @@ import { RECEIVE_USER_QUESTIONS,
     RECEIVE_ANSWER_REQUESTS,
     RECEIVE_EDITED_QUESTION,
     REQUEST_RELATED_QUESTIONS,
+    RECEIVE_QUESTION_SUGGESTIONS,
+    TOGGLE_QUESTION_MODAL,
  } from '../actions/questions';
 import { RECEIVE_ADDED_ANSWER } from '../actions/answer';
 
@@ -22,6 +24,8 @@ const initialState = {
     trendingQuestions: [],
     modifiedQuestions: {},
     relatedQuestions: [],
+    questionSuggestions: {},
+    questionModal: false,
 };
 
 export default (state = initialState, action) => {
@@ -36,6 +40,17 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 questions: action.questions,
+            };
+        case TOGGLE_QUESTION_MODAL:
+            return {
+                ...state,
+                questionSuggestions: state.questionModal ? state.questionSuggestions : {},
+                questionModal: !state.questionModal,
+            };
+        case RECEIVE_QUESTION_SUGGESTIONS:
+            return {
+                ...state,
+                questionSuggestions: action.res,
             };
         case RECEIVE_QUESTIONS_FOR_USER:
             return {
@@ -98,16 +113,13 @@ export default (state = initialState, action) => {
                 },
             };
         case RECEIVE_QUESTION_BY_ID:
-            // modifiedQuestions = { ...state.modifiedQuestions };
-            id = action.question._id;
-            // if (modifiedQuestions[id]){
-            //     delete modifiedQuestions[id];
-            // }
             return {
                 ...state,
                 newQuestion: {},
                 question: action.question,
                 pending: false,
+                questionSuggestions: {},
+                questionModal: false,
                 modifiedQuestions: {},
             };
         case RECEIVE_FOLLOWED_QUESTION:

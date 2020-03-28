@@ -49,7 +49,7 @@ const Questions = (props) => {
                 to={ `/question/${question._id}` }
                 className={ classes.link }>
                 <Typography className={ classes.link }>
-                    { question.question }
+                    { question.question || question.value }
                 </Typography>
             </Link>
         </ListItem>
@@ -66,7 +66,7 @@ const Questions = (props) => {
                     { props.title }
                 </Box>
             </Typography>
-            <Divider />
+            { props.title && <Divider />}
             <List>
                 { renderQuestions() }
             </List>

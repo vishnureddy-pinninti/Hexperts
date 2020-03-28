@@ -24,6 +24,7 @@ import QuestionModal from './QuestionModal';
 import SearchBar from './SearchBar';
 import EditTopicsModal from '../topic/EditTopicsModal';
 import EditSuggestedWriters from '../question/EditSuggestedWriters';
+import { addUserQuestion, addQuestionPending, toggleQuestionModal } from '../../store/actions/questions';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -153,45 +154,13 @@ const TopBar = (props) => {
     };
 
     const [
-        skipTopics,
-        setSkipTopics,
-    ] = React.useState(false);
-
-    const [
-        skipExperts,
-        setSkipExperts,
-    ] = React.useState(false);
-
-    const [
-        openQModal,
-        setOpenQModal,
-    ] = React.useState(false);
-
-    const handleClickQuestionModalOpen = () => {
-        setSkipExperts(false);
-        setSkipTopics(false);
-        setOpenQModal(true);
-    };
-
-    const handleQuestionModalClose = () => {
-        setOpenQModal(false);
-    };
-
-    const [
         openEditTopicsModal,
         setOpenEditTopicsModal,
     ] = React.useState(false);
 
-    const handleEditTopicsModalOpen = () => {
-        setOpenEditTopicsModal(true);
-    };
 
     const handleEditTopicsModalClose = () => {
         setOpenEditTopicsModal(false);
-        setSkipTopics(true);
-    };
-    const handleEditTopicsModalSubmit = () => {
-        setSkipTopics(true);
     };
 
     const [
@@ -199,56 +168,76 @@ const TopBar = (props) => {
         setOpenEditSuggestedWritersModal,
     ] = React.useState(false);
 
-    const handleEditSuggestedWriterssModalOpen = () => {
-        setOpenEditSuggestedWritersModal(true);
-    };
-
     const handleEditSuggestedWritersModalClose = () => {
         setOpenEditSuggestedWritersModal(false);
-        setSkipExperts(true);
-    };
-
-    const handleEditSuggestedWritersModalSubmit = () => {
-        setSkipExperts(true);
     };
 
     const {
         pending,
-        location,
         history,
-        newQuestion,
         match,
-        answerPending,
         user,
         notificationCount,
+        addedQuestion,
+        addUserQuestion,
+        toggleQuestionModal,
+        questionModal,
     } = props;
 
     const { path } = match;
 
     useEffect(() => {
-        if (!pending && newQuestion && newQuestion._id) {
-            setOpenQModal(pending);
-            setOpenEditTopicsModal(true);
-            if (skipTopics && skipExperts){
-                setOpenEditSuggestedWritersModal(false);
-                setOpenEditTopicsModal(false);
-                history.push(`/question/${newQuestion._id}`);
-                return;
-            }
-            if (skipTopics){
-                setOpenEditTopicsModal(false);
-                setOpenEditSuggestedWritersModal(true);
-            }
+        if (!pending && addedQuestion && addedQuestion._id) {
+            history.push(`/question/${addedQuestion._id}`);
         }
     }, [
         history,
-        newQuestion,
-        newQuestion._id,
+        addedQuestion,
+        addedQuestion._id,
         pending,
-        skipTopics,
-        skipExperts,
     ]);
 
+
+    const handleClickQuestionModalOpen = () => {
+        toggleQuestionModal();
+    };
+
+    const handleQuestionModalClose = () => {
+        toggleQuestionModal();
+    };
+
+    const [
+        newQuestion,
+        setNewQuestion,
+    ] = React.useState({});
+
+    const handleOnAddQuestion = (question, questionSuggestions) => {
+        toggleQuestionModal();
+        setNewQuestion({
+            question,
+            questionSuggestions,
+        });
+        setOpenEditTopicsModal(true);
+    };
+
+    const handleEditTopicsModalSubmit = (selectedTopics, topics) => {
+        setNewQuestion({
+            ...newQuestion,
+            selectedTopics,
+            topics,
+        });
+        setOpenEditTopicsModal(false);
+        setOpenEditSuggestedWritersModal(true);
+    };
+
+    const handleEditSuggestedWritersModalSubmit = (suggestedExperts) => {
+        addUserQuestion({
+            question: newQuestion.question,
+            topics: newQuestion.topics,
+            suggestedExperts,
+        });
+        setOpenEditSuggestedWritersModal(false);
+    };
 
     const handleProfileClick = () => {
         history.push(`/profile/${user._id}`);
@@ -348,8 +337,9 @@ const TopBar = (props) => {
 
     const renderQuestionModal = (
         <QuestionModal
-            open={ openQModal }
-            handleClose={ handleQuestionModalClose } />
+            open={ questionModal }
+            handleClose={ handleQuestionModalClose }
+            handleDone={ handleOnAddQuestion } />
     );
 
     return (
@@ -470,18 +460,16 @@ const TopBar = (props) => {
             { newQuestion.question && <EditTopicsModal
                 open={ openEditTopicsModal }
                 question={ newQuestion.question }
-                topics={ newQuestion.topics }
+                topics={ newQuestion.questionSuggestions.topicSuggestions }
                 questionID={ newQuestion._id }
-                cancelText="Skip"
                 disableBackdropClick
                 handleDone={ handleEditTopicsModalSubmit }
                 handleClose={ handleEditTopicsModalClose } /> }
             { newQuestion.question && <EditSuggestedWriters
                 open={ openEditSuggestedWritersModal }
                 question={ newQuestion.question }
-                topics={ newQuestion.topics }
+                topics={ newQuestion.selectedTopics }
                 questionID={ newQuestion._id }
-                cancelText="Skip"
                 disableBackdropClick
                 handleDone={ handleEditSuggestedWritersModalSubmit }
                 handleClose={ handleEditSuggestedWritersModalClose } /> }
@@ -501,13 +489,21 @@ const mapStateToProps = (state) => {
         user: state.user.user,
         pending: state.questions.pending,
         answerPending: state.answer.pending,
-        newQuestion: state.questions.newQuestion,
+        addedQuestion: state.questions.newQuestion,
         notificationCount: state.user.notificationCount,
+        questionModal: state.questions.questionModal,
     };
 };
 
-const mapDispatchToProps = () => {
+const mapDispatchToProps = (dispatch) => {
     return {
+        addUserQuestion: (body, callback) => {
+            dispatch(addQuestionPending());
+            dispatch(addUserQuestion(body, callback));
+        },
+        toggleQuestionModal: () => {
+            dispatch(toggleQuestionModal());
+        },
     };
 };
 

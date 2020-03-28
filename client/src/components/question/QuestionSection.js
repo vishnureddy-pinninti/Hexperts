@@ -58,6 +58,7 @@ const QuestionSection = (props) => {
         user,
         followers,
         questionPending,
+        askedExperts,
     } = props;
 
     const [
@@ -220,6 +221,7 @@ const QuestionSection = (props) => {
                 question={ question.question }
                 topics={ topics }
                 questionID={ id }
+                askedExperts={ askedExperts }
                 handleClose={ handleEditSuggestedWritersModalClose } />
         </Card>
     );
@@ -236,6 +238,7 @@ const mapStateToProps = (state) => {
         user: state.user.user,
         following: state.questions.question.following,
         followers: state.questions.question.followers,
+        askedExperts: state.questions.question.suggestedExperts || [],
     };
 };
 
