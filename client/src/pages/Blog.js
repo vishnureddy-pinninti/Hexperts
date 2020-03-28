@@ -3,10 +3,12 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Skeleton from '@material-ui/lab/Skeleton';
 import BlogsList from '../components/blog/BlogsList';
 import Header from '../components/blog/BlogHeader';
 import FollowBlogsModal from '../components/blog/FollowBlogsModal';
 import EmptyResults from '../components/base/EmptyResults';
+import CardLoader from '../components/base/CardLoader';
 
 import PostCard from '../components/blog/PostCard';
 import { requestBlogById } from '../store/actions/blog';
@@ -31,6 +33,10 @@ function Topic(props) {
         setOpenFollowTopicsModal,
     ] = React.useState(false);
 
+    const [
+        loading,
+        setLoading,
+    ] = React.useState(false);
 
     useEffect(() => {
         if (!pending) {
@@ -87,6 +93,7 @@ function Topic(props) {
                 hasMore: false,
             });
         }
+        setLoading(false);
     }, [ blog ]);
 
     const [
@@ -106,6 +113,7 @@ function Topic(props) {
             index: 0,
             hasMore: false,
         });
+        setLoading(true);
         requestBlog(blogId);
     }, [
         requestBlog,
@@ -151,27 +159,33 @@ function Topic(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        <Header
-                            blog={ blog }
-                            id={ blogId } />
-                        { renderPosts(newPosts) }
-                        { items.length > 0
+                        { loading ? <Skeleton
+                            variant="rect"
+                            height={ 200 } />
+                            : <Header
+                                blog={ blog }
+                                id={ blogId } /> }
+                        { loading ? <CardLoader height={ 400 } />
+                            : <>
+                                { renderPosts(newPosts) }
+                                { items.length > 0
                         && <InfiniteScroll
                             dataLength={ items.length }
                             next={ loadMore }
                             hasMore={ pagination.hasMore }
-                            loader={ <h4>Loading...</h4> }
+                            loader={ <CardLoader height={ 400 } /> }
                             endMessage={
                                 <p style={ { textAlign: 'center' } }>
                                     <b>Yay! You have seen it all</b>
                                 </p>
                             }>
                             { renderPosts(items) }
-                        </InfiniteScroll> }
-                        { (items.length === 0 && newPosts.length === 0) && <EmptyResults
-                            title="No blog posts yet."
-                            description="Feel free to contribute to this blog and earn points."
-                            showBackButton={ false } /> }
+                           </InfiniteScroll> }
+                                { (items.length === 0 && newPosts.length === 0) && <EmptyResults
+                                    title="No blog posts yet."
+                                    description="Feel free to contribute to this blog and earn points."
+                                    showBackButton={ false } /> }
+                              </> }
                     </Grid>
                     <Grid
                         item

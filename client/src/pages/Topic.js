@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Skeleton from '@material-ui/lab/Skeleton';
 import Topics from '../components/topic/TopicsList';
 import TopicSection from '../components/topic/TopicSection';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
@@ -32,6 +33,10 @@ function Topic(props) {
         setOpenFollowTopicsModal,
     ] = React.useState(false);
 
+    const [
+        loading,
+        setLoading,
+    ] = React.useState(false);
 
     useEffect(() => {
         if (!pending) {
@@ -87,10 +92,12 @@ function Topic(props) {
                 hasMore: false,
             });
         }
+        setLoading(false);
     }, [ topic ]);
 
     useEffect(() => {
         setItems([]);
+        setLoading(true);
         setPagination({
             index: 0,
             hasMore: false,
@@ -152,10 +159,15 @@ function Topic(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        <TopicSection
-                            topic={ topic }
-                            id={ topicID } />
-                        { items.length > 0
+                        { loading ? <Skeleton
+                            variant="rect"
+                            height={ 200 } />
+                            : <TopicSection
+                                topic={ topic }
+                                id={ topicID } /> }
+                        { loading ? <CardLoader height={ 200 } />
+                            : <>
+                                { items.length > 0
                         && <InfiniteScroll
                             dataLength={ items.length }
                             next={ loadMore }
@@ -168,9 +180,10 @@ function Topic(props) {
                             }>
                             { renderQuestions(items) }
                         </InfiniteScroll> }
-                        { items.length === 0 && !pagination.hasMore && <EmptyResults
-                            title="No questions posted yet."
-                            description="Feel free to ask a question to this topic." /> }
+                                { items.length === 0 && !pagination.hasMore && <EmptyResults
+                                    title="No questions posted yet."
+                                    description="Feel free to ask a question to this topic." /> }
+                            </> }
                     </Grid>
                     <Grid
                         item

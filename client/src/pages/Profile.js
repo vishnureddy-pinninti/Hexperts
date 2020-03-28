@@ -12,6 +12,8 @@ import List from '@material-ui/core/List';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Skeleton from '@material-ui/lab/Skeleton';
+
 import ProfileHeader from '../components/profile/ProfileHeader';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
@@ -65,14 +67,25 @@ function Profile(props) {
         user,
     } = props;
 
+    const [
+        loading,
+        setLoading,
+    ] = React.useState(false);
+
     const { expertIn, interests: followedTopics } = userProfile;
 
     useEffect(() => {
+        setLoading(true);
         requestUser(userId);
     }, [
         requestUser,
         userId,
     ]);
+
+    useEffect(() => {
+        if (userProfile._id) { setLoading(false); }
+    }, [ userProfile ]);
+
 
     const isOwner = user._id === userProfile._id;
 
@@ -150,9 +163,13 @@ function Profile(props) {
                 }
                 labelPlacement="start"
                 label={ title } />
-            <List className={ classes.list }>
-                { renderTopics(items) }
-            </List>
+            { loading ? <Skeleton
+                variant="rect"
+                style={ { marginBottom: 10 } }
+                height={ 300 } />
+                : <List className={ classes.list }>
+                    { renderTopics(items) }
+                  </List> }
         </>
     );
 
@@ -167,15 +184,22 @@ function Profile(props) {
                     <Grid
                         item
                         xs={ 8 }>
-                        <ProfileHeader
-                            name={ userProfile.name }
-                            mail={ userProfile.email }
-                            isOwner={ isOwner }
-                            jobTitle={ userProfile.jobTitle }
-                            followers={ userProfile.followers }
-                            id={ userProfile._id }
-                            onLogout={ props.onLogout } />
-                        <ProfileBody />
+                        { loading ? <Skeleton
+                            variant="rect"
+                            height={ 200 } />
+                            : <ProfileHeader
+                                name={ userProfile.name }
+                                mail={ userProfile.email }
+                                isOwner={ isOwner }
+                                jobTitle={ userProfile.jobTitle }
+                                followers={ userProfile.followers }
+                                id={ userProfile._id }
+                                onLogout={ props.onLogout } /> }
+                        { loading ? <Skeleton
+                            variant="rect"
+                            style={ { marginTop: 20 } }
+                            height={ 500 } />
+                            : <ProfileBody /> }
                     </Grid>
                     <Grid
                         item
