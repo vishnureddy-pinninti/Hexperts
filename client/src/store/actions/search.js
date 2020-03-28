@@ -22,24 +22,30 @@ export const requestSearch = (body, params = { skip: 0 }) => {
     };
 };
 
-const receiveAdvancedSearchResults = (res) => {
+const receiveAdvancedSearchResults = (res, skip, limit) => {
     return {
         type: RECEIVE_ADVANCED_SEARCH,
         res,
+        skip,
+        limit,
     };
 };
 
-export const requestAdvancedSearch = (body, params = {
-    skip: 0,
-    limit: 10,
-}) => {
+export const requestAdvancedSearch = (body, params) => {
+    const {
+        skip,
+        limit = 10,
+    } = params;
+
     return {
         type: REQUEST_ADVANCED_SEARCH,
+        skip,
+        limit,
         makeApiRequest: {
-            url: `/api/v1/search?skip=${params.skip}&limit=${params.limit || 10}`,
+            url: `/api/v1/search?skip=${skip}&limit=${limit}`,
             method: 'POST',
             body,
-            success: receiveAdvancedSearchResults,
+            success: (res) => receiveAdvancedSearchResults(res, skip, limit),
         },
     };
 };

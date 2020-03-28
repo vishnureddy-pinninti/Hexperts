@@ -23,9 +23,7 @@ module.exports = (app) => {
         const { _id } = req.user;
 
         try {
-            const { results: searchResults } = await search(question, [ 'topics' ], {}, false);
-            const searchTopics = searchResults.map((result) => result._id);
-            const chosenTopics = await Topic.find({ _id: { $in: searchTopics.map((topic) => mongoose.Types.ObjectId(topic)) } });
+            const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
 
             const newQuestion = new Question({
                 author: _id,
@@ -55,6 +53,34 @@ module.exports = (app) => {
             res
                 .status(201)
                 .json(responseObject);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
+    app.post('/api/v1/question-suggestions', loginMiddleware, async(req, res) => {
+        const {
+            question,
+        } = req.body;
+
+        try {
+            const { results: topicSuggestions } = await search(question, [ 'topics' ], {}, false);
+            const { results: questionSuggestions } = await search(question, [ 'questions' ], {}, false);
+
+            res
+                .status(200)
+                .json({
+                    question,
+                    questionSuggestions: questionSuggestions.map(q => ({ value: q.options.question, _id: q._id })),
+                    topicSuggestions: topicSuggestions.map(t => ({ value: t.options.topic, _id: t._id })),
+                });
         }
         catch (e) {
             res

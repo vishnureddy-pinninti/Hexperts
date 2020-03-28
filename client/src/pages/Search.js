@@ -1,25 +1,14 @@
 import React, { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import HelpIcon from '@material-ui/icons/Help';
-import { Avatar as MuiAvatar, Divider, Tooltip } from '@material-ui/core';
-import LinkIcon from '@material-ui/icons/Link';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
+import { makeStyles } from '@material-ui/core/styles';
+import { Grid, Container, Typography, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider, Tooltip} from '@material-ui/core';
+import { Help as HelpIcon, Link as LinkIcon, QuestionAnswerOutlined as  QuestionAnswerOutlinedIcon} from '@material-ui/icons';
+
 import EmptyResults from '../components/base/EmptyResults';
-
+import CardLoader from '../components/base/CardLoader';
 import { requestAdvancedSearch } from '../store/actions/search';
-
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -33,21 +22,34 @@ const useStyles = makeStyles((theme) => {
         },
         heading: {
             marginBottom: 10,
+            position: 'sticky',
+            top: 60,
+            paddingTop: 10,
+            paddingBottom: 10,
+            zIndex: 1,
+            backgroundColor: '#f0f2f2',
         },
     };
 });
 
-
-function Search(props) {
+const Search = props => {
     const {
         match: {
-            params: { query 
-},
+            params: { query },
         },
-        requestSearch,
+        paginationHasMore,
+        paginationIndex,
         results,
-        user,
+        requestSearch,
+        totalCount,
     } = props;
+
+    useEffect(() => {
+        requestSearch({ text: query }, {
+            skip: 0,
+            limit: 20,
+        });
+    }, [ query ]);
 
     const classes = useStyles();
 
@@ -68,6 +70,7 @@ function Search(props) {
             </ListItem>
         </Link>
     );
+    
     const blog = (item) => (
         <Link
             className={ classes.link }
@@ -85,6 +88,7 @@ function Search(props) {
             </ListItem>
         </Link>
     );
+    
     const question = (item) => (
         <Link
             className={ classes.link }
@@ -101,6 +105,7 @@ function Search(props) {
             </ListItem>
         </Link>
     );
+    
     const answer = (item) => (
         <Link
             className={ classes.link }
@@ -117,6 +122,7 @@ function Search(props) {
             </ListItem>
         </Link>
     );
+    
     const post = (item) => (
         <Link
             className={ classes.link }
@@ -131,6 +137,7 @@ function Search(props) {
             </ListItem>
         </Link>
     );
+
     const profile = (item) => (
         <Link
             className={ classes.link }
@@ -157,9 +164,9 @@ function Search(props) {
             <ListItem>
                 <Tooltip title="External Source">
                     <ListItemAvatar>
-                        <MuiAvatar className={ classes.avatar }>
+                        <Avatar className={ classes.avatar }>
                             <LinkIcon />
-                        </MuiAvatar>
+                        </Avatar>
                     </ListItemAvatar>
                 </Tooltip>
                 <ListItemText
@@ -190,53 +197,9 @@ function Search(props) {
         }
     };
 
-    const [
-        items,
-        setItems,
-    ] = React.useState([]);
-
-    const [
-        pagination,
-        setPagination,
-    ] = React.useState({
-        index: 1,
-        hasMore: true,
-    });
-
-    useEffect(() => {
-        if (results.length) {
-            setItems([
-                ...items,
-                ...results,
-            ]);
-            setPagination({
-                index: pagination.index + 1,
-                hasMore: true,
-            });
-        }
-        else {
-            setPagination({
-                ...pagination,
-                hasMore: false,
-            });
-        }
-    }, [ results ]);
-
-    useEffect(() => {
-        setItems([]);
-        requestSearch({ text: query }, {
-            skip: 0,
-            limit: 20,
-        });
-    }, [
-        requestSearch,
-        query,
-    ]);
-
     const loadMore = () => {
-        requestSearch({ text: query }, { skip: pagination.index * 10 });
+        requestSearch({ text: query }, { skip: paginationIndex * 10 });
     };
-
 
     const renderSearchResults = (items) => items.map((item) => (
         <>
@@ -244,7 +207,6 @@ function Search(props) {
             <Divider />
         </>
     ));
-
 
     return (
         <div className="App">
@@ -260,31 +222,34 @@ function Search(props) {
                         <Typography
                             component="div"
                             className={ classes.heading }>
+                            Showing 
+                            { ' ' }
+                            <b>
+                                { totalCount }
+                            </b>
+                            { ' ' }
                             Results for
                             { ' ' }
                             <b>
                                 { query }
                             </b>
                         </Typography>
-                        <Divider />
-                        <List className={ classes.root }>
-                            <InfiniteScroll
-                                dataLength={ items.length }
-                                next={ loadMore }
-                                hasMore={ pagination.hasMore }
-                                loader={ <h4>Loading...</h4> }
-                                endMessage={ items.length === 0
-                                    && <p style={ { textAlign: 'center' } }>
-                                        <b>Yay! You have seen it all</b>
-                                    </p> }>
-                                { renderSearchResults(items) }
-                            </InfiniteScroll>
-                            { items.length === 0
-            && <EmptyResults
-                showBackButton={ false }
-                title=" Oops! No results matching with your criteria."
-                description="Try different or less specific keywords and reset your filters." /> }
-                        </List>
+                        { totalCount === null ? <CardLoader height={ 50 } />:
+                            <List className={ classes.root }>
+                                <InfiniteScroll
+                                    dataLength={ results.length }
+                                    next={ loadMore }
+                                    hasMore={ paginationHasMore }
+                                    loader={ <CardLoader height={ 50 } /> }>
+                                    { renderSearchResults(results) }
+                                </InfiniteScroll>
+                                { results.length === 0
+                                    && <EmptyResults
+                                        showBackButton={ false }
+                                        title=" Oops! No results matching with your criteria."
+                                        description="Try different or less specific keywords and reset your filters." /> }
+                            </List>
+                        }
                     </Grid>
                 </Grid>
             </Container>
@@ -295,6 +260,10 @@ function Search(props) {
 const mapStateToProps = (state) => {
     return {
         results: state.search.advancedResults,
+        totalCount: state.search.totalCount,
+        paginationIndex: state.search.paginationIndex,
+        paginationHasMore: state.search.paginationHasMore,
+        newResults: state.search.newResults,
     };
 };
 
