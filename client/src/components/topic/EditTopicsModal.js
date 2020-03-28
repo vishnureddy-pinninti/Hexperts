@@ -144,9 +144,11 @@ const EditTopicsModal = (props) => {
     const addTopicsToQuestion = () => {
         const { handleDone } = props;
         if (handleDone){
-            handleDone();
+            handleDone(selectedTopics, checked);
         }
-        editQuestion(questionID, { topics: checked });
+        else {
+            editQuestion(questionID, { topics: checked });
+        }
     };
 
     const renderSelectedTopics = () => (
@@ -170,7 +172,7 @@ const EditTopicsModal = (props) => {
                         </ListItemIcon>
                         <ListItemText
                             id={ labelId }
-                            primary={ value.topic } />
+                            primary={ value.topic || value.value } />
                     </ListItem>
                 );
             }) }

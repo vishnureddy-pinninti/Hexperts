@@ -82,6 +82,7 @@ const BlogHeader = (props) => {
         followers,
         handleSubmit,
         user,
+        resetPost,
     } = props;
 
     const handleFollowClick = () => {
@@ -114,15 +115,23 @@ const BlogHeader = (props) => {
         if (ref) { ref.focus(); }
     };
 
+    const [
+        disableSubmit,
+        setDisableSubmit,
+    ] = React.useState(false);
+
     useEffect(() => {
         if (!pending) {
+            setDisableSubmit(false);
             setOpen(pending);
             setPost(null);
+            resetPost();
         }
     }, [ pending ]);
 
     const addPost = (values) => {
         const { title } = values;
+        setDisableSubmit(true);
         addPostToBlog(
             {
                 description: draftToHtml(convertToRaw(post.getCurrentContent())),
@@ -207,6 +216,7 @@ const BlogHeader = (props) => {
                         size="small"
                         variant="contained"
                         type="submit"
+                        disabled={ disableSubmit }
                         color="primary">
                         Submit
                     </Button>
@@ -279,6 +289,8 @@ const mapDispatchToProps = (dispatch) => {
         addPostToBlog: (body) => {
             dispatch(addBlogPending());
             dispatch(addPostToBlog(body));
+        },
+        resetPost: () => {
             dispatch(reset('post'));
         },
     };
