@@ -1,28 +1,44 @@
 import React, { useEffect } from 'react';
-import { withStyles, useTheme, makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import TextField from '@material-ui/core/TextField';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
-import IconButton from '@material-ui/core/IconButton';
-import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import CheckCircleOutlinedIcon from '@material-ui/icons/CheckCircleOutlined';
-import Checkbox from '@material-ui/core/Checkbox';
-import { addNewTopic, requestTopics } from '../../store/actions/topic';
+import {
+    withStyles,
+    useTheme,
+    makeStyles,
+} from '@material-ui/core/styles';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    useMediaQuery,
+    TextField,
+    IconButton,
+    GridList,
+    GridListTile,
+    GridListTileBar,
+    Checkbox,
+} from '@material-ui/core';
+import {
+    CheckCircleRounded as CheckCircleRoundedIcon,
+    CheckCircleOutlined as CheckCircleOutlinedIcon,
+} from '@material-ui/icons';
+
+import {
+    addNewTopic,
+    requestTopics,
+} from '../../store/actions/topic';
 import { editQuestion } from '../../store/actions/questions';
-import { addUserPreferences, addPreferencesPending } from '../../store/actions/auth';
+import {
+    addUserPreferences,
+    addPreferencesPending,
+    maangeUserPreferences,
+} from '../../store/actions/auth';
 
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(() => {
     return {
         root: {
             display: 'flex',
@@ -84,30 +100,19 @@ const FollowTopicsModal = (props) => {
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const {
-        addNewTopic,
-        handleSubmit,
-        question,
-        questionID,
         topics,
         followedTopics,
         requestTopics,
-        editQuestion,
-        addUserPreferences,
+        user,
+        maangeUserPreferences,
         open,
+        handleFollowTopicsModalClose,
     } = props;
 
 
     useEffect(() => {
         requestTopics();
     }, [ requestTopics ]);
-
-    for (let i = topics.length - 1; i >= 0; i--){
-        for (let j = 0; j < followedTopics.length; j++){
-            if (topics[i] && (topics[i]._id === followedTopics[j]._id)){
-                topics.splice(i, 1);
-            }
-        }
-    }
 
     const [
         filteredTopics,
@@ -119,7 +124,7 @@ const FollowTopicsModal = (props) => {
     }, [ topics ]);
 
     const filterTopics = (text) => {
-        const filtered = topics.filter((topic) => topic.topic.toLowerCase().startsWith(text.toLowerCase()));
+        const filtered = topics.filter((topic) => topic.topic.toLowerCase().indexOf(text.toLowerCase()) > -1);
         setFilteredTopics(filtered);
     };
 
@@ -130,6 +135,7 @@ const FollowTopicsModal = (props) => {
             label="Search Topics"
             type="text"
             className={ classes.textfield }
+            autoComplete="off"
             onChange={ (event) => filterTopics(event.target.value) }
             fullWidth />
     );
@@ -138,6 +144,10 @@ const FollowTopicsModal = (props) => {
         checked,
         setChecked,
     ] = React.useState([]);
+
+    useEffect(() => {
+        setChecked(followedTopics.map(t => t._id));
+    }, [ followedTopics ]);
 
     const [
         selectedTopics,
@@ -165,8 +175,7 @@ const FollowTopicsModal = (props) => {
     };
 
     const addTopicsToInterests = () => {
-        console.log(checked);
-        addUserPreferences({ interests: checked });
+        maangeUserPreferences({ expertIn: user.expertIn.map(t => t._id), interests: checked });
     };
 
     const renderTopics = () => (
@@ -205,8 +214,8 @@ const FollowTopicsModal = (props) => {
         <Dialog
             className={ classes.root }
             fullScreen={ fullScreen }
-            open={ props.open }
-            onClose={ props.handleFollowTopicsModalClose }
+            open={ open }
+            onClose={ handleFollowTopicsModalClose }
             aria-labelledby="responsive-dialog-title">
             <DialogTitle>
                 Topics
@@ -221,7 +230,7 @@ const FollowTopicsModal = (props) => {
             <DialogActions>
                 <Button
                     autoFocus
-                    onClick={ props.handleFollowTopicsModalClose }
+                    onClick={ handleFollowTopicsModalClose }
                     color="primary">
                     Cancel
                 </Button>
@@ -264,6 +273,10 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(addPreferencesPending());
             dispatch(addUserPreferences(body));
         },
+        maangeUserPreferences: (body) => {
+            dispatch(addPreferencesPending());
+            dispatch(maangeUserPreferences(body));
+        }
     };
 };
 

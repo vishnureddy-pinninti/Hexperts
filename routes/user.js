@@ -563,6 +563,55 @@ module.exports = (app) => {
         }
     });
 
+    app.post('/api/v1/user-preferences.manage', loginMiddleware, async(req, res) => {
+        const {
+            interests = [],
+            expertIn = [],
+        } = req.body;
+
+        const {
+            _id,
+        } = req.user;
+
+        try {
+            const user = await User.findById(_id);
+            const interestedTopics = await Topic.find({ _id: { $in: interests } });
+            const expertInTopics = await Topic.find({ _id: { $in: expertIn } });
+
+            if (user) {
+                user.interests = interests;
+                user.expertIn = expertIn;
+
+                await user.save();
+
+                res
+                    .status(200)
+                    .json({
+                        _id,
+                        interests: interestedTopics,
+                        expertIn: expertInTopics,
+                    });
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: USER_NOT_FOUND,
+                    });
+            }
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
     app.delete('/api/v1/user-expertise-remove/:topicID', loginMiddleware, async(req, res) => {
         const {
             topicID,
