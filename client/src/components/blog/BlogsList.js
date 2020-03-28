@@ -1,12 +1,13 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import ExploreIcon from '@material-ui/icons/Explore';
-import Avatar from '@material-ui/core/Avatar';
-import { green } from '@material-ui/core/colors';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Chip from '@material-ui/core/Chip';
-
+import { makeStyles } from '@material-ui/core/styles';
+import ExploreIcon from '@material-ui/icons/Explore';
+import {
+    Avatar,
+    Chip,
+} from '@material-ui/core';
+import { green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -65,17 +66,18 @@ function BlogsList(props) {
     return (
         <div
             className={ classes.root }>
-            { renderTopics() }
             <Chip
                 avatar={
                     <Avatar>
                         <ExploreIcon />
                     </Avatar>
                 }
-                label="Discover More Blogs"
+                label="Discover Blogs"
                 onClick={ handleFollowTopicsModalOpen }
+                style={{ marginBottom: 10 }}
                 clickable
                 color="primary" />
+            { renderTopics() }
         </div>
     );
 }

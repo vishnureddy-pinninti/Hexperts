@@ -1,20 +1,22 @@
 import React, { useEffect } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
+import {
+    Grid,
+    Container,
+} from '@material-ui/core';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
 
 import AnswerCard from '../components/answer/Card';
 import { requestAnswerById } from '../store/actions/answer';
 
-
 function Answer(props) {
     const {
         match: {
-            params: { answerId 
-},
+            params: { answerId },
         },
-       requestAnswer,
-       answer,
+        requestAnswer,
+        answer,
+        pending,
     } = props;
 
     useEffect(() => {
@@ -37,6 +39,17 @@ function Answer(props) {
             hideHelperText
             date={ answer.postedDate } />
     );
+
+    if (pending) {
+        return (
+            <div style={{ width: 700, margin: 'auto', marginTop: 100 }}>
+                <Skeleton
+                    variant="rect"
+                    style={ { marginTop: 70 } }
+                    height={ 400 } />
+            </div>
+        );
+    }
 
 
     return (
@@ -67,6 +80,7 @@ function Answer(props) {
 const mapStateToProps = (state) => {
     return {
         answer: state.answer.answer,
+        pending: state.answer.pending,
     };
 };
 

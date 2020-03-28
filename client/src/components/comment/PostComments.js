@@ -14,8 +14,14 @@ import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { Field, reduxForm, reset } from 'redux-form';
 import { formatDistanceToNow } from 'date-fns';
+
+import CardLoader from '../base/CardLoader';
 import Avatar from '../base/Avatar';
-import { addPostToCache, commentPost, requestCommentsForPost } from '../../store/actions/blog';
+import {
+    addPostToCache,
+    commentPost,
+    requestCommentsForPost,
+} from '../../store/actions/blog';
 
 const validate = (values) => {
     const errors = {};
@@ -75,6 +81,7 @@ const Comments = (props) => {
         modifiedPosts,
         requestCommentsForPost,
         history,
+        pending,
     } = props;
 
     let comments = [];
@@ -190,7 +197,7 @@ const Comments = (props) => {
                     </ListItemText>
                 </ListItem>
             </form>
-            { renderComments(comments) }
+            { pending ? <CardLoader height={ 50 } /> : renderComments(comments) }
         </List>
     );
 };
@@ -203,6 +210,7 @@ const mapStateToProps = (state) => {
         user: state.user.user,
         comments: state.blog.comments,
         modifiedPosts: state.blog.modifiedPosts,
+        pending: state.blog.pending,
     };
 };
 

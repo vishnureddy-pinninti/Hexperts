@@ -1,28 +1,43 @@
 import React, { useEffect } from 'react';
-import { withStyles, useTheme, makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import TextField from '@material-ui/core/TextField';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
-import IconButton from '@material-ui/core/IconButton';
-import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import CheckCircleOutlinedIcon from '@material-ui/icons/CheckCircleOutlined';
-import Checkbox from '@material-ui/core/Checkbox';
-import { addNewBlog, requestBlogs } from '../../store/actions/blog';
+import {
+    withStyles,
+    useTheme,
+    makeStyles,
+} from '@material-ui/core/styles';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    useMediaQuery,
+    TextField,
+    IconButton,
+    GridList,
+    GridListTile,
+    GridListTileBar,
+    Checkbox
+} from '@material-ui/core';
+import {
+    CheckCircleRounded as CheckCircleRoundedIcon,
+    CheckCircleOutlined as CheckCircleOutlinedIcon,
+} from '@material-ui/icons';
+
+import {
+    addNewBlog,
+    requestBlogs,
+} from '../../store/actions/blog';
 import { editQuestion } from '../../store/actions/questions';
-import { addUserPreferences, addPreferencesPending } from '../../store/actions/auth';
+import {
+    addUserPreferences,
+    addPreferencesPending,
+} from '../../store/actions/auth';
 
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(() => {
     return {
         root: {
             display: 'flex',
@@ -84,16 +99,10 @@ const FollowBlogsModal = (props) => {
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const {
-        addNewBlog,
-        handleSubmit,
-        question,
-        questionID,
         blogs,
         followedBlogs,
         requestBlogs,
-        editQuestion,
         addUserPreferences,
-        open,
     } = props;
 
 
@@ -119,12 +128,13 @@ const FollowBlogsModal = (props) => {
     }, [ blogs ]);
 
     const filterTopics = (text) => {
-        const filtered = blogs.filter((blog) => blog.name.toLowerCase().startsWith(text.toLowerCase()));
+        const filtered = blogs.filter((blog) => blog.name.toLowerCase().indexOf(text.toLowerCase()) > -1);
         setFilteredBlogs(filtered);
     };
 
     const renderTextField = () => (
         <TextField
+            autoComplete="off"
             margin="dense"
             id="name"
             label="Search Blogs"

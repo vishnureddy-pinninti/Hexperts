@@ -1,18 +1,21 @@
 import React, { useEffect } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography,
     Card,
     CardContent,
-    CardHeader } from '@material-ui/core';
+    CardHeader,
+    Container,
+    Grid,
+} from '@material-ui/core';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { Link } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
+
 import Avatar from '../components/base/Avatar';
 import { requestCommentById } from '../store/actions/answer';
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(() => {
     return {
         link: {
             textDecoration: 'none',
@@ -35,13 +38,13 @@ function Comment(props) {
     const classes = useStyles();
     const {
         match: {
-            params: { commentId 
-},
+            params: { commentId },
         },
-       requestComent,
-       comment,
-       postComment,
-       history,
+        requestComent,
+        comment,
+        postComment,
+        history,
+        pending,
     } = props;
 
     useEffect(() => {
@@ -134,6 +137,16 @@ function Comment(props) {
         </Card>
     );
 
+    if (pending) {
+        return (
+            <div style={{ width: 700, margin: 'auto', marginTop: 100 }}>
+                <Skeleton
+                    variant="rect"
+                    style={ { marginTop: 70 } }
+                    height={ 150 } />
+            </div>
+        );
+    }
 
     return (
         <div className="App">
@@ -167,6 +180,7 @@ const mapStateToProps = (state) => {
     return {
         comment: state.answer.comment,
         postComment: state.blog.comment,
+        pending: state.answer.pending,
     };
 };
 

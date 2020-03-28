@@ -1,29 +1,37 @@
-import React, { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
-import ChatBubbleOutlineRoundedIcon from '@material-ui/icons/ChatBubbleOutlineRounded';
-import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
-import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
-import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
-import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
-import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
+import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
 import { connect } from 'react-redux';
-import Collapse from '@material-ui/core/Collapse';
-import Divider from '@material-ui/core/Divider';
-import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+    Card,
+    CardHeader,
+    CardContent,
+    CardActions,
+    Typography,
+    Button,
+    Box,
+    Divider,
+    Collapse
+} from '@material-ui/core';
+import { red } from '@material-ui/core/colors';
+import {
+    ChatBubbleOutlineRounded as ChatBubbleOutlineRoundedIcon,
+    ThumbUpOutlined as ThumbUpOutlinedIcon,
+    ThumbDownOutlined as ThumbDownOutlinedIcon,
+    ThumbUpAlt as ThumbUpAltIcon,
+    ThumbDownAlt as ThumbDownAltIcon,
+    ChatBubble as ChatBubbleIcon,
+} from '@material-ui/icons';
+
 import Comments from '../comment/comments';
 import ReadMore from '../base/ReadMore';
 import Avatar from '../base/Avatar';
-import { upvoteAnswer, addAnswerToCache, downvoteAnswer } from '../../store/actions/answer';
+import {
+    upvoteAnswer,
+    addAnswerToCache,
+    downvoteAnswer,
+} from '../../store/actions/answer';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -88,18 +96,17 @@ const AnswerCard = (props) => {
         hideHeader,
         history,
         author: {
- _id,
- name,
- jobTitle,
- email 
-},
+            _id,
+            name,
+            jobTitle,
+            email 
+        },
         topics,
         downvoters,
         upvoters,
         upvoteAnswer,
         downvoteAnswer,
         modifiedAnswers,
-        addAnswerToCache,
         hideHeaderHelperText,
         user,
     } = props;

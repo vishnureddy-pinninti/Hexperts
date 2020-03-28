@@ -7,8 +7,10 @@ import { ADD_BLOG_PENDING,
     RECEIVE_DOWNVOTE_POST,
     RECEIVE_POST_FOR_CACHE,
     RECEIVE_ADDED_POST,
+    REQUEST_POST_BY_ID,
     RECEIVE_POST_BY_ID,
     RECEIVE_COMMENT_POST,
+    REQUEST_POST_COMMENTS,
     RECEIVE_POST_COMMENTS,
     RECEIVE_FOLLOWED_BLOG } from '../actions/blog';
 
@@ -82,6 +84,12 @@ export default (state = initialState, action) => {
                 newPost: {},
                 blog: action.blog,
                 pending: false,
+            };
+        case REQUEST_POST_BY_ID:
+            return {
+                ...state,
+                post: {},
+                pending: true,
             };
         case RECEIVE_POST_BY_ID:
             return {
@@ -173,6 +181,12 @@ export default (state = initialState, action) => {
                 ...state,
                 modifiedPosts: { ...post },
             };
+        case REQUEST_POST_COMMENTS:
+            return {
+                ...state,
+                modifiedPosts: {},
+                pending: true,
+            };
         case RECEIVE_POST_COMMENTS:
             post = state.modifiedPosts;
             id = action.targetID;
@@ -185,6 +199,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 modifiedPosts: { ...post },
+                pending: false,
             };
         case RECEIVE_COMMENT_BY_ID:
             if (action.comment.target === 'posts'){

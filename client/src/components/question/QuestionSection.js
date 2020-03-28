@@ -1,27 +1,34 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-
+import {
+    Card,
+    CardActions,
+    CardContent,
+    Button,
+    Typography,
+    Collapse,
+} from '@material-ui/core';
+import {
+    EditTwoTone as EditTwoToneIcon,
+    RssFeedSharp as RssFeedSharpIcon,
+    RecordVoiceOver as RecordVoiceOverIcon,
+} from '@material-ui/icons';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { connect } from 'react-redux';
-import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
-import RssFeedSharpIcon from '@material-ui/icons/RssFeedSharp';
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
-import Collapse from '@material-ui/core/Collapse';
 
 import QuestionTags from './QuestionTags';
 import EditSuggestedWriters from './EditSuggestedWriters';
-import { addAnswerToQuestion, addAnswerPending } from '../../store/actions/answer';
-import { followQuestion, addQuestionToCache } from '../../store/actions/questions';
-
+import {
+    addAnswerToQuestion,
+    addAnswerPending,
+} from '../../store/actions/answer';
+import {
+    followQuestion,
+    addQuestionToCache,
+} from '../../store/actions/questions';
 
 const useStyles = makeStyles({
     root: {
@@ -44,7 +51,6 @@ const QuestionSection = (props) => {
         question,
         addAnswerToQuestion,
         id,
-        description,
         pending,
         followQuestion,
         answers,
@@ -189,6 +195,7 @@ const QuestionSection = (props) => {
                             textAlign: { inDropdown: true },
                             link: { inDropdown: true },
                             history: { inDropdown: true },
+                            blockType: { inDropdown: false },
                         } } />
                 </CardContent>
                 <CardActions>
