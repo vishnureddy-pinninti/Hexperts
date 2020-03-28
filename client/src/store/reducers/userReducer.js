@@ -12,7 +12,9 @@ import { RECEIVE_USER_SESSION,
     SET_IMAGE,
     RECEIVE_USER_POSTS,
     RECEIVE_MARK_NOTIFICATION_READ,
-    REQUEST_ADD_NOTIFICATION } from '../actions/auth';
+    REQUEST_ADD_NOTIFICATION,
+    RECEIVE_MANGE_USER_PREFERENCES,
+ } from '../actions/auth';
 
 import { RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
 import { RECEIVE_FOLLOWED_BLOG } from '../actions/blog';
@@ -162,6 +164,21 @@ export default (state = initialState, action) => {
                 ],
                 userProfile: { ...profile },
             };
+        case RECEIVE_MANGE_USER_PREFERENCES:
+                profile = state.userProfile;
+                if (action.user.interests){
+                    profile.interests = action.user.interests;
+                }
+                if (action.user.expertIn) {
+                    profile.expertIn = action.user.expertIn;
+                }
+                return {
+                    ...state,
+                    pending: false,
+                    interests: action.user.interests,
+                    expertIn: action.user.expertIn,
+                    userProfile: { ...profile },
+                };
         case RECEIVE_QUESTIONS_BY_USER_ID:
             return {
                 ...state,

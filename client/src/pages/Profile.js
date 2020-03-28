@@ -57,11 +57,9 @@ function Profile(props) {
     const classes = useStyles();
     const {
         match: {
-            params: { userId 
-},
+            params: { userId },
         },
-        requestUser,
-        onLogout,
+        requestUser,        
         pending,
         userProfile,
         user,
@@ -130,8 +128,6 @@ function Profile(props) {
         pending,
         expertIn,
     ]);
-
-    const { topic, topic: { questions } } = props;
 
     const renderTopics = (items) => items.map((topic) => (
         <Link

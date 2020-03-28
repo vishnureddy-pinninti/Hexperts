@@ -26,6 +26,8 @@ export const RECEIVE_USER_FOLLOWERS = 'RECEIVE_USER_FOLLOWERS';
 export const REQUEST_USER_FOLLOWERS = 'REQUEST_USER_FOLLOWERS';
 export const RECEIVE_USER_FOLLOWING = 'RECEIVE_USER_FOLLOWING';
 export const REQUEST_USER_FOLLOWING = 'REQUEST_USER_FOLLOWING';
+export const REQUEST_MANAGE_USER_PREFERENCES = 'REQUEST_MANAGE_USER_PREFERENCES';
+export const RECEIVE_MANGE_USER_PREFERENCES = 'RECEIVE_MANGE_USER_PREFERENCES';
 
 const receiveUserSession = (user) => {
     return {
@@ -86,6 +88,25 @@ export const addUserPreferences = (body) => {
             method: 'POST',
             body,
             success: receiveUserPreferences,
+        },
+    };
+};
+
+const receivemaangeUserPreferences = (user) => {
+    return {
+        type: RECEIVE_MANGE_USER_PREFERENCES,
+        user,
+    };
+};
+
+export const maangeUserPreferences = (body) => {
+    return {
+        type: REQUEST_MANAGE_USER_PREFERENCES,
+        makeApiRequest: {
+            url: '/api/v1/user-preferences.manage',
+            method: 'POST',
+            body,
+            success: receivemaangeUserPreferences,
         },
     };
 };

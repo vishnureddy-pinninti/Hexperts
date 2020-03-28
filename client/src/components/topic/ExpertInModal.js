@@ -1,32 +1,38 @@
 import React, { useEffect } from 'react';
-import { withStyles, useTheme, makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import TextField from '@material-ui/core/TextField';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
-import IconButton from '@material-ui/core/IconButton';
-import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import CheckCircleOutlinedIcon from '@material-ui/icons/CheckCircleOutlined';
-import Checkbox from '@material-ui/core/Checkbox';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import { addNewTopic, requestTopics } from '../../store/actions/topic';
+import {
+    useTheme,
+    makeStyles,
+} from '@material-ui/core/styles';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    useMediaQuery,
+    Checkbox,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    TextField,
+} from '@material-ui/core';
+
+import {
+    addNewTopic,
+    requestTopics,
+} from '../../store/actions/topic';
 import { editQuestion } from '../../store/actions/questions';
-import { addUserPreferences, addPreferencesPending } from '../../store/actions/auth';
+import {
+    addUserPreferences,
+    addPreferencesPending,
+    maangeUserPreferences,
+} from '../../store/actions/auth';
 
-
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(() => {
     return {
         root: {
             display: 'flex',
@@ -68,46 +74,19 @@ const validate = (values) => {
     return errors;
 };
 
-const WhiteCheckbox = withStyles({
-    root: {
-        color: 'white',
-        '&$checked': {
-            color: 'white',
-        },
-    },
-    checked: {},
-})((props) => (
-    <Checkbox
-        color="default"
-        { ...props } />
-));
-
 const ExpertInModal = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const {
-        addNewTopic,
-        handleSubmit,
-        question,
-        questionID,
         topics,
-        requestTopics,
-        editQuestion,
-        addUserPreferences,
+        maangeUserPreferences,
         expertIn,
+        user,
         open,
+        handleFollowTopicsModalClose,
     } = props;
-
-
-    for (let i = topics.length - 1; i >= 0; i--){
-        for (let j = 0; j < expertIn.length; j++){
-            if (topics[i] && (topics[i]._id === expertIn[j]._id)){
-                topics.splice(i, 1);
-            }
-        }
-    }
 
     const [
         filteredTopics,
@@ -119,7 +98,7 @@ const ExpertInModal = (props) => {
     }, [ topics ]);
 
     const filterTopics = (text) => {
-        const filtered = topics.filter((topic) => topic.topic.toLowerCase().startsWith(text.toLowerCase()));
+        const filtered = topics.filter((topic) => topic.topic.toLowerCase().indexOf(text.toLowerCase()) > -1);
         setFilteredTopics(filtered);
     };
 
@@ -131,6 +110,7 @@ const ExpertInModal = (props) => {
             type="text"
             className={ classes.textfield }
             onChange={ (event) => filterTopics(event.target.value) }
+            autoComplete="off"
             autoFocus
             fullWidth />
     );
@@ -139,6 +119,10 @@ const ExpertInModal = (props) => {
         checked,
         setChecked,
     ] = React.useState([]);
+
+    useEffect(() => {
+        setChecked(expertIn.map(t => t._id));
+    }, [ expertIn ]);
 
     const [
         selectedTopics,
@@ -165,7 +149,7 @@ const ExpertInModal = (props) => {
     };
 
     const addTopicsToInterests = () => {
-        addUserPreferences({ expertIn: checked });
+        maangeUserPreferences({ expertIn: checked, interests: user.interests.map(i => i._id) });
     };
 
     const renderTopics = () => (
@@ -201,8 +185,8 @@ const ExpertInModal = (props) => {
         <Dialog
             className={ classes.root }
             fullScreen={ fullScreen }
-            open={ props.open }
-            onClose={ props.handleFollowTopicsModalClose }
+            open={ open }
+            onClose={ handleFollowTopicsModalClose }
             aria-labelledby="responsive-dialog-title">
             <DialogTitle>
                 Add/Edit the topics you know about
@@ -217,7 +201,7 @@ const ExpertInModal = (props) => {
             <DialogActions>
                 <Button
                     autoFocus
-                    onClick={ props.handleFollowTopicsModalClose }
+                    onClick={ handleFollowTopicsModalClose }
                     color="primary">
                     Cancel
                 </Button>
@@ -259,10 +243,14 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(addPreferencesPending());
             dispatch(addUserPreferences(body));
         },
+        maangeUserPreferences: (body) => {
+            dispatch(addPreferencesPending());
+            dispatch(maangeUserPreferences(body));
+        }
     };
 };
 
 export default reduxForm({
-    form: 'followtopics', // a unique identifier for this form
+    form: 'expertintopics', // a unique identifier for this form
     validate,
 })(connect(mapStateToProps, mapDispatchToProps)(ExpertInModal));
