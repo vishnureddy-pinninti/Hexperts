@@ -89,11 +89,11 @@ function ProfileBody(props) {
                 });
             }
             else {
-                setItems([ ...userFeed.items ]);
-                setPagination({
-                    index: pagination.index + 1,
-                    hasMore: true,
-                });
+                // setItems([ ...userFeed.items ]);
+                // setPagination({
+                //     index: pagination.index + 1,
+                //     hasMore: true,
+                // });
             }
         }
         else {

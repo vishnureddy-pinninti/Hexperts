@@ -77,7 +77,7 @@ function TabPanel(props) {
             { ...other }>
             { value === index && <Box p={ 3 }>
                 { children }
-            </Box> }
+                                 </Box> }
         </Typography>
     );
 }
@@ -169,9 +169,11 @@ const EditSuggestedWriters = (props) => {
     const addTopicsToQuestion = () => {
         const { handleDone } = props;
         if (handleDone){
-            handleDone();
+            handleDone(checked);
         }
-        editQuestion(questionID, { suggestedExperts: checked });
+        else {
+            editQuestion(questionID, { suggestedExperts: checked });
+        }
     };
 
     const renderTopics = () => topics.map((topic) => (
@@ -180,7 +182,7 @@ const EditSuggestedWriters = (props) => {
             selected={ selectedTopic === topic._id }
             onClick={ () => getTopicExperts(topic._id) }
             key={ topic._id }>
-            <ListItemText primary={ topic.topic } />
+            <ListItemText primary={ topic.topic || topic.value } />
         </ListItem>
 
     ));
@@ -383,12 +385,12 @@ const EditSuggestedWriters = (props) => {
 EditSuggestedWriters.defaultProps = {
     topics: [],
     cancelText: 'Cancel',
+    askedExperts: [],
 };
 
 const mapStateToProps = (state) => {
     return {
         suggestedExperts: state.topic.suggestedExperts,
-        askedExperts: state.questions.question.suggestedExperts || [],
     };
 };
 

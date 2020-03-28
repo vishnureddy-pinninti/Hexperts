@@ -10,7 +10,7 @@ import QuestionCard from '../components/question/Card';
 import Topics from '../components/topic/TopicsList';
 import CardLoader from '../components/base/CardLoader';
 
-import { requestUserQuestions, requestTrendingQuestions } from '../store/actions/questions';
+import { requestUserQuestions, requestTrendingQuestions, toggleQuestionModal } from '../store/actions/questions';
 import TopCreators from '../components/answer/TopCreators';
 import AskQuestionCard from '../components/question/AskQuestionCard';
 import QuestionsList from '../components/question/QuestionsList';
@@ -42,6 +42,7 @@ function Home(props) {
         pending,
         expertIn,
         topics,
+        toggleQuestionModal,
     } = props;
 
     const classes = useStyles();
@@ -211,7 +212,7 @@ function Home(props) {
                         xs={ 7 }>
                         <AskQuestionCard
                             user={ user }
-                            handleClickQuestionModalOpen={ handleClickQuestionModalOpen } />
+                            handleClickQuestionModalOpen={ toggleQuestionModal } />
                         <InfiniteScroll
                             dataLength={ items.length }
                             next={ loadMore }
@@ -244,7 +245,6 @@ function Home(props) {
                 open={ openExpertInModal }
                 expertIn={ expertIn }
                 handleFollowTopicsModalClose={ handleExpertInModalClose } />
-            { renderQuestionModal }
         </div>
     );
 }
@@ -260,6 +260,7 @@ const mapStateToProps = (state) => {
         modifiedQuestions: state.questions.modifiedQuestions,
         modifiedAnswers: state.answer.modifiedAnswers,
         topics: state.topic.topics,
+        questionModal: state.questions.questionModal,
     };
 };
 
@@ -270,6 +271,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         requestTrendingQuestions: () => {
             dispatch(requestTrendingQuestions());
+        },
+        toggleQuestionModal: () => {
+            dispatch(toggleQuestionModal());
         },
     };
 };

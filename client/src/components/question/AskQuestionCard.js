@@ -60,8 +60,7 @@ function AskQuestionCard(props) {
                 color="textSecondary"
                 title={ name } />
             <CardContent className={ classes.content }>
-                <Link
-                    onClick={ handleClickQuestionModalOpen }>
+                <Link>
                     <Typography
                         color="textSecondary">
                         <Box

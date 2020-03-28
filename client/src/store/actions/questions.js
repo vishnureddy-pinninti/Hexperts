@@ -19,6 +19,15 @@ export const REQUEST_QUESTIONS_FOR_USER = 'REQUEST_QUESTIONS_FOR_USER';
 export const RECEIVE_QUESTIONS_FOR_USER = 'RECEIVE_QUESTIONS_FOR_USER';
 export const REQUEST_ANSWER_REQUESTS = 'REQUEST_ANSWER_REQUESTS';
 export const RECEIVE_ANSWER_REQUESTS = 'RECEIVE_ANSWER_REQUESTS';
+export const RECEIVE_QUESTION_SUGGESTIONS = 'RECEIVE_QUESTION_SUGGESTIONS';
+export const REQUEST_QUESTION_SUGGESTIONS = 'REQUEST_QUESTION_SUGGESTIONS';
+export const TOGGLE_QUESTION_MODAL = 'TOGGLE_QUESTION_MODAL';
+
+export const toggleQuestionModal = () => {
+    return {
+        type: TOGGLE_QUESTION_MODAL,
+    };
+};
 
 const receiveUserQuestions = (questions) => {
     return {
@@ -131,6 +140,26 @@ export const addUserQuestion = (postData, successcb) => {
             method: 'POST',
             body: postData,
             success: receiveAddedQuestion,
+            successcb,
+        },
+    };
+};
+
+const receiveQuestionSuggestions = (res) => {
+    return {
+        type: RECEIVE_QUESTION_SUGGESTIONS,
+        res,
+    };
+};
+
+export const requestQuestionSuggestions = (postData, successcb) => {
+    return {
+        type: REQUEST_QUESTION_SUGGESTIONS,
+        makeApiRequest: {
+            url: '/api/v1/question-suggestions',
+            method: 'POST',
+            body: postData,
+            success: receiveQuestionSuggestions,
             successcb,
         },
     };
