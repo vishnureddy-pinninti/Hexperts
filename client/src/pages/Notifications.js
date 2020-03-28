@@ -18,8 +18,8 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import InfiniteScroll from 'react-infinite-scroll-component';
-
 import { Divider } from '@material-ui/core';
+import CardLoader from '../components/base/CardLoader';
 import EmptyResults from '../components/base/EmptyResults';
 import { requestNotifications, markNotificationRead } from '../store/actions/auth';
 
@@ -83,6 +83,10 @@ function Notifications(props) {
 
     useEffect(() => {
         setItems([]);
+        setPagination({
+            index: 0,
+            hasMore: true,
+        });
         requestNotifications({
             skip: 0,
             limit: 20,
@@ -143,7 +147,7 @@ function Notifications(props) {
                                 dataLength={ items.length }
                                 next={ loadMore }
                                 hasMore={ pagination.hasMore }
-                                loader={ <h4>Loading...</h4> }
+                                loader={ <CardLoader height={ 100 } /> }
                                 endMessage={ items.length !== 0
                                     && <p style={ { textAlign: 'center' } }>
                                         <b>Yay! You have seen it all</b>
@@ -151,7 +155,7 @@ function Notifications(props) {
                                 { renderNotifications(items) }
                             </InfiniteScroll>
                             { /* { notifications && renderNotifications(notifications) } */ }
-                            { items.length === 0
+                            { items.length === 0 && !pagination.hasMore
             && <EmptyResults
                 title="You don't have any notifications right now."
                 description="When someone follows you, upvotes, comments, you will see it here." /> }

@@ -12,6 +12,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import AnswerCard from '../answer/Card';
 import PostCard from '../blog/PostCard';
 import EmptyResults from '../base/EmptyResults';
+import CardLoader from '../base/CardLoader';
 import QuestionCard from '../question/Card';
 import BlogCard from '../blog/BlogCard';
 import UserCard from './UserCard';
@@ -274,6 +275,25 @@ function ProfileBody(props) {
         </List>
     );
 
+    const renderResults = (items) => {
+        switch (selectedTab){
+            case 'Questions':
+                return renderQuestions(items);
+            case 'Answers':
+                return renderAnswers(items);
+            case 'Blogs':
+                return renderBlogs(items);
+            case 'Posts':
+                return renderPosts(items);
+            case 'Followers':
+                return renderUsers(items);
+            case 'Following':
+                return renderUsers(items);
+            default:
+                return renderQuestions(items);
+        }
+    };
+
     return (
         <Grid
             container
@@ -300,22 +320,17 @@ function ProfileBody(props) {
                     dataLength={ items.length }
                     next={ loadMore }
                     hasMore={ pagination.hasMore }
-                    loader={ <h4 style={ { textAlign: 'center' } }>Loading...</h4> }
+                    loader={ <CardLoader /> }
                     endMessage={ items.length !== 0
                         && <p style={ { textAlign: 'center' } }>
                             <b>Yay! You have seen it all</b>
                            </p> }>
-                    { selectedTab === 'Questions' && renderQuestions(items) }
-                    { selectedTab === 'Answers' && renderAnswers(items) }
-                    { selectedTab === 'Posts' && renderPosts(items) }
-                    { selectedTab === 'Followers' && renderUsers(items) }
-                    { selectedTab === 'Following' && renderUsers(items) }
-                    { selectedTab === 'Blogs' && renderBlogs(items) }
-                    { items && items.length === 0 && <EmptyResults
-                        title={ <SentimentVeryDissatisfiedIcon /> }
-                        description="No Results to display."
-                        showBackButton={ false } /> }
+                    { renderResults(items) }
                 </InfiniteScroll>
+                { items && items.length === 0 && !pagination.hasMore && <EmptyResults
+                    title={ <SentimentVeryDissatisfiedIcon /> }
+                    description="No Results to display."
+                    showBackButton={ false } /> }
             </Grid>
         </Grid>
     );
