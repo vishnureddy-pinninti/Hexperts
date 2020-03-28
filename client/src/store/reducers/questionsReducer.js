@@ -74,7 +74,6 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 newQuestion: action.question,
-                questionSuggestions: {},
                 questions: [
                     action.question,
                     ...state.questions,
@@ -107,16 +106,13 @@ export default (state = initialState, action) => {
                 },
             };
         case RECEIVE_QUESTION_BY_ID:
-            // modifiedQuestions = { ...state.modifiedQuestions };
-            id = action.question._id;
-            // if (modifiedQuestions[id]){
-            //     delete modifiedQuestions[id];
-            // }
             return {
                 ...state,
                 newQuestion: {},
                 question: action.question,
                 pending: false,
+                questionSuggestions: {},
+                questionModal: false,
                 modifiedQuestions: {},
             };
         case RECEIVE_FOLLOWED_QUESTION:
