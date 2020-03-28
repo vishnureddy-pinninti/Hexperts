@@ -8,6 +8,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
 import Topics from '../components/topic/TopicsList';
+import CardLoader from '../components/base/CardLoader';
+
 import { requestUserQuestions, requestTrendingQuestions } from '../store/actions/questions';
 import TopCreators from '../components/answer/TopCreators';
 import AskQuestionCard from '../components/question/AskQuestionCard';
@@ -174,6 +176,7 @@ function Home(props) {
                     upvoters={ answer.upvoters }
                     downvoters={ answer.downvoters }
                     author={ answer.author }
+                    answersCount={ question.answers && question.answers.totalCount }
                     topics={ question.topics } // modifiedAnswers={ modifiedAnswers }
                     date={ answer.postedDate } />
             );
@@ -213,7 +216,7 @@ function Home(props) {
                             dataLength={ items.length }
                             next={ loadMore }
                             hasMore={ pagination.hasMore }
-                            loader={ <h4 style={ { textAlign: 'center' } }>Loading...</h4> }
+                            loader={ <CardLoader height={ 200 } /> }
                             endMessage={
                                 <p style={ { textAlign: 'center' } }>
                                     <b>Yay! You have seen it all</b>
@@ -255,6 +258,7 @@ const mapStateToProps = (state) => {
         followedTopics: state.user.interests,
         trendingQuestions: state.questions.trendingQuestions,
         modifiedQuestions: state.questions.modifiedQuestions,
+        modifiedAnswers: state.answer.modifiedAnswers,
         topics: state.topic.topics,
     };
 };

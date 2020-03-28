@@ -7,6 +7,7 @@ import Topics from '../components/topic/TopicsList';
 import TopicSection from '../components/topic/TopicSection';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import EmptyResults from '../components/base/EmptyResults';
+import CardLoader from '../components/base/CardLoader';
 
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
@@ -159,7 +160,7 @@ function Topic(props) {
                             dataLength={ items.length }
                             next={ loadMore }
                             hasMore={ pagination.hasMore }
-                            loader={ <h4>Loading...</h4> }
+                            loader={ <CardLoader height={ 200 } /> }
                             endMessage={
                                 <p style={ { textAlign: 'center' } }>
                                     <b>Yay! You have seen it all</b>
@@ -167,7 +168,7 @@ function Topic(props) {
                             }>
                             { renderQuestions(items) }
                         </InfiniteScroll> }
-                        { items.length === 0 && <EmptyResults
+                        { items.length === 0 && !pagination.hasMore && <EmptyResults
                             title="No questions posted yet."
                             description="Feel free to ask a question to this topic." /> }
                     </Grid>

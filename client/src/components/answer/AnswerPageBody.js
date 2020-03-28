@@ -8,6 +8,7 @@ import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import AnswerCard from './Card';
+import CardLoader from '../base/CardLoader';
 import QuestionCard from '../question/Card';
 import { requestAnswerRequests, requestQuestionsForUser } from '../../store/actions/questions';
 
@@ -103,6 +104,10 @@ function AnswerPageBody(props) {
 
     useEffect(() => {
         setItems([]);
+        setPagination({
+            index: 0,
+            hasMore: true,
+        });
         loadMore();
     }, []);
 
@@ -208,7 +213,7 @@ function AnswerPageBody(props) {
                     dataLength={ items.length }
                     next={ loadMore }
                     hasMore={ pagination.hasMore }
-                    loader={ <h4>Loading...</h4> }
+                    loader={ <CardLoader /> }
                     endMessage={
                         <p style={ { textAlign: 'center' } }>
                             <b>Yay! You have seen it all</b>

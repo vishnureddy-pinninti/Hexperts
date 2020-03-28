@@ -72,11 +72,6 @@ const QuestionCard = (props) => {
         setAnswer,
     ] = React.useState(null);
 
-    const [
-        followed,
-        setFollowed,
-    ] = React.useState(false);
-
     const handleOpen = () => {
         setOpen(true);
     };

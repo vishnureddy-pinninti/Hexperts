@@ -12,6 +12,8 @@ import { Link, withRouter } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import PostCard from '../components/blog/PostCard';
 import Blogs from '../components/blog/BlogsList';
+import CardLoader from '../components/base/CardLoader';
+
 import { requestPosts } from '../store/actions/blog';
 import FollowBlogsModal from '../components/blog/FollowBlogsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
@@ -140,6 +142,10 @@ function Home(props) {
 
     useEffect(() => {
         setItems([]);
+        setPagination({
+            index: 0,
+            hasMore: true,
+        });
         requestPostsFeed();
     }, [ requestPostsFeed ]);
 
@@ -176,7 +182,7 @@ function Home(props) {
                             dataLength={ items.length }
                             next={ loadMore }
                             hasMore={ pagination.hasMore }
-                            loader={ <h4>Loading...</h4> }
+                            loader={ <CardLoader height={ 400 } /> }
                             endMessage={
                                 <p style={ { textAlign: 'center' } }>
                                     <b>Yay! You have seen it all</b>
