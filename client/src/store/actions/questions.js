@@ -45,10 +45,12 @@ const receiveUserQuestions = (questions) => {
 };
 
 export const requestUserQuestions = (params = { skip: 0 }) => {
+    const queryString = params.ownQuestions ? '_ownQuestions=true' : '_onlyInterests=true';
+
     return {
         type: REQUEST_USER_QUESTIONS,
         makeApiRequest: {
-            url: `/api/v1/questions?_onlyInterests=true&skip=${params.skip}`,
+            url: `/api/v1/questions?${queryString}&skip=${params.skip || 0}`,
             method: 'GET',
             success: receiveUserQuestions,
         },

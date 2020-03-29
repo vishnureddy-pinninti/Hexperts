@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    Grid,
-    Container,
-} from '@material-ui/core';
+import { Grid,
+    Container } from '@material-ui/core';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import FormControl from '@material-ui/core/FormControl';
+import Switch from '@material-ui/core/Switch';
 
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
 import Topics from '../components/topic/TopicsList';
@@ -72,6 +73,11 @@ function Home(props) {
     ] = React.useState([]);
 
     const [
+        ownQuestions,
+        setOwnQuestions,
+    ] = React.useState(false);
+
+    const [
         pagination,
         setPagination,
     ] = React.useState({
@@ -128,7 +134,20 @@ function Home(props) {
     ]);
 
     const loadMore = () => {
-        requestUserQuestions({ skip: pagination.index * 10 });
+        requestUserQuestions({
+            skip: pagination.index * 10,
+            ownQuestions,
+        });
+    };
+
+    const showOwnQuestions = (event) => {
+        setOwnQuestions(event.target.checked);
+        setItems([]);
+        setPagination({
+            index: 0,
+            hasMore: true,
+        });
+        requestUserQuestions({ ownQuestions: event.target.checked });
     };
 
     const renderQuestions = (items) => items.map((question) => {
@@ -197,6 +216,14 @@ function Home(props) {
                         item
                         className={ classes.sectionDesktop }
                         xs={ 3 }>
+                        <FormControl component="fieldset">
+                            <FormControlLabel
+                                control={ <Switch
+                                    checked={ ownQuestions }
+                                    onChange={ showOwnQuestions }
+                                    name="gilad" /> }
+                                label="Show My Questions" />
+                        </FormControl>
                         <TopCreators />
                         <QuestionsList
                             title="Trending Questions"
