@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { connect } from 'react-redux';
 import RssFeedSharpIcon from '@material-ui/icons/RssFeedSharp';
 import CardHeader from '@material-ui/core/CardHeader';

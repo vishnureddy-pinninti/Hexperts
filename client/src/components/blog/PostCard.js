@@ -113,7 +113,7 @@ const AnswerCard = (props) => {
         setOpen,
     ] = React.useState(false);
 
-    let currentCommentsCount = post.commentsCount;
+    let currentCommentsCount = post.commentsCount || 0;
 
     if (modifiedPosts && modifiedPosts[post._id] && modifiedPosts[post._id].newComments){
         currentCommentsCount = modifiedPosts[post._id].newComments.length + currentCommentsCount;

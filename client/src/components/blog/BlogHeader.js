@@ -171,6 +171,12 @@ const BlogHeader = (props) => {
                 link: { inDropdown: true },
                 history: { inDropdown: true },
                 blockType: { inDropdown: false },
+                image: {
+                    defaultSize: {
+                        height: '100%',
+                        width: '100%',
+                    },
+                }
             } } />
     );
 

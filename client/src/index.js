@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import './index.css';
 import App from './components/App';
