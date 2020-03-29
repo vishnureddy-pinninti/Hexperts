@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
-import {
-    Grid,
-    Container,
-} from '@material-ui/core';
+import { Grid,
+    Container } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
 
@@ -12,14 +10,27 @@ import { requestAnswerById } from '../store/actions/answer';
 function Answer(props) {
     const {
         match: {
-            params: { answerId },
+            params: { answerId 
+},
         },
         requestAnswer,
         answer,
         pending,
     } = props;
 
+    const [
+        loading,
+        setLoading,
+    ] = React.useState(false);
+
     useEffect(() => {
+        if (answer.question){
+            setLoading(false);
+        }
+    }, [ answer ]);
+
+    useEffect(() => {
+        setLoading(true);
         requestAnswer(answerId);
     }, [
         requestAnswer,
@@ -40,18 +51,6 @@ function Answer(props) {
             date={ answer.postedDate } />
     );
 
-    if (pending) {
-        return (
-            <div style={{ width: 700, margin: 'auto', marginTop: 100 }}>
-                <Skeleton
-                    variant="rect"
-                    style={ { marginTop: 70 } }
-                    height={ 400 } />
-            </div>
-        );
-    }
-
-
     return (
         <div className="App">
             <Container fixed>
@@ -66,7 +65,10 @@ function Answer(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        { answer && answer.question && renderAnswer(answer) }
+                        { loading ? <Skeleton
+                            variant="rect"
+                            height={ 400 } />
+                            : (answer && answer.question && renderAnswer(answer)) }
                     </Grid>
                     <Grid
                         item
