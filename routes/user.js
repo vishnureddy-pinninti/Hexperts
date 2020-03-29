@@ -565,8 +565,9 @@ module.exports = (app) => {
 
     app.post('/api/v1/user-preferences.manage', loginMiddleware, async(req, res) => {
         const {
-            interests = [],
-            expertIn = [],
+            blogs,
+            interests,
+            expertIn,
         } = req.body;
 
         const {
@@ -575,22 +576,29 @@ module.exports = (app) => {
 
         try {
             const user = await User.findById(_id);
-            const interestedTopics = await Topic.find({ _id: { $in: interests } });
-            const expertInTopics = await Topic.find({ _id: { $in: expertIn } });
 
             if (user) {
-                user.interests = interests;
-                user.expertIn = expertIn;
+                const responseObject = { _id };
+
+                if (interests) {
+                    user.interests = interests;
+                    responseObject.interests = await Topic.find({ _id: { $in: interests } });
+                }
+                if (expertIn) {
+                    user.expertIn = expertIn;
+                    responseObject.expertIn = await Topic.find({ _id: { $in: expertIn } });
+                }
+
+                if (blogs) {
+                    user.blogs = blogs;
+                    responseObject.blogs = await Blog.find({ _id: { $in: blogs } });
+                }
 
                 await user.save();
 
                 res
                     .status(200)
-                    .json({
-                        _id,
-                        interests: interestedTopics,
-                        expertIn: expertInTopics,
-                    });
+                    .json(responseObject);
             }
             else {
                 res

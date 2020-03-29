@@ -32,30 +32,10 @@ const initialState = {
     blogs: [],
 };
 
-function searchBlog(blogId, array) {
-    for (let i = 0; i < array.length; i++) {
-        if (array[i]._id === blogId) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-function searchTopic(topicId, array) {
-    for (let i = 0; i < array.length; i++) {
-        if (array[i]._id === topicId) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 export default (state = initialState, action) => {
     let followers = [];
     let index;
     let profile;
-    let userInterests;
-    let userBlogs;
     switch (action.type) {
         case RECEIVE_USER_SESSION:
             return {
@@ -82,55 +62,54 @@ export default (state = initialState, action) => {
                 ...state,
                 pending: true,
             };
-        case RECEIVE_FOLLOWED_TOPIC:
-            profile = state.userProfile;
-            if (profile && !profile.interests){
-                profile.interests = [];
-            }
-            index = searchTopic(action.res.interest._id, profile.interests);
-            if (index < 0) {
-                profile.interests.push(action.res.interest);
-            }
-            else {
-                profile.interests.splice(index, 1);
-            }
-            userInterests = state.interests;
-            index = searchTopic(action.res.interest._id, userInterests);
-            if (index < 0) {
-                userInterests.push(action.res.interest);
-            }
-            else {
-                userInterests.splice(index, 1);
+        case RECEIVE_FOLLOWED_TOPIC: {
+            const { interest, interestRemoved } = action.res;
+
+            if (interestRemoved) {
+                const newInterests = state.interests.filter(i => i._id !== interest._id);
+                return {
+                    ...state,
+                    interests: newInterests,
+                    userProfile: {
+                        ...state.userProfile,
+                        interests: newInterests,
+                    }
+                }
             }
             return {
                 ...state,
-                interests: [ ...userInterests ],
-                userProfile: { ...profile },
-            };
-        case RECEIVE_FOLLOWED_BLOG:
-            profile = state.userProfile;
-            if (profile && profile.blogs){
-                index = searchBlog(action.res.blog._id, profile.interests);
-                if (index < 0) {
-                    profile.blogs.push(action.res.blog);
-                }
-                else {
-                    profile.blogs.splice(index, 1);
+                interests: [ ...state.interests, interest ],
+                userProfile: {
+                    ...state.userProfile,
+                    interests: [ ...state.interests, interest ],
                 }
             }
-            userBlogs = state.blogs;
-            index = searchBlog(action.res.blog._id, userBlogs);
-            if (index < 0) {
-                userBlogs.push(action.res.blog);
-            }
-            else {
-                userBlogs.splice(index, 1);
+        }
+        case RECEIVE_FOLLOWED_BLOG: {
+            const { blog, blogRemoved } = action.res;
+
+            if (blogRemoved) {
+                const newBlogs = state.blogs.filter(b => b._id !== blog._id);
+                console.log('blogs filter', state.blogs);
+                console.log('newBlogs', newBlogs);
+                return {
+                    ...state,
+                    blogs: newBlogs,
+                    userProfile: {
+                        ...state.userProfile,
+                        blogs: newBlogs,
+                    }
+                }
             }
             return {
                 ...state,
-                blogs: [ ...userBlogs ],
-                userProfile: { ...profile },
-            };
+                blogs: [ ...state.blogs, blog ],
+                userProfile: {
+                    ...state.userProfile,
+                    blogs: [ ...state.blogs, blog ],
+                }
+            }
+        }
         case RECEIVE_USER_PREFERENCES:
             profile = state.userProfile;
             if (profile && profile.interests){
@@ -165,19 +144,24 @@ export default (state = initialState, action) => {
                 userProfile: { ...profile },
             };
         case RECEIVE_MANGE_USER_PREFERENCES:
-                profile = state.userProfile;
+                const updatedProfile = {};
                 if (action.user.interests){
-                    profile.interests = action.user.interests;
+                    updatedProfile.interests = action.user.interests;
                 }
                 if (action.user.expertIn) {
-                    profile.expertIn = action.user.expertIn;
+                    updatedProfile.expertIn = action.user.expertIn;
+                }
+                if (action.user.blogs) {
+                    updatedProfile.blogs = action.user.blogs;
                 }
                 return {
                     ...state,
                     pending: false,
-                    interests: action.user.interests,
-                    expertIn: action.user.expertIn,
-                    userProfile: { ...profile },
+                    ...updatedProfile,
+                    userProfile: {
+                        ...state.userProfile,
+                        ...updatedProfile,
+                    },
                 };
         case RECEIVE_QUESTIONS_BY_USER_ID:
             return {

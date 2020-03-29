@@ -1,30 +1,28 @@
 import React, { useEffect } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
+import {
+    Grid,
+    Container,
+} from '@material-ui/core';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Skeleton from '@material-ui/lab/Skeleton';
+
 import Topics from '../components/topic/TopicsList';
 import TopicSection from '../components/topic/TopicSection';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import EmptyResults from '../components/base/EmptyResults';
 import CardLoader from '../components/base/CardLoader';
-
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
 import { requestTopicById } from '../store/actions/topic';
 
-
 function Topic(props) {
     const {
         match: {
-            params: { topicID 
-},
+            params: { topicID },
         },
         requestTopic,
-        onLogout,
         pending,
-        followedTopics,
         topic,
     } = props;
 
@@ -64,7 +62,6 @@ function Topic(props) {
         index: 0,
         hasMore: true,
     });
-
 
     useEffect(() => {
         if (topic && topic.questions){
@@ -112,7 +109,6 @@ function Topic(props) {
         requestTopic(topicID, { skip: pagination.index * 10 });
     };
 
-
     const renderQuestions = (items) => items.map((question) => {
         if (question.answers && question.answers.results && question.answers.results.length){
             const answer = question.answers.results[0];
@@ -139,7 +135,6 @@ function Topic(props) {
                 question={ question } />
         );
     });
-
 
     return (
         <div className="App">
@@ -192,7 +187,6 @@ function Topic(props) {
             </Container>
             <FollowTopicsModal
                 open={ openFollowTopicsModal }
-                followedTopics={ followedTopics }
                 handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
         </div>
     );
@@ -202,7 +196,6 @@ const mapStateToProps = (state) => {
     return {
         topic: state.topic.topic,
         pending: state.user.pending,
-        followedTopics: state.user.user.interests,
         modifiedQuestions: state.questions.modifiedQuestions,
     };
 };

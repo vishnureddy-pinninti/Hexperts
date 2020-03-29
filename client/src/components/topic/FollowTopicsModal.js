@@ -32,7 +32,6 @@ import {
 } from '../../store/actions/topic';
 import { editQuestion } from '../../store/actions/questions';
 import {
-    addUserPreferences,
     addPreferencesPending,
     maangeUserPreferences,
 } from '../../store/actions/auth';
@@ -154,7 +153,6 @@ const FollowTopicsModal = (props) => {
         setSelectedTopics,
     ] = React.useState(topics);
 
-
     const selectTopic = (value) => {
         if (value){
             const currentIndex = checked.indexOf(value._id);
@@ -255,6 +253,7 @@ const mapStateToProps = (state) => {
     return {
         user: state.user,
         topics: [ ...state.topic.topics ],
+        followedTopics: state.user.interests,
     };
 };
 
@@ -268,10 +267,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         editQuestion: (questionID, body) => {
             dispatch(editQuestion(questionID, body));
-        },
-        addUserPreferences: (body) => {
-            dispatch(addPreferencesPending());
-            dispatch(addUserPreferences(body));
         },
         maangeUserPreferences: (body) => {
             dispatch(addPreferencesPending());
