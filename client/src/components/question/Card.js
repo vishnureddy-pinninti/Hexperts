@@ -1,18 +1,14 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    Card,
+import { Card,
     CardActions,
     CardContent,
     Button,
     Typography,
     Collapse,
-    Box,
-} from '@material-ui/core';
-import {
-    EditTwoTone as EditTwoToneIcon,
-    RssFeedSharp as RssFeedSharpIcon,
-} from '@material-ui/icons';
+    Box } from '@material-ui/core';
+import { EditTwoTone as EditTwoToneIcon,
+    RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { convertToRaw } from 'draft-js';
@@ -21,14 +17,10 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
 
-import {
-    addAnswerToQuestion,
-    addAnswerPending,
-} from '../../store/actions/answer';
-import {
-    followQuestion,
-    addQuestionToCache,
-} from '../../store/actions/questions';
+import { addAnswerToQuestion,
+    addAnswerPending } from '../../store/actions/answer';
+import { followQuestion,
+    addQuestionToCache } from '../../store/actions/questions';
 
 
 const useStyles = makeStyles({
@@ -77,6 +69,11 @@ const QuestionCard = (props) => {
         setAnswer,
     ] = React.useState(null);
 
+    const [
+        disableSubmit,
+        setDisableSubmit,
+    ] = React.useState(false);
+
     const handleOpen = () => {
         setOpen(true);
     };
@@ -87,12 +84,14 @@ const QuestionCard = (props) => {
 
     useEffect(() => {
         if (!pending) {
+            setDisableSubmit(false);
             setOpen(pending);
             setAnswer(null);
         }
     }, [ pending ]);
 
     const addAnswer = () => {
+        setDisableSubmit(true);
         addAnswerToQuestion(
             {
                 answer: draftToHtml(convertToRaw(answer.getCurrentContent())),
@@ -193,6 +192,7 @@ const QuestionCard = (props) => {
                     <Button
                         size="small"
                         variant="contained"
+                        disabled={ disableSubmit }
                         onClick={ addAnswer }
                         color="primary">
                         Submit
