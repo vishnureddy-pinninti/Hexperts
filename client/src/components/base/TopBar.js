@@ -19,11 +19,13 @@ import HomeIcon from '@material-ui/icons/Home';
 import EditIcon from '@material-ui/icons/Edit';
 import GroupIcon from '@material-ui/icons/Group';
 import Snackbar from '@material-ui/core/Snackbar';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Avatar from './Avatar';
 import QuestionModal from './QuestionModal';
 import SearchBar from './SearchBar';
 import EditTopicsModal from '../topic/EditTopicsModal';
 import EditSuggestedWriters from '../question/EditSuggestedWriters';
+
 import { addUserQuestion, addQuestionPending, toggleQuestionModal } from '../../store/actions/questions';
 
 const useStyles = makeStyles((theme) => {
@@ -158,19 +160,15 @@ const TopBar = (props) => {
         setOpenEditTopicsModal,
     ] = React.useState(false);
 
-
-    const handleEditTopicsModalClose = () => {
-        setOpenEditTopicsModal(false);
-    };
+    const [
+        pageLoading,
+        setPageLoading,
+    ] = React.useState(false);
 
     const [
         openEditSuggestedWritersModal,
         setOpenEditSuggestedWritersModal,
     ] = React.useState(false);
-
-    const handleEditSuggestedWritersModalClose = () => {
-        setOpenEditSuggestedWritersModal(false);
-    };
 
     const {
         pending,
@@ -188,6 +186,7 @@ const TopBar = (props) => {
 
     useEffect(() => {
         if (!pending && addedQuestion && addedQuestion._id) {
+            setPageLoading(false);
             history.push(`/question/${addedQuestion._id}`);
         }
     }, [
@@ -198,10 +197,6 @@ const TopBar = (props) => {
 
 
     const handleClickQuestionModalOpen = () => {
-        toggleQuestionModal();
-    };
-
-    const handleQuestionModalClose = () => {
         toggleQuestionModal();
     };
 
@@ -230,6 +225,7 @@ const TopBar = (props) => {
     };
 
     const handleEditSuggestedWritersModalSubmit = (suggestedExperts) => {
+        setPageLoading(true);
         addUserQuestion({
             question: newQuestion.question,
             topics: newQuestion.topics,
@@ -237,6 +233,22 @@ const TopBar = (props) => {
         });
         setOpenEditSuggestedWritersModal(false);
     };
+
+    const handleQuestionModalClose = () => {
+        setNewQuestion({});
+        toggleQuestionModal();
+    };
+
+    const handleEditSuggestedWritersModalClose = () => {
+        setNewQuestion({});
+        setOpenEditSuggestedWritersModal(false);
+    };
+
+    const handleEditTopicsModalClose = () => {
+        setNewQuestion({});
+        setOpenEditTopicsModal(false);
+    };
+
 
     const handleProfileClick = () => {
         history.push(`/profile/${user._id}`);
@@ -452,6 +464,10 @@ const TopBar = (props) => {
                         </Toolbar>
                     </Grid>
                 </Grid>
+                { pageLoading
+                && <LinearProgress
+                    variant="query"
+                    color="secondary" /> }
             </AppBar>
             { renderMobileMenu }
             { renderMenu }
@@ -473,7 +489,7 @@ const TopBar = (props) => {
                 handleDone={ handleEditSuggestedWritersModalSubmit }
                 handleClose={ handleEditSuggestedWritersModalClose } /> }
             <Snackbar
-                open={ newQuestion._id }
+                open={ newQuestion.question }
                 message="Adding Question" />
         </div>
     );
