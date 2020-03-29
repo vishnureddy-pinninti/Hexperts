@@ -14,7 +14,6 @@ import {
     RssFeedSharp as RssFeedSharpIcon,
 } from '@material-ui/icons';
 import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { connect } from 'react-redux';
@@ -187,6 +186,12 @@ const QuestionCard = (props) => {
                             textAlign: { inDropdown: true },
                             link: { inDropdown: true },
                             history: { inDropdown: true },
+                            image: {
+                                defaultSize: {
+                                    height: '100%',
+                                    width: '100%',
+                                },
+                            }
                         } } />
                 </CardContent>
                 <CardActions>
