@@ -1,25 +1,25 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
+import {
+    Grid,
+    Container,
+    Chip,
+    Avatar,
+    Divider,
+    List,
+    IconButton,
+    FormControlLabel
+} from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Chip from '@material-ui/core/Chip';
-import Avatar from '@material-ui/core/Avatar';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Skeleton from '@material-ui/lab/Skeleton';
 
 import ProfileHeader from '../components/profile/ProfileHeader';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
-import { requestUserById } from '../store/actions/auth';
 import ProfileBody from '../components/profile/ProfileBody';
-
+import { requestUserById } from '../store/actions/auth';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -208,7 +208,6 @@ function Profile(props) {
             </Container>
             <FollowTopicsModal
                 open={ openFollowTopicsModal }
-                followedTopics={ followedTopics }
                 handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
             <ExpertInModal
                 open={ openExpertInModal }

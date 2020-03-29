@@ -1,24 +1,24 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import { Link, withRouter } from 'react-router-dom';
+import {
+    Grid,
+    Container,
+    Button,
+    Card,
+    CardContent,
+    Typography,
+} from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
+
 import PostCard from '../components/blog/PostCard';
 import Blogs from '../components/blog/BlogsList';
 import CardLoader from '../components/base/CardLoader';
-
-import { requestPosts } from '../store/actions/blog';
 import FollowBlogsModal from '../components/blog/FollowBlogsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
 import BlogModal from '../components/blog/BlogModal';
-
+import { requestPosts } from '../store/actions/blog';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -35,28 +35,20 @@ function Home(props) {
     const {
         requestPostsFeed,
         user,
-        onLogout,
-        questions,
-        trendingQuestions,
-        followedBlogs,
         pending,
         expertIn,
         history,
         newBlog,
-        blogs,
         blogPending,
         posts,
-
     } = props;
 
     const classes = useStyles();
-
-
+    
     const [
         openFollowTopicsModal,
         setOpenFollowTopicsModal,
     ] = React.useState(user.blogs.length === 0);
-
 
     const handleFollowTopicsModalOpen = () => {
         setOpenFollowTopicsModal(true);
@@ -221,7 +213,6 @@ function Home(props) {
                 handleClose={ handleQuestionModalClose } />
             <FollowBlogsModal
                 open={ openFollowTopicsModal }
-                followedBlogs={ followedBlogs }
                 handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
             <ExpertInModal
                 open={ openExpertInModal }

@@ -32,10 +32,9 @@ import {
 } from '../../store/actions/blog';
 import { editQuestion } from '../../store/actions/questions';
 import {
-    addUserPreferences,
     addPreferencesPending,
+    maangeUserPreferences,
 } from '../../store/actions/auth';
-
 
 const useStyles = makeStyles(() => {
     return {
@@ -102,21 +101,13 @@ const FollowBlogsModal = (props) => {
         blogs,
         followedBlogs,
         requestBlogs,
-        addUserPreferences,
+        maangeUserPreferences,
     } = props;
 
 
     useEffect(() => {
         requestBlogs();
     }, [ requestBlogs ]);
-
-    for (let i = blogs.length - 1; i >= 0; i--){
-        for (let j = 0; j < followedBlogs.length; j++){
-            if (blogs[i] && (blogs[i]._id === followedBlogs[j]._id)){
-                blogs.splice(i, 1);
-            }
-        }
-    }
 
     const [
         filteredBlogs,
@@ -149,6 +140,10 @@ const FollowBlogsModal = (props) => {
         setChecked,
     ] = React.useState([]);
 
+    useEffect(() => {
+        setChecked(followedBlogs.map(t => t._id));
+    }, [ followedBlogs ]);
+
     const [
         selectedBlogs,
         setSelectedBlogs,
@@ -175,7 +170,7 @@ const FollowBlogsModal = (props) => {
     };
 
     const addBlogsToInterests = () => {
-        addUserPreferences({ blogs: checked });
+        maangeUserPreferences({ blogs: checked });
     };
 
     const renderBlogs = () => (
@@ -247,13 +242,14 @@ const FollowBlogsModal = (props) => {
 };
 
 FollowBlogsModal.defaultProps = {
-    followedTopics: [],
+    followedBlogs: [],
 };
 
 const mapStateToProps = (state) => {
     return {
         user: state.user,
         blogs: [ ...state.blog.blogs ],
+        followedBlogs: state.user.blogs,
     };
 };
 
@@ -268,10 +264,10 @@ const mapDispatchToProps = (dispatch) => {
         editQuestion: (questionID, body) => {
             dispatch(editQuestion(questionID, body));
         },
-        addUserPreferences: (body) => {
+        maangeUserPreferences: (body) => {
             dispatch(addPreferencesPending());
-            dispatch(addUserPreferences(body));
-        },
+            dispatch(maangeUserPreferences(body));
+        }
     };
 };
 

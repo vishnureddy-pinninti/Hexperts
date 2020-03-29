@@ -1,23 +1,22 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
+import {
+    Grid,
+    Container,
+} from '@material-ui/core';
 import InfiniteScroll from 'react-infinite-scroll-component';
+
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
 import Topics from '../components/topic/TopicsList';
 import CardLoader from '../components/base/CardLoader';
-
-import { requestUserQuestions, requestTrendingQuestions, toggleQuestionModal } from '../store/actions/questions';
 import TopCreators from '../components/answer/TopCreators';
 import AskQuestionCard from '../components/question/AskQuestionCard';
 import QuestionsList from '../components/question/QuestionsList';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
-import QuestionModal from '../components/base/QuestionModal';
-
+import { requestUserQuestions, requestTrendingQuestions, toggleQuestionModal } from '../store/actions/questions';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -35,13 +34,10 @@ function Home(props) {
         requestUserQuestions,
         requestTrendingQuestions,
         user,
-        onLogout,
         questions,
         trendingQuestions,
-        followedTopics,
         pending,
         expertIn,
-        topics,
         toggleQuestionModal,
     } = props;
 
@@ -66,38 +62,9 @@ function Home(props) {
         setOpenExpertInModal,
     ] = React.useState(user.interests.length && user.expertIn.length === 0);
 
-    const handleExpertInModalOpen = () => {
-        setOpenExpertInModal(true);
-    };
-
     const handleExpertInModalClose = () => {
         setOpenExpertInModal(false);
     };
-
-    const [
-        openQModal,
-        setOpenQModal,
-    ] = React.useState(false);
-
-    const handleClickQuestionModalOpen = () => {
-        setOpenQModal(true);
-    };
-
-    const handleQuestionModalClose = () => {
-        setOpenQModal(false);
-    };
-
-    const renderQuestionModal = (
-        <QuestionModal
-            open={ openQModal }
-            handleClose={ handleQuestionModalClose } />
-    );
-
-    useEffect(() => {
-        if (!pending) {
-            setOpenQModal(pending);
-        }
-    }, [ pending ]);
 
     const [
         items,
@@ -239,7 +206,6 @@ function Home(props) {
             </Container>
             <FollowTopicsModal
                 open={ openFollowTopicsModal }
-                followedTopics={ followedTopics }
                 handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
             <ExpertInModal
                 open={ openExpertInModal }
@@ -255,7 +221,6 @@ const mapStateToProps = (state) => {
         user: state.user.user,
         expertIn: state.user.expertIn,
         pending: state.user.pending,
-        followedTopics: state.user.interests,
         trendingQuestions: state.questions.trendingQuestions,
         modifiedQuestions: state.questions.modifiedQuestions,
         modifiedAnswers: state.answer.modifiedAnswers,
