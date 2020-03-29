@@ -48,6 +48,7 @@ const QuestionModal = (props) => {
         getQuestionSuggestions,
         handleDone,
         questionModal,
+        questionForModal,
         clearQuestionSuggestions,
     } = props;
 
@@ -78,6 +79,14 @@ const QuestionModal = (props) => {
             clearQuestionSuggestions();
         }
     }, [ questionModal ]);
+
+    React.useEffect(() => {
+        if (questionForModal) {
+            setValue(questionForModal);
+            setLoading(true);
+            getQuestionSuggestions({ question: questionForModal });
+        }
+    }, [ questionForModal ]);
 
 
     const renderTextField = ({ input }) => (
@@ -126,7 +135,7 @@ const QuestionModal = (props) => {
                         component={ renderTextField } />
                     <QuestionsList
                         openInNewWindow
-                        questions={ questionSuggestions.questionSuggestions || [] } /> 
+                        questions={ questionSuggestions.questionSuggestions || [] } />
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -153,6 +162,7 @@ const mapStateToProps = (state) => {
         user: state.user,
         questionSuggestions: state.questions.questionSuggestions,
         questionModal: state.questions.questionModal,
+        questionForModal: state.questions.questionForModal,
     };
 };
 

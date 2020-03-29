@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Container, Typography, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider, Tooltip} from '@material-ui/core';
-import { Help as HelpIcon, Link as LinkIcon, QuestionAnswerOutlined as  QuestionAnswerOutlinedIcon} from '@material-ui/icons';
-
+import { Grid, Container, Typography, List, ListItem, ListItemText, ListItemAvatar, ListItemSecondaryAction, Avatar, Divider, Tooltip, Button, CardHeader } from '@material-ui/core';
+import { Help as HelpIcon, Link as LinkIcon, QuestionAnswerOutlined as QuestionAnswerOutlinedIcon } from '@material-ui/icons';
+import AddIcon from '@material-ui/icons/Add';
 import EmptyResults from '../components/base/EmptyResults';
 import CardLoader from '../components/base/CardLoader';
 import { requestAdvancedSearch } from '../store/actions/search';
+import { toggleQuestionModal } from '../store/actions/questions';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -32,16 +33,18 @@ const useStyles = makeStyles((theme) => {
     };
 });
 
-const Search = props => {
+const Search = (props) => {
     const {
         match: {
-            params: { query },
+            params: { query 
+},
         },
         paginationHasMore,
         paginationIndex,
         results,
         requestSearch,
         totalCount,
+        toggleQuestionModal,
     } = props;
 
     useEffect(() => {
@@ -70,7 +73,7 @@ const Search = props => {
             </ListItem>
         </Link>
     );
-    
+
     const blog = (item) => (
         <Link
             className={ classes.link }
@@ -88,7 +91,7 @@ const Search = props => {
             </ListItem>
         </Link>
     );
-    
+
     const question = (item) => (
         <Link
             className={ classes.link }
@@ -105,7 +108,7 @@ const Search = props => {
             </ListItem>
         </Link>
     );
-    
+
     const answer = (item) => (
         <Link
             className={ classes.link }
@@ -122,7 +125,7 @@ const Search = props => {
             </ListItem>
         </Link>
     );
-    
+
     const post = (item) => (
         <Link
             className={ classes.link }
@@ -219,23 +222,38 @@ const Search = props => {
                     <Grid
                         item
                         xs={ 7 }>
-                        <Typography
-                            component="div"
-                            className={ classes.heading }>
-                            Showing 
-                            { ' ' }
-                            <b>
-                                { totalCount }
-                            </b>
-                            { ' ' }
-                            Results for
-                            { ' ' }
-                            <b>
-                                { query }
-                            </b>
-                        </Typography>
-                        { totalCount === null ? <CardLoader height={ 50 } />:
-                            <List className={ classes.root }>
+                        <CardHeader
+                            className={ classes.heading }
+                            action={ <Button
+                                variant="contained"
+                                size="small"
+                                style={ {
+                                    marginTop: 20,
+                                    marginLeft: 20,
+                                } }
+                                onClick={ () => { toggleQuestionModal(query); } }
+                                startIcon={ <AddIcon /> }
+                                color="primary">
+                                Add Question
+                                     </Button> }
+                            title={ <Typography
+                                component="div"
+                                className={ classes.heading }>
+                                Showing
+                                { ' ' }
+                                <b>
+                                    { totalCount }
+                                </b>
+                                { ' ' }
+                                Results for
+                                { ' ' }
+                                <b>
+                                    { query }
+                                </b>
+                            </Typography> } />
+
+                        { totalCount === null ? <CardLoader height={ 50 } />
+                            : <List className={ classes.root }>
                                 <InfiniteScroll
                                     dataLength={ results.length }
                                     next={ loadMore }
@@ -248,14 +266,13 @@ const Search = props => {
                                         showBackButton={ false }
                                         title=" Oops! No results matching with your criteria."
                                         description="Try different or less specific keywords and reset your filters." /> }
-                            </List>
-                        }
+                            </List> }
                     </Grid>
                 </Grid>
             </Container>
         </div>
     );
-}
+};
 
 const mapStateToProps = (state) => {
     return {
@@ -271,6 +288,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         requestSearch: (body, params) => {
             dispatch(requestAdvancedSearch(body, params));
+        },
+        toggleQuestionModal: (question) => {
+            dispatch(toggleQuestionModal(question));
         },
     };
 };

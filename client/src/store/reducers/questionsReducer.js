@@ -44,8 +44,9 @@ export default (state = initialState, action) => {
         case TOGGLE_QUESTION_MODAL:
             return {
                 ...state,
-                questionSuggestions: state.questionModal ? state.questionSuggestions : {},
                 questionModal: !state.questionModal,
+                questionSuggestions: state.questionModal ? {} : state.questionSuggestions,
+                questionForModal: state.questionModal ? '' : action.question,
             };
         case CLEAR_QUESTION_SUGGESTIONS:
             return {

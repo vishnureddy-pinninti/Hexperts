@@ -24,9 +24,10 @@ export const REQUEST_QUESTION_SUGGESTIONS = 'REQUEST_QUESTION_SUGGESTIONS';
 export const TOGGLE_QUESTION_MODAL = 'TOGGLE_QUESTION_MODAL';
 export const CLEAR_QUESTION_SUGGESTIONS = 'CLEAR_QUESTION_SUGGESTIONS';
 
-export const toggleQuestionModal = () => {
+export const toggleQuestionModal = (question) => {
     return {
         type: TOGGLE_QUESTION_MODAL,
+        question,
     };
 };
 
