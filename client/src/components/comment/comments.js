@@ -92,7 +92,6 @@ const Comments = (props) => {
     const renderTextField = ({ input }) => (
         <TextField
             { ...input }
-            autoFocus
             margin="dense"
             id="name"
             placeholder="Start typing your comment."

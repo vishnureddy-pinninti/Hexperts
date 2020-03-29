@@ -124,10 +124,9 @@ const QuestionModal = (props) => {
                     <Field
                         name="question"
                         component={ renderTextField } />
-                    { loading ? <CardLoader height={ 10 } />
-                        : <QuestionsList
-                            openInNewWindow
-                            questions={ questionSuggestions.questionSuggestions || [] } /> }
+                    <QuestionsList
+                        openInNewWindow
+                        questions={ questionSuggestions.questionSuggestions || [] } /> 
                 </DialogContent>
                 <DialogActions>
                     <Button
