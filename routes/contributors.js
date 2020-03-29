@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 
 const loginMiddleware = require('../middlewares/loginMiddleware');
+const { badge: { bronze, silver, gold, platinum } } = require('../utils/constants');
 
 module.exports = (app) => {
     app.get('/api/v1/top-contributors', loginMiddleware, async(req, res) => {
@@ -91,6 +92,46 @@ module.exports = (app) => {
                             },
                         },
                         reputation: 1,
+                        badge: {
+                            $switch: {
+                                branches: [
+                                    {
+                                        case: {
+                                            $and: [
+                                                { $gte: [ '$reputation', bronze ] },
+                                                { $lt : [ '$reputation', silver ] }
+                                            ]
+                                        },
+                                        then: 'bronze'
+                                    },
+                                    {
+                                        case: {
+                                            $and: [
+                                                { $gte: [ '$reputation', silver ] },
+                                                { $lt : [ '$reputation', gold ] }
+                                            ]
+                                        },
+                                        then: 'silver'
+                                    },
+                                    {
+                                        case: {
+                                            $and: [
+                                                { $gte: [ '$reputation', gold ] },
+                                                { $lt : [ '$reputation', platinum ] }
+                                            ]
+                                        },
+                                        then: 'gold'
+                                    },
+                                    {
+                                        case:  {
+                                            $gte: [ '$reputation', platinum ]
+                                        },
+                                        then: 'platinum'
+                                    },
+                                ],
+                                default: 'null',
+                            },
+                        },
                         name: 1,
                         email: 1,
                         jobTitle: 1,
