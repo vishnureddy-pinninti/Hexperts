@@ -22,10 +22,17 @@ export const RECEIVE_ANSWER_REQUESTS = 'RECEIVE_ANSWER_REQUESTS';
 export const RECEIVE_QUESTION_SUGGESTIONS = 'RECEIVE_QUESTION_SUGGESTIONS';
 export const REQUEST_QUESTION_SUGGESTIONS = 'REQUEST_QUESTION_SUGGESTIONS';
 export const TOGGLE_QUESTION_MODAL = 'TOGGLE_QUESTION_MODAL';
+export const CLEAR_QUESTION_SUGGESTIONS = 'CLEAR_QUESTION_SUGGESTIONS';
 
 export const toggleQuestionModal = () => {
     return {
         type: TOGGLE_QUESTION_MODAL,
+    };
+};
+
+export const clearQuestionSuggestions = () => {
+    return {
+        type: CLEAR_QUESTION_SUGGESTIONS,
     };
 };
 

@@ -10,9 +10,10 @@ import TextField from '@material-ui/core/TextField';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { Field, reduxForm, reset } from 'redux-form';
+import CardLoader from './CardLoader';
 import QuestionsList from '../question/QuestionsList';
-import { addUserQuestion, addQuestionPending, requestQuestionSuggestions } from '../../store/actions/questions';
 
+import { addUserQuestion, addQuestionPending, requestQuestionSuggestions, clearQuestionSuggestions } from '../../store/actions/questions';
 
 const useStyles = makeStyles(() => {
     return {
@@ -46,6 +47,8 @@ const QuestionModal = (props) => {
         question,
         getQuestionSuggestions,
         handleDone,
+        questionModal,
+        clearQuestionSuggestions,
     } = props;
 
     const [
@@ -53,10 +56,29 @@ const QuestionModal = (props) => {
         setValue,
     ] = React.useState(question);
 
+    const [
+        loading,
+        setLoading,
+    ] = React.useState(false);
+
     const onChange = (event) => {
         setValue(event.target.value);
+        setLoading(true);
         getQuestionSuggestions({ question: event.target.value });
     };
+
+    React.useEffect(() => {
+        setLoading(false);
+    }, [ questionSuggestions ]);
+
+    React.useEffect(() => {
+        if (questionModal) {
+            setValue('');
+            setLoading(false);
+            clearQuestionSuggestions();
+        }
+    }, [ questionModal ]);
+
 
     const renderTextField = ({ input }) => (
         <TextField
@@ -102,9 +124,10 @@ const QuestionModal = (props) => {
                     <Field
                         name="question"
                         component={ renderTextField } />
-                    { questionSuggestions
-                    && <QuestionsList
-                        questions={ questionSuggestions.questionSuggestions || [] } /> }
+                    { loading ? <CardLoader height={ 10 } />
+                        : <QuestionsList
+                            openInNewWindow
+                            questions={ questionSuggestions.questionSuggestions || [] } /> }
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -116,6 +139,7 @@ const QuestionModal = (props) => {
                     <Button
                         color="primary"
                         variant="contained"
+                        disabled={ loading }
                         type="submit">
                         Add
                     </Button>
@@ -129,6 +153,7 @@ const mapStateToProps = (state) => {
     return {
         user: state.user,
         questionSuggestions: state.questions.questionSuggestions,
+        questionModal: state.questions.questionModal,
     };
 };
 
@@ -141,6 +166,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         getQuestionSuggestions: (body, callback) => {
             dispatch(requestQuestionSuggestions(body, callback));
+        },
+        clearQuestionSuggestions: () => {
+            dispatch(clearQuestionSuggestions());
         },
     };
 };

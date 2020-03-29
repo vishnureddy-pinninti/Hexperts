@@ -193,7 +193,6 @@ const TopBar = (props) => {
     }, [
         history,
         addedQuestion,
-        addedQuestion._id,
         pending,
     ]);
 

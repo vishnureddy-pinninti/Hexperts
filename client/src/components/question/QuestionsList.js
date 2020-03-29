@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 const Questions = (props) => {
     const classes = useStyles();
 
-    const { questions } = props;
+    const { questions, openInNewWindow } = props;
 
     const renderQuestions = () => questions.map((question) => (
         <ListItem
@@ -47,6 +47,7 @@ const Questions = (props) => {
             key={ question._id }>
             <Link
                 to={ `/question/${question._id}` }
+                target={ openInNewWindow ? '_blank' : '' }
                 className={ classes.link }>
                 <Typography className={ classes.link }>
                     { question.question || question.value }
@@ -66,12 +67,17 @@ const Questions = (props) => {
                     { props.title }
                 </Box>
             </Typography>
-            { props.title && <Divider />}
+            { props.title && <Divider /> }
             <List>
-                { renderQuestions() }
+                { questions && renderQuestions() }
             </List>
         </>
     );
+};
+
+Questions.defautlProps = {
+    openInNewWindow: false,
+    questions: [],
 };
 
 export default Questions;
