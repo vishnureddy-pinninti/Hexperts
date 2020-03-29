@@ -12,8 +12,8 @@ import { RECEIVE_USER_QUESTIONS,
     RECEIVE_EDITED_QUESTION,
     REQUEST_RELATED_QUESTIONS,
     RECEIVE_QUESTION_SUGGESTIONS,
-    TOGGLE_QUESTION_MODAL,
- } from '../actions/questions';
+    CLEAR_QUESTION_SUGGESTIONS,
+    TOGGLE_QUESTION_MODAL } from '../actions/questions';
 import { RECEIVE_ADDED_ANSWER } from '../actions/answer';
 
 const initialState = {
@@ -46,6 +46,11 @@ export default (state = initialState, action) => {
                 ...state,
                 questionSuggestions: state.questionModal ? state.questionSuggestions : {},
                 questionModal: !state.questionModal,
+            };
+        case CLEAR_QUESTION_SUGGESTIONS:
+            return {
+                ...state,
+                questionSuggestions: {},
             };
         case RECEIVE_QUESTION_SUGGESTIONS:
             return {
@@ -118,8 +123,6 @@ export default (state = initialState, action) => {
                 newQuestion: {},
                 question: action.question,
                 pending: false,
-                questionSuggestions: {},
-                questionModal: false,
                 modifiedQuestions: {},
             };
         case RECEIVE_FOLLOWED_QUESTION:
