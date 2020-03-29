@@ -61,10 +61,10 @@ function Answer(props) {
                     spacing={ 3 }>
                     <Grid
                         item
-                        xs={ 2 } />
+                        xs={ 1 } />
                     <Grid
                         item
-                        xs={ 7 }>
+                        xs={ 10 }>
                         { loading ? <Skeleton
                             variant="rect"
                             height={ 400 } />
@@ -72,7 +72,7 @@ function Answer(props) {
                     </Grid>
                     <Grid
                         item
-                        xs={ 3 } />
+                        xs={ 1 } />
                 </Grid>
             </Container>
         </div>

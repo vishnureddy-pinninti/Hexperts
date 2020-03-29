@@ -33,17 +33,6 @@ function Post(props) {
             hideHeaderHelperText />
     );
 
-    if (pending) {
-        return (
-            <div style={{ width: 700, margin: 'auto', marginTop: 100 }}>
-                <Skeleton
-                    variant="rect"
-                    style={ { marginTop: 70 } }
-                    height={ 400 } />
-            </div>
-        );
-    }
-
     return (
         <div className="App">
             <Container fixed>
@@ -54,15 +43,18 @@ function Post(props) {
                     spacing={ 3 }>
                     <Grid
                         item
-                        xs={ 2 } />
+                        xs={ 1 } />
                     <Grid
                         item
-                        xs={ 7 }>
-                        { post && post.title && renderPost() }
+                        xs={ 10 }>
+                        { pending ?
+                            <Skeleton
+                                variant="rect"
+                                height={ 400 } />: post && post.title && renderPost() }
                     </Grid>
                     <Grid
                         item
-                        xs={ 3 } />
+                        xs={ 1 } />
                 </Grid>
             </Container>
         </div>

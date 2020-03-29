@@ -137,17 +137,6 @@ function Comment(props) {
         </Card>
     );
 
-    if (pending) {
-        return (
-            <div style={{ width: 700, margin: 'auto', marginTop: 100 }}>
-                <Skeleton
-                    variant="rect"
-                    style={ { marginTop: 70 } }
-                    height={ 150 } />
-            </div>
-        );
-    }
-
     return (
         <div className="App">
             <Container fixed>
@@ -162,10 +151,14 @@ function Comment(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        { comment && comment.answer && renderTitle(comment) }
-                        { comment && comment.answer && renderComment(comment) }
-                        { postComment && postComment.post && renderPostCommentTitle(postComment) }
-                        { postComment && postComment.post && renderComment(postComment) }
+                        { pending ? <Skeleton
+                            variant="rect"
+                            height={ 150 } /> : <>
+                                { comment && comment.answer && renderTitle(comment) }
+                                { comment && comment.answer && renderComment(comment) }
+                                { postComment && postComment.post && renderPostCommentTitle(postComment) }
+                                { postComment && postComment.post && renderComment(postComment) }
+                            </>}
                     </Grid>
                     <Grid
                         item
