@@ -30,4 +30,10 @@ module.exports = {
         POST_NOTIFICATION: 'Post',
         USER_NOTIFICATION: 'User',
     },
+    badge: {
+        bronze: 50,
+        silver: 100,
+        gold: 150,
+        platinum: 200,
+    }
 };

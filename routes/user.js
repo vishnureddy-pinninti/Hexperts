@@ -16,6 +16,7 @@ const {
     errors: {
         USER_NOT_FOUND, TOPIC_NOT_FOUND, BLOG_NOT_FOUND, UNAUTHORIZED,
     },
+    badge: { bronze, silver, gold, platinum },
 } = require('../utils/constants');
 
 module.exports = (app) => {
@@ -236,6 +237,46 @@ module.exports = (app) => {
                         jobTitle: 1,
                         userid: 1,
                         reputation: 1,
+                        badge: {
+                            $switch: {
+                                branches: [
+                                    {
+                                        case: {
+                                            $and: [
+                                                { $gte: [ '$reputation', bronze ] },
+                                                { $lt : [ '$reputation', silver ] }
+                                            ]
+                                        },
+                                        then: 'bronze'
+                                    },
+                                    {
+                                        case: {
+                                            $and: [
+                                                { $gte: [ '$reputation', silver ] },
+                                                { $lt : [ '$reputation', gold ] }
+                                            ]
+                                        },
+                                        then: 'silver'
+                                    },
+                                    {
+                                        case: {
+                                            $and: [
+                                                { $gte: [ '$reputation', gold ] },
+                                                { $lt : [ '$reputation', platinum ] }
+                                            ]
+                                        },
+                                        then: 'gold'
+                                    },
+                                    {
+                                        case:  {
+                                            $gte: [ '$reputation', platinum ]
+                                        },
+                                        then: 'platinum'
+                                    },
+                                ],
+                                default: 'null',
+                            },
+                        },
                         blogs: 1,
                         expertIn: 1,
                         interests: 1,
