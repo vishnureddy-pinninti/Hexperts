@@ -3,8 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    Card,
+import { Card,
     CardHeader,
     CardContent,
     CardActions,
@@ -12,26 +11,21 @@ import {
     Button,
     Box,
     Divider,
-    Collapse
-} from '@material-ui/core';
+    Collapse } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
-import {
-    ChatBubbleOutlineRounded as ChatBubbleOutlineRoundedIcon,
+import { ChatBubbleOutlineRounded as ChatBubbleOutlineRoundedIcon,
     ThumbUpOutlined as ThumbUpOutlinedIcon,
     ThumbDownOutlined as ThumbDownOutlinedIcon,
     ThumbUpAlt as ThumbUpAltIcon,
     ThumbDownAlt as ThumbDownAltIcon,
-    ChatBubble as ChatBubbleIcon,
-} from '@material-ui/icons';
+    ChatBubble as ChatBubbleIcon } from '@material-ui/icons';
 
 import Comments from '../comment/comments';
 import ReadMore from '../base/ReadMore';
 import Avatar from '../base/Avatar';
-import {
-    upvoteAnswer,
+import { upvoteAnswer,
     addAnswerToCache,
-    downvoteAnswer,
-} from '../../store/actions/answer';
+    downvoteAnswer } from '../../store/actions/answer';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -100,7 +94,7 @@ const AnswerCard = (props) => {
             name,
             jobTitle,
             email 
-        },
+},
         topics,
         downvoters,
         upvoters,

@@ -5,8 +5,7 @@ import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    Card,
+import { Card,
     CardActions,
     CardContent,
     Button,
@@ -18,18 +17,15 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
-} from '@material-ui/core';
-import {
-    EditTwoTone as EditTwoToneIcon,
-    RssFeedSharp as RssFeedSharpIcon,
-} from '@material-ui/icons';
+    DialogTitle } from '@material-ui/core';
+import { EditTwoTone as EditTwoToneIcon,
+    RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
 
-import {
-    followBlog,
+import { followBlog,
     addPostToBlog,
-    addBlogPending,
-} from '../../store/actions/blog';
+    addBlogPending } from '../../store/actions/blog';
+
+import { followTopic } from '../../store/actions/topic';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -92,10 +88,11 @@ const BlogHeader = (props) => {
         handleSubmit,
         user,
         resetPost,
+        followTopic,
     } = props;
 
     const handleFollowClick = () => {
-        followBlog({ blogID: id });
+        followTopic({ interestId: id });
     };
 
     const [
@@ -180,7 +177,7 @@ const BlogHeader = (props) => {
                         height: '100%',
                         width: '100%',
                     },
-                }
+                },
             } } />
     );
 
@@ -251,7 +248,7 @@ const BlogHeader = (props) => {
                     <Box
                         fontWeight="fontWeightBold"
                         fontSize={ 20 }>
-                        { blog.name }
+                        { blog.name || blog.topic }
                     </Box>
                 }
                 subheader={ blog.description } />
@@ -265,13 +262,13 @@ const BlogHeader = (props) => {
                     { ' ' }
                     { followers.length }
                 </Button>
-                <Button
+                { /* <Button
                     size="small"
                     onClick={ handleOpen }
                     startIcon={ <EditTwoToneIcon /> }
                     color="default">
                     Add Post
-                </Button>
+                </Button> */ }
             </CardActions>
             <Collapse
                 in={ open }
@@ -298,6 +295,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         followBlog: (body) => {
             dispatch(followBlog(body));
+        },
+        followTopic: (body) => {
+            dispatch(followTopic(body));
         },
         addPostToBlog: (body) => {
             dispatch(addBlogPending());

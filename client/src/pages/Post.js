@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
-import {
-    Grid,
-    Container,
-} from '@material-ui/core';
+import { Grid,
+    Container } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
 
@@ -13,7 +11,8 @@ import { requestPostById } from '../store/actions/blog';
 function Post(props) {
     const {
         match: {
-            params: { postId },
+            params: { postId 
+},
         },
         requestPost,
         post,
@@ -30,7 +29,7 @@ function Post(props) {
     const renderPost = () => (
         <PostCard
             post={ post }
-            hideHeaderHelperText />
+            hideHeaderHelperText={ false } />
     );
 
     return (
@@ -47,10 +46,10 @@ function Post(props) {
                     <Grid
                         item
                         xs={ 10 }>
-                        { pending ?
-                            <Skeleton
+                        { pending
+                            ? <Skeleton
                                 variant="rect"
-                                height={ 400 } />: post && post.title && renderPost() }
+                                height={ 400 } /> : post && post.title && renderPost() }
                     </Grid>
                     <Grid
                         item

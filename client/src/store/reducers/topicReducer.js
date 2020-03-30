@@ -57,20 +57,23 @@ export default (state = initialState, action) => {
                 pending: false,
             };
         case RECEIVE_FOLLOWED_TOPIC:
-            followers = [ ...state.topic.followers ];
-            index = followers.indexOf(action.res._id);
-            if (index >= 0){
-                followers.splice(index, 1);
-            }
-            else {
-                followers.push(action.res._id);
-            }
-            temp = state.topic;
-            temp.followers = followers;
-            return {
-                ...state,
-                topic: temp,
-            };
+            if (state.topic && state.topic.followers){
+                followers = [ ...state.topic.followers ];
+                index = followers.indexOf(action.res._id);
+                if (index >= 0){
+                    followers.splice(index, 1);
+                }
+                else {
+                    followers.push(action.res._id);
+                }
+                temp = state.topic;
+                temp.followers = followers;
+
+                return {
+                    ...state,
+                    topic: temp,
+                };
+            } return state;
         default:
             return state;
     }

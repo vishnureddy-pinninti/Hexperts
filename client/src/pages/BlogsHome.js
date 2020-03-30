@@ -1,21 +1,22 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    Grid,
+import { Grid,
     Container,
     Button,
     Card,
     CardContent,
-    Typography,
-} from '@material-ui/core';
+    Typography } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import PostCard from '../components/blog/PostCard';
 import Blogs from '../components/blog/BlogsList';
 import CardLoader from '../components/base/CardLoader';
-import FollowBlogsModal from '../components/blog/FollowBlogsModal';
+// import FollowBlogsModal from '../components/blog/FollowBlogsModal';
+import BlogPostModal from '../components/blog/PostModal';
+import FollowTopicsModal from '../components/topic/FollowTopicsModal';
+
 import ExpertInModal from '../components/topic/ExpertInModal';
 import BlogModal from '../components/blog/BlogModal';
 import { requestPosts } from '../store/actions/blog';
@@ -44,7 +45,7 @@ function Home(props) {
     } = props;
 
     const classes = useStyles();
-    
+
     const [
         openFollowTopicsModal,
         setOpenFollowTopicsModal,
@@ -82,6 +83,19 @@ function Home(props) {
 
     const handleQuestionModalClose = () => {
         setOpenQModal(false);
+    };
+
+    const [
+        openPostModal,
+        setOpenPostModal,
+    ] = React.useState(false);
+
+    const handleClickPostModalOpen = () => {
+        setOpenPostModal(true);
+    };
+
+    const handlePostModalClose = () => {
+        setOpenPostModal(false);
     };
 
     useEffect(() => {
@@ -149,7 +163,7 @@ function Home(props) {
         <PostCard
             key={ post._id }
             post={ post }
-            hideHeaderHelperText />
+            hideHeaderHelperText={ false } />
     ));
 
     return (
@@ -193,6 +207,24 @@ function Home(props) {
                                     className={ classes.title }
                                     color="textSecondary"
                                     gutterBottom>
+                                    Feel free to choose a topic and start writing a blog post.
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    fullWidth
+                                    onClick={ handleClickPostModalOpen }
+                                    className={ classes.margin }>
+                                    Create Blog Post
+                                </Button>
+                            </CardContent>
+                        </Card>
+                        { /* <Card className={ classes.root }>
+                            <CardContent>
+                                <Typography
+                                    className={ classes.title }
+                                    color="textSecondary"
+                                    gutterBottom>
                                     Feel free to create a blog and start contributing.
                                 </Typography>
                                 <Button
@@ -204,16 +236,22 @@ function Home(props) {
                                     Create Blog
                                 </Button>
                             </CardContent>
-                        </Card>
+                        </Card> */ }
                     </Grid>
                 </Grid>
             </Container>
             <BlogModal
                 open={ openQModal }
                 handleClose={ handleQuestionModalClose } />
-            <FollowBlogsModal
+            <BlogPostModal
+                open={ openPostModal }
+                handleClose={ handlePostModalClose } />
+            <FollowTopicsModal
                 open={ openFollowTopicsModal }
                 handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
+            { /* <FollowBlogsModal
+                open={ openFollowTopicsModal }
+                handleFollowTopicsModalClose={ handleFollowTopicsModalClose } /> */ }
             <ExpertInModal
                 open={ openExpertInModal }
                 expertIn={ expertIn }
