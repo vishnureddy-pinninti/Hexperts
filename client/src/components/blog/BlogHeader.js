@@ -58,6 +58,10 @@ const useStyles = makeStyles((theme) => {
                 borderColor: theme.palette.primary.dark,
             },
         },
+        editor: {
+            height: 300,
+            overflow: 'auto',
+        },
         small: {
             width: theme.spacing(3),
             height: theme.spacing(3),
@@ -162,7 +166,7 @@ const BlogHeader = (props) => {
             place
             editorState={ post }
             wrapperClassName={ classes.editorWrapper }
-            editorClassName={ classes.root }
+            editorClassName={ classes.editor }
             onEditorStateChange={ onEditorStateChange }
             toolbar={ {
                 inline: { inDropdown: true },

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-const Blog = mongoose.model('blogs');
+// const Blog = mongoose.model('blogs');
 const Post = mongoose.model('posts');
 const User = mongoose.model('users');
+const Topic = mongoose.model('topics');
 
 const { errors: { POST_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
@@ -13,19 +14,22 @@ const htmlToText = require('../utils/htmlToText');
 module.exports = (app) => {
     app.post('/api/v1/post.add', loginMiddleware, async(req, res) => {
         const {
-            blog,
+            // blog,
             title,
             description,
+            topics = [],
         } = req.body;
 
         const { _id } = req.user;
 
         try {
-            const chosenBlog = await Blog.findById(mongoose.Types.ObjectId(blog));
+            // const chosenBlog = await Blog.findById(mongoose.Types.ObjectId(blog));
+            const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
 
             const newPost = new Post({
                 author: _id,
-                blog,
+                // blog,
+                topics: chosenTopics.map((t) => t._id),
                 title,
                 description,
                 plainText: htmlToText(description),
@@ -36,7 +40,7 @@ module.exports = (app) => {
             const responseObject = {
                 ...newPost._doc,
                 author: req.user,
-                blog: chosenBlog,
+                topics: chosenTopics,
             };
 
             emailNotify('newPost', {
@@ -64,7 +68,8 @@ module.exports = (app) => {
             pagination,
         } = req.queryParams;
         const {
-            blogs = [],
+            // blogs = [],
+            interests = [],
             _id,
         } = req.user;
 
@@ -93,7 +98,8 @@ module.exports = (app) => {
 
         const query = {
             $or: [
-                { blog: { $in: blogs.map((blog) => mongoose.Types.ObjectId(blog)) } },
+                // { blog: { $in: blogs.map((blog) => mongoose.Types.ObjectId(blog)) } },
+                { topics: { $in: interests.map((interest) => mongoose.Types.ObjectId(interest)) } },
                 { author: { $in: dbUser[0].following.map((f) => mongoose.Types.ObjectId(f._id)) } },
             ],
         };
@@ -118,12 +124,20 @@ module.exports = (app) => {
                         preserveNullAndEmptyArrays: true,
                     },
                 },
+                // {
+                //     $lookup: {
+                //         from: 'blogs',
+                //         localField: 'blog',
+                //         foreignField: '_id',
+                //         as: 'blog',
+                //     },
+                // },
                 {
                     $lookup: {
-                        from: 'blogs',
-                        localField: 'blog',
+                        from: 'topics',
+                        localField: 'topics',
                         foreignField: '_id',
-                        as: 'blog',
+                        as: 'topics',
                     },
                 },
                 {
@@ -151,7 +165,8 @@ module.exports = (app) => {
                         downvoters: 1,
                         lastModified: 1,
                         postedDate: 1,
-                        blog: 1,
+                        // blog: 1,
+                        topics: 1,
                         title: 1,
                         description: 1,
                         upvoters: 1,
@@ -201,18 +216,26 @@ module.exports = (app) => {
                         preserveNullAndEmptyArrays: true,
                     },
                 },
+                // {
+                //     $lookup: {
+                //         from: 'blogs',
+                //         localField: 'blog',
+                //         foreignField: '_id',
+                //         as: 'blog',
+                //     },
+                // },
+                // {
+                //     $unwind: {
+                //         path: '$blog',
+                //         preserveNullAndEmptyArrays: true,
+                //     },
+                // },
                 {
                     $lookup: {
-                        from: 'blogs',
-                        localField: 'blog',
+                        from: 'topics',
+                        localField: 'topics',
                         foreignField: '_id',
-                        as: 'blog',
-                    },
-                },
-                {
-                    $unwind: {
-                        path: '$blog',
-                        preserveNullAndEmptyArrays: true,
+                        as: 'topics',
                     },
                 },
                 {
@@ -240,7 +263,7 @@ module.exports = (app) => {
                         downvoters: 1,
                         lastModified: 1,
                         postedDate: 1,
-                        blog: 1,
+                        topics: 1,
                         title: 1,
                         description: 1,
                         upvoters: 1,
@@ -276,6 +299,7 @@ module.exports = (app) => {
             const {
                 title,
                 description,
+                topics,
             } = req.body;
 
             const post = await Post.findById(postID);
@@ -292,6 +316,12 @@ module.exports = (app) => {
                     post.description = description;
                     post.plainText = htmlToText(description);
                     responseObject.description = description;
+                }
+
+                if (topics) {
+                    const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
+                    post.topics = topics;
+                    responseObject.topics = chosenTopics;
                 }
 
                 post.lastModified = Date.now();
