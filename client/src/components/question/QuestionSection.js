@@ -163,7 +163,7 @@ const QuestionSection = (props) => {
                     component="h2">
                     { question.question }
                 </Typography>
-                { question.description && <>
+                { question.plainText && <>
                     <Typography
                         component="p">
                         Description:
@@ -171,7 +171,7 @@ const QuestionSection = (props) => {
                     <CardContent>
                         { renderDescription(question) }
                     </CardContent>
-                </> }
+                                        </> }
                 <Typography
                     variant="body2"
                     color="textSecondary"

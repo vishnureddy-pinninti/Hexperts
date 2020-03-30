@@ -251,13 +251,13 @@ function ProfileBody(props) {
                 variant={ selectedTab === 'Posts' ? 'default' : 'outlined' }
                 onClick={ () => { getData('Posts'); } }
                 clickable />
-            <Chip
+            { /* <Chip
                 label={ `Blogs ${userProfile.blogs && userProfile.blogs.length}` }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Blogs' ? 'default' : 'outlined' }
                 onClick={ () => { getData('Blogs'); } }
-                clickable />
+                clickable /> */ }
             <Chip
                 label={ `Followers ${userProfile.followers && userProfile.followers.length}` }
                 className={ classes.chip }
@@ -324,7 +324,7 @@ function ProfileBody(props) {
                     endMessage={ items.length !== 0
                         && <p style={ { textAlign: 'center' } }>
                             <b>Yay! You have seen it all</b>
-                           </p> }>
+                        </p> }>
                     { renderResults(items) }
                 </InfiniteScroll>
                 { items && items.length === 0 && !pagination.hasMore && <EmptyResults
