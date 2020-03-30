@@ -19,7 +19,19 @@ function Post(props) {
         pending,
     } = props;
 
+    const [
+        loading,
+        setLoading,
+    ] = React.useState(false);
+
     useEffect(() => {
+        if (post.title){
+            setLoading(false);
+        }
+    }, [ post ]);
+
+    useEffect(() => {
+        setLoading(true);
         requestPost(postId);
     }, [
         requestPost,
@@ -46,7 +58,7 @@ function Post(props) {
                     <Grid
                         item
                         xs={ 10 }>
-                        { pending
+                        { loading
                             ? <Skeleton
                                 variant="rect"
                                 height={ 400 } /> : post && post.title && renderPost() }

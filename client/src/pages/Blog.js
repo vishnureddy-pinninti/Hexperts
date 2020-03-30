@@ -11,7 +11,8 @@ import { Button,
 import BlogPostModal from '../components/blog/PostModal';
 import BlogsList from '../components/blog/BlogsList';
 import Header from '../components/blog/BlogHeader';
-import FollowBlogsModal from '../components/blog/FollowBlogsModal';
+// import FollowBlogsModal from '../components/blog/FollowBlogsModal';
+import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import EmptyResults from '../components/base/EmptyResults';
 import CardLoader from '../components/base/CardLoader';
 import PostCard from '../components/blog/PostCard';
@@ -230,10 +231,13 @@ function Topic(props) {
             <BlogPostModal
                 open={ openPostModal }
                 handleClose={ handlePostModalClose } />
-            <FollowBlogsModal
+            <FollowTopicsModal
+                open={ openFollowTopicsModal }
+                handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
+            { /* <FollowBlogsModal
                 open={ openFollowTopicsModal }
                 followedBlogs={ followedBlogs }
-                handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
+                handleFollowTopicsModalClose={ handleFollowTopicsModalClose } /> */ }
         </div>
     );
 }
