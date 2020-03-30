@@ -23,7 +23,10 @@ const useStyles = makeStyles({
         minHeight: 300,
         padding: 10,
     },
-
+    editor: {
+        height: 300,
+        overflow: 'auto',
+    },
     link: {
         textDecoration: 'none',
         color: 'inherit',
@@ -64,6 +67,8 @@ export default function DescriptionModal(props) {
     return (
         <div>
             <Dialog
+                scroll="paper"
+                maxWidth="md"
                 open={ open }
                 onClose={ handleClose }>
                 <DialogTitle
@@ -82,7 +87,7 @@ export default function DescriptionModal(props) {
                         editorState={ description }
                         editorRef={ setEditorReference }
                         wrapperClassName={ classes.editorWrapper }
-                        editorClassName={ classes.root }
+                        editorClassName={ classes.editor }
                         onEditorStateChange={ onEditorStateChange }
                         toolbar={ {
                             blockType: { inDropdown: false },
