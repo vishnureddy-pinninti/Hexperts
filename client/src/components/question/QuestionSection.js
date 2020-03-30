@@ -163,13 +163,15 @@ const QuestionSection = (props) => {
                     component="h2">
                     { question.question }
                 </Typography>
-                <Typography
-                    component="p">
-                    Description:
-                </Typography>
-                <CardContent>
-                    { renderDescription(question) }
-                </CardContent>
+                { question.description && <>
+                    <Typography
+                        component="p">
+                        Description:
+                    </Typography>
+                    <CardContent>
+                        { renderDescription(question) }
+                    </CardContent>
+                </> }
                 <Typography
                     variant="body2"
                     color="textSecondary"

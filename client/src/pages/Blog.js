@@ -4,12 +4,16 @@ import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Skeleton from '@material-ui/lab/Skeleton';
+import { Button,
+    Card,
+    CardContent,
+    Typography } from '@material-ui/core';
+import BlogPostModal from '../components/blog/PostModal';
 import BlogsList from '../components/blog/BlogsList';
 import Header from '../components/blog/BlogHeader';
 import FollowBlogsModal from '../components/blog/FollowBlogsModal';
 import EmptyResults from '../components/base/EmptyResults';
 import CardLoader from '../components/base/CardLoader';
-
 import PostCard from '../components/blog/PostCard';
 import { requestBlogById } from '../store/actions/blog';
 
@@ -141,6 +145,19 @@ function Topic(props) {
             hideHeaderHelperText />
     ));
 
+    const [
+        openPostModal,
+        setOpenPostModal,
+    ] = React.useState(false);
+
+    const handleClickPostModalOpen = () => {
+        setOpenPostModal(true);
+    };
+
+    const handlePostModalClose = () => {
+        setOpenPostModal(false);
+    };
+
     return (
         <div className="App">
             <Container fixed>
@@ -180,18 +197,39 @@ function Topic(props) {
                                 </p>
                             }>
                             { renderPosts(items) }
-                           </InfiniteScroll> }
+                        </InfiniteScroll> }
                                 { (items.length === 0 && newPosts.length === 0) && <EmptyResults
                                     title="No blog posts yet."
                                     description="Feel free to contribute to this blog and earn points."
                                     showBackButton={ false } /> }
-                              </> }
+                            </> }
                     </Grid>
                     <Grid
                         item
-                        xs={ 2 } />
+                        xs={ 2 }>
+                        <Card>
+                            <CardContent>
+                                <Typography
+
+                                    color="textSecondary"
+                                    gutterBottom>
+                                    Feel free to choose a topic and start writing a blog post.
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    fullWidth
+                                    onClick={ handleClickPostModalOpen }>
+                                    Create Blog Post
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </Grid>
                 </Grid>
             </Container>
+            <BlogPostModal
+                open={ openPostModal }
+                handleClose={ handlePostModalClose } />
             <FollowBlogsModal
                 open={ openFollowTopicsModal }
                 followedBlogs={ followedBlogs }

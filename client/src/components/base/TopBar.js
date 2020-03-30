@@ -429,7 +429,7 @@ const TopBar = (props) => {
                                     <Button
                                         startIcon={ <GroupIcon /> }
                                         size="large"
-                                        className={ path === '/Blogs' ? classes.activeMenuButton : classes.menuButton }>
+                                        className={ path === '/Blogs' || path.startsWith('/Blog') || path.startsWith('/Post') ? classes.activeMenuButton : classes.menuButton }>
                                         Blogs
                                     </Button>
                                 </Link>

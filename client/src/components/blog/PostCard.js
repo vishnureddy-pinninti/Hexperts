@@ -98,6 +98,7 @@ const AnswerCard = (props) => {
         downvoters,
         upvoters,
         blogs,
+        topics,
         postedDate,
     } = post;
 
@@ -142,12 +143,12 @@ const AnswerCard = (props) => {
         history.push(`/profile/${_id}`);
     };
 
-    const renderTopics = () => blogs.map((blog) => (
+    const renderTopics = (blogs) => blogs.map((blog) => (
         <Link
             key={ blog._id }
             className={ classes.topicLink }
             to={ `/blog/${blog._id}` }>
-            { blog.name }
+            { blog.name || blog.topic }
         </Link>
     ));
 
@@ -157,8 +158,8 @@ const AnswerCard = (props) => {
             color="textSecondary"
             className={ classes.topics }
             component="p">
-            Answer -
-            { blogs && blogs.length ? renderTopics() : ' Recommended to you' }
+            Post -
+            { topics && topics.length ? renderTopics(topics) : ' Recommended to you' }
         </Typography>
     );
 

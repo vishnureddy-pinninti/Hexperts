@@ -95,7 +95,7 @@ module.exports = (app) => {
                                     $expr: {
                                         $in: [
                                             '$$id',
-                                            '$blogs',
+                                            '$interests',
                                         ],
                                     },
                                 },
@@ -208,7 +208,7 @@ module.exports = (app) => {
                 {
                     $project: {
                         author: 1,
-                        name: 1,
+                        topic: 1,
                         lastModified: 1,
                         createdDate: 1,
                         imageUrl: 1,

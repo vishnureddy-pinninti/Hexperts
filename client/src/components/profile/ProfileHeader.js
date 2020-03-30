@@ -8,6 +8,8 @@ import RssFeedSharpIcon from '@material-ui/icons/RssFeedSharp';
 import CardHeader from '@material-ui/core/CardHeader';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import IconButton from '@material-ui/core/IconButton';
+import Badge from '@material-ui/core/Badge';
+import { Avatar as MuiAvatar } from '@material-ui/core';
 
 import Avatar from '../base/Avatar';
 import { addAnswerToQuestion, addAnswerPending } from '../../store/actions/answer';
@@ -25,7 +27,7 @@ const useStyles = makeStyles((theme) => {
         large: {
             width: theme.spacing(15),
             height: theme.spacing(15),
-            borderRadius: 0,
+
         },
         editorWrapper: {
             border: '1px solid #F1F1F1',
@@ -49,6 +51,7 @@ const TopicSection = (props) => {
         followers,
         user,
         isOwner,
+        badge,
         followUser,
     } = props;
 
@@ -78,7 +81,7 @@ const TopicSection = (props) => {
                 Follow
                 { ' ' }
                 { followers.length }
-                          </Button> }
+            </Button> }
         </>
     );
 
@@ -86,11 +89,24 @@ const TopicSection = (props) => {
         <Card>
             <CardHeader
                 avatar={
-                    <Avatar
-                        aria-label="recipe"
-                        alt={ name }
-                        user={ mail }
-                        className={ classes.large } />
+                    <Badge
+                        overlap="circle"
+                        anchorOrigin={ {
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        } }
+                        badgeContent={ badge && <MuiAvatar
+                            alt={ badge }
+                            title={ badge }
+                            className={ classes.small }
+                            src={ `/${badge}.jpg` } /> }>
+                        <Avatar
+                            aria-label={ name }
+                            alt={ name }
+                            user={ mail }
+                            variant="square"
+                            className={ classes.large } />
+                    </Badge>
                 }
                 action={ <>
                     { isOwner
@@ -100,8 +116,8 @@ const TopicSection = (props) => {
                         color="secondary"
                         onClick={ props.onLogout }>
                         <ExitToAppIcon />
-                       </IconButton> }
-                         </> }
+                    </IconButton> }
+                </> }
                 title={ renderTitle() } />
         </Card>
     );

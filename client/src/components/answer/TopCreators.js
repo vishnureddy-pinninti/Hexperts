@@ -5,11 +5,13 @@ import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-// import Avatar from '@material-ui/core/Avatar';
+import { Avatar as MuiAvatar } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Badge from '@material-ui/core/Badge';
+
 import { requestTopCreators } from '../../store/actions/auth';
 import Avatar from '../base/Avatar';
 
@@ -24,6 +26,14 @@ const useStyles = makeStyles((theme) => {
         userLink: {
             textDecoration: 'none',
             color: 'inherit',
+        },
+        large: {
+            width: theme.spacing(6),
+            height: theme.spacing(6),
+        },
+        small: {
+            width: theme.spacing(3),
+            height: theme.spacing(3),
         },
     };
 });
@@ -44,9 +54,21 @@ function TopCreators(props) {
             <ListItem
                 alignItems="flex-start">
                 <ListItemAvatar>
-                    <Avatar
-                        alt={ user.name }
-                        user={ user.email } />
+                    <Badge
+                        overlap="circle"
+                        anchorOrigin={ {
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        } }
+                        badgeContent={ user.badge && <MuiAvatar
+                            alt={ user.badge }
+                            title={ user.badge }
+                            className={ classes.small }
+                            src={ `/${user.badge}.jpg` } /> }>
+                        <Avatar
+                            alt={ user.name }
+                            user={ user.email } />
+                    </Badge>
                 </ListItemAvatar>
                 <ListItemText
                     primary={ user.name }

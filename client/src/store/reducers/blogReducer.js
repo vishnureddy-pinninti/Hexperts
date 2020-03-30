@@ -14,6 +14,8 @@ import { ADD_BLOG_PENDING,
     RECEIVE_POST_COMMENTS,
     RECEIVE_FOLLOWED_BLOG } from '../actions/blog';
 
+import { RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
+
 import { RECEIVE_COMMENT_BY_ID } from '../actions/answer';
 
 const initialState = {
@@ -48,19 +50,19 @@ export default (state = initialState, action) => {
                 posts: action.posts,
             };
         case RECEIVE_ADDED_POST:
-            id = action.post.blog._id;
-            blogs = { ...state.modifiedBlogs };
-            if (blogs[id]){
-                blogs[id].newPosts.unshift(action.post);
-            }
-            else {
-                blogs[id] = { newPosts: [ action.post ] };
-            }
+            // id = action.post.blog._id;
+            // blogs = { ...state.modifiedBlogs };
+            // if (blogs[id]){
+            //     blogs[id].newPosts.unshift(action.post);
+            // }
+            // else {
+            //     blogs[id] = { newPosts: [ action.post ] };
+            // }
             return {
                 ...state,
                 pending: false,
                 newPost: action.post,
-                modifiedBlogs: { ...blogs },
+                // modifiedBlogs: { ...blogs },
             };
         case RECEIVE_ADDED_BLOG:
             return {
@@ -89,6 +91,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 post: {},
+                newPost: {},
                 pending: true,
             };
         case RECEIVE_POST_BY_ID:
@@ -97,7 +100,7 @@ export default (state = initialState, action) => {
                 post: action.post,
                 pending: false,
             };
-        case RECEIVE_FOLLOWED_BLOG:
+        case RECEIVE_FOLLOWED_TOPIC:
             followers = [ ...state.blog.followers ];
             index = followers.indexOf(action.res._id);
             if (index >= 0){

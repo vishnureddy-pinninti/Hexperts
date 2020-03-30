@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    Grid,
+import { Grid,
     Container,
     Chip,
     Avatar,
     Divider,
     List,
     IconButton,
-    FormControlLabel
-} from '@material-ui/core';
+    FormControlLabel } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
@@ -57,9 +55,10 @@ function Profile(props) {
     const classes = useStyles();
     const {
         match: {
-            params: { userId },
+            params: { userId 
+},
         },
-        requestUser,        
+        requestUser,
         pending,
         userProfile,
         user,
@@ -165,7 +164,7 @@ function Profile(props) {
                 height={ 300 } />
                 : <List className={ classes.list }>
                     { renderTopics(items) }
-                  </List> }
+                </List> }
         </>
     );
 
@@ -190,6 +189,7 @@ function Profile(props) {
                                 jobTitle={ userProfile.jobTitle }
                                 followers={ userProfile.followers }
                                 id={ userProfile._id }
+                                badge={ userProfile.badge }
                                 onLogout={ props.onLogout } /> }
                         { loading ? <Skeleton
                             variant="rect"

@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import ExploreIcon from '@material-ui/icons/Explore';
-import {
-    Avatar,
-    Chip,
-} from '@material-ui/core';
+import { Avatar,
+    Chip } from '@material-ui/core';
 import { green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => {
@@ -56,7 +54,7 @@ function BlogsList(props) {
                     className={ classes.avatar }
                     alt={ blog.name }
                     src={ blog.imageUrl || '/blog-placeholder.png' } /> }
-                label={ blog.name }
+                label={ blog.name || blog.topic }
                 variant={ activeBlogId === blog._id ? 'default' : 'outlined' }
                 className={ classes.chip }
                 clickable />
@@ -72,9 +70,10 @@ function BlogsList(props) {
                         <ExploreIcon />
                     </Avatar>
                 }
-                label="Discover Blogs"
+                // label="Discover Blogs"
+                label="Discover Topics"
                 onClick={ handleFollowTopicsModalOpen }
-                style={{ marginBottom: 10 }}
+                style={ { marginBottom: 10 } }
                 clickable
                 color="primary" />
             { renderTopics() }
@@ -84,7 +83,8 @@ function BlogsList(props) {
 
 const mapStateToProps = (state) => {
     return {
-        blogs: state.user.blogs,
+        // blogs: state.user.blogs,
+        blogs: state.user.interests,
     };
 };
 
