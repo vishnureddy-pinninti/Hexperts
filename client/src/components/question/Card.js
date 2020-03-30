@@ -35,7 +35,10 @@ const useStyles = makeStyles({
         minHeight: 300,
         padding: 10,
     },
-
+    editor: {
+        height: 300,
+        overflow: 'auto',
+    },
     link: {
         textDecoration: 'none',
         color: 'inherit',
@@ -176,7 +179,7 @@ const QuestionCard = (props) => {
                         editorState={ answer }
                         editorRef={ setEditorReference }
                         wrapperClassName={ classes.editorWrapper }
-                        editorClassName={ classes.root }
+                        editorClassName={ classes.editor }
                         onEditorStateChange={ onEditorStateChange }
                         toolbar={ {
                             blockType: { inDropdown: false },

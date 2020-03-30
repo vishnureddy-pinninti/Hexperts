@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Blog = mongoose.model('blogs');
+const Topic = mongoose.model('topics');
 
 const { errors: { BLOG_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
@@ -75,15 +76,15 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/blogs/:blogID', loginMiddleware, queryMiddleware, async(req, res) => {
-        const { blogID } = req.params;
+    app.get('/api/v1/blogs/:topicID', loginMiddleware, queryMiddleware, async(req, res) => {
+        const { topicID } = req.params;
         const {
             pagination,
         } = req.queryParams;
 
         try {
-            const blog = await Blog.aggregate([
-                { $match: { _id: mongoose.Types.ObjectId(blogID) } },
+            const blog = await Topic.aggregate([
+                { $match: { _id: mongoose.Types.ObjectId(topicID) } },
                 {
                     $lookup: {
                         from: 'users',
@@ -130,9 +131,9 @@ module.exports = (app) => {
                             {
                                 $match: {
                                     $expr: {
-                                        $eq: [
+                                        $in: [
                                             '$$id',
-                                            '$blog',
+                                            '$topics',
                                         ],
                                     },
                                 },
@@ -161,16 +162,10 @@ module.exports = (app) => {
                             },
                             {
                                 $lookup: {
-                                    from: 'blogs',
-                                    localField: 'blog',
+                                    from: 'topics',
+                                    localField: 'topics',
                                     foreignField: '_id',
-                                    as: 'blog',
-                                },
-                            },
-                            {
-                                $unwind: {
-                                    path: '$blog',
-                                    preserveNullAndEmptyArrays: true,
+                                    as: 'topics',
                                 },
                             },
                             {
@@ -193,7 +188,7 @@ module.exports = (app) => {
                                     downvoters: 1,
                                     lastModified: 1,
                                     postedDate: 1,
-                                    blog: 1,
+                                    topics: 1,
                                     title: 1,
                                     description: 1,
                                     upvoters: 1,

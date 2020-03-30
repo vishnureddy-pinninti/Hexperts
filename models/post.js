@@ -20,8 +20,12 @@ const postSchema = new Schema({
         default: Date.now,
         es_indexed: false,
     },
-    blog: {
-        type: mongoose.Types.ObjectId,
+    // blog: {
+    //     type: mongoose.Types.ObjectId,
+    //     es_indexed: false,
+    // },
+    topics: {
+        type: [ mongoose.Types.ObjectId ],
         es_indexed: false,
     },
     title: {

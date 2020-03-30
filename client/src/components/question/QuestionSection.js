@@ -42,6 +42,10 @@ const useStyles = makeStyles({
         minHeight: 300,
         padding: 10,
     },
+    editor: {
+        height: 300,
+        overflow: 'auto',
+    },
 });
 
 const QuestionSection = (props) => {
@@ -187,7 +191,7 @@ const QuestionSection = (props) => {
                         editorState={ answer }
                         editorRef={ setEditorReference }
                         wrapperClassName={ classes.editorWrapper }
-                        editorClassName={ classes.root }
+                        editorClassName={ classes.editor }
                         onEditorStateChange={ onEditorStateChange }
                         toolbar={ {
                             inline: { inDropdown: true },
