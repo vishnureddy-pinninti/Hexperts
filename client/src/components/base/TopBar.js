@@ -22,6 +22,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Avatar from './Avatar';
 import QuestionModal from './QuestionModal';
+import DescriptionModal from './DescriptionModal';
 import SearchBar from './SearchBar';
 import EditTopicsModal from '../topic/EditTopicsModal';
 import EditSuggestedWriters from '../question/EditSuggestedWriters';
@@ -161,6 +162,11 @@ const TopBar = (props) => {
     ] = React.useState(false);
 
     const [
+        openDescriptionModal,
+        setOpenDescriptionModal,
+    ] = React.useState(false);
+
+    const [
         pageLoading,
         setPageLoading,
     ] = React.useState(false);
@@ -211,6 +217,15 @@ const TopBar = (props) => {
             question,
             questionSuggestions,
         });
+        setOpenDescriptionModal(true);
+    };
+
+    const handleOnAddDescription = (description) => {
+        setOpenDescriptionModal(false);
+        setNewQuestion({
+            ...newQuestion,
+            description,
+        });
         setOpenEditTopicsModal(true);
     };
 
@@ -229,6 +244,7 @@ const TopBar = (props) => {
         addUserQuestion({
             question: newQuestion.question,
             topics: newQuestion.topics,
+            description: newQuestion.description,
             suggestedExperts,
         });
         setOpenEditSuggestedWritersModal(false);
@@ -247,6 +263,11 @@ const TopBar = (props) => {
     const handleEditTopicsModalClose = () => {
         setNewQuestion({});
         setOpenEditTopicsModal(false);
+    };
+
+    const handleDescriptionModalClose = () => {
+        setNewQuestion({});
+        setOpenDescriptionModal(false);
     };
 
 
@@ -488,6 +509,12 @@ const TopBar = (props) => {
                 disableBackdropClick
                 handleDone={ handleEditSuggestedWritersModalSubmit }
                 handleClose={ handleEditSuggestedWritersModalClose } /> }
+            { newQuestion.question && <DescriptionModal
+                open={ openDescriptionModal }
+                question={ newQuestion.question }
+                disableBackdropClick
+                handleDone={ handleOnAddDescription }
+                handleClose={ handleDescriptionModalClose } /> }
             <Snackbar
                 open={ newQuestion.question }
                 message="Adding Question" />
