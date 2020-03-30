@@ -1,33 +1,27 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    Card,
+import { Card,
     CardActions,
     CardContent,
     Button,
     Typography,
-    Collapse,
-} from '@material-ui/core';
-import {
-    EditTwoTone as EditTwoToneIcon,
+    Collapse } from '@material-ui/core';
+import { EditTwoTone as EditTwoToneIcon,
     RssFeedSharp as RssFeedSharpIcon,
-    RecordVoiceOver as RecordVoiceOverIcon,
-} from '@material-ui/icons';
+    RecordVoiceOver as RecordVoiceOverIcon } from '@material-ui/icons';
 import { Editor } from 'react-draft-wysiwyg';
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import ReadMore from '../base/ReadMore';
 
 import QuestionTags from './QuestionTags';
 import EditSuggestedWriters from './EditSuggestedWriters';
-import {
-    addAnswerToQuestion,
-    addAnswerPending,
-} from '../../store/actions/answer';
-import {
-    followQuestion,
-    addQuestionToCache,
-} from '../../store/actions/questions';
+import { addAnswerToQuestion,
+    addAnswerPending } from '../../store/actions/answer';
+import { followQuestion,
+    addQuestionToCache } from '../../store/actions/questions';
 
 const useStyles = makeStyles({
     root: {
@@ -132,6 +126,25 @@ const QuestionSection = (props) => {
         }
     }, [ questionPending ]);
 
+    const renderDescription = (question) => (
+        <ReadMore
+            initialHeight={ 300 }
+            readMore={ (props) => (
+                <Link
+                    className={ classes.more }
+                    onClick={ props.onClick }>
+                    { props.open ? '(less)' : '(more)' }
+                </Link>
+            ) }>
+            <div
+                style={ {
+                    display: 'flex',
+                    flexDirection: 'column',
+                } }
+                dangerouslySetInnerHTML={ { __html: question.description } } />
+        </ReadMore>
+    );
+
     const following = followers.indexOf(user._id) >= 0;
 
     return (
@@ -146,6 +159,13 @@ const QuestionSection = (props) => {
                     component="h2">
                     { question.question }
                 </Typography>
+                <Typography
+                    component="p">
+                    Description:
+                </Typography>
+                <CardContent>
+                    { renderDescription(question) }
+                </CardContent>
                 <Typography
                     variant="body2"
                     color="textSecondary"
@@ -201,7 +221,7 @@ const QuestionSection = (props) => {
                                     height: '100%',
                                     width: '100%',
                                 },
-                            }
+                            },
                         } } />
                 </CardContent>
                 <CardActions>
