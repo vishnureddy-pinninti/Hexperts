@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid,
+import { Grid, Chip,
     Container } from '@material-ui/core';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import FormControl from '@material-ui/core/FormControl';
 import Switch from '@material-ui/core/Switch';
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -26,6 +25,9 @@ const useStyles = makeStyles((theme) => {
             [theme.breakpoints.up('md')]: {
                 display: 'block',
             },
+        },
+        chip: {
+            marginBottom: 10,
         },
     };
 });
@@ -140,14 +142,14 @@ function Home(props) {
         });
     };
 
-    const showOwnQuestions = (event) => {
-        setOwnQuestions(event.target.checked);
+    const showOwnQuestions = () => {
+        setOwnQuestions(!ownQuestions);
         setItems([]);
         setPagination({
             index: 0,
             hasMore: true,
         });
-        requestUserQuestions({ ownQuestions: event.target.checked });
+        requestUserQuestions({ ownQuestions: !ownQuestions });
     };
 
     const renderQuestions = (items) => items.map((question) => {
@@ -216,14 +218,17 @@ function Home(props) {
                         item
                         className={ classes.sectionDesktop }
                         xs={ 3 }>
-                        <FormControl component="fieldset" style={{ backgroundColor: '#52B18E', paddingLeft: 15, borderRadius: 25, color: '#fff'}}>
-                            <FormControlLabel
+                        <Chip
+                            icon={ <FormControlLabel
                                 control={ <Switch
                                     checked={ ownQuestions }
                                     onChange={ showOwnQuestions }
-                                    name="gilad" /> }
-                                label="Show My Questions" />
-                        </FormControl>
+                                    size="small" /> } /> }
+                            label="Show My Questions"
+                            color="primary"
+                            clickable
+                            onClick={ showOwnQuestions }
+                            className={ classes.chip } />
                         <TopCreators />
                         <QuestionsList
                             title="Trending Questions"

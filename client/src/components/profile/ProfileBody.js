@@ -79,10 +79,15 @@ function ProfileBody(props) {
     useEffect(() => {
         if (userFeed && userFeed.items && userFeed.items.length) {
             if (selectedTab === userFeed.type){
-                setItems([
-                    ...items,
-                    ...userFeed.items,
-                ]);
+                if (pagination.index === 0){
+                    setItems([ ...userFeed.items ]);
+                }
+                else {
+                    setItems([
+                        ...items,
+                        ...userFeed.items,
+                    ]);
+                }
                 setPagination({
                     index: pagination.index + 1,
                     hasMore: true,
