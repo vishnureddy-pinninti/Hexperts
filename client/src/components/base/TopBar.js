@@ -20,12 +20,14 @@ import EditIcon from '@material-ui/icons/Edit';
 import GroupIcon from '@material-ui/icons/Group';
 import Snackbar from '@material-ui/core/Snackbar';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { Avatar as MuiAvatar } from '@material-ui/core';
 import Avatar from './Avatar';
 import QuestionModal from './QuestionModal';
 import DescriptionModal from './DescriptionModal';
 import SearchBar from './SearchBar';
 import EditTopicsModal from '../topic/EditTopicsModal';
 import EditSuggestedWriters from '../question/EditSuggestedWriters';
+
 
 import { addUserQuestion, addQuestionPending, toggleQuestionModal } from '../../store/actions/questions';
 
@@ -121,6 +123,10 @@ const useStyles = makeStyles((theme) => {
         topBar: {
             backgroundColor: '#046080',
             backgroundImage: 'url(/topbar.png)',
+        },
+        small: {
+            width: theme.spacing(2),
+            height: theme.spacing(2),
         },
     };
 });
@@ -469,7 +475,22 @@ const TopBar = (props) => {
                                     onClick={ handleProfileClick }
                                     onMouseHover={ handleProfileMenuOpen }
                                     color="inherit">
-                                    <Avatar user={ user.email } />
+                                    <Badge
+                                        overlap="circle"
+                                        anchorOrigin={ {
+                                            vertical: 'bottom',
+                                            horizontal: 'right',
+                                        } }
+                                        badgeContent={ user.badge && <MuiAvatar
+                                            alt={ user.badge }
+                                            title={ user.badge }
+                                            className={ classes.small }
+                                            src={ `/${user.badge}.jpg` } /> }>
+                                        <Avatar
+                                            alt={ user.name }
+                                            user={ user.email } />
+                                    </Badge>
+                                    { /* <Avatar user={ user.email } /> */ }
                                 </IconButton>
                             </div>
                             <div className={ classes.sectionMobile }>
