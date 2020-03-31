@@ -129,7 +129,7 @@ module.exports = (app) => {
                                         then: 'platinum'
                                     },
                                 ],
-                                default: 'null',
+                                default: false,
                             },
                         },
                         name: 1,

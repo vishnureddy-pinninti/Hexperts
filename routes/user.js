@@ -55,6 +55,60 @@ module.exports = (app) => {
                         as: 'blogs',
                     },
                 },
+                {
+                    $project: {
+                        followers: 1,
+                        emailSubscription: 1,
+                        name: 1,
+                        email: 1,
+                        jobTitle: 1,
+                        userid: 1,
+                        reputation: 1,
+                        badge: {
+                            $switch: {
+                                branches: [
+                                    {
+                                        case: {
+                                            $and: [
+                                                { $gte: [ '$reputation', bronze ] },
+                                                { $lt : [ '$reputation', silver ] }
+                                            ]
+                                        },
+                                        then: 'bronze'
+                                    },
+                                    {
+                                        case: {
+                                            $and: [
+                                                { $gte: [ '$reputation', silver ] },
+                                                { $lt : [ '$reputation', gold ] }
+                                            ]
+                                        },
+                                        then: 'silver'
+                                    },
+                                    {
+                                        case: {
+                                            $and: [
+                                                { $gte: [ '$reputation', gold ] },
+                                                { $lt : [ '$reputation', platinum ] }
+                                            ]
+                                        },
+                                        then: 'gold'
+                                    },
+                                    {
+                                        case:  {
+                                            $gte: [ '$reputation', platinum ]
+                                        },
+                                        then: 'platinum'
+                                    },
+                                ],
+                                default: false,
+                            },
+                        },
+                        blogs: 1,
+                        expertIn: 1,
+                        interests: 1,
+                    },
+                },
             ]);
 
             let cookieUser;
@@ -274,7 +328,7 @@ module.exports = (app) => {
                                         then: 'platinum'
                                     },
                                 ],
-                                default: 'null',
+                                default: false,
                             },
                         },
                         blogs: 1,
