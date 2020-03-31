@@ -4,8 +4,6 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -20,7 +18,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import GroupIcon from '@material-ui/icons/Group';
 import Snackbar from '@material-ui/core/Snackbar';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { Avatar as MuiAvatar } from '@material-ui/core';
 import Avatar from './Avatar';
 import QuestionModal from './QuestionModal';
 import DescriptionModal from './DescriptionModal';
@@ -475,21 +472,10 @@ const TopBar = (props) => {
                                     onClick={ handleProfileClick }
                                     onMouseHover={ handleProfileMenuOpen }
                                     color="inherit">
-                                    <Badge
-                                        overlap="circle"
-                                        anchorOrigin={ {
-                                            vertical: 'bottom',
-                                            horizontal: 'right',
-                                        } }
-                                        badgeContent={ user.badge && <MuiAvatar
-                                            alt={ user.badge }
-                                            title={ user.badge }
-                                            className={ classes.small }
-                                            src={ `/${user.badge}.jpg` } /> }>
-                                        <Avatar
-                                            alt={ user.name }
-                                            user={ user.email } />
-                                    </Badge>
+                                    <Avatar
+                                        alt={ user.name }
+                                        badge={ user.badge }
+                                        user={ user.email } />
                                     { /* <Avatar user={ user.email } /> */ }
                                 </IconButton>
                             </div>
