@@ -10,6 +10,8 @@ import EmptyResults from '../components/base/EmptyResults';
 import CardLoader from '../components/base/CardLoader';
 import { requestAdvancedSearch } from '../store/actions/search';
 import { toggleQuestionModal } from '../store/actions/questions';
+import UserAvatar from '../components/base/Avatar';
+import getBadge from '../utils/badge';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -147,7 +149,8 @@ const Search = (props) => {
             to={ `/profile/${item._id}` }>
             <ListItem>
                 <ListItemAvatar>
-                    <Avatar
+                    <UserAvatar
+                        badge={ getBadge(item.options.reputation) }
                         user={ item.options.email }
                         className={ classes.avatar } />
                 </ListItemAvatar>

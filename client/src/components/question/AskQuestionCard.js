@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { red } from '@material-ui/core/colors';
 import Box from '@material-ui/core/Box';
 import Avatar from '../base/Avatar';
+import getBadge from '../../utils/badge';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -41,7 +42,7 @@ function AskQuestionCard(props) {
     const classes = useStyles();
     const {
         user: {
-            name, email, badge,
+            name, email, reputation,
         }, pending,
     } = props;
     const { handleClickQuestionModalOpen } = props;
@@ -56,7 +57,7 @@ function AskQuestionCard(props) {
                     <Avatar
                         aria-label={ name }
                         className={ classes.avatar }
-                        badge={ badge }
+                        badge={ getBadge(reputation) }
                         badgeWidth={ 20 }
                         badgeStyle={ { paddingLeft: 16 } }
                         user={ email } />

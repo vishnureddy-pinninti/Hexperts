@@ -16,7 +16,6 @@ const {
     errors: {
         USER_NOT_FOUND, TOPIC_NOT_FOUND, BLOG_NOT_FOUND, UNAUTHORIZED,
     },
-    badge: { basic, silver, gold },
 } = require('../utils/constants');
 
 module.exports = (app) => {
@@ -64,37 +63,6 @@ module.exports = (app) => {
                         jobTitle: 1,
                         userid: 1,
                         reputation: 1,
-                        badge: {
-                            $switch: {
-                                branches: [
-                                    {
-                                        case: {
-                                            $and: [
-                                                { $gte: [ '$reputation', basic ] },
-                                                { $lt : [ '$reputation', silver ] }
-                                            ]
-                                        },
-                                        then: 'basic'
-                                    },
-                                    {
-                                        case: {
-                                            $and: [
-                                                { $gte: [ '$reputation', silver ] },
-                                                { $lt : [ '$reputation', gold ] }
-                                            ]
-                                        },
-                                        then: 'silver'
-                                    },
-                                    {
-                                        case:  {
-                                            $gte: [ '$reputation', gold ]
-                                        },
-                                        then: 'gold'
-                                    },
-                                ],
-                                default: 'basic',
-                            },
-                        },
                         blogs: 1,
                         expertIn: 1,
                         interests: 1,
@@ -282,37 +250,6 @@ module.exports = (app) => {
                         jobTitle: 1,
                         userid: 1,
                         reputation: 1,
-                        badge: {
-                            $switch: {
-                                branches: [
-                                    {
-                                        case: {
-                                            $and: [
-                                                { $gte: [ '$reputation', basic ] },
-                                                { $lt : [ '$reputation', silver ] }
-                                            ]
-                                        },
-                                        then: 'basic'
-                                    },
-                                    {
-                                        case: {
-                                            $and: [
-                                                { $gte: [ '$reputation', silver ] },
-                                                { $lt : [ '$reputation', gold ] }
-                                            ]
-                                        },
-                                        then: 'silver'
-                                    },
-                                    {
-                                        case:  {
-                                            $gte: [ '$reputation', gold ]
-                                        },
-                                        then: 'gold'
-                                    },
-                                ],
-                                default: 'basic',
-                            },
-                        },
                         blogs: 1,
                         expertIn: 1,
                         interests: 1,

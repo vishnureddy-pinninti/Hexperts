@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 
 const loginMiddleware = require('../middlewares/loginMiddleware');
-const { badge: { basic, silver, gold } } = require('../utils/constants');
 
 module.exports = (app) => {
     app.get('/api/v1/top-contributors', loginMiddleware, async(req, res) => {
@@ -92,37 +91,6 @@ module.exports = (app) => {
                             },
                         },
                         reputation: 1,
-                        badge: {
-                            $switch: {
-                                branches: [
-                                    {
-                                        case: {
-                                            $and: [
-                                                { $gte: [ '$reputation', basic ] },
-                                                { $lt : [ '$reputation', silver ] }
-                                            ]
-                                        },
-                                        then: 'basic'
-                                    },
-                                    {
-                                        case: {
-                                            $and: [
-                                                { $gte: [ '$reputation', silver ] },
-                                                { $lt : [ '$reputation', gold ] }
-                                            ]
-                                        },
-                                        then: 'silver'
-                                    },
-                                    {
-                                        case:  {
-                                            $gte: [ '$reputation', gold ]
-                                        },
-                                        then: 'gold'
-                                    },
-                                ],
-                                default: 'basic',
-                            },
-                        },
                         name: 1,
                         email: 1,
                         jobTitle: 1,

@@ -18,6 +18,7 @@ import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
 import ProfileBody from '../components/profile/ProfileBody';
 import { requestUserById } from '../store/actions/auth';
+import getBadge from '../utils/badge';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -189,7 +190,7 @@ function Profile(props) {
                                 jobTitle={ userProfile.jobTitle }
                                 followers={ userProfile.followers }
                                 id={ userProfile._id }
-                                badge={ userProfile.badge }
+                                badge={ getBadge(userProfile.reputation) }
                                 onLogout={ props.onLogout } /> }
                         { loading ? <Skeleton
                             variant="rect"

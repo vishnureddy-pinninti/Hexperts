@@ -14,6 +14,7 @@ import Badge from '@material-ui/core/Badge';
 
 import { requestTopCreators } from '../../store/actions/auth';
 import Avatar from '../base/Avatar';
+import getBadge from '../../utils/badge';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -57,7 +58,7 @@ function TopCreators(props) {
                     <Avatar
                         alt={ user.name }
                         user={ user.email }
-                        badge={ user.badge } />
+                        badge={ getBadge(user.reputation) } />
                 </ListItemAvatar>
                 <ListItemText
                     primary={ user.name }

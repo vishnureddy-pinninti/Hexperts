@@ -23,6 +23,7 @@ import Comments from '../comment/PostComments';
 import ReadMore from '../base/ReadMore';
 import Avatar from '../base/Avatar';
 import { upvotePost, addPostToCache, downvotePost } from '../../store/actions/blog';
+import getBadge from '../../utils/badge';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -107,6 +108,7 @@ const AnswerCard = (props) => {
         name,
         jobTitle,
         email,
+        reputation,
     } = author;
 
     const [
@@ -196,6 +198,7 @@ const AnswerCard = (props) => {
                             aria-label="recipe"
                             alt={ name }
                             user={ email }
+                            badge={ getBadge(reputation) }
                             onClick={ onProfileClick }
                             className={ classes.avatar }>
                             { name.match(/\b(\w)/g).join('') }

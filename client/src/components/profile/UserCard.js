@@ -8,6 +8,7 @@ import { red } from '@material-ui/core/colors';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Avatar from '../base/Avatar';
+import getBadge from '../../utils/badge';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -41,6 +42,7 @@ const AnswerCard = (props) => {
                     className={ classes.headerRoot }
                     avatar={
                         <Avatar
+                            badge={ getBadge(user.reputation) }
                             aria-label="user"
                             alt={ user.name }
                             user={ user.email } />

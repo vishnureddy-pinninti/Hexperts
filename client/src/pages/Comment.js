@@ -14,6 +14,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 import Avatar from '../components/base/Avatar';
 import { requestCommentById } from '../store/actions/answer';
+import getBadge from '../utils/badge';
 
 const useStyles = makeStyles(() => {
     return {
@@ -113,6 +114,7 @@ function Comment(props) {
                         <Avatar
                             alt={ comment.author.name }
                             user={ comment.author.email }
+                            badge={ getBadge(comment.author.reputation) }
                             onClick={ () => onProfileClick(comment.author._id) }
                             className={ classes.avatar } />
                     }

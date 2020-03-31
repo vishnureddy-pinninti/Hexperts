@@ -23,6 +23,7 @@ import Avatar from '../base/Avatar';
 
 import { addNewTopic, requestTopics, requestSuggestedExperts } from '../../store/actions/topic';
 import { editQuestion, editQuestionPending } from '../../store/actions/questions';
+import getBadge from '../../utils/badge';
 
 function a11yProps(index) {
     return {
@@ -235,6 +236,7 @@ const EditSuggestedWriters = (props) => {
                             onClick={ handleToggle(user) }>
                             <ListItemAvatar>
                                 <Avatar
+                                    badge={ getBadge(user.reputation) }
                                     alt={ user.name }
                                     user={ user.email } />
                             </ListItemAvatar>
