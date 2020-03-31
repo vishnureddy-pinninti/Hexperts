@@ -137,7 +137,9 @@ const QuestionSection = (props) => {
                 <Link
                     className={ classes.more }
                     onClick={ props.onClick }>
-                    { props.open ? '(less)' : '(more)' }
+                    <b>
+                        { props.open ? 'Read less' : 'Read more...' }
+                    </b>
                 </Link>
             ) }>
             <div
@@ -171,7 +173,7 @@ const QuestionSection = (props) => {
                     <CardContent>
                         { renderDescription(question) }
                     </CardContent>
-                                        </> }
+                </> }
                 <Typography
                     variant="body2"
                     color="textSecondary"

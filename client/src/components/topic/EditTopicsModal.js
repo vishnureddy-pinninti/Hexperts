@@ -63,7 +63,6 @@ const EditTopicsModal = (props) => {
         topicsList,
         requestTopics,
         editQuestion,
-        newTopic,
         cancelText,
     } = props;
 
@@ -88,10 +87,13 @@ const EditTopicsModal = (props) => {
         setSelectedTopics(topics);
     }, [ topics ]);
 
-    useEffect(() => {
+    const addTopicCallback = (res) => {
         const temp = [];
         const newChecked = [];
-
+        let newTopic;
+        if (res.length){
+            newTopic = res[0];
+        }
         if (newTopic && newTopic._id){
             newChecked.push(newTopic._id);
             temp.push(newTopic);
@@ -104,7 +106,7 @@ const EditTopicsModal = (props) => {
                 ...temp,
             ]);
         }
-    }, [ newTopic ]);
+    };
 
     const handleToggle = ((value) => () => {
         const currentIndex = checked.indexOf(value._id);
@@ -122,7 +124,7 @@ const EditTopicsModal = (props) => {
 
     const onTopicSelect = (obj, value) => {
         if (value && value.inputValue) {
-            addNewTopic({ topics: [ value.inputValue ] });
+            addNewTopic({ topics: [ value.inputValue ] }, addTopicCallback);
             return;
         }
 
@@ -273,15 +275,14 @@ EditTopicsModal.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         user: state.user,
-        newTopic: state.topic.newTopic,
         topicsList: state.topic.topics,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addNewTopic: (body) => {
-            dispatch(addNewTopic(body));
+        addNewTopic: (body, cb) => {
+            dispatch(addNewTopic(body, cb));
             dispatch(reset('topic'));
         },
         requestTopics: (body) => {

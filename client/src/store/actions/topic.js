@@ -23,7 +23,7 @@ const receiveAddedTopic = (topic) => {
     };
 };
 
-export const addNewTopic = (body) => {
+export const addNewTopic = (body, cb) => {
     return {
         type: ADD_NEW_TOPIC,
         makeApiRequest: {
@@ -31,6 +31,7 @@ export const addNewTopic = (body) => {
             method: 'POST',
             body,
             success: (response) => receiveAddedTopic(response),
+            successcb: cb,
         },
     };
 };

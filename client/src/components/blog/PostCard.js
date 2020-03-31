@@ -127,7 +127,9 @@ const AnswerCard = (props) => {
                 <Link
                     className={ classes.more }
                     onClick={ props.onClick }>
-                    { props.open ? 'Read less' : '(more)' }
+                    <b>
+                        { props.open ? 'Read less' : 'Read more...' }
+                    </b>
                 </Link>
             ) }>
             <div
@@ -158,7 +160,7 @@ const AnswerCard = (props) => {
             color="textSecondary"
             className={ classes.topics }
             component="p">
-            Post -
+            Blog Post -
             { topics && topics.length ? renderTopics(topics) : ' Recommended to you' }
         </Typography>
     );
@@ -205,6 +207,7 @@ const AnswerCard = (props) => {
                             onClick={ onProfileClick }>
                             { name }
                             ,
+                            { ' ' }
                             { jobTitle }
                         </Link>
                     }
@@ -230,11 +233,11 @@ const AnswerCard = (props) => {
                     startIcon={ open ? <ChatBubbleIcon color="primary" /> : <ChatBubbleOutlineRoundedIcon /> }>
                     { currentCommentsCount }
                 </Button>
-                <Button
+                { /* <Button
                     size="small"
                     style={ { marginLeft: 'auto' } }
                     onClick={ () => downvotePost(postId, post) }
-                    startIcon={ downvoted ? <ThumbDownAltIcon color="primary" /> : <ThumbDownOutlinedIcon /> } />
+                    startIcon={ downvoted ? <ThumbDownAltIcon color="primary" /> : <ThumbDownOutlinedIcon /> } /> */ }
             </CardActions>
             <Collapse
                 in={ open }

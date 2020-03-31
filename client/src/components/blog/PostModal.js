@@ -48,6 +48,9 @@ const useStyles = makeStyles((theme) => {
             height: 250,
             overflow: 'auto',
         },
+        title: {
+            marginBottom: 20,
+        },
     };
 });
 
@@ -77,7 +80,6 @@ const BlogPostModal = (props) => {
         newPost,
         resetPost,
         history,
-        newTopic,
     } = props;
 
     useEffect(() => {
@@ -85,60 +87,22 @@ const BlogPostModal = (props) => {
     }, [ requestTopics ]);
 
     const [
-        checked,
-        setChecked,
-    ] = React.useState([]);
-
-    const [
-        selectedTopics,
-        setSelectedTopics,
-    ] = React.useState([]);
-
-    const [
         disableSubmit,
         setDisableSubmit,
     ] = React.useState(false);
 
-    const [
-        post,
-        setPost,
-    ] = React.useState(null);
-
     useEffect(() => {
         if (!pending && newPost && newPost._id) {
             setDisableSubmit(false);
-
-            setPost(null);
             resetPost();
             history.push(`/post/${newPost._id}`);
         }
     }, [ newPost ]);
 
-    useEffect(() => {
-        const temp = [];
-        const newChecked = [];
-
-        if (newTopic && newTopic._id){
-            newChecked.push(newTopic._id);
-            temp.push(newTopic);
-            setChecked([
-                ...checked,
-                ...newChecked,
-            ]);
-            setSelectedTopics([
-                ...selectedTopics,
-                ...temp,
-            ]);
-        }
-    }, [ newTopic ]);
-
-    const onEditorStateChange = (value) => {
-        setPost(value);
-    };
-
     const renderTextField = ({ input }) => (
         <TextField
             { ...input }
+            className={ classes.title }
             id="name"
             label="Title"
             type="text"
@@ -149,12 +113,11 @@ const BlogPostModal = (props) => {
 
     const renderDescriptionField = ({ input }) => (
         <Editor
-            { ...input }
             place
-            editorState={ post }
+            editorState={ input.value }
             wrapperClassName={ classes.editorWrapper }
             editorClassName={ classes.editor }
-            onEditorStateChange={ onEditorStateChange }
+            onEditorStateChange={ (value) => input.onChange(value) }
             toolbar={ {
                 inline: { inDropdown: true },
                 list: { inDropdown: true },
@@ -173,13 +136,32 @@ const BlogPostModal = (props) => {
 
     const renderTopicsField = ({ input }) => (
         <Autocomplete
-            id="highlights-demo"
+            multiple
+            value={ input.value || [] }
+            filterSelectedOptions
+            onChange={ (event, value) => {
+                const last = value.slice(-1)[0];
+                if (last && last.inputValue) {
+                    value.pop();
+                    addNewTopic({ topics: [ last.inputValue ] },
+                        (res) => {
+                            if (res.length){
+                                value.push(res[0]);
+                                input.onChange(value);
+                            }
+                        });
+                    return;
+                }
+                if (value){
+                    input.onChange(value);
+                }
+            } }
+            limitTags={ 5 }
+            id="multiple-limit-tags"
             options={ topicsList }
-            onChange={ onTopicSelect }
-            // getOptionLabel={ (option) => {} }
+            getOptionLabel={ (option) => option.topic }
             filterOptions={ (options, params) => {
                 const filtered = filter(options, params);
-
                 if (params.inputValue !== '') {
                     filtered.push({
                         inputValue: params.inputValue,
@@ -189,89 +171,26 @@ const BlogPostModal = (props) => {
 
                 return filtered;
             } }
-
             renderInput={ (params) => (
                 <TextField
                     { ...params }
+                    variant="outlined"
                     label="Choose Topics"
-                    variant="outlined"
-                    margin="normal" />
-            ) }
-            renderOption={ (option, { inputValue }) => {
-                const matches = match(option.topic, inputValue);
-                const parts = parse(option.topic, matches);
-
-                return (
-                    <div>
-                        { parts.map((part, index) => (
-                            <span
-                                key={ index }
-                                style={ { fontWeight: part.highlight ? 700 : 400 } }>
-                                { part.text }
-                            </span>
-                        )) }
-                    </div>
-                );
-            } } />
-    );
-
-    const handleDelete = (value) => () => {
-        setSelectedTopics((selectedTopics) => selectedTopics.filter((topic) => topic._id !== value._id));
-        const currentIndex = checked.indexOf(value._id);
-        const newChecked = [ ...checked ];
-
-        if (currentIndex === -1) {
-            newChecked.push(value._id);
-        }
-        else {
-            newChecked.splice(currentIndex, 1);
-        }
-        setChecked(newChecked);
-    };
-
-    const onTopicSelect = (obj, value) => {
-        if (value && value.inputValue) {
-            addNewTopic({ topics: [ value.inputValue ] });
-            return;
-        }
-
-        if (value){
-            const currentIndex = checked.indexOf(value._id);
-            const newChecked = [ ...checked ];
-
-            if (currentIndex === -1) {
-                newChecked.push(value._id);
-                setSelectedTopics([
-                    ...selectedTopics,
-                    value,
-                ]);
-            }
-            setChecked(newChecked);
-        }
-    };
-
-    const renderSelectedTopics = () => (
-        <List className={ classes.list }>
-            { selectedTopics.map((value) => (
-                <Chip
-                    key={ value._id }
-                    color="primary"
-                    variant="outlined"
-                    icon="/placeholder.png"
-                    label={ value.topic || value.value }
-                    onDelete={ handleDelete(value) }
-                    className={ classes.chip } />
-            )) }
-        </List>
+                    placeholder="Topics" />
+            ) } />
     );
 
     const addPost = (values) => {
-        const { title } = values;
+        const {
+            title,
+            description,
+            topics,
+        } = values;
         setDisableSubmit(true);
         addPostToBlog(
             {
-                description: draftToHtml(convertToRaw(post.getCurrentContent())),
-                topics: checked,
+                description: description && draftToHtml(convertToRaw(description.getCurrentContent())),
+                topics: topics && topics.map((topic) => (topic._id)),
                 title,
             }
         );
@@ -287,17 +206,16 @@ const BlogPostModal = (props) => {
             <form
                 id="post"
                 onSubmit={ handleSubmit(addPost) }>
-                <DialogTitle id="scroll-dialog-title">Post</DialogTitle>
+                <DialogTitle id="scroll-dialog-title">Blog Post</DialogTitle>
                 <DialogContent
                     dividers>
                     <DialogContentText className={ classes.post }>
                         <Field
-                            name="topics"
-                            component={ renderTopicsField } />
-                        { renderSelectedTopics() }
-                        <Field
                             name="title"
                             component={ renderTextField } />
+                        <Field
+                            name="topics"
+                            component={ renderTopicsField } />
                         <Field
                             name="description"
                             component={ renderDescriptionField } />
@@ -328,15 +246,14 @@ const mapStateToProps = (state) => {
     return {
         user: state.user,
         newPost: state.blog.newPost,
-        newTopic: state.topic.newTopic,
         topicsList: state.topic.topics,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addNewTopic: (body) => {
-            dispatch(addNewTopic(body));
+        addNewTopic: (body, callback) => {
+            dispatch(addNewTopic(body, callback));
         },
         requestTopics: (body) => {
             dispatch(requestTopics(body));
