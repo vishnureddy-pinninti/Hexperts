@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -204,12 +204,25 @@ const Search = (props) => {
         requestSearch({ text: query }, { skip: paginationIndex * 10 });
     };
 
-    const renderSearchResults = (items) => items.map((item) => (
-        <>
-            { renderResults(item) }
-            <Divider />
-        </>
-    ));
+    const renderSearchResults = (items) => items.map((item, index) => {
+        if (index > 0 && item.type === 'externals' && items[index - 1].type !== 'externals') {
+            return (
+                <div key={ index }>
+                    <div style={{ height: 40, backgroundColor: '#f0f2f2', paddingTop: 20, fontWeight: 'bolder' }}>
+                        External Sources
+                    </div>
+                    { renderResults(item) }
+                    <Divider />
+                </div>
+            );
+        }
+        return (
+            <Fragment key={ index }>
+                { renderResults(item) }
+                <Divider />
+            </Fragment>
+        );
+    });
 
     return (
         <div className="App">
