@@ -43,7 +43,7 @@ const userSchema = new Schema({
     reputation: {
         type: Number,
         default: 0,
-        es_indexed: false,
+        es_indexed: true,
     },
     role: {
         type: String,

@@ -26,6 +26,7 @@ import Avatar from '../base/Avatar';
 import { upvoteAnswer,
     addAnswerToCache,
     downvoteAnswer } from '../../store/actions/answer';
+import getBadge from '../../utils/badge';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -94,7 +95,7 @@ const AnswerCard = (props) => {
             name,
             jobTitle,
             email,
-            badge,
+            reputation,
 },
         topics,
         downvoters,
@@ -193,7 +194,7 @@ const AnswerCard = (props) => {
                             aria-label={ name }
                             alt={ name }
                             user={ email }
-                            badge={ badge }
+                            badge={ getBadge(reputation) }
                             onClick={ onProfileClick }
                             className={ classes.avatar } />
                     }

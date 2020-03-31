@@ -219,7 +219,7 @@ const search = async(text, categories = [], pagination = {}, exclude = true) => 
                                 _index: [ 'externals' ],
                             },
                         },
-                        negative_boost: 0.2,
+                        negative_boost: 0.01,
                     },
                 },
                 highlight: {

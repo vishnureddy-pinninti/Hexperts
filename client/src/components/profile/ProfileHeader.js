@@ -81,7 +81,7 @@ const TopicSection = (props) => {
                 variant="subtitle1"
                 className={ classes.badge }
                 color="textSecondary">
-                { badge }
+                { badge } User
             </Typography>
             { !isOwner && <Button
                 size="small"

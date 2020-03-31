@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import Avatar from './Avatar';
 import { requestSearch } from '../../store/actions/search';
-
+import getBadge from '../../utils/badge';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -177,6 +177,7 @@ function SearchBar(props) {
             <ListItem>
                 <ListItemAvatar>
                     <Avatar
+                        badge={ getBadge(item.options.reputation) }
                         user={ item.options.email }
                         className={ classes.avatar } />
                 </ListItemAvatar>

@@ -25,7 +25,7 @@ import SearchBar from './SearchBar';
 import EditTopicsModal from '../topic/EditTopicsModal';
 import EditSuggestedWriters from '../question/EditSuggestedWriters';
 
-
+import getBadge from '../../utils/badge';
 import { addUserQuestion, addQuestionPending, toggleQuestionModal } from '../../store/actions/questions';
 
 const useStyles = makeStyles((theme) => {
@@ -474,7 +474,7 @@ const TopBar = (props) => {
                                     color="inherit">
                                     <Avatar
                                         alt={ user.name }
-                                        badge={ user.badge }
+                                        badge={ getBadge(user.reputation) }
                                         user={ user.email } />
                                     { /* <Avatar user={ user.email } /> */ }
                                 </IconButton>

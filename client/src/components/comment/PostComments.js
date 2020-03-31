@@ -22,6 +22,7 @@ import {
     commentPost,
     requestCommentsForPost,
 } from '../../store/actions/blog';
+import getBadge from '../../utils/badge';
 
 const validate = (values) => {
     const errors = {};
@@ -129,6 +130,7 @@ const Comments = (props) => {
                         avatar={
                             <Avatar
                                 alt={ comment.author.name }
+                                badge={ getBadge(comment.author.reputation) }
                                 user={ comment.author.email }
                                 onClick={ () => onProfileClick(comment.author._id) }
                                 className={ classes.avatar } />
@@ -165,6 +167,7 @@ const Comments = (props) => {
                     <ListItemAvatar>
                         <Avatar
                             aria-label="recipe"
+                            badge={ getBadge(user.reputation) }
                             className={ classes.avatar }
                             user={ user.email } />
                     </ListItemAvatar>
