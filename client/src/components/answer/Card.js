@@ -93,7 +93,8 @@ const AnswerCard = (props) => {
             _id,
             name,
             jobTitle,
-            email 
+            email,
+            badge,
 },
         topics,
         downvoters,
@@ -189,13 +190,12 @@ const AnswerCard = (props) => {
                     className={ classes.headerRoot }
                     avatar={
                         <Avatar
-                            aria-label="recipe"
+                            aria-label={ name }
                             alt={ name }
                             user={ email }
+                            badge={ badge }
                             onClick={ onProfileClick }
-                            className={ classes.avatar }>
-                            { name.match(/\b(\w)/g).join('') }
-                        </Avatar>
+                            className={ classes.avatar } />
                     }
                     title={
                         <Link

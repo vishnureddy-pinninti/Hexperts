@@ -1,22 +1,47 @@
 import React, { Component } from 'react';
 import { Avatar as MuiAvatar } from '@material-ui/core';
-import { authService } from '../../services/authService';
 import { connect } from 'react-redux';
+import Badge from '@material-ui/core/Badge';
+import { authService } from '../../services/authService';
 import { setImage } from '../../store/actions/auth';
+
 
 class Avatar extends Component {
     render() {
-        const { currentUserImage } = this.props;
+        const {
+            currentUserImage,
+            badge,
+            badgeWidth,
+            badgeStyle,
+        } = this.props;
         return (
-            <MuiAvatar
-                { ...this.props }
-                alt="Avatar Image"
-                src={ currentUserImage } />
+            <Badge
+                overlap="circle"
+                anchorOrigin={ {
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                } }
+                badgeContent={ badge && <img
+                    alt={ badge }
+                    title={ badge }
+                    style={ badgeStyle }
+                    width={ badgeWidth }
+                    src={ `/${badge}.png` } /> }>
+                <MuiAvatar
+                    { ...this.props }
+                    alt="Avatar Image"
+                    src={ currentUserImage } />
+            </Badge>
+
         );
     }
 
     async componentDidMount() {
-        const { user, currentUserImage, setImage } = this.props;
+        const {
+            user,
+            currentUserImage,
+            setImage,
+        } = this.props;
         if (!currentUserImage && user) {
             const image = await authService.getImage(user);
             setImage({
@@ -24,22 +49,26 @@ class Avatar extends Component {
                 user,
             });
         }
-
     }
 }
+
+Avatar.defaultProps = {
+    badgeWidth: 40,
+    badgeStyle: { paddingLeft: 26 },
+};
 
 const mapStateToProps = (state, ownProps) => {
-    const userImage = state.user.images.find(image => image.user === ownProps.user);
+    const userImage = state.user.images.find((image) => image.user === ownProps.user);
     return {
         currentUserImage: userImage ? userImage.image : null,
-    }
-}
+    };
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
         setImage: (image) => {
             dispatch(setImage(image));
-        }
+        },
     };
 };
 

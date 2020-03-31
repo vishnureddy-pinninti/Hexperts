@@ -54,21 +54,10 @@ function TopCreators(props) {
             <ListItem
                 alignItems="flex-start">
                 <ListItemAvatar>
-                    <Badge
-                        overlap="circle"
-                        anchorOrigin={ {
-                            vertical: 'bottom',
-                            horizontal: 'right',
-                        } }
-                        badgeContent={ user.badge && <MuiAvatar
-                            alt={ user.badge }
-                            title={ user.badge }
-                            className={ classes.small }
-                            src={ `/${user.badge}.jpg` } /> }>
-                        <Avatar
-                            alt={ user.name }
-                            user={ user.email } />
-                    </Badge>
+                    <Avatar
+                        alt={ user.name }
+                        user={ user.email }
+                        badge={ user.badge } />
                 </ListItemAvatar>
                 <ListItemText
                     primary={ user.name }
@@ -81,6 +70,10 @@ function TopCreators(props) {
                                 { user.jobTitle }
                             </Typography>
                             { `${user.answers} answers` }
+                            { ' ' }
+                            |
+                            { ' ' }
+                            { `${user.posts} blog posts` }
                         </>
                     } />
             </ListItem>

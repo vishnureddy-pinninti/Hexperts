@@ -34,6 +34,10 @@ const useStyles = makeStyles((theme) => {
             minHeight: 300,
             padding: 10,
         },
+        badge: {
+            textTransform: 'capitalize',
+            fontWeight: 'bold',
+        },
     };
 });
 
@@ -73,6 +77,12 @@ const TopicSection = (props) => {
                 color="textSecondary">
                 { jobTitle }
             </Typography>
+            <Typography
+                variant="subtitle1"
+                className={ classes.badge }
+                color="textSecondary">
+                { badge }
+            </Typography>
             { !isOwner && <Button
                 size="small"
                 onClick={ handleFollowClick }
@@ -89,24 +99,15 @@ const TopicSection = (props) => {
         <Card>
             <CardHeader
                 avatar={
-                    <Badge
-                        overlap="circle"
-                        anchorOrigin={ {
-                            vertical: 'bottom',
-                            horizontal: 'right',
-                        } }
-                        badgeContent={ badge && <MuiAvatar
-                            alt={ badge }
-                            title={ badge }
-                            className={ classes.small }
-                            src={ `/${badge}.jpg` } /> }>
-                        <Avatar
-                            aria-label={ name }
-                            alt={ name }
-                            user={ mail }
-                            variant="square"
-                            className={ classes.large } />
-                    </Badge>
+                    <Avatar
+                        aria-label={ name }
+                        alt={ name }
+                        badge={ badge }
+                        badgeWidth={ 140 }
+                        badgeStyle={ { paddingLeft: 80 } }
+                        user={ mail }
+                        variant="square"
+                        className={ classes.large } />
                 }
                 action={ <>
                     { isOwner
