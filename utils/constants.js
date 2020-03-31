@@ -31,9 +31,8 @@ module.exports = {
         USER_NOTIFICATION: 'User',
     },
     badge: {
-        bronze: 50,
-        silver: 100,
-        gold: 150,
-        platinum: 200,
+        basic: 0,
+        silver: 500,
+        gold: 1500,
     }
 };

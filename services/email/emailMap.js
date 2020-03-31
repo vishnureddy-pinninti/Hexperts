@@ -366,17 +366,17 @@ const emailMap = {
         // Emails to experts, author followers and topic followers
         const {
             author,
-            blog,
+            topics,
             title,
             _id,
             req,
         } = data;
 
         const userFollowers = await getUserFollowers(author._id);
-        const blogFollowers = await getBlogFollowers(blog._id);
+        const topicFollowers = await getTopicFollowers(topics);
         const recipients = [
             ...userFollowers,
-            ...blogFollowers,
+            ...topicFollowers,
         ];
 
         return {

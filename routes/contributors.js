@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 
 const loginMiddleware = require('../middlewares/loginMiddleware');
-const { badge: { bronze, silver, gold, platinum } } = require('../utils/constants');
+const { badge: { basic, silver, gold } } = require('../utils/constants');
 
 module.exports = (app) => {
     app.get('/api/v1/top-contributors', loginMiddleware, async(req, res) => {
@@ -98,11 +98,11 @@ module.exports = (app) => {
                                     {
                                         case: {
                                             $and: [
-                                                { $gte: [ '$reputation', bronze ] },
+                                                { $gte: [ '$reputation', basic ] },
                                                 { $lt : [ '$reputation', silver ] }
                                             ]
                                         },
-                                        then: 'bronze'
+                                        then: 'basic'
                                     },
                                     {
                                         case: {
@@ -114,22 +114,13 @@ module.exports = (app) => {
                                         then: 'silver'
                                     },
                                     {
-                                        case: {
-                                            $and: [
-                                                { $gte: [ '$reputation', gold ] },
-                                                { $lt : [ '$reputation', platinum ] }
-                                            ]
+                                        case:  {
+                                            $gte: [ '$reputation', gold ]
                                         },
                                         then: 'gold'
                                     },
-                                    {
-                                        case:  {
-                                            $gte: [ '$reputation', platinum ]
-                                        },
-                                        then: 'platinum'
-                                    },
                                 ],
-                                default: false,
+                                default: 'basic',
                             },
                         },
                         name: 1,
