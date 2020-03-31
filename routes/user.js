@@ -16,7 +16,7 @@ const {
     errors: {
         USER_NOT_FOUND, TOPIC_NOT_FOUND, BLOG_NOT_FOUND, UNAUTHORIZED,
     },
-    badge: { bronze, silver, gold, platinum },
+    badge: { basic, silver, gold },
 } = require('../utils/constants');
 
 module.exports = (app) => {
@@ -70,11 +70,11 @@ module.exports = (app) => {
                                     {
                                         case: {
                                             $and: [
-                                                { $gte: [ '$reputation', bronze ] },
+                                                { $gte: [ '$reputation', basic ] },
                                                 { $lt : [ '$reputation', silver ] }
                                             ]
                                         },
-                                        then: 'bronze'
+                                        then: 'basic'
                                     },
                                     {
                                         case: {
@@ -86,22 +86,13 @@ module.exports = (app) => {
                                         then: 'silver'
                                     },
                                     {
-                                        case: {
-                                            $and: [
-                                                { $gte: [ '$reputation', gold ] },
-                                                { $lt : [ '$reputation', platinum ] }
-                                            ]
+                                        case:  {
+                                            $gte: [ '$reputation', gold ]
                                         },
                                         then: 'gold'
                                     },
-                                    {
-                                        case:  {
-                                            $gte: [ '$reputation', platinum ]
-                                        },
-                                        then: 'platinum'
-                                    },
                                 ],
-                                default: false,
+                                default: 'basic',
                             },
                         },
                         blogs: 1,
@@ -297,11 +288,11 @@ module.exports = (app) => {
                                     {
                                         case: {
                                             $and: [
-                                                { $gte: [ '$reputation', bronze ] },
+                                                { $gte: [ '$reputation', basic ] },
                                                 { $lt : [ '$reputation', silver ] }
                                             ]
                                         },
-                                        then: 'bronze'
+                                        then: 'basic'
                                     },
                                     {
                                         case: {
@@ -313,22 +304,13 @@ module.exports = (app) => {
                                         then: 'silver'
                                     },
                                     {
-                                        case: {
-                                            $and: [
-                                                { $gte: [ '$reputation', gold ] },
-                                                { $lt : [ '$reputation', platinum ] }
-                                            ]
+                                        case:  {
+                                            $gte: [ '$reputation', gold ]
                                         },
                                         then: 'gold'
                                     },
-                                    {
-                                        case:  {
-                                            $gte: [ '$reputation', platinum ]
-                                        },
-                                        then: 'platinum'
-                                    },
                                 ],
-                                default: false,
+                                default: 'basic',
                             },
                         },
                         blogs: 1,
