@@ -216,7 +216,7 @@ function Home(props) {
                         item
                         className={ classes.sectionDesktop }
                         xs={ 3 }>
-                        <FormControl component="fieldset">
+                        <FormControl component="fieldset" style={{ backgroundColor: '#52B18E', paddingLeft: 15, borderRadius: 25, color: '#fff'}}>
                             <FormControlLabel
                                 control={ <Switch
                                     checked={ ownQuestions }
