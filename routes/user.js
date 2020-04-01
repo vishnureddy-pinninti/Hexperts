@@ -437,6 +437,8 @@ module.exports = (app) => {
                     interest: topic,
                 };
 
+                const isFollowing = user.interests.find((uinterest) => uinterest.equals(topicId));
+
                 if (expertId) {
                     const isExpertin = user.expertIn.find((uinterest) => uinterest.equals(topicId));
                     responseObject.expertIn = topic;
@@ -451,17 +453,18 @@ module.exports = (app) => {
                             topic,
                         ];
 
-                        user.interests = [
-                            ...user.interests,
-                            topic,
-                        ];
+                        if (!isFollowing) {
+                            user.interests = [
+                                ...user.interests,
+                                topic,
+                            ];
+                        }
+
                         responseObject.expertInRemoved = false;
                     }
                     responseObject.interestRemoved = false;
                 }
                 else {
-                    const isFollowing = user.interests.find((uinterest) => uinterest.equals(topicId));
-    
                     if (isFollowing) {
                         user.interests = user.interests.filter((uinterest) => !uinterest.equals(topicId));
                         responseObject.interestRemoved = true;
