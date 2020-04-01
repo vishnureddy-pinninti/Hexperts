@@ -66,6 +66,7 @@ module.exports = (app) => {
                         blogs: 1,
                         expertIn: 1,
                         interests: 1,
+                        upvotes: 1,
                     },
                 },
             ]);
@@ -253,6 +254,7 @@ module.exports = (app) => {
                         blogs: 1,
                         expertIn: 1,
                         interests: 1,
+                        upvotes: 1,
                         questions: {
                             $cond: {
                                 if: { $isArray: '$questions' },
@@ -417,6 +419,7 @@ module.exports = (app) => {
     app.post('/api/v1/user-interests.manage', loginMiddleware, async(req, res) => {
         const {
             interestId,
+            expertId,
         } = req.body;
 
         const {
@@ -425,29 +428,57 @@ module.exports = (app) => {
 
         try {
             const user = await User.findById(_id);
-            const interest = await Topic.findById(interestId);
+            const topicId = interestId || expertId;
+            const topic = await Topic.findById(topicId);
 
-            if (user && interest) {
-                const isFollowing = user.interests.find((uinterest) => uinterest.equals(interestId));
+            if (user && topic) {
+                const responseObject = {
+                    _id,
+                    interest: topic,
+                };
 
-                if (isFollowing) {
-                    user.interests = user.interests.filter((uinterest) => !uinterest.equals(interestId));
+                if (expertId) {
+                    const isExpertin = user.expertIn.find((uinterest) => uinterest.equals(topicId));
+                    responseObject.expertIn = topic;
+
+                    if (isExpertin) {
+                        user.expertIn = user.expertIn.filter((uinterest) => !uinterest.equals(topicId));
+                        responseObject.expertInRemoved = true;
+                    }
+                    else {
+                        user.expertIn = [
+                            ...user.expertIn,
+                            topic,
+                        ];
+
+                        user.interests = [
+                            ...user.interests,
+                            topic,
+                        ];
+                        responseObject.expertInRemoved = false;
+                    }
+                    responseObject.interestRemoved = false;
                 }
                 else {
-                    user.interests = [
-                        ...user.interests,
-                        interest,
-                    ];
+                    const isFollowing = user.interests.find((uinterest) => uinterest.equals(topicId));
+    
+                    if (isFollowing) {
+                        user.interests = user.interests.filter((uinterest) => !uinterest.equals(topicId));
+                        responseObject.interestRemoved = true;
+                    }
+                    else {
+                        user.interests = [
+                            ...user.interests,
+                            topic,
+                        ];
+                        responseObject.interestRemoved = false;
+                    }
                 }
 
                 await user.save();
                 res
                     .status(200)
-                    .json({
-                        _id,
-                        interest,
-                        interestRemoved: Boolean(isFollowing),
-                    });
+                    .json(responseObject);
             }
             else {
                 res

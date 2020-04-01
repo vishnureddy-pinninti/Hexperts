@@ -192,6 +192,7 @@ const emailMap = {
             reputation: {
                 user: answerAuthor,
                 score: removeVoting ? -UPVOTE_ANSWER : (UPVOTE_ANSWER + secondaryScore),
+                voteCount: removeVoting ? -1 : 1,
             },
         };
     },
@@ -359,6 +360,7 @@ const emailMap = {
             reputation: {
                 user: author,
                 score: removeVoting ? -DOWNVOTE_COMMENT : (DOWNVOTE_COMMENT + secondaryScore),
+                voteCount: secondaryVoted ? -1 : 0,
             },
         };
     },
@@ -444,6 +446,7 @@ const emailMap = {
             reputation: {
                 user: author,
                 score: removeVoting ? -UPVOTE_POST : (UPVOTE_POST + secondaryScore),
+                voteCount: removeVoting ? -1 : 1,
             },
         };
     },
@@ -485,6 +488,7 @@ const emailMap = {
             reputation: {
                 user: author,
                 score: removeVoting ? -DOWNVOTE_POST : (DOWNVOTE_POST + secondaryScore),
+                voteCount: secondaryVoted ? -1 : 0,
             },
         };
     },

@@ -50,6 +50,11 @@ const userSchema = new Schema({
         default: 'user',
         es_indexed: false,
     },
+    upvotes: {
+        type: Number,
+        default: 0,
+        es_indexed: false,
+    },
 });
 
 userSchema.plugin(mongoosastic, {
