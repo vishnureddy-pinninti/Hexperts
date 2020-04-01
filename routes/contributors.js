@@ -95,6 +95,7 @@ module.exports = (app) => {
                         email: 1,
                         jobTitle: 1,
                         userid: 1,
+                        upvotes: 1,
                     },
                 },
             ]);
