@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import ContactSupportIcon from '@material-ui/icons/ContactSupport';
 import AnswerCard from './Card';
 import CardLoader from '../base/CardLoader';
 import QuestionCard from '../question/Card';
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => {
             width: 150,
         },
         chipLabel: {
-            padding: 10,
+            // padding: 10,
         },
     };
 });
@@ -161,25 +162,24 @@ function AnswerPageBody(props) {
     const renderMenu = () => (
         <List className={ classes.list }>
             <Chip
+                icon={ <ContactSupportIcon /> }
                 label={ <div className={ classes.chipLabel }>
-                    Specific answer
-                    { ' ' }
+                    Specific Questions
                     <br />
-                    requests to you
-                        </div> }
+                    for me
+                </div> }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'AnswerRequests' ? 'default' : 'outlined' }
                 onClick={ () => { getData('answerRequests'); setSelectedTab('AnswerRequests'); } }
                 clickable />
             <Chip
+                icon={ <ContactSupportIcon /> }
                 label={ <div className={ classes.chipLabel }>
-                    Questions in your
-                    { ' ' }
+                    Questions in my
                     <br />
-                    { ' ' }
                     area of expertise
-                        </div> }
+                </div> }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Questions' ? 'default' : 'outlined' }

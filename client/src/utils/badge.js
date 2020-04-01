@@ -11,6 +11,6 @@ const badge = (reputation) => {
     }
 
     return 'basic';
-}
+};
 
 export default badge;

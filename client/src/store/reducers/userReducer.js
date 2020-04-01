@@ -13,8 +13,7 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_USER_POSTS,
     RECEIVE_MARK_NOTIFICATION_READ,
     REQUEST_ADD_NOTIFICATION,
-    RECEIVE_MANGE_USER_PREFERENCES,
- } from '../actions/auth';
+    RECEIVE_MANGE_USER_PREFERENCES } from '../actions/auth';
 
 import { RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
 import { RECEIVE_FOLLOWED_BLOG } from '../actions/blog';
@@ -63,52 +62,119 @@ export default (state = initialState, action) => {
                 pending: true,
             };
         case RECEIVE_FOLLOWED_TOPIC: {
-            const { interest, interestRemoved } = action.res;
+            const {
+                interest,
+                interestRemoved,
+                expertInRemoved,
+                expertIn,
+            } = action.res;
+
+            let newExpertIn;
+            let newInterests;
+
+            if (expertInRemoved && interestRemoved){
+                newExpertIn = state.expertIn.filter((i) => i._id !== expertIn._id);
+                newInterests = state.interests.filter((i) => i._id !== interest._id);
+                return {
+                    ...state,
+                    expertIn: newExpertIn,
+                    interests: newInterests,
+                    userProfile: {
+                        ...state.userProfile,
+                        expertIn: newExpertIn,
+                        interests: newInterests,
+                    },
+                };
+            }
+
+            if (expertInRemoved){
+                newExpertIn = state.expertIn.filter((i) => i._id !== expertIn._id);
+                return {
+                    ...state,
+                    expertIn: newExpertIn,
+                    userProfile: {
+                        ...state.userProfile,
+                        expertIn: newExpertIn,
+                    },
+                };
+            }
 
             if (interestRemoved) {
-                const newInterests = state.interests.filter(i => i._id !== interest._id);
+                newInterests = state.interests.filter((i) => i._id !== interest._id);
                 return {
                     ...state,
                     interests: newInterests,
                     userProfile: {
                         ...state.userProfile,
                         interests: newInterests,
-                    }
-                }
+                    },
+                };
             }
+
+            const obj = {
+                expertIn: [],
+                interests: [],
+            };
+
+            if (expertIn && !state.expertIn.find((o) => o._id === expertIn._id)){
+                obj.expertIn.push(expertIn);
+            }
+
+            if (interest && !state.interests.find((o) => o._id === interest._id)){
+                obj.interests.push(interest);
+            }
+
             return {
                 ...state,
-                interests: [ ...state.interests, interest ],
+                interests: [
+                    ...state.interests,
+                    ...obj.interests,
+                ],
+                expertIn: [
+                    ...state.expertIn,
+                    ...obj.expertIn,
+                ],
                 userProfile: {
                     ...state.userProfile,
-                    interests: [ ...state.interests, interest ],
-                }
-            }
+                    interests: [
+                        ...state.interests,
+                        ...obj.interests,
+                    ],
+                    expertIn: [
+                        ...state.expertIn,
+                        ...obj.expertIn,
+                    ],
+                },
+            };
         }
         case RECEIVE_FOLLOWED_BLOG: {
             const { blog, blogRemoved } = action.res;
 
             if (blogRemoved) {
-                const newBlogs = state.blogs.filter(b => b._id !== blog._id);
-                console.log('blogs filter', state.blogs);
-                console.log('newBlogs', newBlogs);
+                const newBlogs = state.blogs.filter((b) => b._id !== blog._id);
                 return {
                     ...state,
                     blogs: newBlogs,
                     userProfile: {
                         ...state.userProfile,
                         blogs: newBlogs,
-                    }
-                }
+                    },
+                };
             }
             return {
                 ...state,
-                blogs: [ ...state.blogs, blog ],
+                blogs: [
+                    ...state.blogs,
+                    blog,
+                ],
                 userProfile: {
                     ...state.userProfile,
-                    blogs: [ ...state.blogs, blog ],
-                }
-            }
+                    blogs: [
+                        ...state.blogs,
+                        blog,
+                    ],
+                },
+            };
         }
         case RECEIVE_USER_PREFERENCES:
             profile = state.userProfile;
@@ -144,25 +210,25 @@ export default (state = initialState, action) => {
                 userProfile: { ...profile },
             };
         case RECEIVE_MANGE_USER_PREFERENCES:
-                const updatedProfile = {};
-                if (action.user.interests){
-                    updatedProfile.interests = action.user.interests;
-                }
-                if (action.user.expertIn) {
-                    updatedProfile.expertIn = action.user.expertIn;
-                }
-                if (action.user.blogs) {
-                    updatedProfile.blogs = action.user.blogs;
-                }
-                return {
-                    ...state,
-                    pending: false,
+            const updatedProfile = {};
+            if (action.user.interests){
+                updatedProfile.interests = action.user.interests;
+            }
+            if (action.user.expertIn) {
+                updatedProfile.expertIn = action.user.expertIn;
+            }
+            if (action.user.blogs) {
+                updatedProfile.blogs = action.user.blogs;
+            }
+            return {
+                ...state,
+                pending: false,
+                ...updatedProfile,
+                userProfile: {
+                    ...state.userProfile,
                     ...updatedProfile,
-                    userProfile: {
-                        ...state.userProfile,
-                        ...updatedProfile,
-                    },
-                };
+                },
+            };
         case RECEIVE_QUESTIONS_BY_USER_ID:
             return {
                 ...state,

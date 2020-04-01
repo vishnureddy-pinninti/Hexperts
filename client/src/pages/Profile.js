@@ -203,7 +203,7 @@ function Profile(props) {
                         xs={ 2 }>
                         { renderSection('Following', followedTopics, handleFollowTopicsModalOpen) }
                         <Divider />
-                        { renderSection('Knows about', expertIn, handleExpertInModalOpen) }
+                        { renderSection((isOwner ? 'My Expertise' : 'Expertise'), expertIn, handleExpertInModalOpen) }
                     </Grid>
                 </Grid>
             </Container>

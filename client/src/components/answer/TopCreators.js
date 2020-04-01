@@ -75,6 +75,8 @@ function TopCreators(props) {
                             |
                             { ' ' }
                             { `${user.posts} blog posts` }
+                            <br />
+                            { `${user.upvotes || 0} upvotes` }
                         </>
                     } />
             </ListItem>

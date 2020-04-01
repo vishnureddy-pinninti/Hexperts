@@ -1,20 +1,17 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    Card,
+import { Card,
     CardActions,
     Button,
     Box,
     Avatar,
-    CardHeader,
-} from '@material-ui/core';
+    CardHeader } from '@material-ui/core';
 import { RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
+import ExplicitIcon from '@material-ui/icons/Explicit';
 import { connect } from 'react-redux';
 
-import {
-    addAnswerToQuestion,
-    addAnswerPending,
-} from '../../store/actions/answer';
+import { addAnswerToQuestion,
+    addAnswerPending } from '../../store/actions/answer';
 import { followTopic } from '../../store/actions/topic';
 
 const useStyles = makeStyles((theme) => {
@@ -47,13 +44,19 @@ const TopicSection = (props) => {
         topic,
         followers,
         user,
+        expertTopics,
     } = props;
 
     const handleFollowClick = () => {
         followTopic({ interestId: id });
     };
 
-    const following = followers.indexOf(user._id) >= 0;
+    const handleExpertClick = () => {
+        followTopic({ expertId: id });
+    };
+
+    const following = followers.map((t) => t._id).indexOf(id) >= 0;
+    const expertIn = expertTopics.map((t) => t._id).indexOf(id) >= 0;
 
     return (
         <Card className={ classes.root }>
@@ -80,6 +83,13 @@ const TopicSection = (props) => {
                     color={ following ? 'primary' : 'default' }>
                     Follow
                 </Button>
+                <Button
+                    size="small"
+                    onClick={ handleExpertClick }
+                    startIcon={ <ExplicitIcon /> }
+                    color={ expertIn ? 'primary' : 'default' }>
+                    Expert
+                </Button>
             </CardActions>
         </Card>
     );
@@ -92,7 +102,8 @@ TopicSection.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         pending: state.answer.pending,
-        followers: state.topic.topic.followers || [],
+        followers: state.user.interests,
+        expertTopics: state.user.expertIn,
         user: state.user.user,
     };
 };

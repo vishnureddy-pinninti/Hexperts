@@ -14,7 +14,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
     let index;
-    let followers = [];
+    const followers = [];
     let temp;
     switch (action.type) {
         case ADD_TOPIC_PENDING:
@@ -47,24 +47,24 @@ export default (state = initialState, action) => {
                 topic: action.topic,
                 pending: false,
             };
-        case RECEIVE_FOLLOWED_TOPIC:
-            if (state.topic && state.topic.followers){
-                followers = [ ...state.topic.followers ];
-                index = followers.indexOf(action.res._id);
-                if (index >= 0){
-                    followers.splice(index, 1);
-                }
-                else {
-                    followers.push(action.res._id);
-                }
-                temp = state.topic;
-                temp.followers = followers;
+            // case RECEIVE_FOLLOWED_TOPIC:
+            //     if (state.topic && state.topic.followers){
+            //         followers = [ ...state.topic.followers ];
+            //         index = followers.indexOf(action.res._id);
+            //         if (index >= 0){
+            //             followers.splice(index, 1);
+            //         }
+            //         else {
+            //             followers.push(action.res._id);
+            //         }
+            //         temp = state.topic;
+            //         temp.followers = followers;
 
-                return {
-                    ...state,
-                    topic: temp,
-                };
-            } return state;
+        //         return {
+        //             ...state,
+        //             topic: temp,
+        //         };
+        //     } return state;
         default:
             return state;
     }

@@ -1,13 +1,10 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
-import {
-    withStyles,
+import { withStyles,
     useTheme,
-    makeStyles,
-} from '@material-ui/core/styles';
-import {
-    Button,
+    makeStyles } from '@material-ui/core/styles';
+import { Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -19,22 +16,18 @@ import {
     GridList,
     GridListTile,
     GridListTileBar,
-    Checkbox,
-} from '@material-ui/core';
-import {
-    CheckCircleRounded as CheckCircleRoundedIcon,
-    CheckCircleOutlined as CheckCircleOutlinedIcon,
-} from '@material-ui/icons';
+    ButtonGroup,
+    Checkbox } from '@material-ui/core';
+import { CheckCircleRounded as CheckCircleRoundedIcon,
+    CheckCircleOutlined as CheckCircleOutlinedIcon } from '@material-ui/icons';
+import ExplicitIcon from '@material-ui/icons/Explicit';
+import ExplicitOutlinedIcon from '@material-ui/icons/ExplicitOutlined';
 
-import {
-    addNewTopic,
-    requestTopics,
-} from '../../store/actions/topic';
+import { addNewTopic,
+    requestTopics } from '../../store/actions/topic';
 import { editQuestion } from '../../store/actions/questions';
-import {
-    addPreferencesPending,
-    maangeUserPreferences,
-} from '../../store/actions/auth';
+import { addPreferencesPending,
+    maangeUserPreferences } from '../../store/actions/auth';
 
 
 const useStyles = makeStyles(() => {
@@ -106,6 +99,7 @@ const FollowTopicsModal = (props) => {
         maangeUserPreferences,
         open,
         handleFollowTopicsModalClose,
+        expertTopics,
     } = props;
 
 
@@ -144,14 +138,20 @@ const FollowTopicsModal = (props) => {
         setChecked,
     ] = React.useState([]);
 
-    useEffect(() => {
-        setChecked(followedTopics.map(t => t._id));
-    }, [ followedTopics ]);
-
     const [
-        selectedTopics,
-        setSelectedTopics,
-    ] = React.useState(topics);
+        expertChecked,
+        setExpertChecked,
+    ] = React.useState([]);
+
+
+    useEffect(() => {
+        setChecked(followedTopics.map((t) => t._id));
+        setExpertChecked(expertTopics.map((t) => t._id));
+    }, [
+        followedTopics,
+        expertTopics,
+    ]);
+
 
     const selectTopic = (value) => {
         if (value){
@@ -160,10 +160,6 @@ const FollowTopicsModal = (props) => {
 
             if (currentIndex === -1) {
                 newChecked.push(value._id);
-                setSelectedTopics([
-                    ...selectedTopics,
-                    value,
-                ]);
             }
             else {
                 newChecked.splice(currentIndex, 1);
@@ -172,8 +168,33 @@ const FollowTopicsModal = (props) => {
         }
     };
 
+    const selectExpertTopic = (value) => {
+        if (value){
+            const currentIndex = expertChecked.indexOf(value._id);
+            const isTopicFollowed = checked.indexOf(value._id);
+            const newChecked = [ ...expertChecked ];
+
+            if (currentIndex === -1) {
+                newChecked.push(value._id);
+            }
+            else {
+                newChecked.splice(currentIndex, 1);
+            }
+            setExpertChecked(newChecked);
+            // Follow topic if not followed
+            if (isTopicFollowed === -1 && currentIndex === -1){
+                const topicChecked = [ ...checked ];
+                topicChecked.push(value._id);
+                setChecked(topicChecked);
+            }
+        }
+    };
+
     const addTopicsToInterests = () => {
-        maangeUserPreferences({ expertIn: user.expertIn.map(t => t._id), interests: checked });
+        maangeUserPreferences({
+            expertIn: expertChecked,
+            interests: checked,
+        });
     };
 
     const renderTopics = () => (
@@ -192,15 +213,29 @@ const FollowTopicsModal = (props) => {
                                 title: classes.title,
                             } }
                             actionIcon={
-                                <IconButton
-                                    aria-label={ `star ${topic.topic}` }
-                                    onClick={ () => { selectTopic(topic); } }>
-                                    <WhiteCheckbox
-                                        icon={ <CheckCircleOutlinedIcon /> }
-                                        checkedIcon={ <CheckCircleRoundedIcon /> }
-                                        checked={ checked.indexOf(topic._id) !== -1 }
-                                        className={ classes.checkbox } />
-                                </IconButton>
+                                <ButtonGroup
+                                    size="small"
+                                    aria-label="small outlined button group">
+                                    <IconButton
+                                        aria-label={ `star ${topic.topic}` }
+                                        onClick={ () => { selectTopic(topic); } }>
+                                        <WhiteCheckbox
+                                            icon={ <CheckCircleOutlinedIcon /> }
+                                            checkedIcon={ <CheckCircleRoundedIcon /> }
+                                            checked={ checked.indexOf(topic._id) !== -1 }
+                                            className={ classes.checkbox } />
+                                    </IconButton>
+                                    <IconButton
+                                        aria-label={ `star ${topic.topic}` }
+                                        onClick={ () => { selectExpertTopic(topic); } }>
+                                        <WhiteCheckbox
+                                            icon={ <ExplicitOutlinedIcon /> }
+                                            checkedIcon={ <ExplicitIcon /> }
+                                            checked={ expertChecked.indexOf(topic._id) !== -1 }
+                                            className={ classes.checkbox } />
+                                    </IconButton>
+                                </ButtonGroup>
+
                             } />
                     </GridListTile>
                 )) }
@@ -246,6 +281,7 @@ const FollowTopicsModal = (props) => {
 
 FollowTopicsModal.defaultProps = {
     followedTopics: [],
+    expertTopics: [],
     topics: [],
 };
 
@@ -253,6 +289,7 @@ const mapStateToProps = (state) => {
     return {
         user: state.user,
         topics: [ ...state.topic.topics ],
+        expertTopics: state.user.expertIn,
         followedTopics: state.user.interests,
     };
 };
@@ -271,7 +308,7 @@ const mapDispatchToProps = (dispatch) => {
         maangeUserPreferences: (body) => {
             dispatch(addPreferencesPending());
             dispatch(maangeUserPreferences(body));
-        }
+        },
     };
 };
 
