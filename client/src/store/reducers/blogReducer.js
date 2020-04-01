@@ -101,21 +101,23 @@ export default (state = initialState, action) => {
                 pending: false,
             };
         case RECEIVE_FOLLOWED_TOPIC:
-            followers = [ ...state.blog.followers ];
-            index = followers.indexOf(action.res._id);
-            if (index >= 0){
-                followers.splice(index, 1);
-            }
-            else {
-                followers.push(action.res._id);
-            }
-            temp = state.blog;
-            temp.followers = followers;
-            return {
-                ...state,
-                topic: temp,
-                pending: false,
-            };
+            if (state.blog && state.blog.followers){
+                followers = [ ...state.blog.followers ];
+                index = followers.indexOf(action.res._id);
+                if (index >= 0){
+                    followers.splice(index, 1);
+                }
+                else {
+                    followers.push(action.res._id);
+                }
+                temp = state.blog;
+                temp.followers = followers;
+                return {
+                    ...state,
+                    topic: temp,
+                    pending: false,
+                };
+            } return state;
         case RECEIVE_UPVOTE_POST:
             post = state.modifiedPosts;
             id = action.res._id;

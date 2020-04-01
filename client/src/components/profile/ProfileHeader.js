@@ -81,7 +81,9 @@ const TopicSection = (props) => {
                 variant="subtitle1"
                 className={ classes.badge }
                 color="textSecondary">
-                { badge } User
+                { badge }
+                { ' ' }
+                User
             </Typography>
             { !isOwner && <Button
                 size="small"
@@ -106,7 +108,6 @@ const TopicSection = (props) => {
                         badgeWidth={ 140 }
                         badgeStyle={ { paddingLeft: 80 } }
                         user={ mail }
-                        variant="square"
                         className={ classes.large } />
                 }
                 action={ <>

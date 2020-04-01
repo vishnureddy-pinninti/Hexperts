@@ -20,6 +20,7 @@ import { Card,
     DialogTitle } from '@material-ui/core';
 import { EditTwoTone as EditTwoToneIcon,
     RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
+import ExplicitIcon from '@material-ui/icons/Explicit';
 
 import { followBlog,
     addPostToBlog,
@@ -89,10 +90,15 @@ const BlogHeader = (props) => {
         user,
         resetPost,
         followTopic,
+        expertTopics,
     } = props;
 
     const handleFollowClick = () => {
         followTopic({ interestId: id });
+    };
+
+    const handleExpertClick = () => {
+        followTopic({ expertId: id });
     };
 
     const [
@@ -143,7 +149,8 @@ const BlogHeader = (props) => {
         );
     };
 
-    const following = followers.indexOf(user._id) >= 0;
+    const following = followers.map((t) => t._id).indexOf(id) >= 0;
+    const expertIn = expertTopics.map((t) => t._id).indexOf(id) >= 0;
 
     const renderTextField = ({ input }) => (
         <TextField
@@ -262,6 +269,13 @@ const BlogHeader = (props) => {
                     { ' ' }
                     { followers.length }
                 </Button>
+                <Button
+                    size="small"
+                    onClick={ handleExpertClick }
+                    startIcon={ <ExplicitIcon /> }
+                    color={ expertIn ? 'primary' : 'default' }>
+                    Expert
+                </Button>
                 { /* <Button
                     size="small"
                     onClick={ handleOpen }
@@ -286,7 +300,8 @@ BlogHeader.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         pending: state.blog.pending,
-        followers: state.blog.blog.followers || [],
+        followers: state.user.interests,
+        expertTopics: state.user.expertIn,
         user: state.user.user,
     };
 };

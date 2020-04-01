@@ -56,14 +56,14 @@ const useStyles = makeStyles((theme) => {
             color: 'inherit',
         },
         logo: {
-            height: 60,
+            height: 40,
         },
         menu: {
             '& > *': {
                 margin: theme.spacing(1),
             },
             paddingRight: 20,
-            paddingLeft: 30,
+            paddingLeft: 10,
             display: 'none',
             [theme.breakpoints.up('md')]: {
                 display: 'flex',
