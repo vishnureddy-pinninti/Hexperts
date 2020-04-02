@@ -68,21 +68,19 @@ function Profile(props) {
     const [
         loading,
         setLoading,
-    ] = React.useState(false);
+    ] = React.useState(true);
 
     const { expertIn, interests: followedTopics } = userProfile;
 
     useEffect(() => {
         setLoading(true);
-        requestUser(userId);
+        requestUser(userId, () => {
+            setLoading(false);
+        });
     }, [
         requestUser,
         userId,
     ]);
-
-    useEffect(() => {
-        if (userProfile._id) { setLoading(false); }
-    }, [ userProfile ]);
 
 
     const isOwner = user._id === userProfile._id;
@@ -165,7 +163,7 @@ function Profile(props) {
                 height={ 300 } />
                 : <List className={ classes.list }>
                     { renderTopics(items) }
-                </List> }
+                  </List> }
         </>
     );
 
@@ -234,8 +232,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestUser: (topicID) => {
-            dispatch(requestUserById(topicID));
+        requestUser: (topicID, cb) => {
+            dispatch(requestUserById(topicID, cb));
         },
     };
 };
