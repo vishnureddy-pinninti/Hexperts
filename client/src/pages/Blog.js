@@ -136,7 +136,9 @@ function Topic(props) {
 
 
     const loadMore = () => {
-        requestBlog(blogId, { skip: pagination.index * 10 });
+        if (pagination.index > 0){
+            requestBlog(blogId, { skip: pagination.index * 10 });
+        }
     };
 
     const renderPosts = (items) => items.map((post) => (

@@ -5,11 +5,10 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 
-import Card from '@material-ui/core/Card';
-import Typography from '@material-ui/core/Typography';
+import CardHeader from '@material-ui/core/CardHeader';
+import Button from '@material-ui/core/Button';
 import CardContent from '@material-ui/core/CardContent';
 import { Link, withRouter } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
 import { formatDistanceToNow } from 'date-fns';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -21,7 +20,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { Divider } from '@material-ui/core';
 import CardLoader from '../components/base/CardLoader';
 import EmptyResults from '../components/base/EmptyResults';
-import { requestNotifications, markNotificationRead } from '../store/actions/auth';
+import { requestNotifications, markNotificationRead, markAllNotificationsRead, setPageLoader } from '../store/actions/auth';
 
 
 const useStyles = makeStyles((theme) => {
@@ -37,6 +36,15 @@ const useStyles = makeStyles((theme) => {
             textDecoration: 'none',
             color: 'inherit',
         },
+        heading: {
+            marginBottom: 10,
+            position: 'sticky',
+            top: 60,
+            paddingTop: 10,
+            paddingBottom: 10,
+            zIndex: 1,
+            backgroundColor: '#f0f2f2',
+        },
     };
 });
 
@@ -46,7 +54,8 @@ function Notifications(props) {
         requestNotifications,
         markNotificationRead,
         notifications,
-        user,
+        markAllRead,
+        notificationCount,
     } = props;
 
     const classes = useStyles();
@@ -66,10 +75,15 @@ function Notifications(props) {
 
     useEffect(() => {
         if (notifications.length) {
-            setItems([
-                ...items,
-                ...notifications,
-            ]);
+            if (pagination.index === 1){
+                setItems([ ...notifications ]);
+            }
+            else {
+                setItems([
+                    ...items,
+                    ...notifications,
+                ]);
+            }
             setPagination({
                 index: pagination.index + 1,
                 hasMore: true,
@@ -86,20 +100,22 @@ function Notifications(props) {
     useEffect(() => {
         setItems([]);
         setPagination({
-            index: 0,
+            index: 1,
             hasMore: true,
         });
         requestNotifications({
             skip: 0,
             limit: 20,
         });
-    }, []);
+    }, [ 1 ]);
 
     const loadMore = () => {
-        requestNotifications({
-            skip: pagination.index * 10,
-            limit: 10,
-        });
+        if (pagination.index > 1){
+            requestNotifications({
+                skip: pagination.index * 10,
+                limit: 10,
+            });
+        }
     };
 
     const handleNotificationClick = (notification) => {
@@ -116,7 +132,7 @@ function Notifications(props) {
             <ListItem
                 onClick={ () => { handleNotificationClick(notification); } }
                 key={ notification._id }
-                selected={ !notification.recipient.read }
+                selected={ (!notification.recipient.read && notificationCount !== 0) }
                 className={ classes.listItem }
                 button>
                 <ListItemAvatar>
@@ -138,11 +154,24 @@ function Notifications(props) {
                 <Grid
                     container
                     justify="center"
-                    style={ { marginTop: 70 } }
+                    style={ { marginTop: 60 } }
                     spacing={ 3 }>
                     <Grid
                         item
                         xs={ 7 }>
+                        <CardHeader
+                            className={ classes.heading }
+                            action={ <Button
+                                variant="contained"
+                                size="small"
+                                style={ {
+                                    marginTop: 10,
+                                    marginLeft: 20,
+                                } }
+                                onClick={ markAllRead }
+                                color="primary">
+                                Mark All Read
+                            </Button> } />
                         <List
                             className={ classes.root }
                             id="list">
@@ -154,7 +183,7 @@ function Notifications(props) {
                                 endMessage={ items.length !== 0
                                     && <p style={ { textAlign: 'center' } }>
                                         <b>Yay! You have seen it all</b>
-                                    </p> }>
+                                       </p> }>
                                 { renderNotifications(items) }
                             </InfiniteScroll>
                             { /* { notifications && renderNotifications(notifications) } */ }
@@ -178,6 +207,7 @@ const mapStateToProps = (state) => {
     return {
         user: state.user.user,
         notifications: state.user.notifications,
+        notificationCount: state.user.notificationCount,
     };
 };
 
@@ -188,6 +218,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         markNotificationRead: (id) => {
             dispatch(markNotificationRead(id));
+        },
+        markAllRead: () => {
+            dispatch(setPageLoader(true));
+            dispatch(markAllNotificationsRead());
         },
     };
 };

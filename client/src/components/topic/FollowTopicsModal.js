@@ -197,6 +197,14 @@ const FollowTopicsModal = (props) => {
         });
     };
 
+    const handleClose = () => {
+        setChecked(followedTopics.map((t) => t._id));
+        setExpertChecked(expertTopics.map((t) => t._id));
+        if (handleFollowTopicsModalClose){
+            handleFollowTopicsModalClose();
+        }
+    };
+
     const renderTopics = () => (
         <div className={ classes.root }>
             <GridList
@@ -218,17 +226,20 @@ const FollowTopicsModal = (props) => {
                                     aria-label="small outlined button group">
                                     <IconButton
                                         aria-label={ `star ${topic.topic}` }
+                                        title="Follow"
                                         onClick={ () => { selectTopic(topic); } }>
-                                        <WhiteCheckbox
+                                        <Checkbox
                                             icon={ <CheckCircleOutlinedIcon /> }
                                             checkedIcon={ <CheckCircleRoundedIcon /> }
+                                            color="primary"
                                             checked={ checked.indexOf(topic._id) !== -1 }
                                             className={ classes.checkbox } />
                                     </IconButton>
                                     <IconButton
                                         aria-label={ `star ${topic.topic}` }
+                                        title="Expert"
                                         onClick={ () => { selectExpertTopic(topic); } }>
-                                        <WhiteCheckbox
+                                        <Checkbox
                                             icon={ <ExplicitOutlinedIcon /> }
                                             checkedIcon={ <ExplicitIcon /> }
                                             checked={ expertChecked.indexOf(topic._id) !== -1 }
@@ -248,14 +259,14 @@ const FollowTopicsModal = (props) => {
             className={ classes.root }
             fullScreen={ fullScreen }
             open={ open }
-            onClose={ handleFollowTopicsModalClose }
+            onClose={ handleClose }
             aria-labelledby="responsive-dialog-title">
             <DialogTitle>
                 Topics
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Follow topics of your interest and we will give you feed when new question or answer is posted.
+                    <b>Follow topics of your interest and we will give you feed when new question or answer is posted.</b>
                 </DialogContentText>
                 { renderTextField() }
                 { renderTopics() }
@@ -263,7 +274,7 @@ const FollowTopicsModal = (props) => {
             <DialogActions>
                 <Button
                     autoFocus
-                    onClick={ handleFollowTopicsModalClose }
+                    onClick={ handleClose }
                     color="primary">
                     Cancel
                 </Button>

@@ -118,27 +118,29 @@ function ProfileBody(props) {
     };
 
     const loadMore = () => {
-        switch (selectedTab){
-            case 'Questions':
-                requestUserQuestions(userProfile._id, { skip: pagination.index * 10 });
-                break;
-            case 'Answers':
-                requestUserAnswers(userProfile._id, { skip: pagination.index * 10 });
-                break;
-            case 'Blogs':
+        if (pagination.index > 0){
+            switch (selectedTab){
+                case 'Questions':
+                    requestUserQuestions(userProfile._id, { skip: pagination.index * 10 });
+                    break;
+                case 'Answers':
+                    requestUserAnswers(userProfile._id, { skip: pagination.index * 10 });
+                    break;
+                case 'Blogs':
                 // requestUserBlogs(userProfile._id, { skip: pagination.index * 10 });
-                break;
-            case 'Posts':
-                requestUserPosts(userProfile._id, { skip: pagination.index * 10 });
-                break;
-            case 'Followers':
+                    break;
+                case 'Posts':
+                    requestUserPosts(userProfile._id, { skip: pagination.index * 10 });
+                    break;
+                case 'Followers':
                 // requestUserFollowers(userProfile._id, { skip: pagination.index * 10 });
-                break;
-            case 'Following':
+                    break;
+                case 'Following':
                 // requestUserFollowing(userProfile._id, { skip: pagination.index * 10 });
-                break;
-            default:
-                requestUserQuestions(userProfile._id, { skip: pagination.index * 10 });
+                    break;
+                default:
+                    requestUserQuestions(userProfile._id, { skip: pagination.index * 10 });
+            }
         }
     };
 
@@ -329,7 +331,7 @@ function ProfileBody(props) {
                     endMessage={ items.length !== 0
                         && <p style={ { textAlign: 'center' } }>
                             <b>Yay! You have seen it all</b>
-                        </p> }>
+                           </p> }>
                     { renderResults(items) }
                 </InfiniteScroll>
                 { items && items.length === 0 && !pagination.hasMore && <EmptyResults

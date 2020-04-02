@@ -189,6 +189,7 @@ const TopBar = (props) => {
         addUserQuestion,
         toggleQuestionModal,
         questionModal,
+        pageLoader,
     } = props;
 
     const { path } = match;
@@ -492,7 +493,7 @@ const TopBar = (props) => {
                         </Toolbar>
                     </Grid>
                 </Grid>
-                { pageLoading
+                { (pageLoading || pageLoader)
                 && <LinearProgress
                     variant="query"
                     color="secondary" /> }
@@ -541,6 +542,7 @@ const mapStateToProps = (state) => {
         addedQuestion: state.questions.newQuestion,
         notificationCount: state.user.notificationCount,
         questionModal: state.questions.questionModal,
+        pageLoader: state.user.pageLoader,
     };
 };
 
