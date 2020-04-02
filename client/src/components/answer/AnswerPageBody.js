@@ -111,7 +111,7 @@ function AnswerPageBody(props) {
             index: 0,
             hasMore: true,
         });
-        loadMore();
+        requestAnswerRequests({ skip: pagination.index * 10 });
     }, []);
 
     const getData = (type = 'questions') => {
