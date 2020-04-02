@@ -375,7 +375,7 @@ const emailMap = {
         } = data;
 
         const userFollowers = await getUserFollowers(author._id);
-        const topicFollowers = await getTopicFollowers(topics);
+        const topicFollowers = await getTopicFollowers(topics.map((t) => t._id));
         const recipients = [
             ...userFollowers,
             ...topicFollowers,
