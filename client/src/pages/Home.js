@@ -29,6 +29,13 @@ const useStyles = makeStyles((theme) => {
         chip: {
             marginBottom: 10,
         },
+        chipIcon: {
+            marginLeft: 5,
+            marginRight: 0,
+        },
+        chipLable: {
+            paddingLeft: 6,
+        },
     };
 });
 
@@ -230,6 +237,10 @@ function Home(props) {
                             color="primary"
                             clickable
                             onClick={ showOwnQuestions }
+                            classes={ {
+                                icon: classes.chipIcon,
+                                label: classes.chipLable,
+                            } }
                             className={ classes.chip } />
                         <TopCreators />
                         <QuestionsList
