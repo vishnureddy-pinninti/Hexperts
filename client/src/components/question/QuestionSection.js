@@ -22,6 +22,7 @@ import { addAnswerToQuestion,
     addAnswerPending } from '../../store/actions/answer';
 import { followQuestion,
     addQuestionToCache } from '../../store/actions/questions';
+import config from '../../utils/config';
 
 const useStyles = makeStyles({
     root: {
@@ -218,12 +219,16 @@ const QuestionSection = (props) => {
                         editorClassName={ classes.editor }
                         onEditorStateChange={ onEditorStateChange }
                         toolbar={ {
+                            options: config.toolbarOptions,
                             inline: { inDropdown: true },
                             list: { inDropdown: true },
                             textAlign: { inDropdown: true },
                             link: { inDropdown: true },
                             history: { inDropdown: true },
-                            blockType: { inDropdown: false },
+                            blockType: {
+                                inDropdown: false,
+                                options: config.blockTypeOptions,
+                            },
                             image: {
                                 defaultSize: {
                                     height: '100%',

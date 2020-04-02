@@ -20,6 +20,7 @@ import { addAnswerToQuestion,
     addAnswerPending } from '../../store/actions/answer';
 import { followQuestion,
     addQuestionToCache } from '../../store/actions/questions';
+import config from '../../utils/config';
 
 
 const useStyles = makeStyles({
@@ -182,7 +183,11 @@ const QuestionCard = (props) => {
                         editorClassName={ classes.editor }
                         onEditorStateChange={ onEditorStateChange }
                         toolbar={ {
-                            blockType: { inDropdown: false },
+                            options: config.toolbarOptions,
+                            blockType: {
+                                inDropdown: false,
+                                options: config.blockTypeOptions,
+                            },
                             inline: { inDropdown: true },
                             list: { inDropdown: true },
                             textAlign: { inDropdown: true },

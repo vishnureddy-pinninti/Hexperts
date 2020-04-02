@@ -10,6 +10,8 @@ import { Editor } from 'react-draft-wysiwyg';
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 
+import config from '../../utils/config';
+
 const useStyles = makeStyles({
     root: {
         overflow: 'visible',
@@ -90,7 +92,11 @@ export default function DescriptionModal(props) {
                         editorClassName={ classes.editor }
                         onEditorStateChange={ onEditorStateChange }
                         toolbar={ {
-                            blockType: { inDropdown: false },
+                            options: config.toolbarOptions,
+                            blockType: {
+                                inDropdown: false,
+                                options: config.blockTypeOptions,
+                            },
                             inline: { inDropdown: true },
                             list: { inDropdown: true },
                             textAlign: { inDropdown: true },

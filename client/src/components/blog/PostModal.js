@@ -22,6 +22,7 @@ import { withRouter } from 'react-router-dom';
 import { addPostToBlog, addBlogPending } from '../../store/actions/blog';
 import { addNewTopic, requestTopics } from '../../store/actions/topic';
 import { editQuestion, editQuestionPending } from '../../store/actions/questions';
+import config from '../../utils/config';
 
 const filter = createFilterOptions();
 
@@ -119,12 +120,16 @@ const BlogPostModal = (props) => {
             editorClassName={ classes.editor }
             onEditorStateChange={ (value) => input.onChange(value) }
             toolbar={ {
+                options: config.toolbarOptions,
                 inline: { inDropdown: true },
                 list: { inDropdown: true },
                 textAlign: { inDropdown: true },
                 link: { inDropdown: true },
                 history: { inDropdown: true },
-                blockType: { inDropdown: false },
+                blockType: {
+                    inDropdown: false,
+                    options: config.blockTypeOptions,
+                },
                 image: {
                     defaultSize: {
                         height: '100%',
