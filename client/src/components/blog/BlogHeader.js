@@ -87,7 +87,7 @@ const BlogHeader = (props) => {
         blog,
         followers,
         handleSubmit,
-        user,
+        interests,
         resetPost,
         followTopic,
         expertTopics,
@@ -149,7 +149,7 @@ const BlogHeader = (props) => {
         );
     };
 
-    const following = followers.map((t) => t._id).indexOf(id) >= 0;
+    const following = interests.map((t) => t._id).indexOf(id) >= 0;
     const expertIn = expertTopics.map((t) => t._id).indexOf(id) >= 0;
 
     const renderTextField = ({ input }) => (
@@ -300,7 +300,8 @@ BlogHeader.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         pending: state.blog.pending,
-        followers: state.user.interests,
+        followers: state.topic.topic.followers,
+        interests: state.user.interests,
         expertTopics: state.user.expertIn,
         user: state.user.user,
     };

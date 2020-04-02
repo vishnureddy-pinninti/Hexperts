@@ -43,7 +43,7 @@ const TopicSection = (props) => {
         followTopic,
         topic,
         followers,
-        user,
+        interests,
         expertTopics,
     } = props;
 
@@ -55,7 +55,7 @@ const TopicSection = (props) => {
         followTopic({ expertId: id });
     };
 
-    const following = followers.map((t) => t._id).indexOf(id) >= 0;
+    const following = interests.map((t) => t._id).indexOf(id) >= 0;
     const expertIn = expertTopics.map((t) => t._id).indexOf(id) >= 0;
 
     return (
@@ -102,7 +102,8 @@ TopicSection.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         pending: state.answer.pending,
-        followers: state.user.interests,
+        followers: state.topic.topic.followers,
+        interests: state.user.interests,
         expertTopics: state.user.expertIn,
         user: state.user.user,
     };

@@ -28,6 +28,9 @@ export const RECEIVE_USER_FOLLOWING = 'RECEIVE_USER_FOLLOWING';
 export const REQUEST_USER_FOLLOWING = 'REQUEST_USER_FOLLOWING';
 export const REQUEST_MANAGE_USER_PREFERENCES = 'REQUEST_MANAGE_USER_PREFERENCES';
 export const RECEIVE_MANGE_USER_PREFERENCES = 'RECEIVE_MANGE_USER_PREFERENCES';
+export const RECEIVE_MARK_ALL_NOTIFICATION_READ = 'RECEIVE_MARK_ALL_NOTIFICATION_READ';
+export const MARK_ALL_NOTIFICATIONS_READ = 'MARK_ALL_NOTIFICATIONS_READ';
+export const SET_PAGE_LOADER = 'SET_PAGE_LOADER';
 
 const receiveUserSession = (user) => {
     return {
@@ -287,6 +290,31 @@ export const markNotificationRead = (id) => {
             url: `/api/v1/notification-mark-read/${id}`,
             method: 'GET',
             success: receiveMarkNotificationRead,
+        },
+    };
+};
+
+export const setPageLoader = (loading) => {
+    return {
+        type: SET_PAGE_LOADER,
+        loading,
+    };
+};
+
+const receiveMarkAllNotificationsRead = (res) => {
+    return {
+        type: RECEIVE_MARK_ALL_NOTIFICATION_READ,
+        res,
+    };
+};
+
+export const markAllNotificationsRead = () => {
+    return {
+        type: MARK_ALL_NOTIFICATIONS_READ,
+        makeApiRequest: {
+            url: '/api/v1/notifications-mark-all-read/',
+            method: 'GET',
+            success: receiveMarkAllNotificationsRead,
         },
     };
 };

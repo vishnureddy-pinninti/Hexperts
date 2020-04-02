@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
-import {
-    Grid,
-    Container,
-} from '@material-ui/core';
+import { Grid,
+    Container } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -19,7 +17,8 @@ import { requestTopicById } from '../store/actions/topic';
 function Topic(props) {
     const {
         match: {
-            params: { topicID },
+            params: { topicID 
+},
         },
         requestTopic,
         pending,
@@ -106,7 +105,9 @@ function Topic(props) {
     ]);
 
     const loadMore = () => {
-        requestTopic(topicID, { skip: pagination.index * 10 });
+        if (pagination.index > 0){
+            requestTopic(topicID, { skip: pagination.index * 10 });
+        }
     };
 
     const renderQuestions = (items) => items.map((question) => {

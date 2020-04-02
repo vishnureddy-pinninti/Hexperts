@@ -156,7 +156,9 @@ function Home(props) {
     }, [ requestPostsFeed ]);
 
     const loadMore = () => {
-        requestPostsFeed({ skip: pagination.index * 10 });
+        if (pagination.index > 0){
+            requestPostsFeed({ skip: pagination.index * 10 });
+        }
     };
 
     const renderQuestions = (posts) => posts.map((post) => (

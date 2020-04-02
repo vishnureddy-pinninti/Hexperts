@@ -136,10 +136,12 @@ function Home(props) {
     ]);
 
     const loadMore = () => {
-        requestUserQuestions({
-            skip: pagination.index * 10,
-            ownQuestions,
-        });
+        if (pagination.index > 0){
+            requestUserQuestions({
+                skip: pagination.index * 10,
+                ownQuestions,
+            });
+        }
     };
 
     const showOwnQuestions = () => {

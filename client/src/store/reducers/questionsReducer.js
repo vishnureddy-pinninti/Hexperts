@@ -18,6 +18,7 @@ import { RECEIVE_ADDED_ANSWER } from '../actions/answer';
 
 const initialState = {
     questions: [],
+    answerRequests: [],
     pending: true,
     newQuestion: {},
     question: { answers: { results: [] } },
@@ -61,12 +62,12 @@ export default (state = initialState, action) => {
         case RECEIVE_QUESTIONS_FOR_USER:
             return {
                 ...state,
-                questions: action.questions,
+                answerRequests: action.questions,
             };
         case RECEIVE_ANSWER_REQUESTS:
             return {
                 ...state,
-                questions: action.questions,
+                answerRequests: action.questions,
             };
         case RECEIVE_TRENDING_QUESTIONS:
             return {

@@ -13,6 +13,8 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_USER_POSTS,
     RECEIVE_MARK_NOTIFICATION_READ,
     REQUEST_ADD_NOTIFICATION,
+    RECEIVE_MARK_ALL_NOTIFICATION_READ,
+    SET_PAGE_LOADER,
     RECEIVE_MANGE_USER_PREFERENCES } from '../actions/auth';
 
 import { RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
@@ -29,6 +31,7 @@ const initialState = {
     notificationCount: 0,
     notifications: [],
     blogs: [],
+    pageLoader: false,
 };
 
 export default (state = initialState, action) => {
@@ -45,6 +48,11 @@ export default (state = initialState, action) => {
                 interests: action.user.interests,
                 expertIn: action.user.expertIn,
                 blogs: action.user.blogs,
+            };
+        case SET_PAGE_LOADER:
+            return {
+                ...state,
+                pageLoader: action.loading,
             };
         case RECEIVE_USER_BY_ID:
             return {
@@ -308,13 +316,20 @@ export default (state = initialState, action) => {
                 notificationCount: state.notificationCount - 1,
             };
         }
+        case RECEIVE_MARK_ALL_NOTIFICATION_READ: {
+            return {
+                ...state,
+                notificationCount: 0,
+                pageLoader: false,
+            };
+        }
         case REQUEST_ADD_NOTIFICATION: {
             return {
                 ...state,
-                notifications: [
-                    action.notification,
-                    ...state.notifications,
-                ],
+                // notifications: [
+                //     action.notification,
+                //     ...state.notifications,
+                // ],
                 notificationCount: state.notificationCount + 1,
             };
         }

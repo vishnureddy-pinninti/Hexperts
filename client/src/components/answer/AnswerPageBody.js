@@ -95,11 +95,13 @@ function AnswerPageBody(props) {
     }, [ questions ]);
 
     const loadMore = () => {
-        if (requestType === 'questions') {
-            requestQuestionsForUser({ skip: pagination.index * 10 });
-        }
-        else {
-            requestAnswerRequests({ skip: pagination.index * 10 });
+        if (pagination.index > 0){
+            if (requestType === 'questions') {
+                requestQuestionsForUser({ skip: pagination.index * 10 });
+            }
+            else {
+                requestAnswerRequests({ skip: pagination.index * 10 });
+            }
         }
     };
 
@@ -167,7 +169,7 @@ function AnswerPageBody(props) {
                     Specific Questions
                     <br />
                     for me
-                </div> }
+                        </div> }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'AnswerRequests' ? 'default' : 'outlined' }
@@ -179,7 +181,7 @@ function AnswerPageBody(props) {
                     Questions in my
                     <br />
                     area of expertise
-                </div> }
+                        </div> }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Questions' ? 'default' : 'outlined' }
@@ -235,7 +237,7 @@ AnswerPageBody.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
-        questions: state.questions.questions,
+        questions: state.questions.answerRequests,
         modifiedQuestions: state.questions.modifiedQuestions,
     };
 };

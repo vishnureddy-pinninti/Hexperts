@@ -211,7 +211,12 @@ const Search = (props) => {
         if (index > 0 && item.type === 'externals' && items[index - 1].type !== 'externals') {
             return (
                 <div key={ index }>
-                    <div style={{ height: 40, backgroundColor: '#f0f2f2', paddingTop: 20, fontWeight: 'bolder' }}>
+                    <div style={ {
+                        height: 40,
+                        backgroundColor: '#f0f2f2',
+                        paddingTop: 20,
+                        fontWeight: 'bolder',
+                    } }>
                         External Sources
                     </div>
                     { renderResults(item) }
@@ -251,7 +256,7 @@ const Search = (props) => {
                                 startIcon={ <AddIcon /> }
                                 color="primary">
                                 Add Question
-                                     </Button> }
+                            </Button> }
                             title={ <Typography
                                 component="div"
                                 className={ classes.heading }>
@@ -266,7 +271,7 @@ const Search = (props) => {
                                 <b>
                                     { query }
                                 </b>
-                            </Typography> } />
+                                    </Typography> } />
 
                         { totalCount === null ? <CardLoader height={ 50 } />
                             : <List className={ classes.root }>
@@ -282,7 +287,7 @@ const Search = (props) => {
                                         showBackButton={ false }
                                         title=" Oops! No results matching with your criteria."
                                         description="Try different or less specific keywords and reset your filters." /> }
-                            </List> }
+                              </List> }
                     </Grid>
                 </Grid>
             </Container>

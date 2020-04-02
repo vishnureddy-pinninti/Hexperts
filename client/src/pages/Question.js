@@ -113,7 +113,9 @@ function Question(props) {
     ]);
 
     const loadMore = () => {
-        requestQuestion(questionId, { skip: (pagination.index * 10) + newAnswers.length });
+        if (pagination.index > 0){
+            requestQuestion(questionId, { skip: (pagination.index * 10) + newAnswers.length });
+        }
     };
 
     // useEffect(() => {
