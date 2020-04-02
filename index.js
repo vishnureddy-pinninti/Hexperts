@@ -7,30 +7,35 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const http = require('http');
+const https = require('https');
 const httpolyglot = require('httpolyglot');
 
 const app = express();
-const { PORT } = require('./utils/constants');
+const { PORT } = require('./config/keys');
 
 let server;
-let mode = 'DEV';
+const env = process.env.NODE_ENV;
+const options = {
+    cert: fs.readFileSync('./certs/wc_ingrnet_com_2020.crt'),
+    ca: fs.readFileSync('./certs/DigiCertCA.crt'),
+    key: fs.readFileSync('./certs/wc_ingrnet_com_2020.key'),
+};
 
 const ensureSecure = (req, res, next) => {
     if (req.secure) {
         return next();
     }
-    return res.redirect(`https://${req.hostname}:${PORT}${req.url}`);
+    const redirectUrl = env === 'production' ? `https://${req.hostname}${req.url}`: `https://${req.hostname}:${PORT}${req.url}`;
+    return res.redirect(redirectUrl);
 };
 
-if (process.env.NODE_ENV === 'production') {
-    mode = 'PROD';
-    const options = {
-        cert: fs.readFileSync('./certs/wildcard_intergraph_com2018.crt'),
-        ca: fs.readFileSync('./certs/DigiCertCA.crt'),
-        key: fs.readFileSync('./certs/wildcard_intergraph_com2018.key'),
-    };
+if (env === 'qa') {
     app.all('*', ensureSecure);
     server = httpolyglot.createServer(options, app);
+}
+else if (env === 'production') {
+    app.all('*', ensureSecure);
+    server = https.createServer(options, app);
 }
 else {
     server = http.createServer(app);
@@ -55,7 +60,16 @@ app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
 });
 
-server.listen(PORT, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Running in PROD ${mode}. Listening on port ${PORT}`);
-});
+if (env === 'production') {
+    http.createServer(app).listen(80);
+    server.listen(443, () => {
+        // eslint-disable-next-line no-console
+        console.log(`Running in PROD mode. Listening on port 443`);
+    });
+}
+else {
+    server.listen(PORT, () => {
+        // eslint-disable-next-line no-console
+        console.log(`Running in ${env} mode. Listening on port ${PORT}`);
+    });
+}

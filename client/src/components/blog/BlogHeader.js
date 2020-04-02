@@ -27,6 +27,7 @@ import { followBlog,
     addBlogPending } from '../../store/actions/blog';
 
 import { followTopic } from '../../store/actions/topic';
+import config from '../../utils/config';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -173,12 +174,16 @@ const BlogHeader = (props) => {
             editorClassName={ classes.editor }
             onEditorStateChange={ onEditorStateChange }
             toolbar={ {
+                options: config.toolbarOptions,
                 inline: { inDropdown: true },
                 list: { inDropdown: true },
                 textAlign: { inDropdown: true },
                 link: { inDropdown: true },
                 history: { inDropdown: true },
-                blockType: { inDropdown: false },
+                blockType: {
+                    inDropdown: false,
+                    options: config.blockTypeOptions,
+                },
                 image: {
                     defaultSize: {
                         height: '100%',
