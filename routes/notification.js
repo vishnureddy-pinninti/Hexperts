@@ -162,7 +162,7 @@ module.exports = (app) => {
                     'recipients.read': false,
                 },
                 {
-                    $set: { 'recipients.read': true },
+                    $set: { 'recipients.$.read': true },
                 });
 
             res
