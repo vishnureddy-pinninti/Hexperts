@@ -121,13 +121,14 @@ const receiveUserById = (profile) => {
     };
 };
 
-export const requestUserById = (id) => {
+export const requestUserById = (id, callback) => {
     return {
         type: REQUEST_USER_BY_ID,
         makeApiRequest: {
             url: `/api/v1/user-profile/${id}`,
             method: 'GET',
             success: receiveUserById,
+            successcb: callback,
         },
     };
 };
