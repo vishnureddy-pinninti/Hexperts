@@ -101,15 +101,13 @@ export default (state = initialState, action) => {
                 pending: false,
             };
         case RECEIVE_FOLLOWED_TOPIC:
-            if (state.blog && state.blog.followers){
+            if (state.blog && state.blog.followers && !action.res.expertInRemoved){
                 followers = [ ...state.blog.followers ];
                 index = followers.indexOf(action.res._id);
                 if (index >= 0){
                     followers.splice(index, 1);
                 }
-                else {
-                    followers.push(action.res._id);
-                }
+                else if (index < 0) followers.push(action.res._id);
                 temp = state.blog;
                 temp.followers = followers;
                 return {
