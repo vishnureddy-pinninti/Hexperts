@@ -37,8 +37,13 @@ const apiRequest = (store) => (next) => (action) => {
     };
 
     if (config.body) {
-        requestObject.body = JSON.stringify(config.body);
-        requestObject.headers['Content-Type'] = 'application/json';
+        if (config.file) {
+            requestObject.body = config.body;
+        }
+        else {
+            requestObject.body = JSON.stringify(config.body);
+            requestObject.headers['Content-Type'] = 'application/json';
+        }
     }
 
     return fetch(config.url, requestObject)
