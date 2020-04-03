@@ -87,7 +87,7 @@ const TopicSection = (props) => {
                     size="small"
                     onClick={ handleExpertClick }
                     startIcon={ <ExplicitIcon /> }
-                    color={ expertIn ? 'primary' : 'default' }>
+                    color={ expertIn ? 'secondary' : 'default' }>
                     Expert
                 </Button>
             </CardActions>
