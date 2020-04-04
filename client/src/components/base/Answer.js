@@ -64,6 +64,7 @@ const Answer = (props) => {
                         display: 'flex',
                         flexDirection: 'column',
                     } }
+                    className="editor-read-mode"
                     dangerouslySetInnerHTML={ { __html: answer } } />
             </CardContent>
             <CardActions disableSpacing>

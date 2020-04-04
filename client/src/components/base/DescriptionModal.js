@@ -102,12 +102,6 @@ export default function DescriptionModal(props) {
                             textAlign: { inDropdown: true },
                             link: { inDropdown: true },
                             history: { inDropdown: true },
-                            image: {
-                                defaultSize: {
-                                    height: '100%',
-                                    width: '100%',
-                                },
-                            },
                         } } />
 
                 </DialogContent>

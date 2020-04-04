@@ -148,6 +148,7 @@ const QuestionSection = (props) => {
                     display: 'flex',
                     flexDirection: 'column',
                 } }
+                className="editor-read-mode"
                 dangerouslySetInnerHTML={ { __html: question.description } } />
         </ReadMore>
     );
@@ -166,7 +167,7 @@ const QuestionSection = (props) => {
                     component="h2">
                     { question.question }
                 </Typography>
-                { question.plainText && <>
+                { (question.plainText || (question.description && question.description.length > 7)) && <>
                     <Typography
                         component="p">
                         Description:
@@ -228,12 +229,6 @@ const QuestionSection = (props) => {
                             blockType: {
                                 inDropdown: false,
                                 options: config.blockTypeOptions,
-                            },
-                            image: {
-                                defaultSize: {
-                                    height: '100%',
-                                    width: '100%',
-                                },
                             },
                         } } />
                 </CardContent>

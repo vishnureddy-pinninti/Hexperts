@@ -135,6 +135,7 @@ const AnswerCard = (props) => {
                     display: 'flex',
                     flexDirection: 'column',
                 } }
+                className="editor-read-mode"
                 dangerouslySetInnerHTML={ { __html: answer } } />
         </ReadMore>
     );
