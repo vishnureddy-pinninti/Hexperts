@@ -238,13 +238,14 @@ const QuestionSection = (props) => {
                     </Button>
                 </CardActions>
             </Collapse>
-            <EditSuggestedWriters
+            { openEditSuggestedWritersModal
+            && <EditSuggestedWriters
                 open={ openEditSuggestedWritersModal }
                 question={ question.question }
                 topics={ topics }
                 questionID={ id }
                 askedExperts={ askedExperts }
-                handleClose={ handleEditSuggestedWritersModalClose } />
+                handleClose={ handleEditSuggestedWritersModalClose } /> }
         </Card>
     );
 };

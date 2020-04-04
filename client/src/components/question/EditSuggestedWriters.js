@@ -78,7 +78,7 @@ function TabPanel(props) {
             { ...other }>
             { value === index && <Box p={ 3 }>
                 { children }
-                                 </Box> }
+            </Box> }
         </Typography>
     );
 }
@@ -120,10 +120,6 @@ const EditSuggestedWriters = (props) => {
         }
     }
 
-    useEffect(() => {
-        requestTopics();
-    }, [ requestTopics ]);
-
     const [
         checked,
         setChecked,
@@ -135,14 +131,18 @@ const EditSuggestedWriters = (props) => {
     ] = React.useState('all');
 
     const requestAllTopicsExperts = () => {
-        const topicsString = `${topics.map((topic) => `${topic._id}`)}`;
-        setSelectedTopic('all');
-        requestSuggestedExperts(topicsString);
+        if (topics.length){
+            const topicsString = `${topics.map((topic) => `${topic._id}`)}`;
+            setSelectedTopic('all');
+            requestSuggestedExperts(topicsString);
+        }
     };
 
     useEffect(() => {
-        const topicsString = `${topics.map((topic) => `${topic._id}`)}`;
-        requestSuggestedExperts(topicsString);
+        if (topics.length){
+            const topicsString = `${topics.map((topic) => `${topic._id}`)}`;
+            requestSuggestedExperts(topicsString);
+        }
     }, [
         requestSuggestedExperts,
         topics,
@@ -225,6 +225,12 @@ const EditSuggestedWriters = (props) => {
                 </Box>
             </Typography>
             <List className={ classes.list }>
+                { suggestedExperts.length === 0
+                && <ListItem>
+                    <ListItemText
+                        inset
+                        primary="No results to display." />
+                   </ListItem> }
                 { suggestedExperts.map((user) => {
                     const labelId = `checkbox-list-label-${user._id}`;
                     return (
@@ -280,6 +286,12 @@ const EditSuggestedWriters = (props) => {
                 </Box>
             </Typography>
             <List className={ classes.list }>
+                { askedExperts.length === 0
+                && <ListItem>
+                    <ListItemText
+                        inset
+                        primary="No results to display." />
+                   </ListItem> }
                 { askedExperts.map((user) => (
                     <ListItem
                         key={ user._id }

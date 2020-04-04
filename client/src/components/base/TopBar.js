@@ -509,7 +509,7 @@ const TopBar = (props) => {
                 disableBackdropClick
                 handleDone={ handleEditTopicsModalSubmit }
                 handleClose={ handleEditTopicsModalClose } /> }
-            { newQuestion.question && <EditSuggestedWriters
+            { openEditSuggestedWritersModal && newQuestion.question && <EditSuggestedWriters
                 open={ openEditSuggestedWritersModal }
                 question={ newQuestion.question }
                 topics={ newQuestion.selectedTopics }
