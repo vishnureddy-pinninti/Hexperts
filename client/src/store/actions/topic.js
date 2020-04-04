@@ -118,7 +118,7 @@ const receiveUploadedTopicImage = (res) => {
     };
 };
 
-export const uploadTopicImage = (topicId, body) => {
+export const uploadTopicImage = (topicId, body, cb) => {
     return {
         type: UPLOAD_TOPIC_IMAGE,
         makeApiRequest: {
@@ -127,6 +127,7 @@ export const uploadTopicImage = (topicId, body) => {
             body,
             file: true,
             success: receiveUploadedTopicImage,
+            successcb: cb,
         },
     };
 };

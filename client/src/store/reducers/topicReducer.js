@@ -65,7 +65,7 @@ export default (state = initialState, action) => {
                 };
             } return state;
         case RECEIVE_UPLOADED_TOPIC_IMAGE:
-            temp = { ...state.topic };
+            temp = state.topic;
             temp.imageUrl = action.res.imageUrl;
             return {
                 ...state,

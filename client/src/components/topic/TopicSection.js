@@ -84,6 +84,15 @@ const TopicSection = (props) => {
         setOpenImageUploadModal,
     ] = React.useState(false);
 
+    const [
+        imageUrl,
+        setImageUrl,
+    ] = React.useState(topic.imageUrl);
+
+    const callback = (res) => {
+        setImageUrl(res.imageUrl);
+    };
+
 
     const handleImageUploadModalOpen = () => {
         setAnchorEl(null);
@@ -97,7 +106,7 @@ const TopicSection = (props) => {
     const handleImageUpload = (files) => {
         const formdata = new FormData();
         formdata.append('file', files[0]);
-        uploadTopicImage(id, formdata);
+        uploadTopicImage(id, formdata, callback);
         setOpenImageUploadModal(false);
     };
 
@@ -107,7 +116,7 @@ const TopicSection = (props) => {
                 avatar={
                     <Avatar
                         alt="Remy Sharp"
-                        src={ topic.imageUrl || '/placeholder.png' }
+                        src={ imageUrl || '/placeholder.png' }
                         className={ classes.large } />
                 }
                 title={
@@ -185,9 +194,9 @@ const mapDispatchToProps = (dispatch) => {
         followTopic: (body) => {
             dispatch(followTopic(body));
         },
-        uploadTopicImage: (id, body) => {
+        uploadTopicImage: (id, body, cb) => {
             dispatch(setPageLoader(true));
-            dispatch(uploadTopicImage(id, body));
+            dispatch(uploadTopicImage(id, body, cb));
         },
     };
 };
