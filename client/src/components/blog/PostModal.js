@@ -130,12 +130,6 @@ const BlogPostModal = (props) => {
                     inDropdown: false,
                     options: config.blockTypeOptions,
                 },
-                image: {
-                    defaultSize: {
-                        height: '100%',
-                        width: '100%',
-                    },
-                },
             } } />
     );
 

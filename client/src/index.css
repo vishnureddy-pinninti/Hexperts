@@ -29,3 +29,8 @@ blockquote {
   border-left: 5px solid #f1f1f1;
   padding-left: 5px;
 }
+
+.editor-read-mode img {
+  max-width: 100%;
+  max-height: 100%;
+}
