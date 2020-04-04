@@ -70,7 +70,7 @@ function Home(props) {
     const [
         openExpertInModal,
         setOpenExpertInModal,
-    ] = React.useState(user.interests.length && user.expertIn.length === 0);
+    ] = React.useState(false);
 
     const handleExpertInModalClose = () => {
         setOpenExpertInModal(false);
@@ -97,12 +97,7 @@ function Home(props) {
     useEffect(() => {
         if (!pending) {
             setOpenFollowTopicsModal(pending);
-            if (expertIn.length) {
-                setOpenExpertInModal(pending);
-            }
-            else {
-                setOpenExpertInModal(true);
-            }
+            setOpenExpertInModal(pending);
         }
     }, [
         pending,

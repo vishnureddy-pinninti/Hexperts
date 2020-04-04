@@ -12,4 +12,4 @@ const store = () => {
     return createStore(reducers, applyMiddleware(apiRequest, reduxThunk, logger));
 };
 
-export default store;
+export default store();

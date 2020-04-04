@@ -182,18 +182,7 @@ const QuestionCard = (props) => {
                         wrapperClassName={ classes.editorWrapper }
                         editorClassName={ classes.editor }
                         onEditorStateChange={ onEditorStateChange }
-                        toolbar={ {
-                            options: config.toolbarOptions,
-                            blockType: {
-                                inDropdown: false,
-                                options: config.blockTypeOptions,
-                            },
-                            inline: { inDropdown: true },
-                            list: { inDropdown: true },
-                            textAlign: { inDropdown: true },
-                            link: { inDropdown: true },
-                            history: { inDropdown: true },
-                        } } />
+                        toolbar={ config.editorToolbar } />
                 </CardContent>
                 <CardActions>
                     <Button

@@ -17,7 +17,7 @@ import { RECEIVE_USER_SESSION,
     SET_PAGE_LOADER,
     RECEIVE_MANGE_USER_PREFERENCES } from '../actions/auth';
 
-import { RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
+import { RECEIVE_FOLLOWED_TOPIC, RECEIVE_UPLOADED_TOPIC_IMAGE } from '../actions/topic';
 import { RECEIVE_FOLLOWED_BLOG } from '../actions/blog';
 
 const initialState = {
@@ -58,6 +58,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 userProfile: action.profile,
+                pending: false,
             };
         case RECEIVE_TOP_CREATORS:
             return {
@@ -320,6 +321,12 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 notificationCount: 0,
+                pageLoader: false,
+            };
+        }
+        case RECEIVE_UPLOADED_TOPIC_IMAGE: {
+            return {
+                ...state,
                 pageLoader: false,
             };
         }

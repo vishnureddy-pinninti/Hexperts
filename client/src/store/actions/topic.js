@@ -9,6 +9,8 @@ export const FOLLOW_TOPIC = 'FOLLOW_TOPIC';
 export const RECEIVE_FOLLOWED_TOPIC = 'RECEIVE_FOLLOWED_TOPIC';
 export const REQUEST_SUGGESTED_EXPERTS = 'REQUEST_SUGGESTED_EXPERTS';
 export const RECEIVE_SUGGESTED_EXPERTS = 'RECEIVE_SUGGESTED_EXPERTS';
+export const UPLOAD_TOPIC_IMAGE = 'UPLOAD_TOPIC_IMAGE';
+export const RECEIVE_UPLOADED_TOPIC_IMAGE = 'RECEIVE_UPLOADED_TOPIC_IMAGE';
 
 export function addTopicPending() {
     return {
@@ -105,6 +107,26 @@ export const requestSuggestedExperts = (id) => {
             url: `/api/v1/suggested-experts/?_topics=${id}`,
             method: 'GET',
             success: receiveSuggestedExperts,
+        },
+    };
+};
+
+const receiveUploadedTopicImage = (res) => {
+    return {
+        type: RECEIVE_UPLOADED_TOPIC_IMAGE,
+        res,
+    };
+};
+
+export const uploadTopicImage = (topicId, body) => {
+    return {
+        type: UPLOAD_TOPIC_IMAGE,
+        makeApiRequest: {
+            url: `/api/v1/topic/${topicId}`,
+            method: 'PUT',
+            body,
+            file: true,
+            success: receiveUploadedTopicImage,
         },
     };
 };

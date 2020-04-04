@@ -88,7 +88,7 @@ function Profile(props) {
     const [
         openFollowTopicsModal,
         setOpenFollowTopicsModal,
-    ] = React.useState(user.interests.length === 0);
+    ] = React.useState(false);
 
 
     const handleFollowTopicsModalOpen = () => {
@@ -102,7 +102,7 @@ function Profile(props) {
     const [
         openExpertInModal,
         setOpenExpertInModal,
-    ] = React.useState(user.interests.length && user.expertIn.length === 0);
+    ] = React.useState(false);
 
     const handleExpertInModalOpen = () => {
         setOpenExpertInModal(true);
@@ -115,12 +115,7 @@ function Profile(props) {
     useEffect(() => {
         if (!pending) {
             setOpenFollowTopicsModal(pending);
-            if (expertIn && expertIn.length) {
-                setOpenExpertInModal(pending);
-            }
-            else {
-                setOpenExpertInModal(true);
-            }
+            setOpenExpertInModal(pending);
         }
     }, [
         pending,
@@ -163,7 +158,7 @@ function Profile(props) {
                 height={ 300 } />
                 : <List className={ classes.list }>
                     { renderTopics(items) }
-                  </List> }
+                </List> }
         </>
     );
 

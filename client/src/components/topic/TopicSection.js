@@ -5,14 +5,21 @@ import { Card,
     Button,
     Box,
     Avatar,
+    IconButton,
+    Menu,
+    MenuItem,
     CardHeader } from '@material-ui/core';
 import { RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ExplicitIcon from '@material-ui/icons/Explicit';
+import ImageIcon from '@material-ui/icons/Image';
 import { connect } from 'react-redux';
 
+import FileUpload from '../base/FileUpload';
 import { addAnswerToQuestion,
     addAnswerPending } from '../../store/actions/answer';
-import { followTopic } from '../../store/actions/topic';
+import { followTopic, uploadTopicImage } from '../../store/actions/topic';
+import { setPageLoader } from '../../store/actions/auth';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -45,6 +52,7 @@ const TopicSection = (props) => {
         followers,
         interests,
         expertTopics,
+        uploadTopicImage,
     } = props;
 
     const handleFollowClick = () => {
@@ -57,6 +65,41 @@ const TopicSection = (props) => {
 
     const following = interests.map((t) => t._id).indexOf(id) >= 0;
     const expertIn = expertTopics.map((t) => t._id).indexOf(id) >= 0;
+
+    const [
+        anchorEl,
+        setAnchorEl,
+    ] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const [
+        openImageUploadModal,
+        setOpenImageUploadModal,
+    ] = React.useState(false);
+
+
+    const handleImageUploadModalOpen = () => {
+        setAnchorEl(null);
+        setOpenImageUploadModal(true);
+    };
+
+    const handleImageUploadModalClose = () => {
+        setOpenImageUploadModal(false);
+    };
+
+    const handleImageUpload = (files) => {
+        const formdata = new FormData();
+        formdata.append('file', files[0]);
+        uploadTopicImage(id, formdata);
+        setOpenImageUploadModal(false);
+    };
 
     return (
         <Card className={ classes.root }>
@@ -74,6 +117,26 @@ const TopicSection = (props) => {
                         { topic.topic }
                     </Box>
                 }
+                action={ <>
+                    <IconButton
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        onClick={ handleClick }>
+                        <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={ anchorEl }
+                        keepMounted
+                        open={ Boolean(anchorEl) }
+                        onClose={ handleClose }>
+                        <MenuItem onClick={ handleImageUploadModalOpen }>
+                            <ImageIcon />
+                            { ' ' }
+                            Edit Image
+                        </MenuItem>
+                    </Menu>
+                </> }
                 subheader={ `${followers.length} followers` } />
             <CardActions disableSpacing>
                 <Button
@@ -91,6 +154,10 @@ const TopicSection = (props) => {
                     Expert
                 </Button>
             </CardActions>
+            <FileUpload
+                open={ openImageUploadModal }
+                handleClose={ handleImageUploadModalClose }
+                handleUpload={ handleImageUpload } />
         </Card>
     );
 };
@@ -117,6 +184,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         followTopic: (body) => {
             dispatch(followTopic(body));
+        },
+        uploadTopicImage: (id, body) => {
+            dispatch(setPageLoader(true));
+            dispatch(uploadTopicImage(id, body));
         },
     };
 };

@@ -119,18 +119,7 @@ const BlogPostModal = (props) => {
             wrapperClassName={ classes.editorWrapper }
             editorClassName={ classes.editor }
             onEditorStateChange={ (value) => input.onChange(value) }
-            toolbar={ {
-                options: config.toolbarOptions,
-                inline: { inDropdown: true },
-                list: { inDropdown: true },
-                textAlign: { inDropdown: true },
-                link: { inDropdown: true },
-                history: { inDropdown: true },
-                blockType: {
-                    inDropdown: false,
-                    options: config.blockTypeOptions,
-                },
-            } } />
+            toolbar={ config.editorToolbar } />
     );
 
     const renderTopicsField = ({ input }) => (
