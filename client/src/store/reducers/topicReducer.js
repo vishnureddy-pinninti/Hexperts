@@ -3,6 +3,7 @@ import { ADD_TOPIC_PENDING,
     RECEIVE_TOPICS,
     RECEIVE_TOPIC_BY_ID,
     RECEIVE_SUGGESTED_EXPERTS,
+    RECEIVE_UPLOADED_TOPIC_IMAGE,
     RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
 
 const initialState = {
@@ -63,6 +64,14 @@ export default (state = initialState, action) => {
                     topic: temp,
                 };
             } return state;
+        case RECEIVE_UPLOADED_TOPIC_IMAGE:
+            temp = { ...state.topic };
+            temp.imageUrl = action.res.imageUrl;
+            return {
+                ...state,
+                topic: temp,
+                pending: false,
+            };
         default:
             return state;
     }

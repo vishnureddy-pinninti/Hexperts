@@ -49,7 +49,7 @@ function Home(props) {
     const [
         openFollowTopicsModal,
         setOpenFollowTopicsModal,
-    ] = React.useState(user.blogs.length === 0);
+    ] = React.useState(false);
 
     const handleFollowTopicsModalOpen = () => {
         setOpenFollowTopicsModal(true);
@@ -62,7 +62,7 @@ function Home(props) {
     const [
         openExpertInModal,
         setOpenExpertInModal,
-    ] = React.useState(user.interests.length && user.expertIn.length === 0);
+    ] = React.useState(false);
 
     const handleExpertInModalOpen = () => {
         setOpenExpertInModal(true);

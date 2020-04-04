@@ -31,6 +31,8 @@ export const RECEIVE_MANGE_USER_PREFERENCES = 'RECEIVE_MANGE_USER_PREFERENCES';
 export const RECEIVE_MARK_ALL_NOTIFICATION_READ = 'RECEIVE_MARK_ALL_NOTIFICATION_READ';
 export const MARK_ALL_NOTIFICATIONS_READ = 'MARK_ALL_NOTIFICATIONS_READ';
 export const SET_PAGE_LOADER = 'SET_PAGE_LOADER';
+export const RECEIVE_UPLOADED_IMAGE = 'RECEIVE_UPLOADED_IMAGE';
+export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
 
 const receiveUserSession = (user) => {
     return {
@@ -316,6 +318,27 @@ export const markAllNotificationsRead = () => {
             url: '/api/v1/notifications-mark-all-read/',
             method: 'GET',
             success: receiveMarkAllNotificationsRead,
+        },
+    };
+};
+
+const receiveUploadedImage = (res) => {
+    return {
+        type: RECEIVE_UPLOADED_IMAGE,
+        res,
+    };
+};
+
+export const uploadImage = (body, callback) => {
+    return {
+        type: UPLOAD_IMAGE,
+        makeApiRequest: {
+            url: '/api/v1/image.upload',
+            method: 'POST',
+            body,
+            file: true,
+            success: receiveUploadedImage,
+            successcb: callback,
         },
     };
 };
