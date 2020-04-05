@@ -104,10 +104,10 @@ const QuestionModal = (props) => {
     );
 
     const onSubmitQuestion = (values) => {
-        let { question } = values;
-        if (values.question.slice(-1) !== '?'){
-            question += '?';
-        }
+        const { question } = values;
+        // if (values.question.slice(-1) !== '?'){
+        //     question += '?';
+        // }
         handleDone(question, questionSuggestions);
         setValue('');
     };

@@ -206,6 +206,7 @@ function Home(props) {
                             user={ user }
                             handleClickQuestionModalOpen={ toggleQuestionModal } />
                         <InfiniteScroll
+                            style={ { overflow: 'visible' } }
                             dataLength={ items.length }
                             next={ loadMore }
                             hasMore={ pagination.hasMore }

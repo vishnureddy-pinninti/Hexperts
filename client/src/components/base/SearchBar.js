@@ -92,7 +92,7 @@ function SearchBar(props) {
         <Link
             className={ classes.link }
             to={ `/topic/${item._id}` }>
-            <ListItem>
+            <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
                     <Avatar
                         alt="Remy Sharp"
@@ -110,7 +110,7 @@ function SearchBar(props) {
         <Link
             className={ classes.link }
             to={ `/blog/${item._id}` }>
-            <ListItem>
+            <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
                     <Avatar
                         alt="Remy Sharp"
@@ -128,7 +128,7 @@ function SearchBar(props) {
         <Link
             className={ classes.link }
             to={ `/question/${item._id}` }>
-            <ListItem>
+            <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
                     <Avatar>
                         <HelpIcon />
@@ -144,7 +144,7 @@ function SearchBar(props) {
         <Link
             className={ classes.link }
             to={ `/answer/${item._id}` }>
-            <ListItem>
+            <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
                     <Avatar>
                         <QuestionAnswerOutlinedIcon />
@@ -160,7 +160,7 @@ function SearchBar(props) {
         <Link
             className={ classes.link }
             to={ `/post/${item._id}` }>
-            <ListItem>
+            <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
                     Post:
                 </ListItemAvatar>
@@ -174,7 +174,7 @@ function SearchBar(props) {
         <Link
             className={ classes.link }
             to={ `/profile/${item._id}` }>
-            <ListItem>
+            <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
                     <Avatar
                         badge={ getBadge(item.options.reputation) }
@@ -193,7 +193,7 @@ function SearchBar(props) {
             target="_blank"
             rel="noopener noreferrer"
             href={ item.options.link }>
-            <ListItem>
+            <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <Tooltip title="External Source">
                     <ListItemAvatar>
                         <MuiAvatar className={ classes.avatar }>
@@ -281,7 +281,7 @@ function SearchBar(props) {
             <Popper
                 id={ id }
                 open={ open }
-                style={{ zIndex: 2 }}
+                style={ { zIndex: 2 } }
                 placement="bottom-end"
                 modifiers={ {
                     flip: {
