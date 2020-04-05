@@ -94,7 +94,7 @@ function SearchBar(props) {
             to={ `/topic/${item._id}` }>
             <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
-                    <Avatar
+                    <MuiAvatar
                         alt="Remy Sharp"
                         src={ item.options.imageUrl || '/placeholder.png' }
                         className={ classes.avatar } />

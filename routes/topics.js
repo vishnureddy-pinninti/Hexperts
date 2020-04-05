@@ -5,7 +5,7 @@ const User = mongoose.model('users');
 const { errors: { TOPIC_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
-const upload = require('../utils/uploads');
+const { upload, deleteImage } = require('../utils/uploads');
 
 module.exports = (app) => {
     app.post('/api/v1/topics.add', loginMiddleware, async(req, res) => {
@@ -314,6 +314,9 @@ module.exports = (app) => {
                 }
 
                 if (req.files.length) {
+                    if (topic.imageUrl) {
+                        deleteImage(topic.imageUrl);
+                    }
                     topic.imageUrl = `/api/v1/images/${req.files[0].filename}`;
                     responseObject.imageUrl = `/api/v1/images/${req.files[0].filename}`;
                 }

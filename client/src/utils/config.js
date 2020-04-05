@@ -41,6 +41,7 @@ export default {
         link: { inDropdown: true },
         history: { inDropdown: true },
         image: {
+            previewImage: true,
             uploadCallback: uploadImageCallBack,
             alt: {
                 present: true,
