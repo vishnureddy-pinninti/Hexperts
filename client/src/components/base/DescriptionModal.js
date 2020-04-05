@@ -5,12 +5,31 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { Editor } from 'react-draft-wysiwyg';
-import { convertToRaw } from 'draft-js';
+import { Field, reduxForm, reset } from 'redux-form';
+import { connect } from 'react-redux';
+
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import htmlToDraft from 'html-to-draftjs';
+
 import draftToHtml from 'draftjs-to-html';
 
 import config from '../../utils/config';
+
+const validate = (values) => {
+    const errors = {};
+    const requiredFields = [ 'question' ];
+    requiredFields.forEach((field) => {
+        if (!values[field]) {
+            errors[field] = 'Required';
+        }
+    });
+    return errors;
+};
+
 
 const useStyles = makeStyles({
     root: {
@@ -38,18 +57,32 @@ const useStyles = makeStyles({
     },
 });
 
-export default function DescriptionModal(props) {
+function DescriptionModal(props) {
     const classes = useStyles();
     const {
-        question,
+        questionText,
         handleClose,
         open,
+        descriptionHTML,
+        title,
+        onlyDescription,
+        handleSubmit,
     } = props;
+
+    let editorState = '';
+
+    if (descriptionHTML){
+        const contentBlock = htmlToDraft(descriptionHTML);
+        if (contentBlock) {
+            const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+            editorState = EditorState.createWithContent(contentState);
+        }
+    }
 
     const [
         description,
         setDescription,
-    ] = React.useState(null);
+    ] = React.useState(editorState);
 
     const onEditorStateChange = (value) => {
         setDescription(value);
@@ -59,12 +92,31 @@ export default function DescriptionModal(props) {
         if (ref) { ref.focus(); }
     };
 
-    const addDescriptionToQuestion = () => {
+    const addDescriptionToQuestion = (values) => {
         const { handleDone } = props;
+        const content = description.getCurrentContent();
+        const raw = convertToRaw(content);
+        const html = draftToHtml(raw);
+
         if (handleDone){
-            handleDone(draftToHtml(convertToRaw(description.getCurrentContent())));
+            if (onlyDescription){
+                handleDone(raw.blocks[0].text ? html : '');
+            }
+            else {
+                handleDone(values.question, raw.blocks[0].text ? html : '');
+            }
         }
     };
+
+    const renderTextField = ({ input }) => (
+        <TextField
+            { ...input }
+            label="Question"
+            type="text"
+            variant="outlined"
+            required
+            fullWidth />
+    );
 
     return (
         <div>
@@ -73,41 +125,68 @@ export default function DescriptionModal(props) {
                 maxWidth="md"
                 open={ open }
                 onClose={ handleClose }>
-                <DialogTitle
-                    id="draggable-dialog-title">
-                    Description
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Make sure this question has the right description:
-                        { ' ' }
-                        <b>
-                            { question }
-                        </b>
-                    </DialogContentText>
-                    <Editor
-                        editorState={ description }
-                        editorRef={ setEditorReference }
-                        wrapperClassName={ classes.editorWrapper }
-                        editorClassName={ classes.editor }
-                        onEditorStateChange={ onEditorStateChange }
-                        toolbar={ config.editorToolbar } />
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        autoFocus
-                        onClick={ handleClose }
-                        color="primary">
-                        Cancel
-                    </Button>
-                    <Button
-                        varaint="contained"
-                        onClick={ addDescriptionToQuestion }
-                        color="primary">
-                        Add
-                    </Button>
-                </DialogActions>
+                <form
+                    id="editquestion"
+                    onSubmit={ handleSubmit(addDescriptionToQuestion) }>
+                    <DialogTitle
+                        id="draggable-dialog-title">
+                        { title }
+                    </DialogTitle>
+                    <DialogContent>
+                        { onlyDescription && <DialogContentText>
+                            Make sure this question has the right description:
+                            { ' ' }
+                            <b>
+                                { questionText }
+                            </b>
+                                             </DialogContentText> }
+                        { !onlyDescription
+                        && <Field
+                            name="question"
+                            component={ renderTextField } /> }
+                        <Editor
+                            editorState={ description }
+                            placeholder="Add Description"
+                            editorRef={ setEditorReference }
+                            wrapperClassName={ classes.editorWrapper }
+                            editorClassName={ classes.editor }
+                            onEditorStateChange={ onEditorStateChange }
+                            toolbar={ config.editorToolbar } />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            autoFocus
+                            onClick={ handleClose }
+                            color="primary">
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            type="submit"
+                            color="primary">
+                            Done
+                        </Button>
+                    </DialogActions>
+                </form>
             </Dialog>
         </div>
     );
 }
+
+DescriptionModal.defaultProps = {
+    title: 'Description',
+    onlyDescription: true,
+};
+
+const mapStateToProps = (state, props) => {
+    return {
+        initialValues: {
+            question: props.questionText,
+        },
+    };
+};
+
+export default connect(mapStateToProps)(reduxForm({
+    form: 'editquestion', // a unique identifier for this form
+    validate,
+})(DescriptionModal));

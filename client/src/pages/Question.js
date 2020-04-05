@@ -161,6 +161,7 @@ function Question(props) {
                             : <QuestionSection
                                 question={ question }
                                 id={ question._id }
+                                author={ question.author }
                                 answers={ question.answers }
                                 topics={ question.topics } /> }
                         { loading ? <Skeleton

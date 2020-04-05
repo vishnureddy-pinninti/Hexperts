@@ -105,19 +105,28 @@ export default (state = initialState, action) => {
                 pending: true,
             };
         case RECEIVE_EDITED_QUESTION:
+            temp = state.question;
+
+            if (action.question.suggestedExperts){
+                temp.suggestedExperts = action.question.suggestedExperts;
+            }
+
+            if (action.question.question){
+                temp.question = action.question.question;
+            }
+
+            if (action.question.description){
+                temp.description = action.question.description;
+            }
+
+            if (action.question.topics){
+                temp.topics = action.question.topics;
+            }
+
             return {
                 ...state,
                 pending: false,
-                question: {
-                    ...state.question,
-                    suggestedExperts: action.question.suggestedExperts || state.question.suggestedExperts,
-                    topics: action.question.topics,
-                },
-                newQuestion: {
-                    ...state.newQuestion,
-                    suggestedExperts: action.question.suggestedExperts || state.newQuestion.suggestedExperts,
-                    topics: action.question.topics || state.newQuestion.topics,
-                },
+                question: temp,
             };
         case RECEIVE_QUESTION_BY_ID:
             return {

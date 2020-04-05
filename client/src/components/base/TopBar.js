@@ -194,18 +194,6 @@ const TopBar = (props) => {
 
     const { path } = match;
 
-    useEffect(() => {
-        if (!pending && addedQuestion && addedQuestion._id) {
-            setPageLoading(false);
-            history.push(`/question/${addedQuestion._id}`);
-        }
-    }, [
-        history,
-        addedQuestion,
-        pending,
-    ]);
-
-
     const handleClickQuestionModalOpen = () => {
         toggleQuestionModal();
     };
@@ -214,6 +202,18 @@ const TopBar = (props) => {
         newQuestion,
         setNewQuestion,
     ] = React.useState({});
+
+    useEffect(() => {
+        if (!pending && addedQuestion && addedQuestion._id) {
+            setPageLoading(false);
+            setNewQuestion({});
+            history.push(`/question/${addedQuestion._id}`);
+        }
+    }, [
+        history,
+        addedQuestion,
+        pending,
+    ]);
 
     const handleOnAddQuestion = (question, questionSuggestions) => {
         toggleQuestionModal();
@@ -334,7 +334,7 @@ const TopBar = (props) => {
                         <EditIcon />
                     </Badge>
                 </IconButton>
-                <p>Answert</p>
+                <p>Answer</p>
             </MenuItem>
             <MenuItem>
                 <IconButton
@@ -519,7 +519,7 @@ const TopBar = (props) => {
                 handleClose={ handleEditSuggestedWritersModalClose } /> }
             { newQuestion.question && <DescriptionModal
                 open={ openDescriptionModal }
-                question={ newQuestion.question }
+                questionText={ newQuestion.question }
                 disableBackdropClick
                 handleDone={ handleOnAddDescription }
                 handleClose={ handleDescriptionModalClose } /> }
