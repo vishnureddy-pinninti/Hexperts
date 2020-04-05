@@ -70,6 +70,15 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 topic: temp,
+                topics: state.topics.map(topic => {
+                    if (topic._id === action.res._id) {
+                        return {
+                            ...topic,
+                            imageUrl: action.res.imageUrl
+                        };
+                    }
+                    return topic;
+                }),
                 pending: false,
             };
         default:
