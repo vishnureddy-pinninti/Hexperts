@@ -225,7 +225,7 @@ const receiveEditedQuestion = (question) => {
     };
 };
 
-export const editQuestion = (id, postData) => {
+export const editQuestion = (id, postData, cb) => {
     return {
         type: EDIT_QUESTION,
         makeApiRequest: {
@@ -233,6 +233,7 @@ export const editQuestion = (id, postData) => {
             method: 'PUT',
             body: postData,
             success: receiveEditedQuestion,
+            successcb: cb,
         },
     };
 };
