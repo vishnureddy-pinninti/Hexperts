@@ -1,5 +1,6 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const uuid = require('uuid/v4');
 
 const storage = multer.diskStorage({
@@ -28,4 +29,19 @@ const upload = multer({
     fileFilter,
 });
 
-module.exports = upload;
+const deleteImage = (imageUrl) => {
+    let imageID = imageUrl;
+    if (imageID.indexOf('/api/v1/images/' > -1)) {
+        imageID = imageID.split('/api/v1/images/')[1];
+    }
+    fs.unlink(path.join(__dirname, '../uploads/img/', imageID), (err) => {
+        if (err) {
+            console.log(err);
+        }
+    });
+}
+
+module.exports = {
+    upload,
+    deleteImage,
+};

@@ -1,5 +1,5 @@
 const loginMiddleware = require('../middlewares/loginMiddleware');
-const upload = require('../utils/uploads');
+const { upload } = require('../utils/uploads');
 const fs = require('fs');
 const path = require('path');
 

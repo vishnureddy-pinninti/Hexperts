@@ -5,7 +5,7 @@ const Topic = mongoose.model('topics');
 const { errors: { BLOG_NOT_FOUND } } = require('../utils/constants');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
-const upload = require('../utils/uploads');
+const { upload } = require('../utils/uploads');
 
 module.exports = (app) => {
     app.post('/api/v1/blog.add', loginMiddleware, upload.any(), async(req, res) => {

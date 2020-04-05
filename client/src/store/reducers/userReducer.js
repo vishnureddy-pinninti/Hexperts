@@ -328,6 +328,15 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 pageLoader: false,
+                interests: state.interests.map(interest => {
+                    if (interest._id === action.res._id) {
+                        return {
+                            ...interest,
+                            imageUrl: action.res.imageUrl
+                        };
+                    }
+                    return interest;
+                })
             };
         }
         case REQUEST_ADD_NOTIFICATION: {
