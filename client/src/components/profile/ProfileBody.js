@@ -324,6 +324,7 @@ function ProfileBody(props) {
                 item
                 xs={ 10 }>
                 <InfiniteScroll
+                    style={ { overflow: 'visible' } }
                     dataLength={ items.length }
                     next={ loadMore }
                     hasMore={ pagination.hasMore }
@@ -331,7 +332,7 @@ function ProfileBody(props) {
                     endMessage={ items.length !== 0
                         && <p style={ { textAlign: 'center' } }>
                             <b>Yay! You have seen it all</b>
-                           </p> }>
+                        </p> }>
                     { renderResults(items) }
                 </InfiniteScroll>
                 { items && items.length === 0 && !pagination.hasMore && <EmptyResults

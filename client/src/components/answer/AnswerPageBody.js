@@ -169,7 +169,7 @@ function AnswerPageBody(props) {
                     Specific Questions
                     <br />
                     for me
-                        </div> }
+                </div> }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'AnswerRequests' ? 'default' : 'outlined' }
@@ -181,7 +181,7 @@ function AnswerPageBody(props) {
                     Questions in my
                     <br />
                     area of expertise
-                        </div> }
+                </div> }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Questions' ? 'default' : 'outlined' }
@@ -212,6 +212,7 @@ function AnswerPageBody(props) {
                 item
                 xs={ 7 }>
                 <InfiniteScroll
+                    style={ { overflow: 'visible' } }
                     dataLength={ items.length }
                     next={ loadMore }
                     hasMore={ pagination.hasMore }
