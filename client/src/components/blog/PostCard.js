@@ -125,6 +125,7 @@ const AnswerCard = (props) => {
     const renderAnswer = (post) => (
         <ReadMore
             initialHeight={ 300 }
+            mediaExists={ post.indexOf('<img') > -1 }
             readMore={ (props) => (
                 <Link
                     className={ classes.more }
