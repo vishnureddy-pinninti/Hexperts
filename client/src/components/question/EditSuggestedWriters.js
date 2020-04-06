@@ -328,7 +328,6 @@ const EditSuggestedWriters = (props) => {
             onClose={ props.handleClose }
             disableBackdropClick={ props.disableBackdropClick }
             aria-labelledby="responsive-dialog-title">
-
             <DialogTitle id="responsive-dialog-title">
                 Request Answers -
                 { ' ' }

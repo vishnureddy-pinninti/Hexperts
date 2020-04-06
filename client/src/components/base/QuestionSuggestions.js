@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import QuestionsList from '../question/QuestionsList';
 
 const QuestionSuggestions = (props) => {
-    const { questionSuggestions } =props;
+    const { questionSuggestions } = props;
     return (
         <QuestionsList
             openInNewWindow
             questions={ questionSuggestions.questionSuggestions || [] } />
     );
-}
+};
 
 const mapStateToProps = (state) => {
     return {
@@ -18,4 +18,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(QuestionSuggestions);
-

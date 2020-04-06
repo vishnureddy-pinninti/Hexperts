@@ -500,7 +500,7 @@ const TopBar = (props) => {
             </AppBar>
             { renderMobileMenu }
             { renderMenu }
-            { renderQuestionModal }
+            { questionModal && renderQuestionModal }
             { newQuestion.question && <EditTopicsModal
                 open={ openEditTopicsModal }
                 question={ newQuestion.question }

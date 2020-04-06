@@ -17,7 +17,6 @@ import { addUserQuestion, addQuestionPending, requestQuestionSuggestions, clearQ
 const useStyles = makeStyles(() => {
     return {
         root: {
-            minWidth: 700,
         },
     };
 });
@@ -50,32 +49,22 @@ const QuestionModal = (props) => {
         clearQuestionSuggestions,
     } = props;
 
-
-    const [
-        loading,
-        setLoading,
-    ] = React.useState(false);
-
     const onChange = (event) => {
         props.change('question', event.target.value);
-        getQuestionSuggestions({ question: event.target.value });
+        getQuestionSuggestions({ question: event.target.value }, (res) => {
+            props.change('questionSuggestions', res);
+        });
     };
 
     React.useEffect(() => {
-        setLoading(false);
-    }, [ questionSuggestions ]);
-
-    React.useEffect(() => {
         if (questionModal) {
-            setLoading(false);
             clearQuestionSuggestions();
         }
     }, [ questionModal ]);
 
     React.useEffect(() => {
         if (questionForModal) {
-            setLoading(true);
-            getQuestionSuggestions({ question: questionForModal });
+            getQuestionSuggestions({ question: questionForModal }, (res) => { props.change('questionSuggestions', res); });
         }
     }, [ questionForModal ]);
 
@@ -95,18 +84,19 @@ const QuestionModal = (props) => {
     );
 
     const onSubmitQuestion = (values) => {
-        const { question } = values;
+        const { question, questionSuggestions } = values;
         // if (values.question.slice(-1) !== '?'){
         //     question += '?';
         // }
-        handleDone(question, questionSuggestions);
+        if (questionSuggestions){
+            handleDone(question, questionSuggestions);
+        }
     };
 
     return (
         <Dialog
             className={ classes.root }
             fullScreen={ fullScreen }
-            style={ { minWidth: 1000 } }
             open={ props.open }
             onClose={ handleClose }
             aria-labelledby="responsive-dialog-title">
@@ -135,7 +125,6 @@ const QuestionModal = (props) => {
                     <Button
                         color="primary"
                         variant="contained"
-                        disabled={ loading }
                         type="submit">
                         Add
                     </Button>
@@ -153,6 +142,14 @@ const mapStateToProps = (state) => {
     };
 };
 
+const mapStateToPropsForForm = (state) => {
+    return {
+        initialValues: {
+            question: state.questions.questionForModal,
+        },
+    };
+};
+
 const mapDispatchToProps = (dispatch) => {
     return {
         addUserQuestion: (body, callback) => {
@@ -166,10 +163,13 @@ const mapDispatchToProps = (dispatch) => {
         clearQuestionSuggestions: () => {
             dispatch(clearQuestionSuggestions());
         },
+        resetForm: () => {
+            dispatch(reset('question'));
+        },
     };
 };
 
-export default reduxForm({
+export default connect(mapStateToPropsForForm)(reduxForm({
     form: 'question', // a unique identifier for this form
     validate,
-})(connect(mapStateToProps, mapDispatchToProps)(QuestionModal));
+})(connect(mapStateToProps, mapDispatchToProps)(QuestionModal)));
