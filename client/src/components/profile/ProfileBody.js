@@ -252,7 +252,7 @@ function ProfileBody(props) {
                 onClick={ () => { getData('Questions'); } }
                 clickable />
             <Chip
-                label={ `Posts ${userProfile.posts}` }
+                label={ `Blog Posts ${userProfile.posts}` }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Posts' ? 'default' : 'outlined' }
@@ -332,7 +332,7 @@ function ProfileBody(props) {
                     endMessage={ items.length !== 0
                         && <p style={ { textAlign: 'center' } }>
                             <b>Yay! You have seen it all</b>
-                        </p> }>
+                           </p> }>
                     { renderResults(items) }
                 </InfiniteScroll>
                 { items && items.length === 0 && !pagination.hasMore && <EmptyResults

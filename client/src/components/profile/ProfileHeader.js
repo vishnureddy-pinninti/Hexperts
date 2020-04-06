@@ -83,7 +83,7 @@ const TopicSection = (props) => {
                 color="textSecondary">
                 { badge }
                 { ' ' }
-                User
+                Member
             </Typography>
             { !isOwner && <Button
                 size="small"
