@@ -185,7 +185,6 @@ const EditTopicsModal = (props) => {
         <Dialog
             className={ classes.root }
             fullScreen={ fullScreen }
-            style={ { minWidth: 1000 } }
             open={ props.open }
             disableBackdropClick={ props.disableBackdropClick }
             onClose={ props.handleClose }
