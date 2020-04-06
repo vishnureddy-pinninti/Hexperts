@@ -35,7 +35,7 @@ class ReadMore extends React.Component {
                     } }
                     ref={ (el) => (this.container = el) }>
                     { children }
-                    { hideReadMore ? null : (
+                    { (hideReadMore || open) ? null : (
                         <div
                             className="readmore overhang"
                             style={ {
@@ -65,7 +65,16 @@ class ReadMore extends React.Component {
     }
 
     componentDidMount() {
-        if (this.calculateHeight() <= this.props.initialHeight) { this.setState({ hideReadMore: false }); }
+        const {
+            mediaExists,
+            initialHeight,
+        } = this.props;
+        let hideReadMore = false;
+        if (!mediaExists && (this.calculateHeight() <= initialHeight)) {
+            hideReadMore = true;
+        }
+
+        if (this.calculateHeight() <= this.props.initialHeight) { this.setState({ hideReadMore }); }
     }
 
     toggle() {
@@ -85,7 +94,7 @@ class ReadMore extends React.Component {
         const children = [ ...this.container.children ];
         let height = 0;
         children.forEach((child) => (height += child.offsetHeight));
-
+        
         return height;
     }
 }

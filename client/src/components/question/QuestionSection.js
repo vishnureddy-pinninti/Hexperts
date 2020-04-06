@@ -186,6 +186,7 @@ const QuestionSection = (props) => {
     const renderDescription = (description) => (
         <ReadMore
             initialHeight={ 300 }
+            mediaExists={ description.indexOf('<img') > -1 }
             readMore={ (props) => (
                 <Link
                     className={ classes.more }

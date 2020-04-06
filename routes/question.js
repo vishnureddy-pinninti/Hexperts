@@ -696,7 +696,7 @@ module.exports = (app) => {
                     responseObject.question = questionString;
                 }
 
-                if (description) {
+                if (description || description === '') {
                     question.description = description;
                     question.plainText = htmlToText(description);
                     responseObject.description = description;
