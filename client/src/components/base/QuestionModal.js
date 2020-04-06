@@ -98,6 +98,7 @@ const QuestionModal = (props) => {
             className={ classes.root }
             fullScreen={ fullScreen }
             open={ props.open }
+            scroll="paper"
             onClose={ handleClose }
             aria-labelledby="responsive-dialog-title">
             <form
@@ -113,7 +114,9 @@ const QuestionModal = (props) => {
                     <Field
                         name="question"
                         component={ renderTextField } />
-                    <QuestionSuggestions />
+                    <div style={ { maxHeight: 400 } }>
+                        <QuestionSuggestions />
+                    </div>
                 </DialogContent>
                 <DialogActions>
                     <Button

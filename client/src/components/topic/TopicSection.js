@@ -40,6 +40,12 @@ const useStyles = makeStyles((theme) => {
             minHeight: 300,
             padding: 10,
         },
+        button: {
+            color: theme.palette.text.secondary,
+        },
+        buttonSelected: {
+            color: theme.palette.secondary.main,
+        },
     };
 });
 
@@ -152,14 +158,14 @@ const TopicSection = (props) => {
                     size="small"
                     onClick={ handleFollowClick }
                     startIcon={ <RssFeedSharpIcon /> }
-                    color={ following ? 'secondary' : 'default' }>
+                    className={ following ? classes.buttonSelected : classes.button }>
                     Follow
                 </Button>
                 <Button
                     size="small"
                     onClick={ handleExpertClick }
                     startIcon={ <StarsRoundedIcon /> }
-                    color={ expertIn ? 'secondary' : 'default' }>
+                    className={ expertIn ? classes.buttonSelected : classes.button }>
                     Expert
                 </Button>
             </CardActions>
