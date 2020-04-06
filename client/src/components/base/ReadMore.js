@@ -65,7 +65,7 @@ class ReadMore extends React.Component {
     }
 
     componentDidMount() {
-        if (this.calculateHeight() <= this.props.initialHeight) { this.setState({ hideReadMore: true }); }
+        if (this.calculateHeight() <= this.props.initialHeight) { this.setState({ hideReadMore: false }); }
     }
 
     toggle() {
