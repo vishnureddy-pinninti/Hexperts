@@ -20,7 +20,7 @@ import { Card,
     DialogTitle } from '@material-ui/core';
 import { EditTwoTone as EditTwoToneIcon,
     RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
-import ExplicitIcon from '@material-ui/icons/Explicit';
+import StarsRoundedIcon from '@material-ui/icons/StarsRounded';
 
 import { followBlog,
     addPostToBlog,
@@ -263,7 +263,7 @@ const BlogHeader = (props) => {
                     size="small"
                     onClick={ handleFollowClick }
                     startIcon={ <RssFeedSharpIcon /> }
-                    color={ following ? 'primary' : 'default' }>
+                    color={ following ? 'secondary' : 'default' }>
                     Follow
                     { ' ' }
                     { followers.length }
@@ -271,7 +271,7 @@ const BlogHeader = (props) => {
                 <Button
                     size="small"
                     onClick={ handleExpertClick }
-                    startIcon={ <ExplicitIcon /> }
+                    startIcon={ <StarsRoundedIcon /> }
                     color={ expertIn ? 'secondary' : 'default' }>
                     Expert
                 </Button>
