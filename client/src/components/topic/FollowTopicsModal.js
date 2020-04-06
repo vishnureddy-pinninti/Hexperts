@@ -22,7 +22,8 @@ import { CheckCircleRounded as CheckCircleRoundedIcon,
     CheckCircleOutlined as CheckCircleOutlinedIcon } from '@material-ui/icons';
 import ExplicitIcon from '@material-ui/icons/Explicit';
 import ExplicitOutlinedIcon from '@material-ui/icons/ExplicitOutlined';
-
+import StarsOutlinedIcon from '@material-ui/icons/StarsOutlined';
+import StarsRoundedIcon from '@material-ui/icons/StarsRounded';
 import { addNewTopic,
     requestTopics } from '../../store/actions/topic';
 import { editQuestion } from '../../store/actions/questions';
@@ -53,7 +54,7 @@ const useStyles = makeStyles(() => {
             marginBottom: 30,
         },
         checkbox: {
-            color: 'white',
+            color: '#bdbdbd',
             '&$checked': {
                 color: 'red',
             },
@@ -231,7 +232,6 @@ const FollowTopicsModal = (props) => {
                                         <Checkbox
                                             icon={ <CheckCircleOutlinedIcon /> }
                                             checkedIcon={ <CheckCircleRoundedIcon /> }
-                                            color="primary"
                                             checked={ checked.indexOf(topic._id) !== -1 }
                                             className={ classes.checkbox } />
                                     </IconButton>
@@ -240,8 +240,8 @@ const FollowTopicsModal = (props) => {
                                         title="Expert"
                                         onClick={ () => { selectExpertTopic(topic); } }>
                                         <Checkbox
-                                            icon={ <ExplicitOutlinedIcon /> }
-                                            checkedIcon={ <ExplicitIcon /> }
+                                            icon={ <StarsOutlinedIcon /> }
+                                            checkedIcon={ <StarsRoundedIcon /> }
                                             checked={ expertChecked.indexOf(topic._id) !== -1 }
                                             className={ classes.checkbox } />
                                     </IconButton>

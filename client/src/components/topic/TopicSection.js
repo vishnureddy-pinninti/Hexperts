@@ -11,8 +11,8 @@ import { Card,
     CardHeader } from '@material-ui/core';
 import { RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import ExplicitIcon from '@material-ui/icons/Explicit';
 import ImageIcon from '@material-ui/icons/Image';
+import StarsRoundedIcon from '@material-ui/icons/StarsRounded';
 import { connect } from 'react-redux';
 
 import FileUpload from '../base/FileUpload';
@@ -152,13 +152,13 @@ const TopicSection = (props) => {
                     size="small"
                     onClick={ handleFollowClick }
                     startIcon={ <RssFeedSharpIcon /> }
-                    color={ following ? 'primary' : 'default' }>
+                    color={ following ? 'secondary' : 'default' }>
                     Follow
                 </Button>
                 <Button
                     size="small"
                     onClick={ handleExpertClick }
-                    startIcon={ <ExplicitIcon /> }
+                    startIcon={ <StarsRoundedIcon /> }
                     color={ expertIn ? 'secondary' : 'default' }>
                     Expert
                 </Button>
