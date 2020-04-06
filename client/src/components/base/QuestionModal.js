@@ -10,8 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { Field, reduxForm, reset } from 'redux-form';
-import CardLoader from './CardLoader';
-import QuestionsList from '../question/QuestionsList';
+import QuestionSuggestions from './QuestionSuggestions';
 
 import { addUserQuestion, addQuestionPending, requestQuestionSuggestions, clearQuestionSuggestions } from '../../store/actions/questions';
 
@@ -44,7 +43,6 @@ const QuestionModal = (props) => {
         questionSuggestions,
         handleSubmit,
         handleClose,
-        question,
         getQuestionSuggestions,
         handleDone,
         questionModal,
@@ -52,10 +50,6 @@ const QuestionModal = (props) => {
         clearQuestionSuggestions,
     } = props;
 
-    const [
-        value,
-        setValue,
-    ] = React.useState(question);
 
     const [
         loading,
@@ -63,8 +57,7 @@ const QuestionModal = (props) => {
     ] = React.useState(false);
 
     const onChange = (event) => {
-        setValue(event.target.value);
-        setLoading(true);
+        props.change('question', event.target.value);
         getQuestionSuggestions({ question: event.target.value });
     };
 
@@ -74,7 +67,6 @@ const QuestionModal = (props) => {
 
     React.useEffect(() => {
         if (questionModal) {
-            setValue('');
             setLoading(false);
             clearQuestionSuggestions();
         }
@@ -82,7 +74,6 @@ const QuestionModal = (props) => {
 
     React.useEffect(() => {
         if (questionForModal) {
-            setValue(questionForModal);
             setLoading(true);
             getQuestionSuggestions({ question: questionForModal });
         }
@@ -91,13 +82,13 @@ const QuestionModal = (props) => {
 
     const renderTextField = ({ input }) => (
         <TextField
+            autoComplete="off"
             { ...input }
             autoFocus
             margin="dense"
             id="name"
             label="Start your question with 'Why' 'What' 'How' etc."
             type="text"
-            value={ value }
             onChange={ onChange }
             required
             fullWidth />
@@ -109,7 +100,6 @@ const QuestionModal = (props) => {
         //     question += '?';
         // }
         handleDone(question, questionSuggestions);
-        setValue('');
     };
 
     return (
@@ -133,9 +123,7 @@ const QuestionModal = (props) => {
                     <Field
                         name="question"
                         component={ renderTextField } />
-                    <QuestionsList
-                        openInNewWindow
-                        questions={ questionSuggestions.questionSuggestions || [] } />
+                    <QuestionSuggestions />
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -160,7 +148,6 @@ const QuestionModal = (props) => {
 const mapStateToProps = (state) => {
     return {
         user: state.user,
-        questionSuggestions: state.questions.questionSuggestions,
         questionModal: state.questions.questionModal,
         questionForModal: state.questions.questionForModal,
     };
