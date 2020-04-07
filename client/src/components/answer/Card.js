@@ -53,7 +53,6 @@ const useStyles = makeStyles((theme) => {
             transform: 'rotate(180deg)',
         },
         avatar: {
-            backgroundColor: red[500],
             cursor: 'pointer',
         },
         link: {
@@ -187,7 +186,7 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </Typography>
-                    </>
+                                   </>
                 }
                 <CardHeader
                     className={ classes.headerRoot }

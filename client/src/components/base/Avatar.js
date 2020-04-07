@@ -11,28 +11,37 @@ class Avatar extends Component {
         const {
             currentUserImage,
             badge,
-            badgeWidth,
-            badgeStyle,
         } = this.props;
-        return (
-            <Badge
-                overlap="circle"
-                anchorOrigin={ {
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                } }
-                badgeContent={ badge && <img
-                    alt={ badge }
-                    title={ badge }
-                    style={ badgeStyle }
-                    width={ badgeWidth }
-                    src={ `/${badge}.png` } /> }>
-                <MuiAvatar
-                    { ...this.props }
-                    alt="Avatar Image"
-                    src={ currentUserImage } />
-            </Badge>
+        let color = badge;
 
+        if (badge === 'basic'){
+            color = '#3BB9FF';
+        }
+
+        return (
+            <MuiAvatar
+                { ...this.props }
+                title={ badge }
+                style={ { border: `3px solid ${color}` } }
+                alt="Avatar Image"
+                src={ currentUserImage } />
+            // <Badge
+            //     overlap="circle"
+            //     anchorOrigin={ {
+            //         vertical: 'bottom',
+            //         horizontal: 'left',
+            //     } }
+            //     badgeContent={ badge && <img
+            //         alt={ badge }
+            //         title={ badge }
+            //         style={ badgeStyle }
+            //         width={ badgeWidth }
+            //         src={ `/${badge}.png` } /> }>
+            //     <MuiAvatar
+            //         { ...this.props }
+            //         alt="Avatar Image"
+            //         src={ currentUserImage } />
+            // </Badge>
         );
     }
 
