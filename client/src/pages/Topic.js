@@ -163,19 +163,18 @@ function Topic(props) {
                                 id={ topicID } /> }
                         { loading ? <CardLoader height={ 200 } />
                             : <>
-                                { items.length > 0
-                        && <InfiniteScroll
-                            dataLength={ items.length }
-                            next={ loadMore }
-                            hasMore={ pagination.hasMore }
-                            loader={ <CardLoader height={ 200 } /> }
-                            endMessage={
-                                <p style={ { textAlign: 'center' } }>
-                                    <b>Yay! You have seen it all</b>
-                                </p>
-                            }>
-                            { renderQuestions(items) }
-                        </InfiniteScroll> }
+                                <InfiniteScroll
+                                    dataLength={ items.length }
+                                    next={ loadMore }
+                                    hasMore={ pagination.hasMore }
+                                    loader={ <CardLoader height={ 200 } /> }
+                                    endMessage={
+                                        <p style={ { textAlign: 'center' } }>
+                                            <b>Yay! You have seen it all</b>
+                                        </p>
+                                    }>
+                                    { renderQuestions(items) }
+                                </InfiniteScroll>
                                 { items.length === 0 && !pagination.hasMore && <EmptyResults
                                     title="No questions posted yet."
                                     description="Feel free to ask a question to this topic." /> }

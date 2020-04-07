@@ -169,19 +169,18 @@ function Question(props) {
                             height={ 700 } />
                             : <>
                                 { renderAnswers(newAnswers) }
-                                { items.length > 0
-                        && <InfiniteScroll
-                            dataLength={ items.length }
-                            next={ loadMore }
-                            hasMore={ pagination.hasMore }
-                            loader={ <CardLoader /> }
-                            endMessage={
-                                <p style={ { textAlign: 'center' } }>
-                                    <b>Yay! You have seen it all</b>
-                                </p>
-                            }>
-                            { renderAnswers(items) }
-                           </InfiniteScroll> }
+                                <InfiniteScroll
+                                    dataLength={ items.length }
+                                    next={ loadMore }
+                                    hasMore={ pagination.hasMore }
+                                    loader={ <CardLoader /> }
+                                    endMessage={
+                                        <p style={ { textAlign: 'center' } }>
+                                            <b>Yay! You have seen it all</b>
+                                        </p>
+                                    }>
+                                    { renderAnswers(items) }
+                                </InfiniteScroll>
                                 { (items.length === 0 && newAnswers.length === 0) && !pagination.hasMore && <EmptyResults
                                     title="No answer posted yet."
                                     description="Feel free to add an answer to this question."
