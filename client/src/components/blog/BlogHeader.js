@@ -64,6 +64,12 @@ const useStyles = makeStyles((theme) => {
             width: theme.spacing(3),
             height: theme.spacing(3),
         },
+        button: {
+            color: theme.palette.text.secondary,
+        },
+        buttonSelected: {
+            color: theme.palette.secondary.main,
+        },
     };
 });
 
@@ -263,7 +269,7 @@ const BlogHeader = (props) => {
                     size="small"
                     onClick={ handleFollowClick }
                     startIcon={ <RssFeedSharpIcon /> }
-                    color={ following ? 'secondary' : 'default' }>
+                    className={ following ? classes.buttonSelected : classes.button }>
                     Follow
                     { ' ' }
                     { followers.length }
@@ -272,7 +278,7 @@ const BlogHeader = (props) => {
                     size="small"
                     onClick={ handleExpertClick }
                     startIcon={ <StarsRoundedIcon /> }
-                    color={ expertIn ? 'secondary' : 'default' }>
+                    className={ expertIn ? classes.buttonSelected : classes.button }>
                     Expert
                 </Button>
                 { /* <Button

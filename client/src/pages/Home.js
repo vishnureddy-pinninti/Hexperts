@@ -220,7 +220,7 @@ function Home(props) {
                             }>
                             { renderQuestions(items) }
                         </InfiniteScroll> }
-                        { items.length === 0 && <EmptyResults
+                        { items.length === 0 && !pagination.hasMore && <EmptyResults
                             title="No feed yet."
                             description="Feel free to follow topics to see the questions and answers."
                             showBackButton={ false } /> }

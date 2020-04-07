@@ -256,7 +256,7 @@ const Search = (props) => {
                                 startIcon={ <AddIcon /> }
                                 color="primary">
                                 Add Question
-                            </Button> }
+                                     </Button> }
                             title={ <Typography
                                 component="div"
                                 className={ classes.heading }>
@@ -271,7 +271,7 @@ const Search = (props) => {
                                 <b>
                                     { query }
                                 </b>
-                                    </Typography> } />
+                            </Typography> } />
 
                         { totalCount === null ? <CardLoader height={ 50 } />
                             : <List className={ classes.root }>
@@ -282,12 +282,12 @@ const Search = (props) => {
                                     loader={ <CardLoader height={ 50 } /> }>
                                     { renderSearchResults(results) }
                                 </InfiniteScroll>
-                                { results.length === 0
+                                { results.length === 0 && !paginationHasMore
                                     && <EmptyResults
                                         showBackButton={ false }
                                         title=" Oops! No results matching with your criteria."
                                         description="Try different or less specific keywords and reset your filters." /> }
-                              </List> }
+                            </List> }
                     </Grid>
                 </Grid>
             </Container>
