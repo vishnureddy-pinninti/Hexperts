@@ -186,8 +186,7 @@ function Home(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        { items.length > 0
-                        && <InfiniteScroll
+                        <InfiniteScroll
                             dataLength={ items.length }
                             next={ loadMore }
                             hasMore={ pagination.hasMore }
@@ -198,7 +197,7 @@ function Home(props) {
                                 </p>
                             }>
                             { renderQuestions(items) }
-                           </InfiniteScroll> }
+                        </InfiniteScroll>
                         { items.length === 0 && !pagination.hasMore && <EmptyResults
                             title="No feed yet."
                             description="Feel free to follow topics to see the blog posts."

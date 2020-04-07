@@ -212,8 +212,7 @@ function AnswerPageBody(props) {
             <Grid
                 item
                 xs={ 7 }>
-                { items.length > 0
-                && <InfiniteScroll
+                <InfiniteScroll
                     style={ { overflow: 'visible' } }
                     dataLength={ items.length }
                     next={ loadMore }
@@ -225,7 +224,7 @@ function AnswerPageBody(props) {
                         </p>
                     }>
                     { renderQuestions(items) }
-                </InfiniteScroll> }
+                </InfiniteScroll>
                 { items.length === 0 && !pagination.hasMore && <EmptyResults
                     style={ { marginTop: 30 } }
                     title="No questions for you yet."

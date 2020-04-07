@@ -188,24 +188,23 @@ function Topic(props) {
                         { loading ? <CardLoader height={ 400 } />
                             : <>
                                 { renderPosts(newPosts) }
-                                { items.length > 0
-                        && <InfiniteScroll
-                            dataLength={ items.length }
-                            next={ loadMore }
-                            hasMore={ pagination.hasMore }
-                            loader={ <CardLoader height={ 400 } /> }
-                            endMessage={
-                                <p style={ { textAlign: 'center' } }>
-                                    <b>Yay! You have seen it all</b>
-                                </p>
-                            }>
-                            { renderPosts(items) }
-                        </InfiniteScroll> }
+                                <InfiniteScroll
+                                    dataLength={ items.length }
+                                    next={ loadMore }
+                                    hasMore={ pagination.hasMore }
+                                    loader={ <CardLoader height={ 400 } /> }
+                                    endMessage={
+                                        <p style={ { textAlign: 'center' } }>
+                                            <b>Yay! You have seen it all</b>
+                                        </p>
+                                    }>
+                                    { renderPosts(items) }
+                                </InfiniteScroll>
                                 { (items.length === 0 && newPosts.length === 0) && <EmptyResults
                                     title="No blog posts yet."
                                     description="Feel free to contribute to this blog and earn points."
                                     showBackButton={ false } /> }
-                            </> }
+                              </> }
                     </Grid>
                     <Grid
                         item
