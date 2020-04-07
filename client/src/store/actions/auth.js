@@ -105,7 +105,7 @@ const receivemaangeUserPreferences = (user) => {
     };
 };
 
-export const maangeUserPreferences = (body) => {
+export const maangeUserPreferences = (body, cb) => {
     return {
         type: REQUEST_MANAGE_USER_PREFERENCES,
         makeApiRequest: {
@@ -113,6 +113,7 @@ export const maangeUserPreferences = (body) => {
             method: 'POST',
             body,
             success: receivemaangeUserPreferences,
+            successcb: cb,
         },
     };
 };

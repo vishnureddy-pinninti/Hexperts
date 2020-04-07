@@ -168,6 +168,15 @@ function Home(props) {
             hideHeaderHelperText={ false } />
     ));
 
+    const handleTopicsUpdate = () => {
+        setItems([]);
+        setPagination({
+            index: 0,
+            hasMore: true,
+        });
+        requestPostsFeed();
+    };
+
     return (
         <div
             className="App">
@@ -186,18 +195,19 @@ function Home(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        <InfiniteScroll
-                            dataLength={ items.length }
-                            next={ loadMore }
-                            hasMore={ pagination.hasMore }
-                            loader={ <CardLoader height={ 400 } /> }
-                            endMessage={
-                                <p style={ { textAlign: 'center' } }>
-                                    <b>Yay! You have seen it all</b>
-                                </p>
-                            }>
-                            { renderQuestions(items) }
-                        </InfiniteScroll>
+                        { (pagination.hasMore || items.length > 0)
+                    && <InfiniteScroll
+                        dataLength={ items.length }
+                        next={ loadMore }
+                        hasMore={ pagination.hasMore }
+                        loader={ <CardLoader height={ 400 } /> }
+                        endMessage={
+                            <p style={ { textAlign: 'center' } }>
+                                <b>Yay! You have seen it all</b>
+                            </p>
+                        }>
+                        { renderQuestions(items) }
+                    </InfiniteScroll> }
                         { items.length === 0 && !pagination.hasMore && <EmptyResults
                             title="No feed yet."
                             description="Feel free to follow topics to see the blog posts."
@@ -254,6 +264,7 @@ function Home(props) {
                 handleClose={ handlePostModalClose } />
             <FollowTopicsModal
                 open={ openFollowTopicsModal }
+                handleTopicsUpdate={ handleTopicsUpdate }
                 handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
             { /* <FollowBlogsModal
                 open={ openFollowTopicsModal }

@@ -96,17 +96,6 @@ function Home(props) {
     });
 
     useEffect(() => {
-        if (!pending) {
-            setOpenFollowTopicsModal(pending);
-            setOpenExpertInModal(pending);
-        }
-    }, [
-        pending,
-        requestUserQuestions,
-        expertIn,
-    ]);
-
-    useEffect(() => {
         if (questions.length) {
             setItems([
                 ...items,
@@ -155,6 +144,19 @@ function Home(props) {
             hasMore: true,
         });
         requestUserQuestions({ ownQuestions: !ownQuestions });
+    };
+
+    const handleTopicsUpdate = () => {
+        setOpenFollowTopicsModal(false);
+        if (ownQuestions){
+            setOwnQuestions(false);
+        }
+        setItems([]);
+        setPagination({
+            index: 0,
+            hasMore: true,
+        });
+        requestUserQuestions({ ownQuestions: false });
     };
 
     const renderQuestions = (items) => items.map((question) => {
@@ -206,19 +208,20 @@ function Home(props) {
                         <AskQuestionCard
                             user={ user }
                             handleClickQuestionModalOpen={ toggleQuestionModal } />
-                        <InfiniteScroll
-                            style={ { overflow: 'visible' } }
-                            dataLength={ items.length }
-                            next={ loadMore }
-                            hasMore={ pagination.hasMore }
-                            loader={ <CardLoader height={ 200 } /> }
-                            endMessage={
-                                <p style={ { textAlign: 'center' } }>
-                                    <b>Yay! You have seen it all</b>
-                                </p>
-                            }>
-                            { renderQuestions(items) }
-                        </InfiniteScroll>
+                        { (pagination.hasMore || items.length > 0)
+                    && <InfiniteScroll
+                        style={ { overflow: 'visible' } }
+                        dataLength={ items.length }
+                        next={ loadMore }
+                        hasMore={ pagination.hasMore }
+                        loader={ <CardLoader height={ 200 } /> }
+                        endMessage={
+                            <p style={ { textAlign: 'center' } }>
+                                <b>Yay! You have seen it all</b>
+                            </p>
+                        }>
+                        { renderQuestions(items) }
+                       </InfiniteScroll> }
                         { items.length === 0 && !pagination.hasMore && <EmptyResults
                             title="No feed yet."
                             description="Feel free to follow topics to see the questions and answers."
@@ -232,7 +235,6 @@ function Home(props) {
                             icon={ <FormControlLabel
                                 control={ <Switch
                                     checked={ ownQuestions }
-                                    onChange={ showOwnQuestions }
                                     size="small" /> } /> }
                             label="Show My Questions"
                             color="primary"
@@ -252,6 +254,7 @@ function Home(props) {
             </Container>
             <FollowTopicsModal
                 open={ openFollowTopicsModal }
+                handleTopicsUpdate={ handleTopicsUpdate }
                 handleFollowTopicsModalClose={ handleFollowTopicsModalClose } />
             <ExpertInModal
                 open={ openExpertInModal }
