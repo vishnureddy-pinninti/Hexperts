@@ -107,6 +107,7 @@ const TopicSection = (props) => {
                         badge={ badge }
                         badgeWidth={ 140 }
                         badgeStyle={ { paddingLeft: 80 } }
+                        variant="rounded"
                         user={ mail }
                         className={ classes.large } />
                 }
