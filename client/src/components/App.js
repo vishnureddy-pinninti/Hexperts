@@ -8,7 +8,6 @@ import { authService } from '../services/authService';
 import config from '../utils/config';
 import Router from '../routing/Router';
 
-
 import { requestUserSession } from '../store/actions/auth';
 
 const theme = createMuiTheme({
@@ -36,10 +35,6 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            loading: true,
-        };
-
         this.userAgentApplication = new UserAgentApplication({
             auth: {
                 clientId: config.appId,
@@ -53,11 +48,19 @@ class App extends Component {
         });
 
         const user = this.userAgentApplication.getAccount();
+        let loading = true;
 
         if (user) {
             // Enhance user object with data from Graph
             this.getUserProfile();
         }
+        else {
+            loading = false;
+        }
+
+        this.state = {
+            loading,
+        };
     }
 
     render() {
