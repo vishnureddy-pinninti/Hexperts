@@ -120,6 +120,8 @@ const useStyles = makeStyles((theme) => {
         topBar: {
             backgroundColor: '#046080',
             backgroundImage: 'url(/topbar.png)',
+            backgroundRepeat: 'no-repeat',
+            objectFit: 'cover',
         },
         small: {
             width: theme.spacing(2),
