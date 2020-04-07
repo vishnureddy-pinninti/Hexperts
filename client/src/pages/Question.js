@@ -169,7 +169,8 @@ function Question(props) {
                             height={ 700 } />
                             : <>
                                 { renderAnswers(newAnswers) }
-                                <InfiniteScroll
+                                { items.length > 0
+                                && <InfiniteScroll
                                     dataLength={ items.length }
                                     next={ loadMore }
                                     hasMore={ pagination.hasMore }
@@ -180,12 +181,12 @@ function Question(props) {
                                         </p>
                                     }>
                                     { renderAnswers(items) }
-                                </InfiniteScroll>
+                                </InfiniteScroll> }
                                 { (items.length === 0 && newAnswers.length === 0) && !pagination.hasMore && <EmptyResults
                                     title="No answer posted yet."
                                     description="Feel free to add an answer to this question."
                                     showBackButton={ false } /> }
-                              </> }
+                            </> }
                     </Grid>
                     <Grid
                         item
