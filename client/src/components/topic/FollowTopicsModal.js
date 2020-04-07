@@ -101,6 +101,7 @@ const FollowTopicsModal = (props) => {
         open,
         handleFollowTopicsModalClose,
         expertTopics,
+        handleTopicsUpdate,
     } = props;
 
 
@@ -195,7 +196,7 @@ const FollowTopicsModal = (props) => {
         maangeUserPreferences({
             expertIn: expertChecked,
             interests: checked,
-        });
+        }, handleTopicsUpdate);
     };
 
     const handleClose = () => {
@@ -316,9 +317,9 @@ const mapDispatchToProps = (dispatch) => {
         editQuestion: (questionID, body) => {
             dispatch(editQuestion(questionID, body));
         },
-        maangeUserPreferences: (body) => {
+        maangeUserPreferences: (body, cb) => {
             dispatch(addPreferencesPending());
-            dispatch(maangeUserPreferences(body));
+            dispatch(maangeUserPreferences(body, cb));
         },
     };
 };

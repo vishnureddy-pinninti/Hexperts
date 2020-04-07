@@ -212,19 +212,20 @@ function AnswerPageBody(props) {
             <Grid
                 item
                 xs={ 7 }>
-                <InfiniteScroll
-                    style={ { overflow: 'visible' } }
-                    dataLength={ items.length }
-                    next={ loadMore }
-                    hasMore={ pagination.hasMore }
-                    loader={ <CardLoader /> }
-                    endMessage={
-                        <p style={ { textAlign: 'center' } }>
-                            <b>Yay! You have seen it all</b>
-                        </p>
-                    }>
-                    { renderQuestions(items) }
-                </InfiniteScroll>
+                { (pagination.hasMore || items.length > 0)
+                    && <InfiniteScroll
+                        style={ { overflow: 'visible' } }
+                        dataLength={ items.length }
+                        next={ loadMore }
+                        hasMore={ pagination.hasMore }
+                        loader={ <CardLoader /> }
+                        endMessage={
+                            <p style={ { textAlign: 'center' } }>
+                                <b>Yay! You have seen it all</b>
+                            </p>
+                        }>
+                        { renderQuestions(items) }
+                    </InfiniteScroll> }
                 { items.length === 0 && !pagination.hasMore && <EmptyResults
                     style={ { marginTop: 30 } }
                     title="No questions for you yet."
@@ -244,7 +245,7 @@ AnswerPageBody.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
-        questions: state.questions.answerRequests,
+        questions: [],
         modifiedQuestions: state.questions.modifiedQuestions,
     };
 };

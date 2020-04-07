@@ -124,7 +124,7 @@ const SignIn = (props) => {
                             color="primary"
                             className={ classes.submit }
                             onClick={ props.onLoginClick }>
-                            Login with Microsoft
+                            Login with Hexagon
                         </Button>
                         <Box mt={ 5 }>
                             <Copyright />
