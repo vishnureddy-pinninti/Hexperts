@@ -97,8 +97,12 @@ module.exports = (app) => {
             }
 
             const notifications = await Notification.find({
-                'recipients.user': mongoose.Types.ObjectId(cookieUser._id),
-                'recipients.read': false,
+                recipients: {
+                    $elemMatch: {
+                        user: mongoose.Types.ObjectId(cookieUser._id),
+                        read: false
+                    }
+                }
             });
 
             // Create cookie and send the response back

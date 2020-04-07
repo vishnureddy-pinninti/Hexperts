@@ -14,8 +14,12 @@ module.exports = (app) => {
 
         try {
             const unreadNotifications = await Notification.find({
-                'recipients.user': mongoose.Types.ObjectId(_id),
-                'recipients.read': false,
+                recipients: {
+                    $elemMatch: {
+                        user: mongoose.Types.ObjectId(_id),
+                        read: false
+                    }
+                }
             });
             const notifications = await Notification.aggregate([
                 { $match: { 'recipients.user': mongoose.Types.ObjectId(_id) } },

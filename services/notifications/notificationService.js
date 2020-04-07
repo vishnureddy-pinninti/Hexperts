@@ -22,15 +22,17 @@ const notificationService = async(data) => {
         return unique;
     }, []);
 
-    const notification = new Notification({
-        message,
-        link,
-        recipients: uniqueRecipients,
-        type,
-    });
-
-    await notification.save();
-    req.emit('notification', notification);
+    if (uniqueRecipients.length) {
+        const notification = new Notification({
+            message,
+            link,
+            recipients: uniqueRecipients,
+            type,
+        });
+    
+        await notification.save();
+        req.emit('notification', notification);
+    }
 };
 
 module.exports = notificationService;
