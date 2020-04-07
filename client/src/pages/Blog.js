@@ -188,7 +188,7 @@ function Topic(props) {
                         { loading ? <CardLoader height={ 400 } />
                             : <>
                                 { renderPosts(newPosts) }
-                                { items.length && <InfiniteScroll
+                                { items.length > 0 && <InfiniteScroll
                                     dataLength={ items.length }
                                     next={ loadMore }
                                     hasMore={ pagination.hasMore }
