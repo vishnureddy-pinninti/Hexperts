@@ -16,7 +16,7 @@ import CardLoader from '../components/base/CardLoader';
 // import FollowBlogsModal from '../components/blog/FollowBlogsModal';
 import BlogPostModal from '../components/blog/PostModal';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
-
+import EmptyResults from '../components/base/EmptyResults';
 import ExpertInModal from '../components/topic/ExpertInModal';
 import BlogModal from '../components/blog/BlogModal';
 import { requestPosts } from '../store/actions/blog';
@@ -186,7 +186,8 @@ function Home(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        <InfiniteScroll
+                        { items.length > 0
+                        && <InfiniteScroll
                             dataLength={ items.length }
                             next={ loadMore }
                             hasMore={ pagination.hasMore }
@@ -197,7 +198,11 @@ function Home(props) {
                                 </p>
                             }>
                             { renderQuestions(items) }
-                        </InfiniteScroll>
+                        </InfiniteScroll> }
+                        { items.length === 0 && <EmptyResults
+                            title="No feed yet."
+                            description="Feel free to follow topics to see the blog posts."
+                            showBackButton={ false } /> }
                     </Grid>
                     <Grid
                         item

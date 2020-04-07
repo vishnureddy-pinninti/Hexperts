@@ -12,6 +12,7 @@ import QuestionCard from '../components/question/Card';
 import Topics from '../components/topic/TopicsList';
 import CardLoader from '../components/base/CardLoader';
 import TopCreators from '../components/answer/TopCreators';
+import EmptyResults from '../components/base/EmptyResults';
 import AskQuestionCard from '../components/question/AskQuestionCard';
 import QuestionsList from '../components/question/QuestionsList';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
@@ -205,7 +206,8 @@ function Home(props) {
                         <AskQuestionCard
                             user={ user }
                             handleClickQuestionModalOpen={ toggleQuestionModal } />
-                        <InfiniteScroll
+                        { items.length > 0
+                        && <InfiniteScroll
                             style={ { overflow: 'visible' } }
                             dataLength={ items.length }
                             next={ loadMore }
@@ -217,7 +219,11 @@ function Home(props) {
                                 </p>
                             }>
                             { renderQuestions(items) }
-                        </InfiniteScroll>
+                        </InfiniteScroll> }
+                        { items.length === 0 && <EmptyResults
+                            title="No feed yet."
+                            description="Feel free to follow topics to see the questions and answers."
+                            showBackButton={ false } /> }
                     </Grid>
                     <Grid
                         item

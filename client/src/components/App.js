@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { UserAgentApplication } from 'msal';
 import { connect } from 'react-redux';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import SignIn from '../pages/SignIn';
 import { authService } from '../services/authService';
 import config from '../utils/config';
@@ -35,6 +36,10 @@ class App extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            loading: true,
+        };
+
         this.userAgentApplication = new UserAgentApplication({
             auth: {
                 clientId: config.appId,
@@ -57,16 +62,19 @@ class App extends Component {
 
     render() {
         const { user } = this.props;
-        if (user.isAuthenticated) {
+        const { loading } = this.state;
+        if (loading){
             return (
                 <ThemeProvider theme={ theme }>
-                    <Router handleLogout={ this.logout } />
+                    <LinearProgress color="secondary" />
                 </ThemeProvider>
             );
         }
         return (
             <ThemeProvider theme={ theme }>
-                <SignIn onLoginClick={ this.login } />
+                { user.isAuthenticated
+                    ? <Router handleLogout={ this.logout } />
+                    : <SignIn onLoginClick={ this.login } /> }
             </ThemeProvider>
         );
     }
@@ -98,7 +106,9 @@ class App extends Component {
             if (accessToken) {
             // Get the user's profile from Graph
                 const user = await authService.getUserDetails(accessToken);
-                this.props.requestUserSession(user);
+                this.props.requestUserSession(user, () => {
+                    this.setState({ loading: false });
+                });
             }
         }
         catch (err) {
@@ -115,8 +125,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestUserSession: (user) => {
-            dispatch(requestUserSession(user));
+        requestUserSession: (user, cb) => {
+            dispatch(requestUserSession(user, cb));
         },
     };
 };
