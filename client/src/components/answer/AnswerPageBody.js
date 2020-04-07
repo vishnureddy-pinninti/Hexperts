@@ -245,7 +245,7 @@ AnswerPageBody.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
-        questions: [],
+        questions: state.questions.answerRequests,
         modifiedQuestions: state.questions.modifiedQuestions,
     };
 };
