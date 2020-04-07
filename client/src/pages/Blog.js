@@ -188,7 +188,7 @@ function Topic(props) {
                         { loading ? <CardLoader height={ 400 } />
                             : <>
                                 { renderPosts(newPosts) }
-                                <InfiniteScroll
+                                { items.length && <InfiniteScroll
                                     dataLength={ items.length }
                                     next={ loadMore }
                                     hasMore={ pagination.hasMore }
@@ -199,7 +199,7 @@ function Topic(props) {
                                         </p>
                                     }>
                                     { renderPosts(items) }
-                                </InfiniteScroll>
+                                </InfiniteScroll> }
                                 { (items.length === 0 && newPosts.length === 0) && <EmptyResults
                                     title="No blog posts yet."
                                     description="Feel free to contribute to this blog and earn points."

@@ -163,7 +163,7 @@ function Topic(props) {
                                 id={ topicID } /> }
                         { loading ? <CardLoader height={ 200 } />
                             : <>
-                                <InfiniteScroll
+                                { items.length > 0 && <InfiniteScroll
                                     dataLength={ items.length }
                                     next={ loadMore }
                                     hasMore={ pagination.hasMore }
@@ -174,7 +174,7 @@ function Topic(props) {
                                         </p>
                                     }>
                                     { renderQuestions(items) }
-                                </InfiniteScroll>
+                                </InfiniteScroll> }
                                 { items.length === 0 && !pagination.hasMore && <EmptyResults
                                     title="No questions posted yet."
                                     description="Feel free to ask a question to this topic." /> }
