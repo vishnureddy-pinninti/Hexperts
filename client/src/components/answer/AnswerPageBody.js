@@ -170,7 +170,7 @@ function AnswerPageBody(props) {
                     Specific Questions
                     <br />
                     for me
-                </div> }
+                        </div> }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'AnswerRequests' ? 'default' : 'outlined' }
@@ -182,7 +182,7 @@ function AnswerPageBody(props) {
                     Questions in my
                     <br />
                     area of expertise
-                </div> }
+                        </div> }
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'Questions' ? 'default' : 'outlined' }
@@ -225,8 +225,8 @@ function AnswerPageBody(props) {
                         </p>
                     }>
                     { renderQuestions(items) }
-                   </InfiniteScroll> }
-                { items.length === 0 && <EmptyResults
+                </InfiniteScroll> }
+                { items.length === 0 && !pagination.hasMore && <EmptyResults
                     style={ { marginTop: 30 } }
                     title="No questions for you yet."
                     description="Feel free to add yourself as expert to topics you know about to let people know what you can answer."
