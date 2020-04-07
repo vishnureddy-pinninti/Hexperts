@@ -305,7 +305,7 @@ BlogHeader.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         pending: state.blog.pending,
-        followers: state.topic.topic.followers,
+        followers: state.blog.blog.followers,
         interests: state.user.interests,
         expertTopics: state.user.expertIn,
         user: state.user.user,
