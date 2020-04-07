@@ -30,10 +30,13 @@ function EmptyResults(props) {
         description,
         showBackButton,
         history,
+        style,
     } = props;
 
     return (
-        <Card className={ classes.root }>
+        <Card
+            className={ classes.root }
+            style={ style }>
             <CardContent>
                 <Typography
                     className={ classes.title }

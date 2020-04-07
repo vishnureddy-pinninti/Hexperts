@@ -41,7 +41,7 @@ const receiveUserSession = (user) => {
     };
 };
 
-export const requestUserSession = (user) => {
+export const requestUserSession = (user, cb) => {
     return {
         type: REQUEST_USER_SESSION,
         makeApiRequest: {
@@ -49,6 +49,7 @@ export const requestUserSession = (user) => {
             method: 'POST',
             body: user,
             success: (response) => receiveUserSession(response),
+            successcb: cb,
         },
     };
 };

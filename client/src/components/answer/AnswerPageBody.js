@@ -8,6 +8,7 @@ import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import ContactSupportIcon from '@material-ui/icons/ContactSupport';
+import EmptyResults from '../base/EmptyResults';
 import AnswerCard from './Card';
 import CardLoader from '../base/CardLoader';
 import QuestionCard from '../question/Card';
@@ -211,7 +212,8 @@ function AnswerPageBody(props) {
             <Grid
                 item
                 xs={ 7 }>
-                <InfiniteScroll
+                { items.length > 0
+                && <InfiniteScroll
                     style={ { overflow: 'visible' } }
                     dataLength={ items.length }
                     next={ loadMore }
@@ -223,7 +225,12 @@ function AnswerPageBody(props) {
                         </p>
                     }>
                     { renderQuestions(items) }
-                </InfiniteScroll>
+                   </InfiniteScroll> }
+                { items.length === 0 && <EmptyResults
+                    style={ { marginTop: 30 } }
+                    title="No questions for you yet."
+                    description="Feel free to add yourself as expert to topics you know about to let people know what you can answer."
+                    showBackButton={ false } /> }
             </Grid>
             <Grid
                 item
