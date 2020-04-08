@@ -18,7 +18,7 @@ const reputationService = async(data) => {
                 user.upvotes = user.upvotes + voteCount;
             }
             else {
-                user.upvotes = voteCount === -1 ? 0: 1;
+                user.upvotes = voteCount < 0 ? 0: 1;
             }
         }
 
