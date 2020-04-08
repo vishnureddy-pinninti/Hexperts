@@ -10,7 +10,7 @@ const badge = (reputation) => {
         return 'gold';
     }
 
-    return 'basic';
+    return 'blue';
 };
 
 export default badge;
