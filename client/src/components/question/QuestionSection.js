@@ -6,44 +6,70 @@ import { Card,
     Button,
     IconButton,
     Typography,
-    Collapse } from '@material-ui/core';
+    Collapse,
+    Menu,
+    MenuItem,
+    CardHeader } from '@material-ui/core';
 import { EditTwoTone as EditTwoToneIcon,
     RssFeedSharp as RssFeedSharpIcon,
     RecordVoiceOver as RecordVoiceOverIcon } from '@material-ui/icons';
 import EditIcon from '@material-ui/icons/Edit';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { Editor } from 'react-draft-wysiwyg';
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
 import ReadMore from '../base/ReadMore';
-
+import Avatar from '../base/Avatar';
+import getBadge from '../../utils/badge';
 import QuestionTags from './QuestionTags';
 import EditSuggestedWriters from './EditSuggestedWriters';
 import DescriptionModal from '../base/DescriptionModal';
 import { addAnswerToQuestion,
     addAnswerPending } from '../../store/actions/answer';
 import { followQuestion,
-    addQuestionToCache, editQuestion, editQuestionPending } from '../../store/actions/questions';
+    addQuestionToCache, editQuestion, editQuestionPending, deleteQuestion } from '../../store/actions/questions';
 import config from '../../utils/config';
 
-const useStyles = makeStyles({
-    root: {
-        overflow: 'visible',
-        marginBottom: 10,
-    },
-    media: {
-
-    },
-    editorWrapper: {
-        border: '1px solid #F1F1F1',
-        minHeight: 300,
-        padding: 10,
-    },
-    editor: {
-        height: 300,
-        overflow: 'auto',
-    },
+const useStyles = makeStyles((theme) => {
+    return {
+        root: {
+            overflow: 'visible',
+            marginBottom: 10,
+        },
+        header: {
+            paddingTop: 0,
+            paddingLeft: 0,
+            paddingRight: 0,
+        },
+        disabled: {
+            opacity: 0.3,
+            pointerEvents: 'none',
+        },
+        editorWrapper: {
+            border: '1px solid #F1F1F1',
+            minHeight: 300,
+            padding: 10,
+        },
+        editor: {
+            height: 300,
+            overflow: 'auto',
+        },
+        small: {
+            width: theme.spacing(3),
+            height: theme.spacing(3),
+        },
+        link: {
+            textDecoration: 'none',
+            color: 'inherit',
+            '&:hover': {
+                textDecoration: 'underline',
+            },
+        },
+    };
 });
 
 const QuestionSection = (props) => {
@@ -61,6 +87,8 @@ const QuestionSection = (props) => {
         askedExperts,
         editQuestion,
         author,
+        history,
+        deleteQuestion,
     } = props;
 
     const [
@@ -93,6 +121,24 @@ const QuestionSection = (props) => {
         setDisableSubmit,
     ] = React.useState(false);
 
+    const [
+        anchorEl,
+        setAnchorEl,
+    ] = React.useState(null);
+
+    const handleMenuClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const [
+        disabled,
+        setDisabled,
+    ] = React.useState(false);
+
     const handleOpen = () => {
         setOpen(true);
     };
@@ -100,6 +146,14 @@ const QuestionSection = (props) => {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const {
+        _id,
+        name,
+        jobTitle,
+        email,
+        reputation,
+    } = author;
 
     const isOwner = user._id === author._id;
 
@@ -156,11 +210,19 @@ const QuestionSection = (props) => {
     ] = React.useState(false);
 
     const handleDescriptionModalOpen = () => {
+        setAnchorEl(null);
         setOpenDescriptionModal(true);
     };
 
     const handleDescriptionModalClose = () => {
         setOpenDescriptionModal(false);
+    };
+
+    const handleDeleteQuestion = () => {
+        setAnchorEl(null);
+        deleteQuestion(id, (res) => {
+            if (res) { setDisabled(true); }
+        });
     };
 
     const callback = (res) => {
@@ -206,26 +268,72 @@ const QuestionSection = (props) => {
         </ReadMore>
     );
 
+    const onProfileClick = () => {
+        history.push(`/profile/${_id}`);
+    };
+
     const following = followers.indexOf(user._id) >= 0;
 
     return (
-        <Card className={ classes.root }>
+        <Card
+            className={ `${classes.root}  ${disabled ? classes.disabled : ''}` }>
             <CardContent>
                 <QuestionTags
                     question={ question }
                     topics={ topics }
                     id={ id } />
+                <CardHeader
+                    className={ classes.header }
+                    avatar={
+                        <Avatar
+                            aria-label={ name }
+                            alt={ name }
+                            user={ email }
+                            size="small"
+                            badge={ getBadge(reputation) }
+                            onClick={ onProfileClick }
+                            className={ classes.small } />
+                    }
+                    title={
+                        <Link
+                            className={ classes.link }
+                            onClick={ onProfileClick }>
+                            Asked by
+                            { '  ' }
+                            { isOwner ? 'me' : name }
+                        </Link>
+                    }
+                    subheader={ formatDistanceToNow(new Date(question.postedDate || Date.now()), { addSuffix: true }) }
+                    action={ isOwner && <>
+                        <IconButton
+                            aria-controls="simple-menu"
+                            aria-haspopup="true"
+                            onClick={ handleMenuClick }>
+                            <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                            anchorEl={ anchorEl }
+                            keepMounted
+                            open={ Boolean(anchorEl) }
+                            onClose={ handleMenuClose }>
+                            <MenuItem onClick={ handleDescriptionModalOpen }>
+                                <EditIcon />
+                                { '  ' }
+                                Edit
+                            </MenuItem>
+                            <MenuItem
+                                onClick={ handleDeleteQuestion }
+                                disabled={ question.answers.totalCount > 0 }>
+                                <DeleteIcon />
+                                { '  ' }
+                                Delete
+                            </MenuItem>
+                        </Menu>
+                    </> } />
                 <Typography
                     variant="h5"
                     component="h2">
                     { questionText }
-                    { isOwner && <IconButton
-                        size="small"
-                        color="primary"
-                        onClick={ handleDescriptionModalOpen }
-                        aria-label="Edit Question">
-                        <EditIcon />
-                    </IconButton> }
                 </Typography>
                 { (question.plainText || (description && description.length > 7))
                  && <CardContent>
@@ -348,7 +456,10 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(editQuestionPending());
             dispatch(editQuestion(questionID, body, cb));
         },
+        deleteQuestion: (questionID, cb) => {
+            dispatch(deleteQuestion(questionID, cb));
+        },
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(QuestionSection);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(QuestionSection));

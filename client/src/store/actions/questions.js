@@ -23,6 +23,8 @@ export const RECEIVE_QUESTION_SUGGESTIONS = 'RECEIVE_QUESTION_SUGGESTIONS';
 export const REQUEST_QUESTION_SUGGESTIONS = 'REQUEST_QUESTION_SUGGESTIONS';
 export const TOGGLE_QUESTION_MODAL = 'TOGGLE_QUESTION_MODAL';
 export const CLEAR_QUESTION_SUGGESTIONS = 'CLEAR_QUESTION_SUGGESTIONS';
+export const RECEIVE_DELTEED_QUESTION = 'RECEIVE_DELTEED_QUESTION';
+export const DELETE_QUESTION = 'DELETE_QUESTION';
 
 export const toggleQuestionModal = (question) => {
     return {
@@ -242,5 +244,24 @@ export const addQuestionToCache = (question) => {
     return {
         type: RECEIVE_QUESTION_FOR_CACHE,
         question,
+    };
+};
+
+const receiveDeletedQuestion = (res) => {
+    return {
+        type: RECEIVE_DELTEED_QUESTION,
+        res,
+    };
+};
+
+export const deleteQuestion = (id, cb) => {
+    return {
+        type: DELETE_QUESTION,
+        makeApiRequest: {
+            url: `/api/v1/question/${id}`,
+            method: 'DELETE',
+            success: receiveDeletedQuestion,
+            successcb: cb,
+        },
     };
 };
