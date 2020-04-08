@@ -9,8 +9,7 @@ import { RECEIVE_ADDED_ANSWER,
     RECEIVE_COMMENT_BY_ID,
     RECEIVE_DOWNVOTE_ANSWER,
     REQUEST_ANSWER_BY_ID,
-    REQUEST_COMMENT_BY_ID,
- } from '../actions/answer';
+    REQUEST_COMMENT_BY_ID } from '../actions/answer';
 
 import { RECEIVE_QUESTION_BY_ID } from '../actions/questions';
 
@@ -49,7 +48,7 @@ export default (state = initialState, action) => {
                 ...state,
                 comment: {},
                 pending: true,
-            }
+            };
         case RECEIVE_COMMENT_BY_ID:
             if (action.comment.target === 'answers'){
                 return {

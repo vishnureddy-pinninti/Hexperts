@@ -14,11 +14,10 @@ const useStyles = makeStyles((theme) => {
         root: {
             display: 'flex',
             flexWrap: 'wrap',
-            padding: theme.spacing(0.5),
             marginBottom: 10,
         },
         chip: {
-            margin: theme.spacing(0.5),
+            marginRight: theme.spacing(1),
         },
         topicLink: {
             textDecoration: 'none',
