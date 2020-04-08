@@ -5,6 +5,7 @@ const { errors: { ANSWER_NOT_FOUND } } = require('../utils/constants');
 const voting = require('../utils/voting');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const emailNotify = require('../services/email/emailService');
+const deleteService = require('../services/reputation/deleteService');
 const htmlToText = require('../utils/htmlToText');
 
 module.exports = (app) => {
@@ -232,6 +233,12 @@ module.exports = (app) => {
             const answer = await Answer.findById(answerID);
 
             if (answer) {
+                deleteService({
+                    type: 'answer',
+                    user: answer.author,
+                    voteCount: answer.upvoters.length,
+                    htmlContent: answer.answer,
+                });
                 await answer.remove();
                 res
                     .status(200)

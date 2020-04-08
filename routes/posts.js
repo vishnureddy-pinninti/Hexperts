@@ -360,6 +360,12 @@ module.exports = (app) => {
             const post = await post.findById(postID);
 
             if (post) {
+                deleteService({
+                    type: 'post',
+                    user: post.author,
+                    voteCount: post.upvoters.length,
+                    htmlContent: post.description,
+                });
                 await post.remove();
                 res
                     .status(200)

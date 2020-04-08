@@ -126,7 +126,7 @@ function DescriptionModal(props) {
                             placeholder="Add Answer"
                             editorRef={ setEditorReference }
                             wrapperClassName={ classes.editorWrapper }
-                            editorClassName={ classes.editor }
+                            editorClassName={ `${classes.editor} editor-write-mode` }
                             onEditorStateChange={ onEditorStateChange }
                             toolbar={ config.editorToolbar } />
                     </DialogContent>
