@@ -276,7 +276,7 @@ const QuestionSection = (props) => {
                         editorState={ answer }
                         editorRef={ setEditorReference }
                         wrapperClassName={ classes.editorWrapper }
-                        editorClassName={ classes.editor }
+                        editorClassName={ `${classes.editor} editor-write-mode` }
                         onEditorStateChange={ onEditorStateChange }
                         toolbar={ config.editorToolbar } />
                 </CardContent>
