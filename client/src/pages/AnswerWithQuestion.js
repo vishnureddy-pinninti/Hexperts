@@ -5,6 +5,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
 
 import AnswerCard from '../components/answer/Card';
+import EmptyResults from '../components/base/EmptyResults';
 import { requestAnswerById } from '../store/actions/answer';
 
 function Answer(props) {
@@ -23,6 +24,11 @@ function Answer(props) {
         setLoading,
     ] = React.useState(false);
 
+    const [
+        error,
+        setError,
+    ] = React.useState();
+
     useEffect(() => {
         if (answer.question){
             setLoading(false);
@@ -31,7 +37,10 @@ function Answer(props) {
 
     useEffect(() => {
         setLoading(true);
-        requestAnswer(answerId);
+        requestAnswer(answerId, () => {}, (res) => {
+            setLoading(false);
+            setError(res.response);
+        });
     }, [
         requestAnswer,
         answerId,
@@ -69,6 +78,11 @@ function Answer(props) {
                             variant="rect"
                             height={ 400 } />
                             : (answer && answer.question && renderAnswer(answer)) }
+                        { error
+                            && <EmptyResults
+                                style={ { marginTop: 30 } }
+                                title={ error }
+                                showBackButton /> }
                     </Grid>
                     <Grid
                         item
@@ -88,8 +102,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestAnswer: (id) => {
-            dispatch(requestAnswerById(id));
+        requestAnswer: (id, success, error) => {
+            dispatch(requestAnswerById(id, success, error));
         },
     };
 };

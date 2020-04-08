@@ -55,6 +55,11 @@ const apiRequest = (store) => (next) => (action) => {
                     config.successcb(response);
                 }
             }
+            if (response.error) {
+                if (config.errorcb) {
+                    config.errorcb(response);
+                }
+            }
 
             if (!config.showNoProgress) {
                 // dispatch(hideProgress());
