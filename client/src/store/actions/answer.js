@@ -172,13 +172,14 @@ const receiveAnswerById = (answer) => {
     };
 };
 
-export const requestAnswerById = (id) => {
+export const requestAnswerById = (id, successcb, errorcb) => {
     return {
         type: REQUEST_ANSWER_BY_ID,
         makeApiRequest: {
             url: `/api/v1/answers/${id}`,
             method: 'GET',
             success: receiveAnswerById,
+            errorcb,
         },
     };
 };
