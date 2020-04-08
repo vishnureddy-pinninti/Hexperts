@@ -112,7 +112,7 @@ function SearchBar(props) {
             to={ `/blog/${item._id}` }>
             <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
-                    <Avatar
+                    <MuiAvatar
                         alt="Remy Sharp"
                         src={ item.options.imageUrl || '/blog-placeholder.png' }
                         className={ classes.avatar } />
@@ -130,9 +130,9 @@ function SearchBar(props) {
             to={ `/question/${item._id}` }>
             <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
-                    <Avatar>
+                    <MuiAvatar>
                         <HelpIcon />
-                    </Avatar>
+                    </MuiAvatar>
                 </ListItemAvatar>
                 <ListItemText
                     primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
@@ -146,9 +146,9 @@ function SearchBar(props) {
             to={ `/answer/${item._id}` }>
             <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
-                    <Avatar>
+                    <MuiAvatar>
                         <QuestionAnswerOutlinedIcon />
-                    </Avatar>
+                    </MuiAvatar>
                 </ListItemAvatar>
                 <ListItemText
                     primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
