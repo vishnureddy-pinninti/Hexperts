@@ -117,7 +117,7 @@ const BlogPostModal = (props) => {
             place
             editorState={ input.value }
             wrapperClassName={ classes.editorWrapper }
-            editorClassName={ classes.editor }
+            editorClassName={ `${classes.editor} editor-write-mode` }
             onEditorStateChange={ (value) => input.onChange(value) }
             toolbar={ config.editorToolbar } />
     );

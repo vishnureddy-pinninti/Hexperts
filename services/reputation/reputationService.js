@@ -22,6 +22,10 @@ const reputationService = async(data) => {
             }
         }
 
+        if (user.upvotes < 0) {
+            user.upvotes = 0;
+        }
+
         await user.save();
     }
 };

@@ -519,7 +519,7 @@ module.exports = (app) => {
                 },
             ]);
 
-            if (question) {
+            if (question.length) {
                 const answers = await Answer.aggregate([
                     { $match: { questionID: mongoose.Types.ObjectId(questionID) } },
                     {

@@ -177,7 +177,7 @@ const BlogHeader = (props) => {
             place
             editorState={ post }
             wrapperClassName={ classes.editorWrapper }
-            editorClassName={ classes.editor }
+            editorClassName={ `${classes.editor} editor-write-mode` }
             onEditorStateChange={ onEditorStateChange }
             toolbar={ {
                 options: config.toolbarOptions,
