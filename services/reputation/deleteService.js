@@ -22,20 +22,23 @@ const deleteService = async(data) => {
         deleteImage(src);
     });
 
-    let score;
-
-    if (type === 'answer') {
-        score = (NEW_ANSWER * -1) + (voteCount * UPVOTE_ANSWER * -1);
+    if (type !== 'question') {
+        let score;
+    
+        if (type === 'answer') {
+            score = (NEW_ANSWER * -1) + (voteCount * UPVOTE_ANSWER * -1);
+        }
+        else if (type === 'post') {
+            score = (NEW_POST * -1) + (voteCount * UPVOTE_POST * -1);
+        }
+    
+        reputationService({
+            user: { _id: user },
+            score,
+            voteCount: (voteCount * -1),
+        });
     }
-    else if (type === 'post') {
-        score = (NEW_POST * -1) + (voteCount * UPVOTE_POST * -1);
-    }
 
-    reputationService({
-        user: { _id: user },
-        score,
-        voteCount,
-    });
 };
 
 module.exports = deleteService;

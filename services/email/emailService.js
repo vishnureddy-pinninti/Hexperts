@@ -31,7 +31,7 @@ const emailService = async(type, data, options) => {
         bcc: recipients.filter((follower) => follower.emailSubscription && (follower.email !== user.email)).map((follower) => follower.email),
     };
 
-    email(mailOptions);
+    // email(mailOptions);
 };
 
 module.exports = emailService;

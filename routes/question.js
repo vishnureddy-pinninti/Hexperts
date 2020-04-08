@@ -6,6 +6,7 @@ const Topic = mongoose.model('topics');
 
 const { errors: { QUESTION_NOT_FOUND } } = require('../utils/constants');
 const emailNotify = require('../services/email/emailService');
+const deleteService = require('../services/reputation/deleteService');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const htmlToText = require('../utils/htmlToText');
@@ -738,6 +739,10 @@ module.exports = (app) => {
             const question = await Question.findById(questionID);
 
             if (question) {
+                deleteService({
+                    type: 'question',
+                    htmlContent: question.description,
+                });
                 await question.remove();
                 res
                     .status(200)
