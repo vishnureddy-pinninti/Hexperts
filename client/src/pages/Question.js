@@ -90,6 +90,11 @@ function Question(props) {
         setNewAnswers,
     ] = React.useState([]);
 
+    const [
+        error,
+        setError,
+    ] = React.useState();
+
     useEffect(() => {
         if (modifiedQuestions && modifiedQuestions[questionId] && modifiedQuestions[questionId].newAnswers){
             setNewAnswers([ ...modifiedQuestions[questionId].newAnswers ]);
@@ -104,7 +109,10 @@ function Question(props) {
             hasMore: false,
         });
         setLoading(true);
-        requestQuestion(questionId);
+        requestQuestion(questionId, { skip: 0 }, () => {}, (res) => {
+            setLoading(false);
+            setError(res.response);
+        });
         setRelatedQuestionsloading(true);
         requestRelatedQuestions(questionId);
     }, [
@@ -142,6 +150,25 @@ function Question(props) {
             date={ answer.postedDate }
             answer={ answer } />
     ));
+
+    if (error){
+        return (
+            <Grid
+                container
+                justify="center"
+                style={ { marginTop: 70 } }
+                spacing={ 3 }>
+                <Grid
+                    item
+                    xs={ 8 }>
+                    <EmptyResults
+                        style={ { marginTop: 10 } }
+                        title={ error }
+                        showBackButton />
+                </Grid>
+            </Grid>
+        );
+    }
 
     return (
         <div className="App">
@@ -196,7 +223,7 @@ function Question(props) {
                             height={ 500 } />
                             : <Questions
                                 title="Related Questions"
-                                questions={ relatedQuestions } /> }
+                                questions={ relatedQuestions || [] } /> }
                     </Grid>
                 </Grid>
             </Container>
@@ -219,8 +246,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestQuestion: (questionId, params) => {
-            dispatch(requestQuestionById(questionId, params));
+        requestQuestion: (questionId, params, success, error) => {
+            dispatch(requestQuestionById(questionId, params, success, error));
         },
         requestRelatedQuestions: (questionId) => {
             dispatch(requestRelatedQuestions(questionId));

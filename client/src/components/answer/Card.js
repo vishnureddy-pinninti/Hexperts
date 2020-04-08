@@ -232,7 +232,7 @@ const AnswerCard = (props) => {
         setOpenEditAnswerModal(false);
     };
 
-
+    const isOwner = user._id === _id;
     const upvoted = upvoters.indexOf(user._id) >= 0;
     // const downvoted = downvoters.indexOf(user._id) >= 0;
 
@@ -256,7 +256,7 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </Typography>
-                                   </>
+                    </>
                 }
                 <div className={ disabled ? classes.disabled : '' }>
                     <CardHeader
@@ -270,7 +270,7 @@ const AnswerCard = (props) => {
                                 onClick={ onProfileClick }
                                 className={ classes.avatar } />
                         }
-                        action={ <>
+                        action={ isOwner && <>
                             <IconButton
                                 aria-controls="simple-menu"
                                 aria-haspopup="true"
@@ -294,7 +294,7 @@ const AnswerCard = (props) => {
                                     Delete
                                 </MenuItem>
                             </Menu>
-                        </> }
+                                            </> }
                         title={
                             <Link
                                 className={ classes.link }

@@ -49,7 +49,7 @@ const apiRequest = (store) => (next) => (action) => {
     return fetch(config.url, requestObject)
         .then((response) => response.json())
         .then((response) => {
-            if (config.success) {
+            if (config.success && !response.error) {
                 dispatch(successHandler(response));
                 if (config.successcb) {
                     config.successcb(response);
