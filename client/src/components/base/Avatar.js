@@ -14,7 +14,7 @@ class Avatar extends Component {
         } = this.props;
         let color = badge;
 
-        if (badge === 'basic'){
+        if (badge === 'blue'){
             color = '#3BB9FF';
         }
 
