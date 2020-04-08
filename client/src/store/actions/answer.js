@@ -14,6 +14,10 @@ export const REQUEST_ANSWER_COMMENTS = 'REQUEST_ANSWER_COMMENTS';
 export const RECEIVE_ANSWER_COMMENTS = 'RECEIVE_ANSWER_COMMENTS';
 export const RECEIVE_COMMENT_BY_ID = 'RECEIVE_COMMENT_BY_ID';
 export const REQUEST_COMMENT_BY_ID = 'REQUEST_COMMENT_BY_ID';
+export const RECEIVE_DELTEED_ANSWER = 'RECEIVE_DELTEED_ANSWER';
+export const DELETE_ANSWER = 'DELETE_ANSWER';
+export const EDIT_ANSWER = 'EDIT_ANSWER';
+export const RECEIVE_EDITED_ANSWER = 'RECEIVE_EDITED_ANSWER';
 
 export function addAnswerPending() {
     return {
@@ -54,6 +58,45 @@ export const upvoteAnswer = (id) => {
             url: `/api/v1/answer-upvote/${id}`,
             method: 'GET',
             success: receiveUpvotedAnswer,
+        },
+    };
+};
+
+const receiveDeletedAnswer = (res) => {
+    return {
+        type: RECEIVE_DELTEED_ANSWER,
+        res,
+    };
+};
+
+export const deleteAnswer = (id, cb) => {
+    return {
+        type: DELETE_ANSWER,
+        makeApiRequest: {
+            url: `/api/v1/answers/${id}`,
+            method: 'DELETE',
+            success: receiveDeletedAnswer,
+            successcb: cb,
+        },
+    };
+};
+
+const receiveEditedAnswer = (res) => {
+    return {
+        type: RECEIVE_EDITED_ANSWER,
+        res,
+    };
+};
+
+export const editAnswer = (id, body, cb) => {
+    return {
+        type: EDIT_ANSWER,
+        makeApiRequest: {
+            url: `/api/v1/answers/${id}`,
+            method: 'PUT',
+            body,
+            success: receiveEditedAnswer,
+            successcb: cb,
         },
     };
 };

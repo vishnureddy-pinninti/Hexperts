@@ -11,6 +11,9 @@ import { Card,
     Button,
     Box,
     Divider,
+    IconButton,
+    Menu,
+    MenuItem,
     Collapse } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import { ChatBubbleOutlineRounded as ChatBubbleOutlineRoundedIcon,
@@ -19,12 +22,17 @@ import { ChatBubbleOutlineRounded as ChatBubbleOutlineRoundedIcon,
     ThumbUpAlt as ThumbUpAltIcon,
     ThumbDownAlt as ThumbDownAltIcon,
     ChatBubble as ChatBubbleIcon } from '@material-ui/icons';
-
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import Comments from '../comment/comments';
 import ReadMore from '../base/ReadMore';
+import EditAnswerModal from './EditAnswerModal';
 import Avatar from '../base/Avatar';
 import { upvoteAnswer,
     addAnswerToCache,
+    deleteAnswer,
+    editAnswer,
     downvoteAnswer } from '../../store/actions/answer';
 import getBadge from '../../utils/badge';
 
@@ -33,6 +41,10 @@ const useStyles = makeStyles((theme) => {
         root: {
             marginTop: 10,
             border: '1px solid #efefef',
+        },
+        disabled: {
+            opacity: 0.3,
+            pointerEvents: 'none',
         },
         headerRoot: {
             paddingLeft: 0,
@@ -104,12 +116,24 @@ const AnswerCard = (props) => {
         modifiedAnswers,
         hideHeaderHelperText,
         user,
+        deleteAnswer,
+        editAnswer,
     } = props;
 
     const [
         open,
         setOpen,
     ] = React.useState(false);
+
+    const [
+        disabled,
+        setDisabled,
+    ] = React.useState(false);
+
+    const [
+        answerHTML,
+        setAnswerHTML,
+    ] = React.useState(answer && answer.answer);
 
     let currentCommentsCount = answer.commentsCount || 0;
 
@@ -164,8 +188,53 @@ const AnswerCard = (props) => {
         </Typography>
     );
 
+    const [
+        anchorEl,
+        setAnchorEl,
+    ] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const [
+        openEditAnswerModal,
+        setOpenEditAnswerModal,
+    ] = React.useState(false);
+
+    const handleDeleteAnswer = () => {
+        setAnchorEl(null);
+        deleteAnswer(answerId, (res) => {
+            if (res) { setDisabled(true); }
+        });
+    };
+
+    const handleEditAnswer = (answer) => {
+        setAnchorEl(null);
+        setOpenEditAnswerModal(false);
+        editAnswer(answerId, { answer }, (res) => {
+            if (res) {
+                setAnswerHTML(res.answer);
+            }
+        });
+    };
+
+    const handleEditAnswerModalOpen = () => {
+        setAnchorEl(null);
+        setOpenEditAnswerModal(true);
+    };
+
+    const handleEditAnswerModalClose = () => {
+        setOpenEditAnswerModal(false);
+    };
+
+
     const upvoted = upvoters.indexOf(user._id) >= 0;
-    const downvoted = downvoters.indexOf(user._id) >= 0;
+    // const downvoted = downvoters.indexOf(user._id) >= 0;
 
     return (
         <Card
@@ -177,6 +246,7 @@ const AnswerCard = (props) => {
                         { !hideHeaderHelperText && renderHeaderHelperText() }
                         <Typography>
                             <Link
+                                disabled={ disabled }
                                 to={ `/question/${questionId}` }
                                 className={ classes.link }>
                                 <Box
@@ -188,37 +258,66 @@ const AnswerCard = (props) => {
                         </Typography>
                                    </>
                 }
-                <CardHeader
-                    className={ classes.headerRoot }
-                    avatar={
-                        <Avatar
-                            aria-label={ name }
-                            alt={ name }
-                            user={ email }
-                            badge={ getBadge(reputation) }
-                            onClick={ onProfileClick }
-                            className={ classes.avatar } />
-                    }
-                    title={
-                        <Link
-                            className={ classes.link }
-                            onClick={ onProfileClick }>
-                            { name }
-                            ,
-                            { ' ' }
-                            { jobTitle }
-                        </Link>
-                    }
-                    subheader={
-                        <Link
-                            className={ classes.link }
-                            to={ `/answer/${answerId}` }>
-                            { `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` }
-                        </Link>
-                    } />
-                { answer && answer.answer && renderAnswer(answer.answer) }
+                <div className={ disabled ? classes.disabled : '' }>
+                    <CardHeader
+                        className={ classes.headerRoot }
+                        avatar={
+                            <Avatar
+                                aria-label={ name }
+                                alt={ name }
+                                user={ email }
+                                badge={ getBadge(reputation) }
+                                onClick={ onProfileClick }
+                                className={ classes.avatar } />
+                        }
+                        action={ <>
+                            <IconButton
+                                aria-controls="simple-menu"
+                                aria-haspopup="true"
+                                onClick={ handleClick }>
+                                <MoreVertIcon />
+                            </IconButton>
+                            <Menu
+                                id="simple-menu"
+                                anchorEl={ anchorEl }
+                                keepMounted
+                                open={ Boolean(anchorEl) }
+                                onClose={ handleClose }>
+                                <MenuItem onClick={ handleEditAnswerModalOpen }>
+                                    <EditIcon />
+                                    { '  ' }
+                                    Edit
+                                </MenuItem>
+                                <MenuItem onClick={ handleDeleteAnswer }>
+                                    <DeleteIcon />
+                                    { '  ' }
+                                    Delete
+                                </MenuItem>
+                            </Menu>
+                        </> }
+                        title={
+                            <Link
+                                className={ classes.link }
+                                onClick={ onProfileClick }>
+                                { name }
+                                ,
+                                { ' ' }
+                                { jobTitle }
+                            </Link>
+                        }
+                        subheader={
+                            <Link
+                                className={ classes.link }
+                                to={ `/answer/${answerId}` }>
+                                { `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` }
+                            </Link>
+                        } />
+                    { renderAnswer(answerHTML) }
+                </div>
             </CardContent>
-            <CardActions disableSpacing>
+            <CardActions
+                className={ disabled ? classes.disabled : '' }
+                disableSpacing>
                 <Button
                     size="small"
                     onClick={ () => upvoteAnswer(answerId, answer) }
@@ -248,6 +347,12 @@ const AnswerCard = (props) => {
                 </CardContent>
                 <CardActions />
             </Collapse>
+            { openEditAnswerModal && <EditAnswerModal
+                open={ openEditAnswerModal }
+                answerHTML={ answer.answer }
+                question={ question }
+                handleClose={ handleEditAnswerModalClose }
+                handleDone={ handleEditAnswer } /> }
         </Card>
     );
 };
@@ -277,6 +382,12 @@ const mapDispatchToProps = (dispatch) => {
         },
         addAnswerToCache: (answer) => {
             dispatch(addAnswerToCache(answer));
+        },
+        deleteAnswer: (answerId, cb) => {
+            dispatch(deleteAnswer(answerId, cb));
+        },
+        editAnswer: (answerId, body, cb) => {
+            dispatch(editAnswer(answerId, body, cb));
         },
     };
 };
