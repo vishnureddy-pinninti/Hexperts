@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => {
         avatar: {
             width: theme.spacing(3),
             height: theme.spacing(3),
-            backgroundColor: red[500],
         },
     };
 });
