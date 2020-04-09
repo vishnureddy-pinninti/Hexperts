@@ -81,6 +81,9 @@ const useStyles = makeStyles((theme) => {
                 textDecoration: 'underline',
             },
         },
+        menuIcon: {
+            paddingRight: 5,
+        },
     };
 });
 
@@ -289,13 +292,11 @@ const AnswerCard = (props) => {
                             open={ Boolean(anchorEl) }
                             onClose={ handleClose }>
                             <MenuItem onClick={ handleEditPostModalOpen }>
-                                <EditIcon />
-                                { '  ' }
+                                <EditIcon className={ classes.menuIcon } />
                                 Edit
                             </MenuItem>
                             <MenuItem onClick={ handleDeletePost }>
-                                <DeleteIcon />
-                                { '  ' }
+                                <DeleteIcon className={ classes.menuIcon } />
                                 Delete
                             </MenuItem>
                         </Menu>
