@@ -109,6 +109,7 @@ const BlogPostModal = (props) => {
             label="Title"
             type="text"
             variant="outlined"
+            autoFocus
             required
             fullWidth />
     );
@@ -206,7 +207,7 @@ const BlogPostModal = (props) => {
             className={ classes.root }
             onClose={ handleClose }>
             <form
-                id="post"
+                id={ props.formName }
                 onSubmit={ handleSubmit(addPost) }>
                 <DialogTitle id="scroll-dialog-title">Blog Post</DialogTitle>
                 <DialogContent
@@ -279,6 +280,7 @@ const mapStateToPropsForForm = (state, props) => {
         description,
         topics,
         title,
+        formName,
     } = props;
     let editorState = '';
 
@@ -295,10 +297,10 @@ const mapStateToPropsForForm = (state, props) => {
             title,
             description: editorState,
         },
+        form: formName,
     };
 };
 
 export default connect(mapStateToPropsForForm)(reduxForm({
-    form: 'post', // a unique identifier for this form
     validate,
 })(connect(mapStateToProps, mapDispatchToProps)(withRouter(BlogPostModal))));

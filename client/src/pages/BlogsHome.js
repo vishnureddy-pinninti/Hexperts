@@ -261,6 +261,7 @@ function Home(props) {
                 handleClose={ handleQuestionModalClose } />
             <BlogPostModal
                 open={ openPostModal }
+                formName="newpost"
                 handleClose={ handlePostModalClose } />
             <FollowTopicsModal
                 open={ openFollowTopicsModal }

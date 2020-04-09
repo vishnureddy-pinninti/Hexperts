@@ -352,6 +352,7 @@ const AnswerCard = (props) => {
             </Collapse>
             { openEditPostModal && <EditPostModal
                 open={ openEditPostModal }
+                formName="post"
                 description={ postObj.description }
                 title={ postObj.title }
                 topics={ postObj.topics }
