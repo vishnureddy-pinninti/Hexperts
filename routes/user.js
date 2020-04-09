@@ -1053,16 +1053,10 @@ module.exports = (app) => {
                 },
                 {
                     $lookup: {
-                        from: 'blogs',
-                        localField: 'blog',
+                        from: 'topics',
+                        localField: 'topics',
                         foreignField: '_id',
-                        as: 'blog',
-                    },
-                },
-                {
-                    $unwind: {
-                        path: '$blog',
-                        preserveNullAndEmptyArrays: true,
+                        as: 'topics',
                     },
                 },
                 {
@@ -1071,7 +1065,7 @@ module.exports = (app) => {
                         downvoters: 1,
                         lastModified: 1,
                         postedDate: 1,
-                        blog: 1,
+                        topics: 1,
                         title: 1,
                         description: 1,
                         upvoters: 1,
