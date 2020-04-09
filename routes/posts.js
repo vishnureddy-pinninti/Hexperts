@@ -9,6 +9,7 @@ const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const voting = require('../utils/voting');
 const emailNotify = require('../services/email/emailService');
+const deleteService = require('../services/reputation/deleteService');
 const htmlToText = require('../utils/htmlToText');
 
 module.exports = (app) => {
@@ -278,9 +279,20 @@ module.exports = (app) => {
                 },
             ]);
 
-            res
-                .status(200)
-                .json(post[0]);
+            if (post.length) {
+                res
+                    .status(200)
+                    .json(post[0]);
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: POST_NOT_FOUND,
+                    });
+            }
+
         }
         catch (e) {
             res
@@ -357,7 +369,7 @@ module.exports = (app) => {
     app.delete('/api/v1/post/:postID', loginMiddleware, async(req, res) => {
         try {
             const { postID } = req.params;
-            const post = await post.findById(postID);
+            const post = await Post.findById(postID);
 
             if (post) {
                 deleteService({
