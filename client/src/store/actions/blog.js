@@ -25,6 +25,10 @@ export const RECEIVE_COMMENT_POST = 'RECEIVE_COMMENT_POST';
 export const REQUEST_COMMENT_POST = 'REQUEST_COMMENT_POST';
 export const RECEIVE_POST_COMMENTS = 'RECEIVE_POST_COMMENTS';
 export const REQUEST_POST_COMMENTS = 'REQUEST_POST_COMMENTS';
+export const RECEIVE_EDITED_POST = 'RECEIVE_EDITED_POST';
+export const EDIT_POST = 'EDIT_POST';
+export const RECEIVE_DELTED_POST = 'RECEIVE_DELTED_POST';
+export const DELETE_POST = 'DELETE_POST';
 
 export function addBlogPending() {
     return {
@@ -200,13 +204,14 @@ const receivePostById = (post) => {
     };
 };
 
-export const requestPostById = (id) => {
+export const requestPostById = (id, success, error) => {
     return {
         type: REQUEST_POST_BY_ID,
         makeApiRequest: {
             url: `/api/v1/post/${id}`,
             method: 'GET',
             success: receivePostById,
+            errorcb: error,
         },
     };
 };
@@ -246,6 +251,45 @@ export const requestCommentsForPost = (id, params = { skip: 0 }) => {
             url: `/api/v1/comments/${id}?skip=${params.skip}`,
             method: 'GET',
             success: (response) => receiveCommentsForPost(response, id),
+        },
+    };
+};
+
+const receiveEditedPost = (res) => {
+    return {
+        type: RECEIVE_EDITED_POST,
+        res,
+    };
+};
+
+export const editPost = (id, body, cb) => {
+    return {
+        type: EDIT_POST,
+        makeApiRequest: {
+            url: `/api/v1/post/${id}`,
+            method: 'PUT',
+            body,
+            success: receiveEditedPost,
+            successcb: cb,
+        },
+    };
+};
+
+const receiveDeletedPost = (res) => {
+    return {
+        type: RECEIVE_DELTED_POST,
+        res,
+    };
+};
+
+export const deletePost = (id, cb) => {
+    return {
+        type: DELETE_POST,
+        makeApiRequest: {
+            url: `/api/v1/post/${id}`,
+            method: 'DELETE',
+            success: receiveDeletedPost,
+            successcb: cb,
         },
     };
 };

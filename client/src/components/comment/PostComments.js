@@ -17,11 +17,9 @@ import { formatDistanceToNow } from 'date-fns';
 
 import CardLoader from '../base/CardLoader';
 import Avatar from '../base/Avatar';
-import {
-    addPostToCache,
+import { addPostToCache,
     commentPost,
-    requestCommentsForPost,
-} from '../../store/actions/blog';
+    requestCommentsForPost } from '../../store/actions/blog';
 import getBadge from '../../utils/badge';
 
 const validate = (values) => {
@@ -141,6 +139,7 @@ const Comments = (props) => {
                                 onClick={ () => onProfileClick(comment.author._id) }>
                                 { comment.author.name }
                                 ,
+                                { ' ' }
                                 { comment.author.jobTitle }
                             </Link>
                         }

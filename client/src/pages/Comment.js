@@ -6,8 +6,7 @@ import { Typography,
     CardContent,
     CardHeader,
     Container,
-    Grid,
-} from '@material-ui/core';
+    Grid } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Link } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
@@ -39,7 +38,8 @@ function Comment(props) {
     const classes = useStyles();
     const {
         match: {
-            params: { commentId },
+            params: { commentId 
+},
         },
         requestComent,
         comment,
@@ -124,6 +124,7 @@ function Comment(props) {
                             onClick={ () => onProfileClick(comment.author._id) }>
                             { comment.author.name }
                             ,
+                            { ' ' }
                             { comment.author.jobTitle }
                         </Link>
                     }
@@ -156,11 +157,11 @@ function Comment(props) {
                         { pending ? <Skeleton
                             variant="rect"
                             height={ 150 } /> : <>
-                                { comment && comment.answer && renderTitle(comment) }
-                                { comment && comment.answer && renderComment(comment) }
-                                { postComment && postComment.post && renderPostCommentTitle(postComment) }
-                                { postComment && postComment.post && renderComment(postComment) }
-                            </>}
+                            { comment && comment.answer && renderTitle(comment) }
+                            { comment && comment.answer && renderComment(comment) }
+                            { postComment && postComment.post && renderPostCommentTitle(postComment) }
+                            { postComment && postComment.post && renderComment(postComment) }
+                        </> }
                     </Grid>
                     <Grid
                         item

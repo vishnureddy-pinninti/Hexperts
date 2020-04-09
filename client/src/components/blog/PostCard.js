@@ -5,12 +5,15 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
 import ChatBubbleOutlineRoundedIcon from '@material-ui/icons/ChatBubbleOutlineRounded';
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
-import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
+import { IconButton,
+    Menu,
+    MenuItem } from '@material-ui/core';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
-import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import { Link, withRouter } from 'react-router-dom';
@@ -21,8 +24,9 @@ import Divider from '@material-ui/core/Divider';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import Comments from '../comment/PostComments';
 import ReadMore from '../base/ReadMore';
+import EditPostModal from './PostModal';
 import Avatar from '../base/Avatar';
-import { upvotePost, addPostToCache, downvotePost } from '../../store/actions/blog';
+import { upvotePost, addPostToCache, downvotePost, editPost, deletePost } from '../../store/actions/blog';
 import getBadge from '../../utils/badge';
 
 const useStyles = makeStyles((theme) => {
@@ -34,6 +38,10 @@ const useStyles = makeStyles((theme) => {
         headerRoot: {
             paddingLeft: 0,
             paddingRight: 0,
+        },
+        disabled: {
+            opacity: 0.3,
+            pointerEvents: 'none',
         },
         topics: {
             display: 'flex',
@@ -85,6 +93,8 @@ const AnswerCard = (props) => {
         history,
         upvotePost,
         downvotePost,
+        deletePost,
+        editPost,
         modifiedPosts,
         hideHeaderHelperText,
         user,
@@ -114,6 +124,15 @@ const AnswerCard = (props) => {
         open,
         setOpen,
     ] = React.useState(false);
+
+    const [
+        postObj,
+        setPostObj,
+    ] = React.useState({
+        topics,
+        description,
+        title,
+    });
 
     let currentCommentsCount = post.commentsCount || 0;
 
@@ -157,7 +176,7 @@ const AnswerCard = (props) => {
         </Link>
     ));
 
-    const renderHeaderHelperText = () => (
+    const renderHeaderHelperText = (topics) => (
         <Typography
             variant="body2"
             color="textSecondary"
@@ -168,17 +187,68 @@ const AnswerCard = (props) => {
         </Typography>
     );
 
+    const [
+        disabled,
+        setDisabled,
+    ] = React.useState(false);
+
+    const [
+        anchorEl,
+        setAnchorEl,
+    ] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const [
+        openEditPostModal,
+        setOpenEditPostModal,
+    ] = React.useState(false);
+
+    const handleDeletePost = () => {
+        setAnchorEl(null);
+        deletePost(postId, (res) => {
+            if (res) { setDisabled(true); }
+        });
+    };
+
+    const handleEditPost = (body) => {
+        setAnchorEl(null);
+        setOpenEditPostModal(false);
+        editPost(postId, body, (res) => {
+            if (res) {
+                setPostObj(res);
+            }
+        });
+    };
+
+    const handleEditPostModalOpen = () => {
+        setAnchorEl(null);
+        setOpenEditPostModal(true);
+    };
+
+    const handleEditPostModalClose = () => {
+        setOpenEditPostModal(false);
+    };
+
+    const isOwner = user._id === _id;
+
     const upvoted = upvoters.indexOf(user._id) >= 0;
     const downvoted = downvoters.indexOf(user._id) >= 0;
 
     return (
         <Card
-            className={ classes.root }
+            className={ `${classes.root}  ${disabled ? classes.disabled : ''}` }
             elevation={ 0 }>
             <CardContent>
                 {
                     !hideHeader && <>
-                        { !hideHeaderHelperText && renderHeaderHelperText() }
+                        { !hideHeaderHelperText && renderHeaderHelperText(postObj.topics) }
                         <Typography>
                             <Link
                                 to={ `/post/${postId}` }
@@ -186,11 +256,11 @@ const AnswerCard = (props) => {
                                 <Box
                                     fontWeight="fontWeightBold"
                                     fontSize={ 20 }>
-                                    { title }
+                                    { postObj.title }
                                 </Box>
                             </Link>
                         </Typography>
-                                   </>
+                    </>
                 }
                 <CardHeader
                     className={ classes.headerRoot }
@@ -205,6 +275,31 @@ const AnswerCard = (props) => {
                             { name.match(/\b(\w)/g).join('') }
                         </Avatar>
                     }
+                    action={ isOwner && <>
+                        <IconButton
+                            aria-controls="simple-menu"
+                            aria-haspopup="true"
+                            onClick={ handleClick }>
+                            <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                            id="simple-menu"
+                            anchorEl={ anchorEl }
+                            keepMounted
+                            open={ Boolean(anchorEl) }
+                            onClose={ handleClose }>
+                            <MenuItem onClick={ handleEditPostModalOpen }>
+                                <EditIcon />
+                                { '  ' }
+                                Edit
+                            </MenuItem>
+                            <MenuItem onClick={ handleDeletePost }>
+                                <DeleteIcon />
+                                { '  ' }
+                                Delete
+                            </MenuItem>
+                        </Menu>
+                    </> }
                     title={
                         <Link
                             className={ classes.link }
@@ -222,7 +317,7 @@ const AnswerCard = (props) => {
                             { `Posted ${formatDistance(new Date(postedDate), new Date(), { addSuffix: true })}` }
                         </Link>
                     } />
-                { description && renderAnswer(description) }
+                { postObj.description && renderAnswer(postObj.description) }
             </CardContent>
             <CardActions disableSpacing>
                 <Button
@@ -254,6 +349,13 @@ const AnswerCard = (props) => {
                 </CardContent>
                 <CardActions />
             </Collapse>
+            { openEditPostModal && <EditPostModal
+                open={ openEditPostModal }
+                description={ postObj.description }
+                title={ postObj.title }
+                topics={ postObj.topics }
+                handleClose={ handleEditPostModalClose }
+                handleDone={ handleEditPost } /> }
         </Card>
     );
 };
@@ -283,6 +385,12 @@ const mapDispatchToProps = (dispatch) => {
         },
         addPostToCache: (post) => {
             dispatch(addPostToCache(post));
+        },
+        deletePost: (postId, cb) => {
+            dispatch(deletePost(postId, cb));
+        },
+        editPost: (postId, body, cb) => {
+            dispatch(editPost(postId, body, cb));
         },
     };
 };
