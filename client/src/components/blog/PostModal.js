@@ -12,10 +12,11 @@ import match from 'autosuggest-highlight/match';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { Field, reduxForm, reset } from 'redux-form';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import htmlToDraft from 'html-to-draftjs';
+import draftToHtml from 'draftjs-to-html';
 import List from '@material-ui/core/List';
 import { Editor } from 'react-draft-wysiwyg';
-import { convertToRaw } from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
 import Chip from '@material-ui/core/Chip';
 import { withRouter } from 'react-router-dom';
 
@@ -174,14 +175,27 @@ const BlogPostModal = (props) => {
             description,
             topics,
         } = values;
-        setDisableSubmit(true);
-        addPostToBlog(
-            {
-                description: description && draftToHtml(convertToRaw(description.getCurrentContent())),
-                topics: topics && topics.map((topic) => (topic._id)),
-                title,
-            }
-        );
+
+        const { handleDone } = props;
+        if (handleDone){
+            handleDone(
+                {
+                    description: description && draftToHtml(convertToRaw(description.getCurrentContent())),
+                    topics: topics && topics.map((topic) => (topic._id)),
+                    title,
+                }
+            );
+        }
+        else {
+            setDisableSubmit(true);
+            addPostToBlog(
+                {
+                    description: description && draftToHtml(convertToRaw(description.getCurrentContent())),
+                    topics: topics && topics.map((topic) => (topic._id)),
+                    title,
+                }
+            );
+        }
     };
 
     return (
@@ -260,7 +274,31 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default reduxForm({
+const mapStateToPropsForForm = (state, props) => {
+    const {
+        description,
+        topics,
+        title,
+    } = props;
+    let editorState = '';
+
+    if (description){
+        const contentBlock = htmlToDraft(description);
+        if (contentBlock) {
+            const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+            editorState = EditorState.createWithContent(contentState);
+        }
+    }
+    return {
+        initialValues: {
+            topics,
+            title,
+            description: editorState,
+        },
+    };
+};
+
+export default connect(mapStateToPropsForForm)(reduxForm({
     form: 'post', // a unique identifier for this form
     validate,
-})(connect(mapStateToProps, mapDispatchToProps)(withRouter(BlogPostModal)));
+})(connect(mapStateToProps, mapDispatchToProps)(withRouter(BlogPostModal))));

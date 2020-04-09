@@ -5,6 +5,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
 
 import PostCard from '../components/blog/PostCard';
+import EmptyResults from '../components/base/EmptyResults';
 import { requestPostById } from '../store/actions/blog';
 
 
@@ -24,6 +25,11 @@ function Post(props) {
         setLoading,
     ] = React.useState(false);
 
+    const [
+        error,
+        setError,
+    ] = React.useState();
+
     useEffect(() => {
         if (post.title){
             setLoading(false);
@@ -32,7 +38,10 @@ function Post(props) {
 
     useEffect(() => {
         setLoading(true);
-        requestPost(postId);
+        requestPost(postId, () => {}, (res) => {
+            setLoading(false);
+            setError(res.response);
+        });
     }, [
         requestPost,
         postId,
@@ -62,6 +71,11 @@ function Post(props) {
                             ? <Skeleton
                                 variant="rect"
                                 height={ 400 } /> : post && post.title && renderPost() }
+                        { error
+                            && <EmptyResults
+                                style={ { marginTop: 30 } }
+                                title={ error }
+                                showBackButton /> }
                     </Grid>
                     <Grid
                         item
@@ -81,8 +95,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestPost: (id) => {
-            dispatch(requestPostById(id));
+        requestPost: (id, success, error) => {
+            dispatch(requestPostById(id, success, error));
         },
     };
 };
