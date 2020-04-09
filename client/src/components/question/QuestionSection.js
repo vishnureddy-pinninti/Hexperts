@@ -69,6 +69,9 @@ const useStyles = makeStyles((theme) => {
                 textDecoration: 'underline',
             },
         },
+        menuIcon: {
+            paddingRight: 5,
+        },
     };
 });
 
@@ -317,15 +320,13 @@ const QuestionSection = (props) => {
                             open={ Boolean(anchorEl) }
                             onClose={ handleMenuClose }>
                             <MenuItem onClick={ handleDescriptionModalOpen }>
-                                <EditIcon />
-                                { '  ' }
+                                <EditIcon className={ classes.menuIcon } />
                                 Edit
                             </MenuItem>
                             <MenuItem
                                 onClick={ handleDeleteQuestion }
                                 disabled={ question.answers.totalCount > 0 }>
-                                <DeleteIcon />
-                                { '  ' }
+                                <DeleteIcon className={ classes.menuIcon } />
                                 Delete
                             </MenuItem>
                         </Menu>
