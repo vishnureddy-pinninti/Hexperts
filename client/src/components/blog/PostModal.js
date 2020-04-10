@@ -82,7 +82,31 @@ const BlogPostModal = (props) => {
         newPost,
         resetPost,
         history,
+        descriptionHTML,
     } = props;
+
+    let editorState = '';
+
+    if (descriptionHTML){
+        const contentBlock = htmlToDraft(descriptionHTML);
+        if (contentBlock) {
+            const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+            editorState = EditorState.createWithContent(contentState);
+        }
+    }
+
+    const [
+        description,
+        setDescription,
+    ] = React.useState(editorState);
+
+    const onEditorStateChange = (value) => {
+        setDescription(value);
+    };
+
+    const setEditorReference = (ref) => {
+        if (ref) { ref.focus(); }
+    };
 
     useEffect(() => {
         requestTopics();
@@ -109,7 +133,7 @@ const BlogPostModal = (props) => {
             label="Title"
             type="text"
             variant="outlined"
-            autoFocus
+            // autoFocus
             required
             fullWidth />
     );
@@ -117,10 +141,11 @@ const BlogPostModal = (props) => {
     const renderDescriptionField = ({ input }) => (
         <Editor
             place
-            editorState={ input.value }
+            editorState={ description }
+            // editorRef={ setEditorReference }
+            onEditorStateChange={ onEditorStateChange }
             wrapperClassName={ classes.editorWrapper }
             editorClassName={ `${classes.editor} editor-write-mode` }
-            onEditorStateChange={ (value) => input.onChange(value) }
             toolbar={ config.editorToolbar } />
     );
 
@@ -173,7 +198,6 @@ const BlogPostModal = (props) => {
     const addPost = (values) => {
         const {
             title,
-            description,
             topics,
         } = values;
 
@@ -277,27 +301,17 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToPropsForForm = (state, props) => {
     const {
-        description,
         topics,
         title,
         formName,
     } = props;
-    let editorState = '';
 
-    if (description){
-        const contentBlock = htmlToDraft(description);
-        if (contentBlock) {
-            const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-            editorState = EditorState.createWithContent(contentState);
-        }
-    }
     return {
         initialValues: {
             topics,
             title,
-            description: editorState,
         },
-        form: formName,
+        form: formName || 'post',
     };
 };
 

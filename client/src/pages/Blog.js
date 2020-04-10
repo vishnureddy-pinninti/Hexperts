@@ -231,6 +231,7 @@ function Topic(props) {
             </Container>
             <BlogPostModal
                 open={ openPostModal }
+                formName="newpost"
                 handleClose={ handlePostModalClose } />
             <FollowTopicsModal
                 open={ openFollowTopicsModal }
