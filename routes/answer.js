@@ -151,6 +151,7 @@ module.exports = (app) => {
                         answer: 1,
                         author: 1,
                         downvoters: 1,
+                        plainText: 1,
                         postedDate: 1,
                         questionID: 1,
                         question: 1,
@@ -192,9 +193,10 @@ module.exports = (app) => {
             const answer = await Answer.findById(answerID);
 
             if (answer) {
-                if (answerString) {
+                const plainText = htmlToText(answerString);
+                if (answerString || answerString === '') {
                     answer.answer = answerString;
-                    answer.plainText = htmlToText(answerString);
+                    answer.plainText = plainText;
                     answer.lastModified = Date.now();
                 }
 
@@ -204,6 +206,7 @@ module.exports = (app) => {
                     .json({
                         _id: answerID,
                         answer: answerString,
+                        plainText,
                         lastModified: answer.lastModified,
                     });
             }
