@@ -138,7 +138,7 @@ const BlogPostModal = (props) => {
             fullWidth />
     );
 
-    const renderDescriptionField = ({ input }) => (
+    const renderDescriptionField = () => (
         <Editor
             editorState={ description }
             placeholder="Start typing.."
@@ -243,9 +243,7 @@ const BlogPostModal = (props) => {
                         <Field
                             name="topics"
                             component={ renderTopicsField } />
-                        <Field
-                            name="description"
-                            component={ renderDescriptionField } />
+                        { renderDescriptionField() }
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
