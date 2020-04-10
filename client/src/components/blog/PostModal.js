@@ -140,8 +140,8 @@ const BlogPostModal = (props) => {
 
     const renderDescriptionField = ({ input }) => (
         <Editor
-            place
             editorState={ description }
+            placeholder="Start typing.."
             // editorRef={ setEditorReference }
             onEditorStateChange={ onEditorStateChange }
             wrapperClassName={ classes.editorWrapper }

@@ -100,10 +100,10 @@ function DescriptionModal(props) {
 
         if (handleDone){
             if (onlyDescription){
-                handleDone(raw.blocks[0].text ? html : '');
+                handleDone(html);
             }
             else {
-                handleDone(values.question, raw.blocks[0].text ? html : '');
+                handleDone(values.question, html);
             }
         }
     };
@@ -139,7 +139,7 @@ function DescriptionModal(props) {
                             <b>
                                 { questionText }
                             </b>
-                                             </DialogContentText> }
+                        </DialogContentText> }
                         { !onlyDescription
                         && <Field
                             name="question"
