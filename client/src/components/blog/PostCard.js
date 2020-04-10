@@ -263,7 +263,7 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </Typography>
-                    </>
+                                   </>
                 }
                 <CardHeader
                     className={ classes.headerRoot }
@@ -300,7 +300,7 @@ const AnswerCard = (props) => {
                                 Delete
                             </MenuItem>
                         </Menu>
-                    </> }
+                                        </> }
                     title={
                         <Link
                             className={ classes.link }
@@ -353,7 +353,7 @@ const AnswerCard = (props) => {
             { openEditPostModal && <EditPostModal
                 open={ openEditPostModal }
                 formName="post"
-                description={ postObj.description }
+                descriptionHTML={ postObj.description }
                 title={ postObj.title }
                 topics={ postObj.topics }
                 handleClose={ handleEditPostModalClose }
