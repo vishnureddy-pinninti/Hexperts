@@ -35,6 +35,7 @@ import { upvoteAnswer,
     editAnswer,
     downvoteAnswer } from '../../store/actions/answer';
 import getBadge from '../../utils/badge';
+import { isMediaOrCode } from '../../utils/common';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -147,7 +148,7 @@ const AnswerCard = (props) => {
     const renderAnswer = (answer) => (
         <ReadMore
             initialHeight={ 300 }
-            mediaExists={ answer.indexOf('<img') > -1 }
+            mediaExists={ isMediaOrCode(answer) }
             readMore={ (props) => (
                 <Link
                     className={ classes.more }

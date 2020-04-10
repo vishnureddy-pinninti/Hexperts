@@ -28,6 +28,7 @@ import EditPostModal from './PostModal';
 import Avatar from '../base/Avatar';
 import { upvotePost, addPostToCache, downvotePost, editPost, deletePost } from '../../store/actions/blog';
 import getBadge from '../../utils/badge';
+import { isMediaOrCode } from '../../utils/common';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -146,7 +147,7 @@ const AnswerCard = (props) => {
     const renderAnswer = (post) => (
         <ReadMore
             initialHeight={ 300 }
-            mediaExists={ post.indexOf('<img') > -1 }
+            mediaExists={ isMediaOrCode(post) }
             readMore={ (props) => (
                 <Link
                     className={ classes.more }

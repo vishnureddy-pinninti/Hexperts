@@ -33,6 +33,7 @@ import { addAnswerToQuestion,
 import { followQuestion,
     addQuestionToCache, editQuestion, editQuestionPending, deleteQuestion } from '../../store/actions/questions';
 import config from '../../utils/config';
+import { isMediaOrCode } from '../../utils/common';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -92,6 +93,7 @@ const QuestionSection = (props) => {
         author,
         history,
         deleteQuestion,
+        updatedQuestion,
     } = props;
 
     const [
@@ -251,7 +253,7 @@ const QuestionSection = (props) => {
     const renderDescription = (description) => (
         <ReadMore
             initialHeight={ 300 }
-            mediaExists={ description.indexOf('<img') > -1 }
+            mediaExists={ isMediaOrCode(description) }
             readMore={ (props) => (
                 <Link
                     className={ classes.more }
@@ -336,13 +338,13 @@ const QuestionSection = (props) => {
                     component="h2">
                     { questionText }
                 </Typography>
-                { (question.plainText || (description && description.length > 7))
+                { (updatedQuestion.plainText || isMediaOrCode(updatedQuestion.description))
                  && <CardContent>
                      <Typography
                          component="p">
                          Description:
                      </Typography>
-                     { renderDescription(description) }
+                     { renderDescription(updatedQuestion.description) }
                     </CardContent> }
                 <Typography
                     variant="body2"
@@ -437,6 +439,7 @@ const mapStateToProps = (state) => {
         pending: state.answer.pending,
         questionPending: state.questions.pending,
         user: state.user.user,
+        updatedQuestion: state.questions.question,
         following: state.questions.question.following,
         followers: state.questions.question.followers,
         askedExperts: state.questions.question.suggestedExperts || [],

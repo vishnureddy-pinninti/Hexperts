@@ -165,6 +165,7 @@ module.exports = (app) => {
                         author: 1,
                         downvoters: 1,
                         lastModified: 1,
+                        plainText: 1,
                         postedDate: 1,
                         // blog: 1,
                         topics: 1,
@@ -263,6 +264,7 @@ module.exports = (app) => {
                         author: 1,
                         downvoters: 1,
                         lastModified: 1,
+                        plainText: 1,
                         postedDate: 1,
                         topics: 1,
                         title: 1,
@@ -325,9 +327,11 @@ module.exports = (app) => {
                 }
 
                 if (description) {
+                    const plainText = htmlToText(description);
                     post.description = description;
-                    post.plainText = htmlToText(description);
+                    post.plainText = plainText;
                     responseObject.description = description;
+                    responseObject.plainText = plainText;
                 }
 
                 if (topics) {

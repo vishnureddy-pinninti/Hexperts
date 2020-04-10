@@ -115,8 +115,12 @@ export default (state = initialState, action) => {
                 temp.question = action.question.question;
             }
 
-            if (action.question.description){
+            if (action.question.hasOwnProperty('description')){
                 temp.description = action.question.description;
+            }
+
+            if (action.question.hasOwnProperty('plainText')){
+                temp.plainText = action.question.plainText;
             }
 
             if (action.question.topics){

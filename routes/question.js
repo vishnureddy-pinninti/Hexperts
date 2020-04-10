@@ -265,6 +265,7 @@ module.exports = (app) => {
                                     answer: 1,
                                     author: 1,
                                     downvoters: 1,
+                                    plainText: 1,
                                     postedDate: 1,
                                     questionID: 1,
                                     upvoters: 1,
@@ -326,6 +327,7 @@ module.exports = (app) => {
                         author: 1,
                         question: 1,
                         description: 1,
+                        plainText: 1,
                         postedDate: 1,
                         lastModified: 1,
                         answers: 1,
@@ -582,6 +584,7 @@ module.exports = (app) => {
                             answer: 1,
                             author: 1,
                             downvoters: 1,
+                            plainText: 1,
                             postedDate: 1,
                             questionID: 1,
                             upvoters: 1,
@@ -698,9 +701,11 @@ module.exports = (app) => {
                 }
 
                 if (description || description === '') {
+                    const plainText = htmlToText(description);
                     question.description = description;
-                    question.plainText = htmlToText(description);
+                    question.plainText = plainText;
                     responseObject.description = description;
+                    responseObject.plainText = plainText;
                 }
 
                 question.lastModified = Date.now();
