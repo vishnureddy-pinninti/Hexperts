@@ -141,7 +141,7 @@ const BlogPostModal = (props) => {
     const renderDescriptionField = () => (
         <Editor
             editorState={ description }
-            placeholder="Start typing.."
+            placeholder="Start typing..."
             // editorRef={ setEditorReference }
             onEditorStateChange={ onEditorStateChange }
             wrapperClassName={ classes.editorWrapper }
@@ -235,16 +235,17 @@ const BlogPostModal = (props) => {
                 onSubmit={ handleSubmit(addPost) }>
                 <DialogTitle id="scroll-dialog-title">Blog Post</DialogTitle>
                 <DialogContent
+                    className={ classes.post }
                     dividers>
-                    <DialogContentText className={ classes.post }>
+                    <DialogContentText>
                         <Field
                             name="title"
                             component={ renderTextField } />
                         <Field
                             name="topics"
                             component={ renderTopicsField } />
-                        { renderDescriptionField() }
                     </DialogContentText>
+                    { renderDescriptionField() }
                 </DialogContent>
                 <DialogActions>
                     <Button

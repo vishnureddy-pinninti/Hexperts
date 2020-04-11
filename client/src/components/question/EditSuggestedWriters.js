@@ -46,6 +46,9 @@ const useStyles = makeStyles((theme) => {
             minHeight: 500,
             minWidth: 400,
         },
+        badge: {
+            textTransform: 'capitalize',
+        },
     };
 });
 
@@ -256,7 +259,15 @@ const EditSuggestedWriters = (props) => {
                                             color="textPrimary">
                                             { user.jobTitle }
                                         </Typography>
-                                        { `${user.reputation} points` }
+                                        <Typography
+                                            component="div"
+                                            variant="body2"
+                                            className={ classes.badge }
+                                            color="textSecondary">
+                                            { getBadge(user.reputation) }
+                                            { ' ' }
+                                            Member
+                                        </Typography>
                                     </>
                                 } />
                             <ListItemIcon>
@@ -311,7 +322,15 @@ const EditSuggestedWriters = (props) => {
                                         color="textPrimary">
                                         { user.jobTitle }
                                     </Typography>
-                                    { `${user.reputation} points` }
+                                    <Typography
+                                        component="div"
+                                        variant="body2"
+                                        className={ classes.badge }
+                                        color="textSecondary">
+                                        { getBadge(user.reputation) }
+                                        { ' ' }
+                                        Member
+                                    </Typography>
                                 </>
                             } />
                     </ListItem>
