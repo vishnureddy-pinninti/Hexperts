@@ -5,7 +5,7 @@ const { errors: { ANSWER_NOT_FOUND } } = require('../utils/constants');
 const voting = require('../utils/voting');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const emailNotify = require('../services/email/emailService');
-const deleteService = require('../services/reputation/deleteService');
+const { deleteService, updateService } = require('../services/common');
 const htmlToText = require('../utils/htmlToText');
 
 module.exports = (app) => {
@@ -195,6 +195,7 @@ module.exports = (app) => {
             if (answer) {
                 const plainText = htmlToText(answerString);
                 if (answerString || answerString === '') {
+                    updateService(answer.answer, answerString);
                     answer.answer = answerString;
                     answer.plainText = plainText;
                     answer.lastModified = Date.now();

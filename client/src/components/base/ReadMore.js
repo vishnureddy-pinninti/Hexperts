@@ -6,6 +6,7 @@ class ReadMore extends React.Component {
         this.state = {
             initialHeight,
             maxHeight: initialHeight,
+            hideReadMore: false,
         };
     }
 
@@ -65,16 +66,17 @@ class ReadMore extends React.Component {
     }
 
     componentDidMount() {
+        this.toggleReadMore();
+    }
+
+    componentDidUpdate(prevProps) {
         const {
             mediaExists,
-            initialHeight,
         } = this.props;
-        let hideReadMore = false;
-        if (!mediaExists && (this.calculateHeight() <= initialHeight)) {
-            hideReadMore = true;
-        }
 
-        if (this.calculateHeight() <= this.props.initialHeight) { this.setState({ hideReadMore }); }
+        if (prevProps.mediaExists !== mediaExists) {
+            this.toggleReadMore();
+        }
     }
 
     toggle() {
@@ -87,6 +89,20 @@ class ReadMore extends React.Component {
 
         // set the full height
         this.setState({ maxHeight: height });
+    }
+
+    toggleReadMore = () => {
+        const {
+            mediaExists,
+            initialHeight,
+        } = this.props;
+        let hideReadMore = false;
+
+        if (!mediaExists && (this.calculateHeight() <= initialHeight)) {
+            hideReadMore = true;
+        }
+
+        this.setState({ hideReadMore });
     }
 
     calculateHeight() {

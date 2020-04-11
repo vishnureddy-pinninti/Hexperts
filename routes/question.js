@@ -6,7 +6,7 @@ const Topic = mongoose.model('topics');
 
 const { errors: { QUESTION_NOT_FOUND } } = require('../utils/constants');
 const emailNotify = require('../services/email/emailService');
-const deleteService = require('../services/reputation/deleteService');
+const { deleteService, updateService } = require('../services/common');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const htmlToText = require('../utils/htmlToText');
@@ -701,6 +701,7 @@ module.exports = (app) => {
                 }
 
                 if (description || description === '') {
+                    updateService(question.description, description);
                     const plainText = htmlToText(description);
                     question.description = description;
                     question.plainText = plainText;
