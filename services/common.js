@@ -3,9 +3,9 @@ const {
     scores: {
         NEW_ANSWER, UPVOTE_ANSWER, NEW_POST, UPVOTE_POST,
     },
-} = require('../../utils/constants');
-const reputationService =  require('./reputationService');
-const { deleteImage } = require('../../utils/uploads');
+} = require('../utils/constants');
+const reputationService =  require('./reputation/reputationService');
+const { deleteImage } = require('../utils/uploads');
 
 const deleteService = async(data) => {
     const {
@@ -38,7 +38,29 @@ const deleteService = async(data) => {
             voteCount: (voteCount * -1),
         });
     }
-
 };
 
-module.exports = deleteService;
+const updateService = (oldHtml = '', newHtml = '') => {
+    const $old = cheerio.load(oldHtml);
+    const $new = cheerio.load(newHtml);
+    const oldImgs = $old('img[src^=\'/\']');
+    const newImgs = $new('img[src^=\'/\']');
+    const oldImgUrls = [];
+    oldImgs.each(function() {
+        const src = $old(this).attr('src');
+        oldImgUrls.push(src);
+    });
+    const newImgUrls = [];
+    newImgs.each(function() {
+        const src = $new(this).attr('src');
+        newImgUrls.push(src);
+    });
+    const imagesToDelete = oldImgUrls.filter(img => !newImgUrls.includes(img));
+
+    imagesToDelete.forEach(src => deleteImage(src));
+}
+
+module.exports = {
+    deleteService,
+    updateService,
+};
