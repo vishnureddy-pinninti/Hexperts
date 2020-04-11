@@ -351,7 +351,7 @@ const AnswerCard = (props) => {
             </Collapse>
             { openEditAnswerModal && <EditAnswerModal
                 open={ openEditAnswerModal }
-                answerHTML={ answer.answer }
+                answerHTML={ answerHTML }
                 question={ question }
                 handleClose={ handleEditAnswerModalClose }
                 handleDone={ handleEditAnswer } /> }
