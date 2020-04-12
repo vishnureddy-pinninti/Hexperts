@@ -14,14 +14,13 @@ import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { Field, reduxForm, reset } from 'redux-form';
 import { formatDistanceToNow } from 'date-fns';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
 import CardLoader from '../base/CardLoader';
 import Avatar from '../base/Avatar';
-import {
-    addAnswerToCache,
-    commentAnswer,
-    requestCommentsForAnswer,
-} from '../../store/actions/answer';
+import { commentAnswer,
+    requestCommentsForAnswer } from '../../store/actions/answer';
 import getBadge from '../../utils/badge';
 
 const validate = (values) => {
@@ -83,19 +82,28 @@ const Comments = (props) => {
         requestCommentsForAnswer,
         history,
         pending,
+        handleNewComment,
     } = props;
 
-    let comments = [];
+    const [
+        pagination,
+        setPagination,
+    ] = React.useState({
+        index: 0,
+        hasMore: true,
+    });
 
-    if (modifiedAnswers && modifiedAnswers[answer._id]){
-        comments = modifiedAnswers[answer._id].commentsCache || [];
-    }
+    const [
+        items,
+        setItems,
+    ] = React.useState([]);
+
     const renderTextField = ({ input }) => (
         <TextField
             { ...input }
             margin="dense"
             id="name"
-            placeholder="Start typing your comment."
+            placeholder="Start typing your comment..."
             type="text"
             required
             variant="outlined"
@@ -103,16 +111,56 @@ const Comments = (props) => {
             fullWidth />
     );
 
+    const newCommentCallback = (res) => {
+        setItems([
+            res,
+            ...items,
+        ]);
+        if (handleNewComment){
+            handleNewComment();
+        }
+    };
+
     const addUserComment = (values) => {
         commentAnswer({
             targetID: answer._id,
             target: 'answers',
             ...values,
-        }, answer);
+        }, newCommentCallback, () => {}, answer);
+    };
+
+    const getCommentsCallback = (res) => {
+        if (res.length) {
+            setItems([
+                ...items,
+                ...res,
+            ]);
+            setPagination({
+                index: pagination.index + 1,
+                hasMore: true,
+            });
+        }
+        else {
+            setPagination({
+                ...pagination,
+                hasMore: false,
+            });
+        }
+    };
+
+    const loadMore = () => {
+        if (pagination.index > 0){
+            requestCommentsForAnswer(answer._id, {
+                skip: pagination.index * 10,
+            }, getCommentsCallback);
+        }
     };
 
     React.useEffect(() => {
-        requestCommentsForAnswer(answer);
+        requestCommentsForAnswer(answer._id,
+            { skip: 0 },
+            getCommentsCallback,
+            () => {});
     }, [ answer ]);
 
     const onProfileClick = (_id) => {
@@ -199,7 +247,27 @@ const Comments = (props) => {
                     </ListItemText>
                 </ListItem>
             </form>
-            { pending ? <CardLoader height={ 50 } />: renderComments(comments) }
+            { (pagination.hasMore || items.length > 0)
+            && <InfiniteScroll
+                style={ { overflow: 'visible' } }
+                dataLength={ items.length }
+                next={ loadMore }
+                hasMore={ pagination.hasMore }
+                loader={ <CardLoader height={ 50 } /> }
+                endMessage={
+                    <p style={ { textAlign: 'center' } }>
+                        <b>Yay! You have seen it all</b>
+                    </p>
+                }>
+                { renderComments(items) }
+               </InfiniteScroll> }
+            { pagination.hasMore && <ListItem
+                button
+                onClick={ loadMore }>
+                More
+                { '  ' }
+                <KeyboardArrowDownIcon />
+            </ListItem> }
         </List>
     );
 };
@@ -210,22 +278,17 @@ Comments.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         user: state.user.user,
-        comments: state.answer.comments,
-        modifiedAnswers: state.answer.modifiedAnswers,
-        pending: state.answer.pending,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        commentAnswer: (body, answer) => {
-            dispatch(addAnswerToCache(answer));
-            dispatch(commentAnswer(body));
+        commentAnswer: (body, success, error) => {
+            dispatch(commentAnswer(body, success, error));
             dispatch(reset('comment'));
         },
-        requestCommentsForAnswer: (answer, params) => {
-            dispatch(addAnswerToCache(answer));
-            dispatch(requestCommentsForAnswer(answer._id, params));
+        requestCommentsForAnswer: (answerId, params, success, error) => {
+            dispatch(requestCommentsForAnswer(answerId, params, success, error));
         },
     };
 };

@@ -62,39 +62,39 @@ export default (state = initialState, action) => {
                 comment: {},
                 pending: false,
             };
-        case RECEIVE_COMMENT_ANSWER:
-            answer = state.modifiedAnswers;
-            id = action.targetID;
-            if (!answer[id]){
-                answer[id] = {};
-                answer[id].commentsCache = [];
-            }
-            answer[id].newComments.unshift(action.res);
-            answer[id].commentsCache.unshift(action.res);
-            return {
-                ...state,
-                modifiedAnswers: { ...answer },
-            };
-        case REQUEST_ANSWER_COMMENTS:
-            return {
-                ...state,
-                modifiedAnswers: {},
-                pending: true,
-            };
-        case RECEIVE_ANSWER_COMMENTS:
-            answer = state.modifiedAnswers;
-            id = action.targetID;
-            if (!answer[id]){
-                answer[id] = {};
-                answer[id].commentsCache = [];
-                answer[id].newComments = [];
-            }
-            answer[id].commentsCache = [ ...action.comments ];
-            return {
-                ...state,
-                modifiedAnswers: { ...answer },
-                pending: false,
-            };
+        // case RECEIVE_COMMENT_ANSWER:
+        //     answer = state.modifiedAnswers;
+        //     id = action.targetID;
+        //     if (!answer[id]){
+        //         answer[id] = {};
+        //         answer[id].commentsCache = [];
+        //     }
+        //     answer[id].newComments.unshift(action.res);
+        //     answer[id].commentsCache.unshift(action.res);
+        //     return {
+        //         ...state,
+        //         modifiedAnswers: { ...answer },
+        //     };
+        // case REQUEST_ANSWER_COMMENTS:
+        //     return {
+        //         ...state,
+        //         modifiedAnswers: {},
+        //         pending: true,
+        //     };
+        // case RECEIVE_ANSWER_COMMENTS:
+        //     answer = state.modifiedAnswers;
+        //     id = action.targetID;
+        //     if (!answer[id]){
+        //         answer[id] = {};
+        //         answer[id].commentsCache = [];
+        //         answer[id].newComments = [];
+        //     }
+        //     answer[id].commentsCache = [ ...action.comments ];
+        //     return {
+        //         ...state,
+        //         modifiedAnswers: { ...answer },
+        //         pending: false,
+        //     };
         case RECEIVE_QUESTION_BY_ID:
             return {
                 ...state,

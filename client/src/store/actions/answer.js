@@ -134,7 +134,7 @@ const receiveCommentedAnswer = (res, targetID) => {
     };
 };
 
-export const commentAnswer = (body) => {
+export const commentAnswer = (body, success, error) => {
     return {
         type: REQUEST_COMMENT_ANSWER,
         makeApiRequest: {
@@ -142,6 +142,8 @@ export const commentAnswer = (body) => {
             method: 'POST',
             body,
             success: (response) => receiveCommentedAnswer(response, body.targetID),
+            successcb: success,
+            errorcb: error,
         },
     };
 };
@@ -154,13 +156,15 @@ const receiveCommentsForAnswer = (comments, targetID) => {
     };
 };
 
-export const requestCommentsForAnswer = (id, params = { skip: 0 }) => {
+export const requestCommentsForAnswer = (id, params = { skip: 0 }, success, error) => {
     return {
         type: REQUEST_ANSWER_COMMENTS,
         makeApiRequest: {
             url: `/api/v1/comments/${id}?skip=${params.skip}`,
             method: 'GET',
             success: (response) => receiveCommentsForAnswer(response, id),
+            successcb: success,
+            errorcb: error,
         },
     };
 };
