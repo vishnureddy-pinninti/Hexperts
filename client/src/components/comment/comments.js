@@ -78,10 +78,8 @@ const Comments = (props) => {
         user,
         answer,
         commentAnswer,
-        modifiedAnswers,
         requestCommentsForAnswer,
         history,
-        pending,
         handleNewComment,
     } = props;
 
@@ -92,6 +90,11 @@ const Comments = (props) => {
         index: 0,
         hasMore: true,
     });
+
+    const [
+        newComments,
+        setNewComments,
+    ] = React.useState(0);
 
     const [
         items,
@@ -116,6 +119,7 @@ const Comments = (props) => {
             res,
             ...items,
         ]);
+        setNewComments(newComments + 1);
         if (handleNewComment){
             handleNewComment();
         }
@@ -151,7 +155,7 @@ const Comments = (props) => {
     const loadMore = () => {
         if (pagination.index > 0){
             requestCommentsForAnswer(answer._id, {
-                skip: pagination.index * 10,
+                skip: pagination.index * 10 + +newComments,
             }, getCommentsCallback);
         }
     };
