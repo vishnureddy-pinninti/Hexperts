@@ -139,11 +139,10 @@ const AnswerCard = (props) => {
         setAnswerHTML,
     ] = React.useState(answer && answer.answer);
 
-    let currentCommentsCount = answer.commentsCount || 0;
-
-    if (modifiedAnswers && modifiedAnswers[answer._id] && modifiedAnswers[answer._id].newComments){
-        currentCommentsCount = modifiedAnswers[answer._id].newComments.length + currentCommentsCount;
-    }
+    const [
+        commentsCount,
+        setCommentsCount,
+    ] = React.useState(answer.commentsCount || 0);
 
     const renderAnswer = (answer) => (
         <ReadMore
@@ -260,7 +259,7 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </Typography>
-                    </>
+                                   </>
                 }
                 <div className={ disabled ? classes.disabled : '' }>
                     <CardHeader
@@ -296,7 +295,7 @@ const AnswerCard = (props) => {
                                     Delete
                                 </MenuItem>
                             </Menu>
-                                            </> }
+                        </> }
                         title={
                             <Link
                                 className={ classes.link }
@@ -330,7 +329,7 @@ const AnswerCard = (props) => {
                     size="small"
                     onClick={ () => setOpen(!open) }
                     startIcon={ open ? <ChatBubbleIcon color="primary" /> : <ChatBubbleOutlineRoundedIcon /> }>
-                    { currentCommentsCount }
+                    { commentsCount }
                 </Button>
                 { /* <Button
                     size="small"
@@ -345,7 +344,8 @@ const AnswerCard = (props) => {
                 <CardContent>
                     <Divider />
                     <Comments
-                        answer={ answer } />
+                        answer={ answer }
+                        handleNewComment={ () => { setCommentsCount(commentsCount + 1); } } />
                 </CardContent>
                 <CardActions />
             </Collapse>
