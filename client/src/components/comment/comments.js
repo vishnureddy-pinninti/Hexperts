@@ -194,6 +194,7 @@ const Comments = (props) => {
                                 onClick={ () => onProfileClick(comment.author._id) }>
                                 { comment.author.name }
                                 ,
+                                { ' ' }
                                 { comment.author.jobTitle }
                             </Link>
                         }
