@@ -22,7 +22,7 @@ import { connect } from 'react-redux';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
-import Comments from '../comment/PostComments';
+import Comments from '../comment/comments';
 import ReadMore from '../base/ReadMore';
 import EditPostModal from './PostModal';
 import Avatar from '../base/Avatar';
@@ -138,11 +138,10 @@ const AnswerCard = (props) => {
         title,
     });
 
-    let currentCommentsCount = post.commentsCount || 0;
-
-    if (modifiedPosts && modifiedPosts[post._id] && modifiedPosts[post._id].newComments){
-        currentCommentsCount = modifiedPosts[post._id].newComments.length + currentCommentsCount;
-    }
+    const [
+        commentsCount,
+        setCommentsCount,
+    ] = React.useState(post.commentsCount || 0);
 
     const renderAnswer = (post) => (
         <ReadMore
@@ -264,7 +263,7 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </Typography>
-                                   </>
+                    </>
                 }
                 <CardHeader
                     className={ classes.headerRoot }
@@ -301,7 +300,7 @@ const AnswerCard = (props) => {
                                 Delete
                             </MenuItem>
                         </Menu>
-                                        </> }
+                    </> }
                     title={
                         <Link
                             className={ classes.link }
@@ -332,7 +331,7 @@ const AnswerCard = (props) => {
                     size="small"
                     onClick={ () => setOpen(!open) }
                     startIcon={ open ? <ChatBubbleIcon color="primary" /> : <ChatBubbleOutlineRoundedIcon /> }>
-                    { currentCommentsCount }
+                    { commentsCount }
                 </Button>
                 { /* <Button
                     size="small"
@@ -347,7 +346,9 @@ const AnswerCard = (props) => {
                 <CardContent>
                     <Divider />
                     <Comments
-                        post={ post } />
+                        target={ post }
+                        targetType="posts"
+                        handleNewComment={ () => { setCommentsCount(commentsCount + 1); } } />
                 </CardContent>
                 <CardActions />
             </Collapse>

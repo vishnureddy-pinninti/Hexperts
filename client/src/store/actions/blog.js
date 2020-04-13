@@ -21,10 +21,6 @@ export const RECEIVE_DOWNVOTE_POST = 'RECEIVE_DOWNVOTE_POST';
 export const RECEIVE_POST_FOR_CACHE = 'RECEIVE_POST_FOR_CACHE';
 export const REQUEST_POST_BY_ID = 'REQUEST_POST_BY_ID';
 export const RECEIVE_POST_BY_ID = 'RECEIVE_POST_BY_ID';
-export const RECEIVE_COMMENT_POST = 'RECEIVE_COMMENT_POST';
-export const REQUEST_COMMENT_POST = 'REQUEST_COMMENT_POST';
-export const RECEIVE_POST_COMMENTS = 'RECEIVE_POST_COMMENTS';
-export const REQUEST_POST_COMMENTS = 'REQUEST_POST_COMMENTS';
 export const RECEIVE_EDITED_POST = 'RECEIVE_EDITED_POST';
 export const EDIT_POST = 'EDIT_POST';
 export const RECEIVE_DELTED_POST = 'RECEIVE_DELTED_POST';
@@ -212,45 +208,6 @@ export const requestPostById = (id, success, error) => {
             method: 'GET',
             success: receivePostById,
             errorcb: error,
-        },
-    };
-};
-
-const receiveCommentedPost = (res, targetID) => {
-    return {
-        type: RECEIVE_COMMENT_POST,
-        res,
-        targetID,
-    };
-};
-
-export const commentPost = (body) => {
-    return {
-        type: REQUEST_COMMENT_POST,
-        makeApiRequest: {
-            url: '/api/v1/comment.add',
-            method: 'POST',
-            body,
-            success: (response) => receiveCommentedPost(response, body.targetID),
-        },
-    };
-};
-
-const receiveCommentsForPost = (comments, targetID) => {
-    return {
-        type: RECEIVE_POST_COMMENTS,
-        comments,
-        targetID,
-    };
-};
-
-export const requestCommentsForPost = (id, params = { skip: 0 }) => {
-    return {
-        type: REQUEST_POST_COMMENTS,
-        makeApiRequest: {
-            url: `/api/v1/comments/${id}?skip=${params.skip}`,
-            method: 'GET',
-            success: (response) => receiveCommentsForPost(response, id),
         },
     };
 };

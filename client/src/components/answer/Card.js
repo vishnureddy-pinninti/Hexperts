@@ -344,7 +344,7 @@ const AnswerCard = (props) => {
                 <CardContent>
                     <Divider />
                     <Comments
-                        answer={ answer }
+                        target={ answer }
                         handleNewComment={ () => { setCommentsCount(commentsCount + 1); } } />
                 </CardContent>
                 <CardActions />
