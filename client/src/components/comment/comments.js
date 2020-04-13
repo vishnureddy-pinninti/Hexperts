@@ -76,11 +76,12 @@ const Comments = (props) => {
     const {
         handleSubmit,
         user,
-        answer,
+        target,
         commentAnswer,
         requestCommentsForAnswer,
         history,
         handleNewComment,
+        targetType,
     } = props;
 
     const [
@@ -127,10 +128,10 @@ const Comments = (props) => {
 
     const addUserComment = (values) => {
         commentAnswer({
-            targetID: answer._id,
-            target: 'answers',
+            targetID: target._id,
+            target: targetType,
             ...values,
-        }, newCommentCallback, () => {}, answer);
+        }, newCommentCallback, () => {});
     };
 
     const getCommentsCallback = (res) => {
@@ -154,18 +155,18 @@ const Comments = (props) => {
 
     const loadMore = () => {
         if (pagination.index > 0){
-            requestCommentsForAnswer(answer._id, {
+            requestCommentsForAnswer(target._id, {
                 skip: pagination.index * 10 + +newComments,
             }, getCommentsCallback);
         }
     };
 
     React.useEffect(() => {
-        requestCommentsForAnswer(answer._id,
+        requestCommentsForAnswer(target._id,
             { skip: 0 },
             getCommentsCallback,
             () => {});
-    }, [ answer ]);
+    }, [ target ]);
 
     const onProfileClick = (_id) => {
         history.push(`/profile/${_id}`);
@@ -277,6 +278,7 @@ const Comments = (props) => {
 };
 
 Comments.defaultProps = {
+    targetType: 'comments',
 };
 
 const mapStateToProps = (state) => {
