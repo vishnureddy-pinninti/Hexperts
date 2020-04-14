@@ -15,7 +15,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import HomeIcon from '@material-ui/icons/Home';
 import EditIcon from '@material-ui/icons/Edit';
-import GroupIcon from '@material-ui/icons/Group';
+import SubjectIcon from '@material-ui/icons/Subject';
 import Snackbar from '@material-ui/core/Snackbar';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Avatar from './Avatar';
@@ -342,7 +342,7 @@ const TopBar = (props) => {
                 <IconButton
                     aria-label="show 4 new mails"
                     color="inherit">
-                    <GroupIcon />
+                    <SubjectIcon />
                 </IconButton>
                 <p>Spaces</p>
             </MenuItem>
@@ -433,7 +433,7 @@ const TopBar = (props) => {
                                     to="/blogs"
                                     className={ classes.link }>
                                     <Button
-                                        startIcon={ <GroupIcon /> }
+                                        startIcon={ <SubjectIcon /> }
                                         size="large"
                                         className={ path === '/Blogs' || path.startsWith('/Blog') || path.startsWith('/Post') ? classes.activeMenuButton : classes.menuButton }>
                                         Blogs
