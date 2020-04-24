@@ -4,6 +4,7 @@ import { ADD_TOPIC_PENDING,
     RECEIVE_TOPIC_BY_ID,
     RECEIVE_SUGGESTED_EXPERTS,
     RECEIVE_UPLOADED_TOPIC_IMAGE,
+    RECEIVE_EDITED_TOPIC,
     RECEIVE_FOLLOWED_TOPIC } from '../actions/topic';
 
 const initialState = {
@@ -70,11 +71,28 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 topic: temp,
-                topics: state.topics.map(topic => {
+                topics: state.topics.map((topic) => {
                     if (topic._id === action.res._id) {
                         return {
                             ...topic,
-                            imageUrl: action.res.imageUrl
+                            imageUrl: action.res.imageUrl,
+                        };
+                    }
+                    return topic;
+                }),
+                pending: false,
+            };
+        case RECEIVE_EDITED_TOPIC:
+            temp = state.topic;
+            temp.topic = action.topic.topic;
+            return {
+                ...state,
+                topic: temp,
+                topics: state.topics.map((topic) => {
+                    if (topic._id === action.topic._id) {
+                        return {
+                            ...topic,
+                            topic: action.topic.topic,
                         };
                     }
                     return topic;
