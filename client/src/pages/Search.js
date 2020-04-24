@@ -59,13 +59,6 @@ const Search = (props) => {
         toggleQuestionModal,
     } = props;
 
-    useEffect(() => {
-        requestSearch({ text: query }, {
-            skip: 0,
-            limit: 20,
-        });
-    }, [ query ]);
-
     const [
         selectedTab,
         setSelectedTab,
@@ -278,10 +271,14 @@ const Search = (props) => {
         }
     };
 
+    useEffect(() => {
+        getData(selectedTab);
+    }, [ query ]);
+
     const renderMenu = () => (
         <List className={ classes.menu }>
             <Chip
-                label="All Type"
+                label="All Types"
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'all' ? 'default' : 'outlined' }
@@ -300,6 +297,13 @@ const Search = (props) => {
                 color="primary"
                 variant={ selectedTab === 'answers' ? 'default' : 'outlined' }
                 onClick={ () => { getData('answers'); } }
+                clickable />
+            <Chip
+                label="Topics"
+                className={ classes.chip }
+                color="primary"
+                variant={ selectedTab === 'topics' ? 'default' : 'outlined' }
+                onClick={ () => { getData('topics'); } }
                 clickable />
             <Chip
                 label="Blog Posts"
