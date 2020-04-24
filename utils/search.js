@@ -193,8 +193,8 @@ const parseResult = (result) => {
     return response;
 };
 
-const search = async(text, categories = [], pagination = {}, exclude = true) => {
-    const searchFields = getSearchFields(categories);
+const search = async(text, categories = [], pagination = {}, exclude = true, sfield) => {
+    const searchFields = sfield || getSearchFields(categories);
     const excludeFields = exclude ? getExcludeFields(categories) : [];
     const highlightFields = getHighlightFields(searchFields);
     const requestUrl = getRequestUrl(categories);

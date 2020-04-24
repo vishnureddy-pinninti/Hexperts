@@ -2,6 +2,7 @@ export const REQUEST_SEARCH = 'REQUEST_SEARCH';
 export const RECEIVE_SEARCH = 'RECEIVE_SEARCH';
 export const REQUEST_ADVANCED_SEARCH = 'REQUEST_ADVANCED_SEARCH';
 export const RECEIVE_ADVANCED_SEARCH = 'RECEIVE_ADVANCED_SEARCH';
+export const RECEIVE_FAILURE_RESPONSE = 'RECEIVE_FAILURE_RESPONSE';
 
 const receiveSearchResults = (res) => {
     return {
@@ -31,6 +32,12 @@ const receiveAdvancedSearchResults = (res, skip, limit) => {
     };
 };
 
+const receiveFailureResponse = () => {
+    return {
+        type: RECEIVE_FAILURE_RESPONSE
+    }
+}
+
 export const requestAdvancedSearch = (body, params) => {
     const {
         skip,
@@ -46,6 +53,7 @@ export const requestAdvancedSearch = (body, params) => {
             method: 'POST',
             body,
             success: (res) => receiveAdvancedSearchResults(res, skip, limit),
+            failure: receiveFailureResponse
         },
     };
 };

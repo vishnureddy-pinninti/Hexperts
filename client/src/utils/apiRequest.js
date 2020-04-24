@@ -12,6 +12,7 @@ const apiRequest = (store) => (next) => (action) => {
 
     const config = action.makeApiRequest;
     const successHandler = config.success;
+    const failureHandler = config.failure;
 
     if (!config.showNoProgress) {
     // dispatch(showProgress());
@@ -66,7 +67,9 @@ const apiRequest = (store) => (next) => (action) => {
             }
         })
         .catch(() => {
-            // dispatch(failureHandler());
+            if (failureHandler) {
+                dispatch(failureHandler());
+            }
             //   dispatch(hideProgress());
         });
 };

@@ -57,6 +57,7 @@ const Search = (props) => {
         requestSearch,
         totalCount,
         toggleQuestionModal,
+        loading,
     } = props;
 
     const [
@@ -283,49 +284,56 @@ const Search = (props) => {
                 color="primary"
                 variant={ selectedTab === 'all' ? 'default' : 'outlined' }
                 onClick={ () => { getData('all'); } }
-                clickable />
+                clickable
+                disabled={ loading } />
             <Chip
                 label="Questions"
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'questions' ? 'default' : 'outlined' }
                 onClick={ () => { getData('questions'); } }
-                clickable />
+                clickable
+                disabled={ loading } />
             <Chip
                 label="Answers"
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'answers' ? 'default' : 'outlined' }
                 onClick={ () => { getData('answers'); } }
-                clickable />
+                clickable
+                disabled={ loading } />
             <Chip
                 label="Topics"
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'topics' ? 'default' : 'outlined' }
                 onClick={ () => { getData('topics'); } }
-                clickable />
+                clickable
+                disabled={ loading } />
             <Chip
                 label="Blog Posts"
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'posts' ? 'default' : 'outlined' }
                 onClick={ () => { getData('posts'); } }
-                clickable />
+                clickable
+                disabled={ loading } />
             <Chip
                 label="Users"
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'users' ? 'default' : 'outlined' }
                 onClick={ () => { getData('users'); } }
-                clickable />
+                clickable
+                disabled={ loading } />
             <Chip
                 label="Externals"
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'externals' ? 'default' : 'outlined' }
                 onClick={ () => { getData('externals'); } }
-                clickable />
+                clickable
+                disabled={ loading } />
         </List>
     );
 
@@ -418,6 +426,7 @@ const mapStateToProps = (state) => {
         paginationIndex: state.search.paginationIndex,
         paginationHasMore: state.search.paginationHasMore,
         newResults: state.search.newResults,
+        loading: state.search.loading,
     };
 };
 
