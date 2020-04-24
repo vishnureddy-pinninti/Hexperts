@@ -313,7 +313,7 @@ module.exports = (app) => {
                     responseObject.topic = topicString;
                 }
 
-                if (req.files.length) {
+                if (req.files && req.files.length) {
                     if (topic.imageUrl) {
                         deleteImage(topic.imageUrl);
                     }

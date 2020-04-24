@@ -14,11 +14,12 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ImageIcon from '@material-ui/icons/Image';
 import StarsRoundedIcon from '@material-ui/icons/StarsRounded';
 import { connect } from 'react-redux';
-
+import EditIcon from '@material-ui/icons/Edit';
 import FileUpload from '../base/FileUpload';
+import DescriptionModal from './EditTopicDescriptionModal';
 import { addAnswerToQuestion,
     addAnswerPending } from '../../store/actions/answer';
-import { followTopic, uploadTopicImage } from '../../store/actions/topic';
+import { followTopic, uploadTopicImage, editTopic } from '../../store/actions/topic';
 import { setPageLoader } from '../../store/actions/auth';
 
 const useStyles = makeStyles((theme) => {
@@ -46,6 +47,9 @@ const useStyles = makeStyles((theme) => {
         buttonSelected: {
             color: theme.palette.secondary.main,
         },
+        menuIcon: {
+            paddingRight: 5,
+        },
     };
 });
 
@@ -59,6 +63,7 @@ const TopicSection = (props) => {
         interests,
         expertTopics,
         uploadTopicImage,
+        editTopic,
     } = props;
 
     const handleFollowClick = () => {
@@ -116,6 +121,43 @@ const TopicSection = (props) => {
         setOpenImageUploadModal(false);
     };
 
+    const [
+        openDescriptionModal,
+        setOpenDescriptionModal,
+    ] = React.useState(false);
+
+    const handleDescriptionModalOpen = () => {
+        setAnchorEl(null);
+        setOpenDescriptionModal(true);
+    };
+
+    const handleDescriptionModalClose = () => {
+        setOpenDescriptionModal(false);
+    };
+    const [
+        topicText,
+        setTopicText,
+    ] = React.useState(topic.topic);
+
+    const [
+        description,
+        setDescription,
+    ] = React.useState(topic.description);
+
+    const callbackEditTopic = (res) => {
+        const { topic, description } = res;
+        setTopicText(topic);
+        setDescription(description);
+    };
+
+    const handleOnEditQuestion = (topic, description) => {
+        editTopic(id, {
+            topic,
+            description,
+        }, callbackEditTopic);
+        setOpenDescriptionModal(false);
+    };
+
     return (
         <Card className={ classes.root }>
             <CardHeader
@@ -129,7 +171,7 @@ const TopicSection = (props) => {
                     <Box
                         fontWeight="fontWeightBold"
                         fontSize={ 20 }>
-                        { topic.topic }
+                        { topicText }
                     </Box>
                 }
                 action={ <>
@@ -145,14 +187,17 @@ const TopicSection = (props) => {
                         keepMounted
                         open={ Boolean(anchorEl) }
                         onClose={ handleClose }>
+                        <MenuItem onClick={ handleDescriptionModalOpen }>
+                            <EditIcon className={ classes.menuIcon } />
+                            Edit Topic
+                        </MenuItem>
                         <MenuItem onClick={ handleImageUploadModalOpen }>
-                            <ImageIcon />
-                            { ' ' }
+                            <ImageIcon className={ classes.menuIcon } />
                             Edit Image
                         </MenuItem>
                     </Menu>
                 </> }
-                subheader={ `${followers.length} followers` } />
+                subheader={ description } />
             <CardActions disableSpacing>
                 <Button
                     size="small"
@@ -160,6 +205,8 @@ const TopicSection = (props) => {
                     startIcon={ <RssFeedSharpIcon /> }
                     className={ following ? classes.buttonSelected : classes.button }>
                     Follow
+                    { ' ' }
+                    { followers.length }
                 </Button>
                 <Button
                     size="small"
@@ -173,6 +220,13 @@ const TopicSection = (props) => {
                 open={ openImageUploadModal }
                 handleClose={ handleImageUploadModalClose }
                 handleUpload={ handleImageUpload } />
+            { openDescriptionModal && <DescriptionModal
+                open={ openDescriptionModal }
+                topic={ topicText }
+                description={ description }
+                disableBackdropClick
+                handleDone={ handleOnEditQuestion }
+                handleClose={ handleDescriptionModalClose } /> }
         </Card>
     );
 };
@@ -199,6 +253,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         followTopic: (body) => {
             dispatch(followTopic(body));
+        },
+        editTopic: (topicId, body, cb) => {
+            dispatch(editTopic(topicId, body, cb));
         },
         uploadTopicImage: (id, body, cb) => {
             dispatch(setPageLoader(true));
