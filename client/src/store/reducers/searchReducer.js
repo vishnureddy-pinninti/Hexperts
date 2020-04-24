@@ -1,4 +1,4 @@
-import { RECEIVE_SEARCH, RECEIVE_ADVANCED_SEARCH, REQUEST_ADVANCED_SEARCH, REQUEST_SEARCH } from '../actions/search';
+import { RECEIVE_SEARCH, RECEIVE_ADVANCED_SEARCH, REQUEST_ADVANCED_SEARCH, REQUEST_SEARCH, RECEIVE_FAILURE_RESPONSE } from '../actions/search';
 
 const initialState = {
     results: [],
@@ -6,6 +6,7 @@ const initialState = {
     totalCount: null,
     paginationIndex: 1,
     paginationHasMore: true,
+    loading: false,
 };
 
 export default (state = initialState, action) => {
@@ -30,6 +31,7 @@ export default (state = initialState, action) => {
                 totalCount: action.res.totalCount,
                 paginationIndex: nextIndex,
                 paginationHasMore: nextHasMore,
+                loading: false,
             };
         }
         case REQUEST_ADVANCED_SEARCH:
@@ -40,9 +42,20 @@ export default (state = initialState, action) => {
                     advancedResults: [],
                     paginationIndex: 1,
                     paginationHasMore: true,
+                    loading: true,
                 };
             }
-            return state;
+            return {
+                ...state,
+                loading: true,
+            };
+        case RECEIVE_FAILURE_RESPONSE:
+            return {
+                ...state,
+                totalCount: 0,
+                loading: false,
+                paginationHasMore: false,
+            };
         default:
             return state;
     }

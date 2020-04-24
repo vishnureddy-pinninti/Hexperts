@@ -73,7 +73,7 @@ module.exports = (app) => {
 
         try {
             const { results: topicSuggestions } = await search(question, [ 'topics' ], {}, false);
-            const { results: questionSuggestions } = await search(question, [ 'questions' ], {}, false);
+            const { results: questionSuggestions } = await search(question, [ 'questions' ], {}, false, [ 'question' ]);
 
             res
                 .status(200)
