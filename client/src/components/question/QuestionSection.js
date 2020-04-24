@@ -45,6 +45,12 @@ const useStyles = makeStyles((theme) => {
             paddingTop: 0,
             paddingLeft: 0,
             paddingRight: 0,
+            fontStyle: 'italic',
+            color: theme.palette.text.secondary,
+        },
+        italic: {
+            fontStyle: 'italic',
+            color: theme.palette.text.secondary,
         },
         disabled: {
             opacity: 0.3,
@@ -283,10 +289,6 @@ const QuestionSection = (props) => {
         <Card
             className={ `${classes.root}  ${disabled ? classes.disabled : ''}` }>
             <CardContent>
-                <QuestionTags
-                    question={ question }
-                    topics={ topics }
-                    id={ id } />
                 <CardHeader
                     className={ classes.header }
                     avatar={
@@ -333,6 +335,11 @@ const QuestionSection = (props) => {
                             </MenuItem>
                         </Menu>
                     </> } />
+                <QuestionTags
+                    question={ question }
+                    topics={ topics }
+                    id={ id } />
+
                 <Typography
                     variant="h5"
                     component="h2">
@@ -341,17 +348,12 @@ const QuestionSection = (props) => {
                 { (updatedQuestion.plainText || isMediaOrCode(updatedQuestion.description))
                  && <CardContent>
                      <Typography
+                         className={ classes.italic }
                          component="p">
                          Description:
                      </Typography>
                      { renderDescription(updatedQuestion.description) }
-                    </CardContent> }
-                <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p">
-                    { answers ? `${answers.totalCount} answers` : 'No answers yet' }
-                </Typography>
+                 </CardContent> }
             </CardContent>
             <CardActions disableSpacing>
                 <Button
@@ -408,6 +410,14 @@ const QuestionSection = (props) => {
                     </Button>
                 </CardActions>
             </Collapse>
+            <CardContent>
+                <Typography
+                    variant="h7"
+                    color="textSecondary"
+                    component="p">
+                    { answers ? `${answers.totalCount} answers` : 'No answers yet' }
+                </Typography>
+            </CardContent>
             { openEditSuggestedWritersModal
             && <EditSuggestedWriters
                 open={ openEditSuggestedWritersModal }

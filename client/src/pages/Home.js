@@ -205,9 +205,9 @@ function Home(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        {/* <AskQuestionCard
+                        { /* <AskQuestionCard
                             user={ user }
-                            handleClickQuestionModalOpen={ toggleQuestionModal } /> */}
+                            handleClickQuestionModalOpen={ toggleQuestionModal } /> */ }
                         { (pagination.hasMore || items.length > 0)
                     && <InfiniteScroll
                         style={ { overflow: 'visible' } }

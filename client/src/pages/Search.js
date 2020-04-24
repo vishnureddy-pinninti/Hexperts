@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Container, Typography, List, ListItem, ListItemText, ListItemAvatar, ListItemSecondaryAction, Avatar, Divider, Tooltip, Button, CardHeader } from '@material-ui/core';
+import { Grid, Container, Typography, List, ListItem, ListItemText, ListItemAvatar, Box, Chip, Avatar, Divider, Tooltip, Button, CardHeader } from '@material-ui/core';
 import { Help as HelpIcon, Link as LinkIcon, QuestionAnswerOutlined as QuestionAnswerOutlinedIcon } from '@material-ui/icons';
 import AddIcon from '@material-ui/icons/Add';
 import EmptyResults from '../components/base/EmptyResults';
@@ -32,6 +32,16 @@ const useStyles = makeStyles((theme) => {
             zIndex: 1,
             backgroundColor: '#f0f2f2',
         },
+        fixed: {
+            position: 'fixed',
+        },
+        menu: {
+            display: 'flex',
+            flexDirection: 'column',
+        },
+        chip: {
+            marginBottom: 10,
+        },
     };
 });
 
@@ -55,6 +65,11 @@ const Search = (props) => {
             limit: 20,
         });
     }, [ query ]);
+
+    const [
+        selectedTab,
+        setSelectedTab,
+    ] = React.useState('all');
 
     const classes = useStyles();
 
@@ -204,7 +219,15 @@ const Search = (props) => {
     };
 
     const loadMore = () => {
-        requestSearch({ text: query }, { skip: paginationIndex * 10 });
+        if (selectedTab === 'all'){
+            requestSearch({ text: query }, { skip: paginationIndex * 10 });
+        }
+        else {
+            requestSearch({
+                text: query,
+                categories: [ selectedTab ],
+            }, { skip: paginationIndex * 10 });
+        }
     };
 
     const renderSearchResults = (items) => items.map((item, index) => {
@@ -232,6 +255,76 @@ const Search = (props) => {
         );
     });
 
+    const getData = (type = 'all') => {
+        setSelectedTab(type);
+        switch (type){
+            case 'all':
+                requestSearch({
+                    text: query,
+
+                }, {
+                    skip: 0,
+                    limit: 20,
+                });
+                break;
+            default:
+                requestSearch({
+                    text: query,
+                    categories: [ type ],
+                }, {
+                    skip: 0,
+                    limit: 20,
+                });
+        }
+    };
+
+    const renderMenu = () => (
+        <List className={ classes.menu }>
+            <Chip
+                label="All Type"
+                className={ classes.chip }
+                color="primary"
+                variant={ selectedTab === 'all' ? 'default' : 'outlined' }
+                onClick={ () => { getData('all'); } }
+                clickable />
+            <Chip
+                label="Questions"
+                className={ classes.chip }
+                color="primary"
+                variant={ selectedTab === 'questions' ? 'default' : 'outlined' }
+                onClick={ () => { getData('questions'); } }
+                clickable />
+            <Chip
+                label="Answers"
+                className={ classes.chip }
+                color="primary"
+                variant={ selectedTab === 'answers' ? 'default' : 'outlined' }
+                onClick={ () => { getData('answers'); } }
+                clickable />
+            <Chip
+                label="Blog Posts"
+                className={ classes.chip }
+                color="primary"
+                variant={ selectedTab === 'posts' ? 'default' : 'outlined' }
+                onClick={ () => { getData('posts'); } }
+                clickable />
+            <Chip
+                label="Users"
+                className={ classes.chip }
+                color="primary"
+                variant={ selectedTab === 'users' ? 'default' : 'outlined' }
+                onClick={ () => { getData('users'); } }
+                clickable />
+            <Chip
+                label="Externals"
+                className={ classes.chip }
+                color="primary"
+                variant={ selectedTab === 'externals' ? 'default' : 'outlined' }
+                onClick={ () => { getData('externals'); } }
+                clickable />
+        </List>
+    );
+
     return (
         <div className="App">
             <Container fixed>
@@ -239,10 +332,26 @@ const Search = (props) => {
                     container
                     justify="center"
                     style={ { marginTop: 70 } }
-                    spacing={ 3 }>
+                    spacing={ 5 }>
                     <Grid
                         item
-                        xs={ 7 }>
+                        xs={ 2 }>
+                        <div className={ classes.heading }>
+                            <Typography
+                                component="div">
+                                <Box
+                                    fontWeight="fontWeightBold"
+                                    m={ 1 }>
+                                    By Type
+                                </Box>
+                            </Typography>
+                            <Divider />
+                            { renderMenu() }
+                        </div>
+                    </Grid>
+                    <Grid
+                        item
+                        xs={ 8 }>
                         <CardHeader
                             className={ classes.heading }
                             action={ <Button
@@ -289,6 +398,9 @@ const Search = (props) => {
                                         description="Try different or less specific keywords and reset your filters." /> }
                             </List> }
                     </Grid>
+                    <Grid
+                        item
+                        xs={ 3 } />
                 </Grid>
             </Container>
         </div>
