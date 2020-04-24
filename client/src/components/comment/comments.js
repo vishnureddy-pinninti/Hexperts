@@ -273,7 +273,7 @@ const Comments = (props) => {
 };
 
 Comments.defaultProps = {
-    targetType: 'comments',
+    targetType: 'answers',
 };
 
 const mapStateToProps = (state) => {

@@ -17,7 +17,7 @@ import { RECEIVE_USER_SESSION,
     SET_PAGE_LOADER,
     RECEIVE_MANGE_USER_PREFERENCES } from '../actions/auth';
 
-import { RECEIVE_FOLLOWED_TOPIC, RECEIVE_UPLOADED_TOPIC_IMAGE } from '../actions/topic';
+import { RECEIVE_FOLLOWED_TOPIC, RECEIVE_UPLOADED_TOPIC_IMAGE, RECEIVE_EDITED_TOPIC } from '../actions/topic';
 import { RECEIVE_FOLLOWED_BLOG } from '../actions/blog';
 
 const initialState = {
@@ -328,17 +328,31 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 pageLoader: false,
-                interests: state.interests.map(interest => {
+                interests: state.interests.map((interest) => {
                     if (interest._id === action.res._id) {
                         return {
                             ...interest,
-                            imageUrl: action.res.imageUrl
+                            imageUrl: action.res.imageUrl,
                         };
                     }
                     return interest;
-                })
+                }),
             };
         }
+        case RECEIVE_EDITED_TOPIC:
+            return {
+                ...state,
+                pageLoader: false,
+                interests: state.interests.map((interest) => {
+                    if (interest._id === action.topic._id) {
+                        return {
+                            ...interest,
+                            topic: action.topic.topic,
+                        };
+                    }
+                    return interest;
+                }),
+            };
         case REQUEST_ADD_NOTIFICATION: {
             return {
                 ...state,
