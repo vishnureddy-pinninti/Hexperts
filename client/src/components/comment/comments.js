@@ -259,12 +259,7 @@ const Comments = (props) => {
                 dataLength={ items.length }
                 next={ loadMore }
                 hasMore={ pagination.hasMore }
-                loader={ <CardLoader height={ 50 } /> }
-                endMessage={
-                    <p style={ { textAlign: 'center' } }>
-                        <b>Yay! You have seen it all</b>
-                    </p>
-                }>
+                loader={ <CardLoader height={ 50 } /> }>
                 { renderComments(items) }
                </InfiniteScroll> }
             { pagination.hasMore && <ListItem
