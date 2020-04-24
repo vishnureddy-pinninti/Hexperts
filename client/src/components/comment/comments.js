@@ -71,6 +71,18 @@ const useStyles = makeStyles((theme) => {
     };
 });
 
+const renderTextField = ({ input }) => (
+    <TextField
+        { ...input }
+        margin="dense"
+        id="name"
+        placeholder="Start typing your comment..."
+        type="text"
+        required
+        variant="outlined"
+        fullWidth />
+);
+
 const Comments = (props) => {
     const classes = useStyles();
     const {
@@ -101,19 +113,6 @@ const Comments = (props) => {
         items,
         setItems,
     ] = React.useState([]);
-
-    const renderTextField = ({ input }) => (
-        <TextField
-            { ...input }
-            margin="dense"
-            id="name"
-            placeholder="Start typing your comment..."
-            type="text"
-            required
-            variant="outlined"
-            className={ classes.input }
-            fullWidth />
-    );
 
     const newCommentCallback = (res) => {
         setItems([

@@ -57,7 +57,7 @@ function Home(props) {
     const [
         openFollowTopicsModal,
         setOpenFollowTopicsModal,
-    ] = React.useState(user.interests.length === 0);
+    ] = React.useState(false);
 
 
     const handleFollowTopicsModalOpen = () => {

@@ -11,6 +11,8 @@ export const REQUEST_SUGGESTED_EXPERTS = 'REQUEST_SUGGESTED_EXPERTS';
 export const RECEIVE_SUGGESTED_EXPERTS = 'RECEIVE_SUGGESTED_EXPERTS';
 export const UPLOAD_TOPIC_IMAGE = 'UPLOAD_TOPIC_IMAGE';
 export const RECEIVE_UPLOADED_TOPIC_IMAGE = 'RECEIVE_UPLOADED_TOPIC_IMAGE';
+export const RECEIVE_EDITED_TOPIC = 'RECEIVE_EDITED_TOPIC';
+export const EDIT_TOPIC = 'EDIT_TOPIC';
 
 export function addTopicPending() {
     return {
@@ -127,6 +129,26 @@ export const uploadTopicImage = (topicId, body, cb) => {
             body,
             file: true,
             success: receiveUploadedTopicImage,
+            successcb: cb,
+        },
+    };
+};
+
+const receiveEditedTopic = (topic) => {
+    return {
+        type: RECEIVE_EDITED_TOPIC,
+        topic,
+    };
+};
+
+export const editTopic = (id, body, cb) => {
+    return {
+        type: EDIT_TOPIC,
+        makeApiRequest: {
+            url: `/api/v1/topic/${id}`,
+            method: 'PUT',
+            body,
+            success: receiveEditedTopic,
             successcb: cb,
         },
     };
