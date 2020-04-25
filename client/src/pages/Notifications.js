@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
-import CardContent from '@material-ui/core/CardContent';
 import { Link, withRouter } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import List from '@material-ui/core/List';
@@ -17,10 +16,17 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Divider } from '@material-ui/core';
-import CardLoader from '../components/base/CardLoader';
+import { Divider, Typography, Box } from '@material-ui/core';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Checkbox from '@material-ui/core/Checkbox';
 import EmptyResults from '../components/base/EmptyResults';
-import { requestNotifications, markNotificationRead, markAllNotificationsRead, setPageLoader } from '../store/actions/auth';
+import CardLoader from '../components/base/CardLoader';
+import { requestNotifications,
+    markNotificationRead,
+    markAllNotificationsRead,
+    requestEmailPreferences,
+    editEmailPreferences,
+    setPageLoader } from '../store/actions/auth';
 
 
 const useStyles = makeStyles((theme) => {
@@ -28,6 +34,9 @@ const useStyles = makeStyles((theme) => {
         root: {
             padding: 0,
             textAlign: 'center',
+        },
+        email: {
+            marginTop: 30,
         },
         listItem: {
             backgroundColor: theme.palette.background.paper,
@@ -45,6 +54,12 @@ const useStyles = makeStyles((theme) => {
             zIndex: 1,
             backgroundColor: '#f0f2f2',
         },
+        sectionDesktop: {
+            display: 'none',
+            [theme.breakpoints.up('md')]: {
+                display: 'block',
+            },
+        },
     };
 });
 
@@ -52,10 +67,13 @@ const useStyles = makeStyles((theme) => {
 function Notifications(props) {
     const {
         requestNotifications,
+        editEmailPreferences,
+        requestEmailPreferences,
         markNotificationRead,
         notifications,
         markAllRead,
         notificationCount,
+        emailPreferences,
     } = props;
 
     const classes = useStyles();
@@ -107,6 +125,7 @@ function Notifications(props) {
             skip: 0,
             limit: 20,
         });
+        requestEmailPreferences();
     }, [ 1 ]);
 
     const loadMore = () => {
@@ -123,6 +142,97 @@ function Notifications(props) {
             markNotificationRead(notification._id);
         }
     };
+
+    const [
+        checked,
+        setChecked,
+    ] = React.useState([]);
+
+    useEffect(() => {
+        setChecked(emailPreferences);
+    }, [ emailPreferences ]);
+
+    const handleToggle = (value) => () => {
+        editEmailPreferences({ category: value });
+    };
+
+    const emailOptions = [
+        {
+            id: 'suggestedExpert',
+            name: 'Request Answer',
+            description: 'Email me when someone requests me to answer a question',
+        },
+        {
+            id: 'newQuestion',
+            name: 'New Question',
+            description: 'Email me when someone posts a new question',
+        },
+        {
+            id: 'newPost',
+            name: 'New Post',
+            description: 'Email me when someone adds a new blogpost',
+        },
+        {
+            id: 'newAnswer',
+            name: 'New Answer',
+            description: 'Email me when there are new answers to questions I asked or follow.',
+        },
+        {
+            id: 'upvoteAnswer',
+            name: 'Answer Upvotes',
+            description: 'Email me when someone upvotes my answer.',
+        },
+        {
+            id: 'upvotePost',
+            name: 'BlogPost Upvotes',
+            description: 'Email me when someone upvotes my blogpost.',
+        },
+        {
+            id: 'followQuestion',
+            name: 'Follow Question',
+            description: 'Email me when someone follows my question',
+        },
+        {
+            id: 'followUser',
+            name: 'New Followers',
+            description: 'Email me when someone follows me.',
+        },
+        {
+            id: 'newComment',
+            name: 'Comments and Replies',
+            description: 'Email me of comments on my content and replies to my comments.',
+        },
+    ];
+
+    const renderEmailPreferences = () => (
+        <List>
+            { emailOptions.map((item) => {
+                const labelId = `checkbox-list-label-${item.id}`;
+
+                return (
+                    <ListItem
+                        key={ item.display }
+                        role={ undefined }
+                        dense
+                        button
+                        onClick={ handleToggle(item.id) }>
+                        <ListItemIcon>
+                            <Checkbox
+                                edge="start"
+                                checked={ checked.indexOf(item.id) !== -1 }
+                                tabIndex={ -1 }
+                                disableRipple
+                                inputProps={ { 'aria-labelledby': labelId } } />
+                        </ListItemIcon>
+                        <ListItemText
+                            id={ labelId }
+                            primary={ item.name }
+                            secondary={ item.description } />
+                    </ListItem>
+                );
+            }) }
+        </List>
+    );
 
     const renderNotifications = (notifications) => notifications.map((notification) => (
         <Link
@@ -193,6 +303,23 @@ function Notifications(props) {
                 description="When someone follows you, upvotes, comments, you will see it here." /> }
                         </List>
                     </Grid>
+                    <Grid
+                        item
+                        className={ classes.sectionDesktop }
+                        xs={ 3 }>
+                        <div className={ classes.email }>
+                            <Typography
+                                component="div">
+                                <Box
+                                    fontWeight="fontWeightBold"
+                                    m={ 1 }>
+                                    Email Preferences
+                                </Box>
+                            </Typography>
+                            <Divider />
+                            { renderEmailPreferences() }
+                        </div>
+                    </Grid>
                 </Grid>
             </Container>
         </div>
@@ -201,6 +328,7 @@ function Notifications(props) {
 
 Notifications.defaultProps = {
     notifications: [],
+    emailPreferences: [],
 };
 
 const mapStateToProps = (state) => {
@@ -208,6 +336,7 @@ const mapStateToProps = (state) => {
         user: state.user.user,
         notifications: state.user.notifications,
         notificationCount: state.user.notificationCount,
+        emailPreferences: state.user.emailPreferences,
     };
 };
 
@@ -222,6 +351,12 @@ const mapDispatchToProps = (dispatch) => {
         markAllRead: () => {
             dispatch(setPageLoader(true));
             dispatch(markAllNotificationsRead());
+        },
+        requestEmailPreferences: () => {
+            dispatch(requestEmailPreferences());
+        },
+        editEmailPreferences: (body, cb) => {
+            dispatch(editEmailPreferences(body, cb));
         },
     };
 };
