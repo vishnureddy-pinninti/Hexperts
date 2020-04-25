@@ -16,6 +16,7 @@ const emailService = async(type, data, options) => {
         template,
         locals,
         recipients,
+        type: emailType,
         user,
     } = emailData;
 
@@ -28,10 +29,12 @@ const emailService = async(type, data, options) => {
     const mailOptions = {
         template,
         locals,
-        bcc: recipients.filter((follower) => follower.emailSubscription && (follower.email !== user.email)).map((follower) => follower.email),
+        bcc: recipients
+                .filter((recipient) => recipient.emailSubscription && recipient.emailPreferences && recipient.emailPreferences.indexOf(emailType) > -1  && (recipient.email !== user.email))
+                .map((r) => r.email),
     };
 
-    // email(mailOptions);
+    email(mailOptions);
 };
 
 module.exports = emailService;

@@ -90,6 +90,7 @@ const emailPreferenceTypes = [
     'newPost',
     'upvotePost',
     'followUser',
+    'suggestedExpert',
 ];
 
 module.exports = {

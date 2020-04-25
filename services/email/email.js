@@ -1,17 +1,18 @@
 /* eslint-disable no-console */
 const nodemailer = require('nodemailer');
-const smtpTransport = require('nodemailer-smtp-transport');
 const Email = require('email-templates');
 
-const transport = nodemailer.createTransport(smtpTransport({
+const transport = nodemailer.createTransport({
     host: 'in-smtprelay.ingrnet.com',
+    port: 25,
+    secure: false,
     tls: { rejectUnauthorized: false },
-}));
+});
 
 const emailConfig = new Email({
     preview: false,
     message: {
-        from: 'Expertise Exchange Platform <no-reply-eep@hexagon.com>',
+        from: 'Hexperts <noreply-hexperts@hexagon.com>',
     },
     // uncomment below to send emails in development/test env:
     send: true,
@@ -30,7 +31,7 @@ const email = async(mailOptions) => {
             .send({
                 template,
                 message: {
-                    to: 'Expertise Exchange Platform <no-reply-eep@hexagon.com>',
+                    to: 'Hexperts <noreply-hexperts@hexagon.com>',
                     bcc,
                 },
                 locals,
