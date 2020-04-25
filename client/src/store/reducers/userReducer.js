@@ -17,6 +17,7 @@ import { RECEIVE_USER_SESSION,
     SET_PAGE_LOADER,
     RECEIVE_EMAIL_PREFERENCES,
     RECEIVE_EDITED_EMAIL_PREFERENCES,
+    RECEIVE_EMAIL_SUBSCRIPTION,
     RECEIVE_MANGE_USER_PREFERENCES } from '../actions/auth';
 
 import { RECEIVE_FOLLOWED_TOPIC, RECEIVE_UPLOADED_TOPIC_IMAGE, RECEIVE_EDITED_TOPIC } from '../actions/topic';
@@ -35,6 +36,7 @@ const initialState = {
     blogs: [],
     pageLoader: false,
     emailPreferences: [],
+    emailSubscription: false,
 };
 
 export default (state = initialState, action) => {
@@ -370,12 +372,19 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 emailPreferences: action.res.emailPreferences,
+                emailSubscription: action.res.emailSubscription,
             };
         }
         case RECEIVE_EDITED_EMAIL_PREFERENCES: {
             return {
                 ...state,
                 emailPreferences: action.res.emailPreferences,
+            };
+        }
+        case RECEIVE_EMAIL_SUBSCRIPTION: {
+            return {
+                ...state,
+                emailSubscription: action.res.emailSubscription,
             };
         }
         default:

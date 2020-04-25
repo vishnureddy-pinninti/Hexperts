@@ -50,6 +50,7 @@ function Post(props) {
     const renderPost = () => (
         <PostCard
             post={ post }
+            collapse={ false }
             hideHeaderHelperText={ false } />
     );
 

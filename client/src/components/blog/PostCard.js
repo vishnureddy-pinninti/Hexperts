@@ -102,6 +102,7 @@ const AnswerCard = (props) => {
         modifiedPosts,
         hideHeaderHelperText,
         user,
+        collapse,
     } = props;
 
     const {
@@ -263,7 +264,7 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </Typography>
-                    </>
+                                   </>
                 }
                 <CardHeader
                     className={ classes.headerRoot }
@@ -300,7 +301,7 @@ const AnswerCard = (props) => {
                                 Delete
                             </MenuItem>
                         </Menu>
-                    </> }
+                                        </> }
                     title={
                         <Link
                             className={ classes.link }
@@ -318,7 +319,14 @@ const AnswerCard = (props) => {
                             { `Posted ${formatDistance(new Date(postedDate), new Date(), { addSuffix: true })}` }
                         </Link>
                     } />
-                { postObj.description && renderAnswer(postObj.description) }
+                { postObj.description && collapse && renderAnswer(postObj.description) }
+                { !collapse && <div
+                    style={ {
+                        display: 'flex',
+                        flexDirection: 'column',
+                    } }
+                    className="editor-read-mode"
+                    dangerouslySetInnerHTML={ { __html: postObj.description } } /> }
             </CardContent>
             <CardActions disableSpacing>
                 <Button
@@ -367,6 +375,7 @@ const AnswerCard = (props) => {
 AnswerCard.defaultProps = {
     hideHeader: false,
     hideHeaderHelperText: false,
+    collapse: true,
 };
 
 const mapStateToProps = (state) => {

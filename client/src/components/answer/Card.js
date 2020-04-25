@@ -122,6 +122,7 @@ const AnswerCard = (props) => {
         user,
         deleteAnswer,
         editAnswer,
+        collapse,
     } = props;
 
     const [
@@ -313,7 +314,13 @@ const AnswerCard = (props) => {
                                 { `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` }
                             </Link>
                         } />
-                    { renderAnswer(answerHTML) }
+                    { collapse ? renderAnswer(answerHTML) : <div
+                        style={ {
+                            display: 'flex',
+                            flexDirection: 'column',
+                        } }
+                        className="editor-read-mode"
+                        dangerouslySetInnerHTML={ { __html: answerHTML } } /> }
                 </div>
             </CardContent>
             <CardActions
@@ -362,6 +369,7 @@ const AnswerCard = (props) => {
 AnswerCard.defaultProps = {
     hideHeader: false,
     hideHeaderHelperText: false,
+    collapse: true,
 };
 
 const mapStateToProps = (state) => {

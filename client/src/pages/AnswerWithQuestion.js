@@ -56,6 +56,7 @@ function Answer(props) {
             question={ answer.question.question }
             author={ answer.author }
             topics={ answer.question.topics }
+            collapse={ false }
             hideHelperText
             date={ answer.postedDate } />
     );
