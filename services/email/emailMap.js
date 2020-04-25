@@ -37,15 +37,12 @@ const emailMap = {
 
         const {
             author: owner,
-            suggestedExperts,
             topics,
         } = options;
 
         const userFollowers = await getUserFollowers(owner._id);
         const topicFollowers = await getTopicFollowers(topics);
-        const experts = await getSuggestedExperts(suggestedExperts);
         const recipients = [
-            ...experts,
             ...userFollowers,
             ...topicFollowers,
         ];
@@ -56,11 +53,12 @@ const emailMap = {
                 locals: {
                     name: author.name,
                     data: question,
-                    dataDescription: 'added below question to you.',
+                    dataDescription: 'added below question.',
                     link: `${keys.emailUrl}question/${_id}`,
                     subject: 'New Question for you',
                 },
                 recipients,
+                type: 'newQuestion',
                 user: owner,
             },
             notification: {
@@ -73,10 +71,49 @@ const emailMap = {
             },
         };
     },
+    suggestedExpert: async(data, options) => {
+        // Emails to experts
+        const {
+            question,
+            _id,
+            req,
+        } = data;
+
+        const {
+            author,
+            suggestedExperts,
+        } = options;
+
+        const recipients = await getSuggestedExperts(suggestedExperts);
+
+        return {
+            email: {
+                template: 'newEntry',
+                locals: {
+                    name: author.name,
+                    data: question,
+                    dataDescription: 'added you as an expert for the below question.',
+                    link: `${keys.emailUrl}question/${_id}`,
+                    subject: 'New Question for you as an expert',
+                },
+                recipients,
+                type: 'suggestedExpert',
+                user: author,
+            },
+            notification: {
+                recipients,
+                message: `<b>${author.name}</b> added you as an expert.`,
+                link: `/question/${_id}`,
+                user: author,
+                req,
+                type: QUESTION_NOTIFICATION,
+            },
+        };
+    },
     newAnswer: async(data, options) => {
         // Emails to question author, question followers and user followers
         const {
-            answer,
+            plainText,
             _id,
             questionID,
             req,
@@ -99,12 +136,13 @@ const emailMap = {
                 template: 'newEntry',
                 locals: {
                     name: owner.name,
-                    data: answer,
+                    data: plainText,
                     dataDescription: 'answered your question.',
                     link: `${keys.emailUrl}answer/${_id}`,
                     subject: 'New Answer to your question',
                 },
                 recipients,
+                type: 'newAnswer',
                 user: owner,
             },
             notification: {
@@ -142,6 +180,7 @@ const emailMap = {
                     link: `${keys.emailUrl}question/${questionID}`,
                 },
                 recipients,
+                type: 'followQuestion',
                 user: follower,
             },
             notification: {
@@ -179,6 +218,7 @@ const emailMap = {
                     type: 'Answer',
                 },
                 recipients,
+                type: 'upvoteAnswer',
                 user: upvoter,
             },
             notification: {
@@ -265,6 +305,7 @@ const emailMap = {
                     subject: `New comment to your ${targetName}`,
                 },
                 recipients,
+                type: 'newComment',
                 user: author,
             },
             notification: {
@@ -306,6 +347,7 @@ const emailMap = {
                     type: 'Comment',
                 },
                 recipients,
+                type: 'upvoteComment',
                 user: upvoter,
             },
             notification: {
@@ -392,6 +434,7 @@ const emailMap = {
                     subject: 'New Post for you',
                 },
                 recipients,
+                type: 'newPost',
                 user: author,
             },
             notification: {
@@ -433,6 +476,7 @@ const emailMap = {
                     type: 'Post',
                 },
                 recipients,
+                type: 'upvotePost',
                 user: upvoter,
             },
             notification: {
@@ -475,6 +519,7 @@ const emailMap = {
                     type: 'Post',
                 },
                 recipients,
+                type: 'downvotePost',
                 user: downvoter,
             },
             notification: {
@@ -513,6 +558,7 @@ const emailMap = {
                     link: `${keys.emailUrl}profile/${follower._id}`,
                 },
                 recipients,
+                type: 'followUser',
                 user: follower,
             },
             notification: {

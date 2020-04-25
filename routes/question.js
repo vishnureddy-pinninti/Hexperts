@@ -51,6 +51,16 @@ module.exports = (app) => {
                 topics,
             });
 
+            if (suggestedExperts.length) {
+                emailNotify('suggestedExpert', {
+                    ...responseObject,
+                    req: req.io,
+                }, {
+                    author: req.user,
+                    suggestedExperts,
+                });
+            }
+
             res
                 .status(201)
                 .json(responseObject);
@@ -687,6 +697,14 @@ module.exports = (app) => {
                     ];
                     const experts = await User.find({ _id: { $in: question.suggestedExperts.map((expert) => mongoose.Types.ObjectId(expert)) } });
                     responseObject.suggestedExperts = experts;
+                    emailNotify('suggestedExpert', {
+                        question: questionString || question.question,
+                        _id: questionID,
+                        req: req.io,
+                    }, {
+                        author: req.user,
+                        suggestedExperts,
+                    });
                 }
 
                 if (topics) {
