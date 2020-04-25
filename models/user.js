@@ -40,6 +40,10 @@ const userSchema = new Schema({
         default: false,
         es_indexed: false,
     },
+    emailPreferences: {
+        type: [ String ],
+        es_indexed: false,
+    },
     reputation: {
         type: Number,
         default: 0,
