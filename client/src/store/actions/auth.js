@@ -33,6 +33,10 @@ export const MARK_ALL_NOTIFICATIONS_READ = 'MARK_ALL_NOTIFICATIONS_READ';
 export const SET_PAGE_LOADER = 'SET_PAGE_LOADER';
 export const RECEIVE_UPLOADED_IMAGE = 'RECEIVE_UPLOADED_IMAGE';
 export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
+export const REQUEST_EMAIL_PREFERENCES = 'REQUEST_EMAIL_PREFERENCES';
+export const RECEIVE_EMAIL_PREFERENCES = 'RECEIVE_EMAIL_PREFERENCES';
+export const EDIT_EMAIL_PREFERENCES = 'EDIT_EMAIL_PREFERENCES';
+export const RECEIVE_EDITED_EMAIL_PREFERENCES = 'RECEIVE_EDITED_EMAIL_PREFERENCES';
 
 const receiveUserSession = (user) => {
     return {
@@ -341,6 +345,44 @@ export const uploadImage = (body, callback) => {
             file: true,
             success: receiveUploadedImage,
             successcb: callback,
+        },
+    };
+};
+
+const receiveEmailPreferences = (res) => {
+    return {
+        type: RECEIVE_EMAIL_PREFERENCES,
+        res,
+    };
+};
+
+export const requestEmailPreferences = () => {
+    return {
+        type: REQUEST_EMAIL_PREFERENCES,
+        makeApiRequest: {
+            url: '/api/v1/email-preferences',
+            method: 'GET',
+            success: receiveEmailPreferences,
+        },
+    };
+};
+
+const receiveEditedEmailPreferences = (res) => {
+    return {
+        type: RECEIVE_EDITED_EMAIL_PREFERENCES,
+        res,
+    };
+};
+
+export const editEmailPreferences = (body, cb) => {
+    return {
+        type: EDIT_EMAIL_PREFERENCES,
+        makeApiRequest: {
+            url: '/api/v1/email-preferences.manage',
+            method: 'POST',
+            body,
+            success: receiveEditedEmailPreferences,
+            successcb: cb,
         },
     };
 };

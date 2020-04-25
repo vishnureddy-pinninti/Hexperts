@@ -15,6 +15,8 @@ import { RECEIVE_USER_SESSION,
     REQUEST_ADD_NOTIFICATION,
     RECEIVE_MARK_ALL_NOTIFICATION_READ,
     SET_PAGE_LOADER,
+    RECEIVE_EMAIL_PREFERENCES,
+    RECEIVE_EDITED_EMAIL_PREFERENCES,
     RECEIVE_MANGE_USER_PREFERENCES } from '../actions/auth';
 
 import { RECEIVE_FOLLOWED_TOPIC, RECEIVE_UPLOADED_TOPIC_IMAGE, RECEIVE_EDITED_TOPIC } from '../actions/topic';
@@ -32,6 +34,7 @@ const initialState = {
     notifications: [],
     blogs: [],
     pageLoader: false,
+    emailPreferences: [],
 };
 
 export default (state = initialState, action) => {
@@ -361,6 +364,18 @@ export default (state = initialState, action) => {
                 //     ...state.notifications,
                 // ],
                 notificationCount: state.notificationCount + 1,
+            };
+        }
+        case RECEIVE_EMAIL_PREFERENCES: {
+            return {
+                ...state,
+                emailPreferences: action.res.emailPreferences,
+            };
+        }
+        case RECEIVE_EDITED_EMAIL_PREFERENCES: {
+            return {
+                ...state,
+                emailPreferences: action.res.emailPreferences,
             };
         }
         default:
