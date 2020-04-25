@@ -16,7 +16,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Divider, Typography, Box } from '@material-ui/core';
+import { Divider, Typography, Box, Switch } from '@material-ui/core';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Checkbox from '@material-ui/core/Checkbox';
 import EmptyResults from '../components/base/EmptyResults';
@@ -26,6 +26,7 @@ import { requestNotifications,
     markAllNotificationsRead,
     requestEmailPreferences,
     editEmailPreferences,
+    requestEmailSubscription,
     setPageLoader } from '../store/actions/auth';
 
 
@@ -68,12 +69,14 @@ function Notifications(props) {
     const {
         requestNotifications,
         editEmailPreferences,
+        requestEmailSubscription,
         requestEmailPreferences,
         markNotificationRead,
         notifications,
         markAllRead,
         notificationCount,
         emailPreferences,
+        emailSubscription,
     } = props;
 
     const classes = useStyles();
@@ -156,6 +159,10 @@ function Notifications(props) {
         editEmailPreferences({ category: value });
     };
 
+    const enableEmailSubscription = () => {
+        requestEmailSubscription();
+    };
+
     const emailOptions = [
         {
             id: 'suggestedExpert',
@@ -213,6 +220,7 @@ function Notifications(props) {
                     <ListItem
                         key={ item.display }
                         role={ undefined }
+                        disabled={ !emailSubscription }
                         dense
                         button
                         onClick={ handleToggle(item.id) }>
@@ -314,6 +322,11 @@ function Notifications(props) {
                                     fontWeight="fontWeightBold"
                                     m={ 1 }>
                                     Email Preferences
+                                    { ' ' }
+                                    <Switch
+                                        checked={ emailSubscription }
+                                        onChange={ enableEmailSubscription }
+                                        name="checkedB" />
                                 </Box>
                             </Typography>
                             <Divider />
@@ -329,6 +342,7 @@ function Notifications(props) {
 Notifications.defaultProps = {
     notifications: [],
     emailPreferences: [],
+    emailSubscription: false,
 };
 
 const mapStateToProps = (state) => {
@@ -337,6 +351,7 @@ const mapStateToProps = (state) => {
         notifications: state.user.notifications,
         notificationCount: state.user.notificationCount,
         emailPreferences: state.user.emailPreferences,
+        emailSubscription: state.user.emailSubscription,
     };
 };
 
@@ -357,6 +372,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         editEmailPreferences: (body, cb) => {
             dispatch(editEmailPreferences(body, cb));
+        },
+        requestEmailSubscription: () => {
+            dispatch(requestEmailSubscription());
         },
     };
 };

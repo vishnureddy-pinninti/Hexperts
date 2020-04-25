@@ -37,6 +37,8 @@ export const REQUEST_EMAIL_PREFERENCES = 'REQUEST_EMAIL_PREFERENCES';
 export const RECEIVE_EMAIL_PREFERENCES = 'RECEIVE_EMAIL_PREFERENCES';
 export const EDIT_EMAIL_PREFERENCES = 'EDIT_EMAIL_PREFERENCES';
 export const RECEIVE_EDITED_EMAIL_PREFERENCES = 'RECEIVE_EDITED_EMAIL_PREFERENCES';
+export const REQUEST_EMAIL_SUBSCRIPTION = 'REQUEST_EMAIL_SUBSCRIPTION';
+export const RECEIVE_EMAIL_SUBSCRIPTION = 'RECEIVE_EMAIL_SUBSCRIPTION';
 
 const receiveUserSession = (user) => {
     return {
@@ -383,6 +385,24 @@ export const editEmailPreferences = (body, cb) => {
             body,
             success: receiveEditedEmailPreferences,
             successcb: cb,
+        },
+    };
+};
+
+const receiveEmailSubscription = (res) => {
+    return {
+        type: RECEIVE_EMAIL_SUBSCRIPTION,
+        res,
+    };
+};
+
+export const requestEmailSubscription = () => {
+    return {
+        type: REQUEST_EMAIL_SUBSCRIPTION,
+        makeApiRequest: {
+            url: '/api/v1/email/subscription',
+            method: 'GET',
+            success: receiveEmailSubscription,
         },
     };
 };
