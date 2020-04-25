@@ -12,9 +12,10 @@ const config = require('../config/keys');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const emailNotify = require('../services/email/emailService');
+const { emailPreferenceTypes } = require('../services/email/emailUtils');
 const {
     errors: {
-        USER_NOT_FOUND, TOPIC_NOT_FOUND, BLOG_NOT_FOUND, UNAUTHORIZED,
+        USER_NOT_FOUND, TOPIC_NOT_FOUND, BLOG_NOT_FOUND, UNAUTHORIZED, INCORRECT_EMAIL_CATEGORY,
     },
 } = require('../utils/constants');
 
@@ -250,6 +251,13 @@ module.exports = (app) => {
                         },
                         followers: 1,
                         emailSubscription: 1,
+                        emailPreferences: {
+                            $cond: {
+                                if: { $isArray: '$emailPreferences' },
+                                then: '$emailPreferences',
+                                else: [],
+                            },
+                        },
                         name: 1,
                         email: 1,
                         jobTitle: 1,
@@ -741,6 +749,84 @@ module.exports = (app) => {
                     .json({
                         error: true,
                         response: USER_NOT_FOUND,
+                    });
+            }
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
+    app.get('/api/v1/email-preferences', loginMiddleware, async (req, res) => {
+        const { _id } = req.user;
+
+        try {
+            const user = await User.findById(_id);
+
+            if (user) {
+                res
+                    .status(200)
+                    .json({
+                        _id,
+                        emailSubscription: user.emailSubscription,
+                        emailPreferences: user.emailPreferences || [],
+                    });
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: USER_NOT_FOUND,
+                    });
+            }
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
+    app.post('/api/v1/email-preferences.manage', loginMiddleware, async (req, res) => {
+        const { _id } = req.user;
+        const { category } = req.body;
+
+        try {
+            const isValidCategory = emailPreferenceTypes.indexOf(category) > -1;
+            const user = await User.findById(_id);
+
+            if (user && isValidCategory) {
+                const emailPreferences =  user.emailPreferences || [];
+                user.emailPreferences = emailPreferences.indexOf(category) > -1 ?
+                                        emailPreferences.filter(p => p !== category) :
+                                        [ ...emailPreferences, category ];
+
+                await user.save();
+
+                res
+                    .status(200)
+                    .json({
+                        _id,
+                        emailPreferences: user.emailPreferences,
+                    });
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: isValidCategory ? USER_NOT_FOUND : INCORRECT_EMAIL_CATEGORY,
                     });
             }
         }

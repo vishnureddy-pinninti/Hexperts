@@ -11,6 +11,7 @@ module.exports = {
         TOPIC_NOT_FOUND: 'Topic Not Found',
         UNAUTHORIZED: 'UNAUTHORIZED',
         USER_NOT_FOUND: 'User Not Found',
+        INCORRECT_EMAIL_CATEGORY: 'INCORRECT_EMAIL_CATEGORY',
     },
     scores: {
         NEW_ANSWER: 10,

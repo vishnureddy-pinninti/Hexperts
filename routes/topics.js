@@ -321,7 +321,7 @@ module.exports = (app) => {
                     responseObject.imageUrl = `/api/v1/images/${req.files[0].filename}`;
                 }
 
-                if (description) {
+                if (description || description === '') {
                     topic.description = description;
                     topic.plainText = description;
                     responseObject.description = description;

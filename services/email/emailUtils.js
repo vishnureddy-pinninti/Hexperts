@@ -81,6 +81,17 @@ const getAuthor = async(id, model) => {
 
 const getBlogFollowers = async(blog) => await User.find({ 'blogs': mongoose.Types.ObjectId(blog) });
 
+const emailPreferenceTypes = [
+    'newQuestion',
+    'newAnswer',
+    'followQuestion',
+    'upvoteAnswer',
+    'newComment',
+    'newPost',
+    'upvotePost',
+    'followUser',
+];
+
 module.exports = {
     getUserFollowers,
     getTopicFollowers,
@@ -88,4 +99,5 @@ module.exports = {
     getQuestionFollowers,
     getAuthor,
     getBlogFollowers,
+    emailPreferenceTypes,
 };
