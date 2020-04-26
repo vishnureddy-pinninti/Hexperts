@@ -40,7 +40,7 @@ function Post(props) {
         setLoading(true);
         requestPost(postId, () => {}, (res) => {
             setLoading(false);
-            setError(res.response);
+            setError('Post not found. It may have been deleted by the author.');
         });
     }, [
         requestPost,
