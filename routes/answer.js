@@ -153,6 +153,7 @@ module.exports = (app) => {
                         downvoters: 1,
                         plainText: 1,
                         postedDate: 1,
+                        lastModified: 1,
                         questionID: 1,
                         question: 1,
                         upvoters: 1,

@@ -346,6 +346,7 @@ module.exports = (app) => {
 
                 if (edited) {
                     post.lastModified = Date.now();
+                    responseObject.lastModified = post.lastModified;
                     emailNotify('editPost', {
                         author: req.user,
                         topics: post.topics,
@@ -358,10 +359,7 @@ module.exports = (app) => {
                 await post.save();
                 res
                     .status(200)
-                    .json({
-                        ...responseObject,
-                        lastModified: post.lastModified,
-                    });
+                    .json(responseObject);
             }
             else {
                 res

@@ -277,6 +277,7 @@ module.exports = (app) => {
                                     downvoters: 1,
                                     plainText: 1,
                                     postedDate: 1,
+                                    lastModified: 1,
                                     questionID: 1,
                                     upvoters: 1,
                                     upvotersCount: 1,
@@ -596,6 +597,7 @@ module.exports = (app) => {
                             downvoters: 1,
                             plainText: 1,
                             postedDate: 1,
+                            lastModified: 1,
                             questionID: 1,
                             upvoters: 1,
                             upvotersCount: 1,
@@ -732,6 +734,7 @@ module.exports = (app) => {
 
                 if (edited) {
                     question.lastModified = Date.now();
+                    responseObject.lastModified = question.lastModified;
                     emailNotify('editQuestion', {
                         question: questionString || question.question,
                         _id: questionID,
@@ -746,10 +749,7 @@ module.exports = (app) => {
                 await question.save();
                 res
                     .status(200)
-                    .json({
-                        ...responseObject,
-                        lastModified: question.lastModified,
-                    });
+                    .json(responseObject);
             }
             else {
                 res
