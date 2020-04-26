@@ -39,7 +39,7 @@ function Answer(props) {
         setLoading(true);
         requestAnswer(answerId, () => {}, (res) => {
             setLoading(false);
-            setError(res.response);
+            setError('Answer not found. It may have been deleted by the author.');
         });
     }, [
         requestAnswer,
