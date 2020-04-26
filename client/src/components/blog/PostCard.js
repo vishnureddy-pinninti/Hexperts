@@ -115,6 +115,7 @@ const AnswerCard = (props) => {
         blogs,
         topics,
         postedDate,
+        lastModified,
     } = post;
 
     const {
@@ -137,6 +138,7 @@ const AnswerCard = (props) => {
         topics,
         description,
         title,
+        lastModified,
     });
 
     const [
@@ -264,7 +266,7 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </Typography>
-                                   </>
+                    </>
                 }
                 <CardHeader
                     className={ classes.headerRoot }
@@ -301,7 +303,7 @@ const AnswerCard = (props) => {
                                 Delete
                             </MenuItem>
                         </Menu>
-                                        </> }
+                    </> }
                     title={
                         <Link
                             className={ classes.link }
@@ -316,7 +318,7 @@ const AnswerCard = (props) => {
                         <Link
                             className={ classes.link }
                             to={ `/post/${postId}` }>
-                            { `Posted ${formatDistance(new Date(postedDate), new Date(), { addSuffix: true })}` }
+                            { postObj.lastModified ? `Edited ${formatDistance(new Date(postObj.lastModified), new Date(), { addSuffix: true })}` : `Posted ${formatDistance(new Date(postedDate), new Date(), { addSuffix: true })}` }
                         </Link>
                     } />
                 { postObj.description && collapse && renderAnswer(postObj.description) }

@@ -141,6 +141,11 @@ const AnswerCard = (props) => {
     ] = React.useState(answer && answer.answer);
 
     const [
+        lastModified,
+        setLastModified,
+    ] = React.useState(answer.lastModified);
+
+    const [
         commentsCount,
         setCommentsCount,
     ] = React.useState(answer.commentsCount || 0);
@@ -223,6 +228,7 @@ const AnswerCard = (props) => {
         editAnswer(answerId, { answer }, (res) => {
             if (res) {
                 setAnswerHTML(res.answer);
+                setLastModified(res.lastModified);
             }
         });
     };
@@ -311,7 +317,8 @@ const AnswerCard = (props) => {
                             <Link
                                 className={ classes.link }
                                 to={ `/answer/${answerId}` }>
-                                { `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` }
+                                { lastModified ? `Edited ${formatDistance(new Date(lastModified), new Date(), { addSuffix: true })}`
+                                    : `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` }
                             </Link>
                         } />
                     { collapse ? renderAnswer(answerHTML) : <div
