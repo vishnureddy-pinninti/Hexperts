@@ -199,6 +199,14 @@ module.exports = (app) => {
                     answer.answer = answerString;
                     answer.plainText = plainText;
                     answer.lastModified = Date.now();
+                    emailNotify('editAnswer', {
+                        plainText,
+                        _id: answerID,
+                        questionID: answer.questionID,
+                        req: req.io,
+                    }, {
+                        author: req.user,
+                    });
                 }
 
                 await answer.save();

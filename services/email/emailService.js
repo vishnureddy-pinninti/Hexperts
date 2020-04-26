@@ -30,7 +30,12 @@ const emailService = async(type, data, options) => {
         template,
         locals,
         bcc: recipients
-                .filter((recipient) => recipient.emailSubscription && recipient.emailPreferences && recipient.emailPreferences.indexOf(emailType) > -1  && (recipient.email !== user.email))
+                .filter((recipient) => 
+                        recipient.emailSubscription
+                        && recipient.emailPreferences
+                        && recipient.emailPreferences.indexOf(emailType) > -1 
+                        && (recipient.email !== user.email)
+                    )
                 .map((r) => r.email),
     };
 

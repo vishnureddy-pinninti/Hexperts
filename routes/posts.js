@@ -41,7 +41,7 @@ module.exports = (app) => {
             const responseObject = {
                 ...newPost._doc,
                 author: req.user,
-                topics: chosenTopics,
+                topics,
             };
 
             emailNotify('newPost', {
@@ -319,11 +319,13 @@ module.exports = (app) => {
             const post = await Post.findById(postID);
 
             if (post) {
+                let edited = false;
                 const responseObject = { _id: postID };
 
                 if (title) {
                     post.title = title;
                     responseObject.title = title;
+                    edited = true;
                 }
 
                 if (description) {
@@ -333,6 +335,7 @@ module.exports = (app) => {
                     post.plainText = plainText;
                     responseObject.description = description;
                     responseObject.plainText = plainText;
+                    edited = true;
                 }
 
                 if (topics) {
@@ -341,7 +344,16 @@ module.exports = (app) => {
                     responseObject.topics = chosenTopics;
                 }
 
-                post.lastModified = Date.now();
+                if (edited) {
+                    post.lastModified = Date.now();
+                    emailNotify('editPost', {
+                        author: req.user,
+                        topics: post.topics,
+                        title: post.title,
+                        _id: post._id,
+                        req: req.io,
+                    });
+                }
 
                 await post.save();
                 res

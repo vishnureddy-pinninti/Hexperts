@@ -167,17 +167,22 @@ function Notifications(props) {
         {
             id: 'suggestedExpert',
             name: 'Request Answer',
-            description: 'Email me when someone requests me to answer a question',
+            description: 'Email me when someone requests me to answer a question.',
         },
         {
             id: 'newQuestion',
             name: 'New Question',
-            description: 'Email me when someone posts a new question',
+            description: 'Email me when someone adds a new question.',
         },
         {
-            id: 'newPost',
-            name: 'New Post',
-            description: 'Email me when someone adds a new blogpost',
+            id: 'editQuestion',
+            name: 'Question Edits/Updates',
+            description: 'Email me when someone updates/edits a question that I am following.',
+        },
+        {
+            id: 'followQuestion',
+            name: 'Follow Question',
+            description: 'Email me when someone follows my question.',
         },
         {
             id: 'newAnswer',
@@ -185,19 +190,29 @@ function Notifications(props) {
             description: 'Email me when there are new answers to questions I asked or follow.',
         },
         {
+            id: 'editAnswer',
+            name: 'Answer Edits/Updates',
+            description: 'Email me when someone updates/edits answer that I am following.',
+        },
+        {
             id: 'upvoteAnswer',
             name: 'Answer Upvotes',
             description: 'Email me when someone upvotes my answer.',
         },
         {
-            id: 'upvotePost',
-            name: 'BlogPost Upvotes',
-            description: 'Email me when someone upvotes my blogpost.',
+            id: 'newPost',
+            name: 'New Blog Post',
+            description: 'Email me when user whom I am following adds a new blogpost or if it is created in my area of interest.',
         },
         {
-            id: 'followQuestion',
-            name: 'Follow Question',
-            description: 'Email me when someone follows my question',
+            id: 'editPost',
+            name: 'Blog Post Edits/Updates',
+            description: 'Email me when someone updates/edits blog posts that I am following.',
+        },
+        {
+            id: 'upvotePost',
+            name: 'Blog Post Upvotes',
+            description: 'Email me when someone upvotes my blog post.',
         },
         {
             id: 'followUser',
@@ -207,7 +222,7 @@ function Notifications(props) {
         {
             id: 'newComment',
             name: 'Comments and Replies',
-            description: 'Email me of comments on my content and replies to my comments.',
+            description: 'Email me of comments on my blog posts or answers.',
         },
     ];
 
@@ -321,12 +336,17 @@ function Notifications(props) {
                                 <Box
                                     fontWeight="fontWeightBold"
                                     m={ 1 }>
-                                    Email Preferences
+                                    Email Notifications
                                     { ' ' }
                                     <Switch
                                         checked={ emailSubscription }
                                         onChange={ enableEmailSubscription }
                                         name="checkedB" />
+                                </Box>
+                                <Box
+                                    fontWeight="fontWeightBold"
+                                    m={ 1 }>
+                                    Preferences
                                 </Box>
                             </Typography>
                             <Divider />
