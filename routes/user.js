@@ -882,6 +882,7 @@ module.exports = (app) => {
                                     author: 1,
                                     downvoters: 1,
                                     postedDate: 1,
+                                    lastModified: 1,
                                     questionID: 1,
                                     upvoters: 1,
                                     upvotersCount: 1,
