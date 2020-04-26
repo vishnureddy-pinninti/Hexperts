@@ -190,6 +190,11 @@ const QuestionSection = (props) => {
         );
     };
 
+    const [
+        lastModified,
+        setLastModified,
+    ] = React.useState(question.lastModified);
+
     const onEditorStateChange = (value) => {
         setAnswer(value);
     };
@@ -237,9 +242,14 @@ const QuestionSection = (props) => {
     };
 
     const callback = (res) => {
-        const { question, description } = res;
+        const {
+            question,
+            description,
+            lastModified,
+        } = res;
         setQuestionText(question);
         setDescription(description);
+        setLastModified(lastModified);
     };
 
     const handleOnEditQuestion = (question, description) => {
@@ -310,7 +320,8 @@ const QuestionSection = (props) => {
                             { isOwner ? 'me' : name }
                         </Link>
                     }
-                    subheader={ formatDistanceToNow(new Date(question.postedDate || Date.now()), { addSuffix: true }) }
+                    subheader={ lastModified ? `Edited ${formatDistanceToNow(new Date(lastModified || Date.now()), { addSuffix: true })}`
+                        : formatDistanceToNow(new Date(question.postedDate || Date.now()), { addSuffix: true }) }
                     action={ isOwner && <>
                         <IconButton
                             aria-controls="simple-menu"
