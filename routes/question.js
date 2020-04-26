@@ -690,6 +690,7 @@ module.exports = (app) => {
             const responseObject = { _id: questionID };
 
             if (question) {
+                let edited = false;
                 if (suggestedExperts) {
                     question.suggestedExperts = [
                         ...question.suggestedExperts,
@@ -716,6 +717,7 @@ module.exports = (app) => {
                 if (questionString) {
                     question.question = questionString;
                     responseObject.question = questionString;
+                    edited = true;
                 }
 
                 if (description || description === '') {
@@ -725,9 +727,21 @@ module.exports = (app) => {
                     question.plainText = plainText;
                     responseObject.description = description;
                     responseObject.plainText = plainText;
+                    edited = true;
                 }
 
-                question.lastModified = Date.now();
+                if (edited) {
+                    question.lastModified = Date.now();
+                    emailNotify('editQuestion', {
+                        question: questionString || question.question,
+                        _id: questionID,
+                        req: req.io,
+                    }, {
+                        author: req.user,
+                        suggestedExperts,
+                        topics: question.topics,
+                    });
+                }
 
                 await question.save();
                 res

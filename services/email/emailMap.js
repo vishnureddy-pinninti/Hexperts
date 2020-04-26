@@ -71,6 +71,55 @@ const emailMap = {
             },
         };
     },
+    editQuestion: async(data, options) => {
+        // Emails to experts, author followers and topic followers
+        const {
+            question,
+            _id,
+            req,
+        } = data;
+
+        const {
+            author,
+            suggestedExperts,
+            topics,
+        } = options;
+
+        const userFollowers = await getUserFollowers(author._id);
+        const topicFollowers = await getTopicFollowers(topics);
+        const experts = await getSuggestedExperts(suggestedExperts);
+        const questionFollowers = await getQuestionFollowers(_id);
+        const recipients = [
+            ...experts,
+            ...userFollowers,
+            ...topicFollowers,
+            ...questionFollowers,
+        ];
+
+        return {
+            email: {
+                template: 'newEntry',
+                locals: {
+                    name: author.name,
+                    data: question,
+                    dataDescription: 'edited below question.',
+                    link: `${keys.emailUrl}question/${_id}`,
+                    subject: 'Question Edited',
+                },
+                recipients,
+                type: 'editQuestion',
+                user: author,
+            },
+            notification: {
+                recipients,
+                message: `<b>${author.name}</b> edited question.`,
+                link: `/question/${_id}`,
+                user: author,
+                req,
+                type: QUESTION_NOTIFICATION,
+            },
+        };
+    },
     suggestedExpert: async(data, options) => {
         // Emails to experts
         const {
@@ -156,6 +205,51 @@ const emailMap = {
             reputation: {
                 user: owner,
                 score: NEW_ANSWER,
+            },
+        };
+    },
+    editAnswer: async(data, options) => {
+        // Emails to question author, question followers and user followers
+        const {
+            plainText,
+            _id,
+            questionID,
+            req,
+        } = data;
+
+        const {
+            author: owner,
+        } = options;
+
+        const questionFollowers = await getQuestionFollowers(questionID);
+        const userFollowers = await getUserFollowers(owner._id);
+
+        const recipients = [
+            ...questionFollowers,
+            ...userFollowers,
+        ];
+
+        return {
+            email: {
+                template: 'newEntry',
+                locals: {
+                    name: owner.name,
+                    data: plainText,
+                    dataDescription: 'edited below answer.',
+                    link: `${keys.emailUrl}answer/${_id}`,
+                    subject: 'Answer edited',
+                },
+                recipients,
+                type: 'editAnswer',
+                user: owner,
+            },
+            notification: {
+                recipients,
+                message: `<b>${owner.name}</b> edited answer.`,
+                link: `/answer/${_id}`,
+                user: owner,
+                req,
+                type: ANSWER_NOTIFICATION,
             },
         };
     },
@@ -417,7 +511,7 @@ const emailMap = {
         } = data;
 
         const userFollowers = await getUserFollowers(author._id);
-        const topicFollowers = await getTopicFollowers(topics.map((t) => t._id));
+        const topicFollowers = await getTopicFollowers(topics);
         const recipients = [
             ...userFollowers,
             ...topicFollowers,
@@ -448,6 +542,47 @@ const emailMap = {
             reputation: {
                 user: author,
                 score: NEW_POST,
+            },
+        };
+    },
+    editPost: async(data) => {
+        // Emails to experts, author followers and topic followers
+        const {
+            author,
+            topics,
+            title,
+            _id,
+            req,
+        } = data;
+
+        const userFollowers = await getUserFollowers(author._id);
+        const topicFollowers = await getTopicFollowers(topics);
+        const recipients = [
+            ...userFollowers,
+            ...topicFollowers,
+        ];
+
+        return {
+            email: {
+                template: 'newEntry',
+                locals: {
+                    name: author.name,
+                    data: title,
+                    dataDescription: 'edited below blog post.',
+                    link: `${keys.emailUrl}post/${_id}`,
+                    subject: 'Blog Post edited',
+                },
+                recipients,
+                type: 'editPost',
+                user: author,
+            },
+            notification: {
+                recipients,
+                message: `<b>${author.name}</b> edited blog post.`,
+                link: `/post/${_id}`,
+                user: author,
+                req,
+                type: POST_NOTIFICATION,
             },
         };
     },

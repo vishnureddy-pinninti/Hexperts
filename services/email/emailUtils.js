@@ -27,9 +27,9 @@ const getUserFollowers = async(id) => {
     return uFollowers.followers;
 };
 
-const getTopicFollowers = async(topics) => await User.find({ 'interests': { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
+const getTopicFollowers = async(topics = []) => await User.find({ 'interests': { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
 
-const getSuggestedExperts = async(suggestedExperts) => await User.find({ _id: { $in: suggestedExperts.map((expert) => mongoose.Types.ObjectId(expert)) } });
+const getSuggestedExperts = async(suggestedExperts = []) => await User.find({ _id: { $in: suggestedExperts.map((expert) => mongoose.Types.ObjectId(expert)) } });
 
 const getQuestionFollowers = async(questionID) => {
     const question = await Question.aggregate([
@@ -91,6 +91,9 @@ const emailPreferenceTypes = [
     'upvotePost',
     'followUser',
     'suggestedExpert',
+    'editQuestion',
+    'editAnswer',
+    'editPost',
 ];
 
 module.exports = {
