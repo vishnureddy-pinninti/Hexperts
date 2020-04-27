@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const prod = require('./prod');
 const dev = require('./dev');
 const qa = require('./qa');
