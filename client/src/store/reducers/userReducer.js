@@ -350,10 +350,12 @@ export default (state = initialState, action) => {
                 pageLoader: false,
                 interests: state.interests.map((interest) => {
                     if (interest._id === action.topic._id) {
-                        return {
-                            ...interest,
-                            topic: action.topic.topic,
-                        };
+                        const temp = { ...interest };
+                        temp.topic = action.topic.topic;
+                        if (action.topic.imageUrl === ''){
+                            temp.imageUrl = '';
+                        }
+                        return temp;
                     }
                     return interest;
                 }),

@@ -85,15 +85,20 @@ export default (state = initialState, action) => {
         case RECEIVE_EDITED_TOPIC:
             temp = state.topic;
             temp.topic = action.topic.topic;
+            if (action.topic.imageUrl === ''){
+                temp.imageUrl = '';
+            }
             return {
                 ...state,
                 topic: temp,
                 topics: state.topics.map((topic) => {
                     if (topic._id === action.topic._id) {
-                        return {
-                            ...topic,
-                            topic: action.topic.topic,
-                        };
+                        temp = { ...topic };
+                        temp.topic = action.topic.topic;
+                        if (action.topic.imageUrl === ''){
+                            temp.imageUrl = '';
+                        }
+                        return temp;
                     }
                     return topic;
                 }),
