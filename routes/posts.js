@@ -101,7 +101,7 @@ module.exports = (app) => {
             $or: [
                 // { blog: { $in: blogs.map((blog) => mongoose.Types.ObjectId(blog)) } },
                 { topics: { $in: interests.map((interest) => mongoose.Types.ObjectId(interest)) } },
-                { author: { $in: dbUser[0].following.map((f) => mongoose.Types.ObjectId(f._id)) } },
+                { author: { $in: [ ...dbUser[0].following.map((f) => mongoose.Types.ObjectId(f._id)), mongoose.Types.ObjectId(_id) ] } },
             ],
         };
 

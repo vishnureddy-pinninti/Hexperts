@@ -302,6 +302,7 @@ module.exports = (app) => {
             const {
                 topic: topicString,
                 description,
+                imageUrl,
             } = req.body;
 
             const topic = await Topic.findById(topicID);
@@ -319,6 +320,13 @@ module.exports = (app) => {
                     }
                     topic.imageUrl = `/api/v1/images/${req.files[0].filename}`;
                     responseObject.imageUrl = `/api/v1/images/${req.files[0].filename}`;
+                }
+
+                if (imageUrl === '') {
+                    if (topic.imageUrl) {
+                        deleteImage(topic.imageUrl);
+                    }
+                    topic.imageUrl = undefined;
                 }
 
                 if (description || description === '') {
