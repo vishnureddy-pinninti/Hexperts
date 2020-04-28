@@ -39,10 +39,6 @@ blockquote {
   max-height: 500px;
 }
 
-.editor-read-mode p,.public-DraftStyleDefault-block {
-  margin:0;
-}
-
 .rdw-editor-wrapper{
   border: 1px solid #9e9e9e !important;
   border-radius: 4px;
