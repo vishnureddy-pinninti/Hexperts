@@ -10,7 +10,9 @@ import { Button,
     Typography } from '@material-ui/core';
 import BlogPostModal from '../components/blog/PostModal';
 import BlogsList from '../components/blog/BlogsList';
-import Header from '../components/blog/BlogHeader';
+// import Header from '../components/blog/BlogHeader';
+import Header from '../components/topic/TopicSection';
+
 // import FollowBlogsModal from '../components/blog/FollowBlogsModal';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import EmptyResults from '../components/base/EmptyResults';
@@ -183,7 +185,7 @@ function Topic(props) {
                             variant="rect"
                             height={ 200 } />
                             : <Header
-                                blog={ blog }
+                                topic={ blog }
                                 id={ blogId } /> }
                         { loading ? <CardLoader height={ 400 } />
                             : <>

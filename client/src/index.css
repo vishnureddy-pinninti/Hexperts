@@ -40,7 +40,7 @@ blockquote {
 }
 
 .editor-read-mode p,.public-DraftStyleDefault-block {
-  margin:0;
+  margin-bottom:0;
 }
 
 .rdw-editor-wrapper{
