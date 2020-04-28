@@ -327,6 +327,7 @@ module.exports = (app) => {
                         deleteImage(topic.imageUrl);
                     }
                     topic.imageUrl = undefined;
+                    responseObject.imageUrl = '';
                 }
 
                 if (description || description === '') {
