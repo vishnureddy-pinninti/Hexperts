@@ -111,7 +111,7 @@ function Question(props) {
         setLoading(true);
         requestQuestion(questionId, { skip: 0 }, () => {}, (res) => {
             setLoading(false);
-            setError(res.response);
+            setError('Question not found. It may have been deleted by the author.');
         });
         setRelatedQuestionsloading(true);
         requestRelatedQuestions(questionId);
