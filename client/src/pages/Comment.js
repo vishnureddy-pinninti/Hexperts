@@ -72,10 +72,18 @@ function Comment(props) {
                 className={ classes.link }>
                 { comment.answer.author.name }
             </Link>
-            's answer to
+            's
             { ' ' }
             <Link
                 to={ `/answer/${comment.answer._id}` }
+                className={ classes.link }>
+                answer
+            </Link>
+            { ' ' }
+            to
+            { ' ' }
+            <Link
+                to={ `/question/${comment.question._id}` }
                 className={ classes.link }>
                 { comment.question.question }
             </Link>
@@ -157,11 +165,11 @@ function Comment(props) {
                         { pending ? <Skeleton
                             variant="rect"
                             height={ 150 } /> : <>
-                            { comment && comment.answer && renderTitle(comment) }
-                            { comment && comment.answer && renderComment(comment) }
-                            { postComment && postComment.post && renderPostCommentTitle(postComment) }
-                            { postComment && postComment.post && renderComment(postComment) }
-                        </> }
+                                { comment && comment.answer && renderTitle(comment) }
+                                { comment && comment.answer && renderComment(comment) }
+                                { postComment && postComment.post && renderPostCommentTitle(postComment) }
+                                { postComment && postComment.post && renderComment(postComment) }
+                            </> }
                     </Grid>
                     <Grid
                         item

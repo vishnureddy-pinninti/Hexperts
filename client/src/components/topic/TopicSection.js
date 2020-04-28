@@ -12,6 +12,7 @@ import { Card,
 import { RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ImageIcon from '@material-ui/icons/Image';
+import DeleteIcon from '@material-ui/icons/Delete';
 import StarsRoundedIcon from '@material-ui/icons/StarsRounded';
 import { connect } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
@@ -158,6 +159,16 @@ const TopicSection = (props) => {
         setOpenDescriptionModal(false);
     };
 
+
+    const handleDeleteImage = () => {
+        setAnchorEl(null);
+        editTopic(id, {
+            imageUrl: '',
+            topic: topicText,
+            description,
+        }, () => { setImageUrl(''); });
+    };
+
     return (
         <Card className={ classes.root }>
             <CardHeader
@@ -195,8 +206,12 @@ const TopicSection = (props) => {
                             <ImageIcon className={ classes.menuIcon } />
                             Edit Image
                         </MenuItem>
+                        <MenuItem onClick={ handleDeleteImage }>
+                            <DeleteIcon className={ classes.menuIcon } />
+                            Delete Image
+                        </MenuItem>
                     </Menu>
-                </> }
+                         </> }
                 subheader={ description } />
             <CardActions disableSpacing>
                 <Button
