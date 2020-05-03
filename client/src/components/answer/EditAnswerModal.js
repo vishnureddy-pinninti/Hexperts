@@ -11,10 +11,9 @@ import { Editor } from 'react-draft-wysiwyg';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
-import htmlToDraft from 'html-to-draftjs';
-
-import draftToHtml from 'draftjs-to-html';
+import { EditorState } from 'draft-js';
+import { convertFromHTML } from 'draft-convert';
+import { stateToHTML } from 'draft-js-export-html';
 
 import config from '../../utils/config';
 
@@ -70,9 +69,10 @@ function DescriptionModal(props) {
     let editorState = '';
 
     if (answerHTML){
-        const contentBlock = htmlToDraft(answerHTML);
-        if (contentBlock) {
-            const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+        const contentState = convertFromHTML(config.convertFromHTMLOptions)(answerHTML);
+        // const contentBlock = htmlToDraft(answerHTML);
+        if (contentState) {
+            // const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
             editorState = EditorState.createWithContent(contentState);
         }
     }
@@ -92,12 +92,10 @@ function DescriptionModal(props) {
 
     const addDescriptionToQuestion = () => {
         const { handleDone } = props;
-        const content = answer.getCurrentContent();
-        const raw = convertToRaw(content);
-        const html = draftToHtml(raw);
+        const contentState = answer.getCurrentContent();
 
         if (handleDone){
-            handleDone(raw.blocks[0].text ? html : '');
+            handleDone(stateToHTML(contentState, config.stateToHtmlOptions));
         }
     };
 
@@ -128,6 +126,9 @@ function DescriptionModal(props) {
                             wrapperClassName={ classes.editorWrapper }
                             editorClassName={ `${classes.editor} editor-write-mode` }
                             onEditorStateChange={ onEditorStateChange }
+                            blockRenderMap={ config.editorConfig.extendedBlockRenderMap }
+                            toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
+                            customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
                             toolbar={ config.editorToolbar } />
                     </DialogContent>
                     <DialogActions>
