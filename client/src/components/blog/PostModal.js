@@ -85,20 +85,23 @@ const BlogPostModal = (props) => {
         descriptionHTML,
     } = props;
 
-    let editorState = '';
-
-    if (descriptionHTML){
-        const contentBlock = htmlToDraft(descriptionHTML);
-        if (contentBlock) {
-            const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-            editorState = EditorState.createWithContent(contentState);
-        }
-    }
-
     const [
         description,
         setDescription,
-    ] = React.useState(editorState);
+    ] = React.useState('');
+
+    useEffect(() => {
+        let editorState = '';
+
+        if (descriptionHTML){
+            const contentBlock = htmlToDraft(descriptionHTML);
+            if (contentBlock) {
+                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+                editorState = EditorState.createWithContent(contentState);
+                setDescription(editorState);
+            }
+        }
+    }, [ descriptionHTML ]);
 
     const onEditorStateChange = (value) => {
         setDescription(value);

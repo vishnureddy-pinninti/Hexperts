@@ -7,7 +7,7 @@ import Code from '../components/base/CodeEditor';
 
 const blockRenderMap = Map({
     customcodeblock: {
-        element: 'code',
+        element: 'pre',
     },
 });
 
@@ -52,6 +52,7 @@ export default {
                 'H1',
                 'H2',
                 'Blockquote',
+                'Code',
                 'atomic',
             ],
         },

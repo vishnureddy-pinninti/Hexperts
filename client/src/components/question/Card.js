@@ -10,10 +10,11 @@ import { Card,
 import { EditTwoTone as EditTwoToneIcon,
     RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
 import { Editor } from 'react-draft-wysiwyg';
-import { stateToHTML } from 'draft-js-export-html';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
+import { convertToRaw } from 'draft-js';
+import draftToHtml from '../../utils/draftjs-to-html';
 
 import { addAnswerToQuestion,
     addAnswerPending } from '../../store/actions/answer';
@@ -97,7 +98,7 @@ const QuestionCard = (props) => {
         const contentState = answer.getCurrentContent();
         addAnswerToQuestion(
             {
-                answer: stateToHTML(contentState, config.stateToHtmlOptions),
+                answer: draftToHtml(convertToRaw(contentState)),
                 questionID: question._id,
             },
             question

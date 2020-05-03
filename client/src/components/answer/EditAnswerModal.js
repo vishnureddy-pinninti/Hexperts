@@ -10,10 +10,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Editor } from 'react-draft-wysiwyg';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
+import htmlToDraft from 'html-to-draftjs';
 
-import { EditorState } from 'draft-js';
-import { convertFromHTML } from 'draft-convert';
-import { stateToHTML } from 'draft-js-export-html';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import draftToHtml from '../../utils/draftjs-to-html';
 
 import config from '../../utils/config';
 
@@ -66,21 +66,23 @@ function DescriptionModal(props) {
         handleSubmit,
     } = props;
 
-    let editorState = '';
-
-    if (answerHTML){
-        const contentState = convertFromHTML(config.convertFromHTMLOptions)(answerHTML);
-        // const contentBlock = htmlToDraft(answerHTML);
-        if (contentState) {
-            // const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-            editorState = EditorState.createWithContent(contentState);
-        }
-    }
-
     const [
         answer,
         setAnswer,
-    ] = React.useState(editorState);
+    ] = React.useState('');
+
+    React.useEffect(() => {
+        let editorState = '';
+
+        if (answerHTML){
+            const contentBlock = htmlToDraft(answerHTML);
+            if (contentBlock) {
+                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+                editorState = EditorState.createWithContent(contentState);
+                setAnswer(editorState);
+            }
+        }
+    }, [ answerHTML ]);
 
     const onEditorStateChange = (value) => {
         setAnswer(value);
@@ -95,7 +97,7 @@ function DescriptionModal(props) {
         const contentState = answer.getCurrentContent();
 
         if (handleDone){
-            handleDone(stateToHTML(contentState, config.stateToHtmlOptions));
+            handleDone(draftToHtml(convertToRaw(contentState)));
         }
     };
 
