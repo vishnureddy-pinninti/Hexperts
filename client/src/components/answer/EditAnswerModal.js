@@ -10,9 +10,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Editor } from 'react-draft-wysiwyg';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import htmlToDraft from 'html-to-draftjs';
-
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import htmlToDraft from '../../utils/html-to-draftjs';
+
 import draftToHtml from '../../utils/draftjs-to-html';
 
 import config from '../../utils/config';

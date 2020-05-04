@@ -16,11 +16,7 @@ import 'ace-builds/src-noconflict/mode-jsx';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-min-noconflict/ext-searchbox';
 import 'ace-builds/src-min-noconflict/ext-language_tools';
-import { EditorState, ContentState, ContentBlock, CharacterMetadata,
-    genKey } from 'draft-js';
-import { List, Map, Repeat } from 'immutable';
-
-import htmlToDraft from 'html-to-draftjs';
+import { AtomicBlockUtils } from 'draft-js';
 
 import ReactDOMServer from 'react-dom/server';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -152,34 +148,22 @@ function EditorModal(props) {
             { newValue }
                                                          </SyntaxHighlighter>);
 
-        const newBlockMap = htmlToDraft(html);
-        const contentState = editorState.getCurrentContent();
-        const selectionState = editorState.getSelection();
-        const key = selectionState.getAnchorKey();
-        const blocksAfter = contentState.getBlockMap().skipUntil((_, k) => k === key)
-            .skip(1)
-            .toArray();
-        const blocksBefore = contentState.getBlockMap().takeUntil((_, k) => k === key)
-            .toArray();
-        const newBlock = new ContentBlock({
-            key: genKey(),
-            type: 'customcodeblock',
-            characterList: new List(Repeat(CharacterMetadata.create(), newValue.length)),
-            text: newValue,
-            data: new Map({
-                language,
-                value: newValue,
-                html,
-            }),
-        });
-        blocksBefore.push(newBlock);
-        newBlockMap.contentBlocks = blocksBefore
-            .concat([ contentState.getBlockForKey(key) ])
-            .concat(blocksAfter);
-        let newEditorState = EditorState.createWithContent(ContentState.createFromBlockArray(newBlockMap, newBlockMap.entityMap));
-        newEditorState = EditorState.moveFocusToEnd(newEditorState);
+        const entityData = {
+            value: newValue.replace(/"/g, '\''),
+            language,
+            html,
+        };
+        const entityKey = editorState
+            .getCurrentContent()
+            .createEntity('CUSTOMCODE', 'MUTABLE', entityData)
+            .getLastCreatedEntityKey();
+        const newEditorState = AtomicBlockUtils.insertAtomicBlock(
+            editorState,
+            entityKey,
+            ' '
+        );
         onChange(newEditorState);
-        setTimeout(() => { setOpen(false); }, 1000);
+        setTimeout(() => { setOpen(false); }, 0);
     };
 
     const handleClose = () => {

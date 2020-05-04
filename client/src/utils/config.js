@@ -2,7 +2,7 @@ import { Map } from 'immutable';
 import { DefaultDraftBlockRenderMap } from 'draft-js';
 import React from 'react';
 import uploadImageCallBack from './upload';
-import { customBlockRenderer, stateToHtmlOptions, convertFromHTMLOptions } from './customBlockRenderer';
+import customBlockRenderer from './customBlockRenderer';
 import Code from '../components/base/CodeEditor';
 
 const blockRenderMap = Map({
@@ -27,8 +27,6 @@ export default {
         customBlockRenderer,
         toolbarCustomButtons: [ <Code key="1" /> ],
     },
-    stateToHtmlOptions,
-    convertFromHTMLOptions,
     editorToolbar: {
         options: [
             'fontSize',

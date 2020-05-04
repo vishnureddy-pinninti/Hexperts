@@ -38,7 +38,6 @@ const blockTypesMapping = {
     'ordered-list-item': 'ol',
     blockquote: 'blockquote',
     code: 'pre',
-    customcodeblock: 'customcodeblock',
 };
 
 /**
@@ -375,6 +374,9 @@ function getEntityMarkup(
     if (entity.type === 'EMBEDDED_LINK') {
         return `<iframe width="${entity.data.width}" height="${entity.data.height}" src="${entity.data.src}" frameBorder="0"></iframe>`;
     }
+    if (entity.type === 'CUSTOMCODE') {
+        return `<customcodeblock language=${entity.data.language} value="${entity.data.value}">${entity.data.html}</customcodeblock>`;
+    }
     return text;
 }
 
@@ -570,11 +572,7 @@ export function getBlockMarkup(
     }
     else {
         const blockTag = getBlockTag(block.type);
-        if (blockTag === 'customcodeblock'){
-            const { data } = block;
-            blockHtml.push(`<customcodeblock language=${data.language} value='${data.value}'>${data.html}</customcodeblock>`);
-        }
-        else {
+        if (blockTag){
             blockHtml.push(`<${blockTag}`);
             const blockStyle = getBlockStyle(block.data);
             if (blockStyle) {
