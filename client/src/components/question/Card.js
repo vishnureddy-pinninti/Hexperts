@@ -182,7 +182,6 @@ const QuestionCard = (props) => {
                         wrapperClassName={ classes.editorWrapper }
                         editorClassName={ `${classes.editor} editor-write-mode` }
                         onEditorStateChange={ onEditorStateChange }
-                        blockRenderMap={ config.editorConfig.extendedBlockRenderMap }
                         toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
                         customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
                         toolbar={ config.editorToolbar } />
