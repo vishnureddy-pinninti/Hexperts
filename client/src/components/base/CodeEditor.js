@@ -146,7 +146,7 @@ function EditorModal(props) {
             language={ language }
             style={ tomorrowNightBlue }>
             { newValue }
-                                                         </SyntaxHighlighter>);
+        </SyntaxHighlighter>);
 
         const entityData = {
             value: newValue.replace(/"/g, '\''),
@@ -176,7 +176,7 @@ function EditorModal(props) {
                 className="rdw-emoji-wrapper"
                 aria-haspopup="true"
                 aria-label="rdw-emoji-control"
-                title="Code"
+                title="Code Editor"
                 onClick={ handleOpen }
                 aria-expanded="false">
                 <div className="rdw-option-wrapper">
@@ -246,7 +246,7 @@ function EditorModal(props) {
                         onClick={ handleSave }
                         variant="contained"
                         color="primary">
-                        Save
+                        Insert
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -255,7 +255,7 @@ function EditorModal(props) {
 }
 
 EditorModal.defaultProps = {
-    title: 'Editor',
+    title: 'Code Editor',
 };
 
 EditorModal.propTypes = {

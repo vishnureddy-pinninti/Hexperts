@@ -12,6 +12,8 @@ const CustomCodeBlock = ({ block, contentState }) => {
             <br />
             <br />
             { value }
+            <br />
+            <br />
             { '<!-- end snippet -->' }
         </pre>
     );
