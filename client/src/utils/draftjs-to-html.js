@@ -702,7 +702,6 @@ export default function draftToHtml(
                         directional,
                         customEntityTransform,
                     );
-                    console.log(blockHtml);
                     html.push(blockHtml);
                 }
             });

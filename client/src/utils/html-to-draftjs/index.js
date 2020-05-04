@@ -186,7 +186,6 @@ function getChunkForHTML(html: string, customChunkGenerator: ?CustomChunkGenerat
 
 export default function htmlToDraft(html: string, customChunkGenerator: ?CustomChunkGenerator): Object {
     const chunkData = getChunkForHTML(html, customChunkGenerator);
-    console.log('chunkData', chunkData);
 
     if (chunkData) {
         const { chunk } = chunkData;
