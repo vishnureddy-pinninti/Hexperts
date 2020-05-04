@@ -10,11 +10,11 @@ import { Card,
 import { EditTwoTone as EditTwoToneIcon,
     RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
 import { Editor } from 'react-draft-wysiwyg';
-import { convertToRaw } from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
+import { convertToRaw } from 'draft-js';
+import draftToHtml from '../../utils/draftjs-to-html';
 
 import { addAnswerToQuestion,
     addAnswerPending } from '../../store/actions/answer';
@@ -95,9 +95,10 @@ const QuestionCard = (props) => {
 
     const addAnswer = () => {
         setDisableSubmit(true);
+        const contentState = answer.getCurrentContent();
         addAnswerToQuestion(
             {
-                answer: draftToHtml(convertToRaw(answer.getCurrentContent())),
+                answer: draftToHtml(convertToRaw(contentState)),
                 questionID: question._id,
             },
             question
@@ -181,6 +182,9 @@ const QuestionCard = (props) => {
                         wrapperClassName={ classes.editorWrapper }
                         editorClassName={ `${classes.editor} editor-write-mode` }
                         onEditorStateChange={ onEditorStateChange }
+                        blockRenderMap={ config.editorConfig.extendedBlockRenderMap }
+                        toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
+                        customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
                         toolbar={ config.editorToolbar } />
                 </CardContent>
                 <CardActions>

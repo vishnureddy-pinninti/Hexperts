@@ -13,8 +13,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { Field, reduxForm, reset } from 'redux-form';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
-import htmlToDraft from 'html-to-draftjs';
-import draftToHtml from 'draftjs-to-html';
 import List from '@material-ui/core/List';
 import { Editor } from 'react-draft-wysiwyg';
 import Chip from '@material-ui/core/Chip';
@@ -23,6 +21,8 @@ import { withRouter } from 'react-router-dom';
 import { addPostToBlog, addBlogPending } from '../../store/actions/blog';
 import { addNewTopic, requestTopics } from '../../store/actions/topic';
 import { editQuestion, editQuestionPending } from '../../store/actions/questions';
+import htmlToDraft from '../../utils/html-to-draftjs';
+import draftToHtml from '../../utils/draftjs-to-html';
 import config from '../../utils/config';
 
 const filter = createFilterOptions();
@@ -85,20 +85,23 @@ const BlogPostModal = (props) => {
         descriptionHTML,
     } = props;
 
-    let editorState = '';
-
-    if (descriptionHTML){
-        const contentBlock = htmlToDraft(descriptionHTML);
-        if (contentBlock) {
-            const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-            editorState = EditorState.createWithContent(contentState);
-        }
-    }
-
     const [
         description,
         setDescription,
-    ] = React.useState(editorState);
+    ] = React.useState('');
+
+    useEffect(() => {
+        let editorState = '';
+
+        if (descriptionHTML){
+            const contentBlock = htmlToDraft(descriptionHTML);
+            if (contentBlock) {
+                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+                editorState = EditorState.createWithContent(contentState);
+                setDescription(editorState);
+            }
+        }
+    }, [ descriptionHTML ]);
 
     const onEditorStateChange = (value) => {
         setDescription(value);
@@ -146,6 +149,8 @@ const BlogPostModal = (props) => {
             onEditorStateChange={ onEditorStateChange }
             wrapperClassName={ classes.editorWrapper }
             editorClassName={ `${classes.editor} editor-write-mode` }
+            toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
+            customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
             toolbar={ config.editorToolbar } />
     );
 

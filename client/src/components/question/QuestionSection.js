@@ -18,7 +18,6 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Editor } from 'react-draft-wysiwyg';
 import { convertToRaw } from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
@@ -32,6 +31,7 @@ import { addAnswerToQuestion,
     addAnswerPending } from '../../store/actions/answer';
 import { followQuestion,
     addQuestionToCache, editQuestion, editQuestionPending, deleteQuestion } from '../../store/actions/questions';
+import draftToHtml from '../../utils/draftjs-to-html';
 import config from '../../utils/config';
 import { isMediaOrCode } from '../../utils/common';
 
@@ -345,7 +345,7 @@ const QuestionSection = (props) => {
                                 Delete
                             </MenuItem>
                         </Menu>
-                    </> } />
+                                        </> } />
                 <QuestionTags
                     question={ question }
                     topics={ topics }
@@ -364,7 +364,7 @@ const QuestionSection = (props) => {
                          Description:
                      </Typography>
                      { renderDescription(updatedQuestion.description) }
-                 </CardContent> }
+                    </CardContent> }
             </CardContent>
             <CardActions disableSpacing>
                 <Button
@@ -402,6 +402,8 @@ const QuestionSection = (props) => {
                         wrapperClassName={ classes.editorWrapper }
                         editorClassName={ `${classes.editor} editor-write-mode` }
                         onEditorStateChange={ onEditorStateChange }
+                        toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
+                        customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
                         toolbar={ config.editorToolbar } />
                 </CardContent>
                 <CardActions>
