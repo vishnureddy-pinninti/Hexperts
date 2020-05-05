@@ -23,6 +23,7 @@ function Topic(props) {
         requestTopic,
         pending,
         topic,
+        followers,
     } = props;
 
     const [
@@ -160,6 +161,7 @@ function Topic(props) {
                             height={ 200 } />
                             : <TopicSection
                                 topic={ topic }
+                                followers={ followers }
                                 id={ topicID } /> }
                         { loading ? <CardLoader height={ 200 } />
                             : <>
@@ -174,11 +176,11 @@ function Topic(props) {
                                         </p>
                                     }>
                                     { renderQuestions(items) }
-                                </InfiniteScroll> }
+                                                      </InfiniteScroll> }
                                 { items.length === 0 && !pagination.hasMore && <EmptyResults
                                     title="No questions posted yet."
                                     description="Feel free to ask a question to this topic." /> }
-                            </> }
+                              </> }
                     </Grid>
                     <Grid
                         item
@@ -196,6 +198,7 @@ const mapStateToProps = (state) => {
     return {
         topic: state.topic.topic,
         pending: state.user.pending,
+        followers: state.topic.topic.followers,
         modifiedQuestions: state.questions.modifiedQuestions,
     };
 };

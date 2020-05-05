@@ -211,7 +211,7 @@ const TopicSection = (props) => {
                             Delete Image
                         </MenuItem>
                     </Menu>
-                         </> }
+                </> }
                 subheader={ description } />
             <CardActions disableSpacing>
                 <Button
@@ -253,7 +253,6 @@ TopicSection.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         pending: state.answer.pending,
-        followers: state.topic.topic.followers,
         interests: state.user.interests,
         expertTopics: state.user.expertIn,
         user: state.user.user,
