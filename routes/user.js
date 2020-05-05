@@ -335,10 +335,13 @@ module.exports = (app) => {
                     follower: req.user,
                     unfollow: Boolean(isFollowing),
                 };
-                emailNotify('followUser', {
-                    ...responseObject,
-                    req: req.io,
-                });
+
+                if (isFollowing) {
+                    emailNotify('followUser', {
+                        ...responseObject,
+                        req: req.io,
+                    });
+                }
 
                 res
                     .status(200)
