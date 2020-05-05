@@ -50,7 +50,6 @@ export default {
                 'H1',
                 'H2',
                 'Blockquote',
-                'Code',
                 'atomic',
             ],
         },
