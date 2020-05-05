@@ -33,6 +33,7 @@ function Topic(props) {
         followedBlogs,
         newPost,
         modifiedBlogs,
+        followers,
     } = props;
 
     const [
@@ -186,6 +187,7 @@ function Topic(props) {
                             height={ 200 } />
                             : <Header
                                 topic={ blog }
+                                followers={ followers }
                                 id={ blogId } /> }
                         { loading ? <CardLoader height={ 400 } />
                             : <>
@@ -252,6 +254,7 @@ const mapStateToProps = (state) => {
         pending: state.user.pending,
         followedBlogs: state.user.user.blogs,
         modifiedBlogs: state.blog.modifiedBlogs,
+        followers: state.blog.blog.followers,
         newPost: state.blog.newPost,
     };
 };

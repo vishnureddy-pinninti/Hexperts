@@ -118,10 +118,12 @@ const useStyles = makeStyles((theme) => {
             },
         },
         topBar: {
-            backgroundColor: '#046080',
+            backgroundColor: '#0088ac',
             backgroundImage: 'url(/topbar.png)',
             backgroundRepeat: 'no-repeat',
             objectFit: 'cover',
+            backgroundSize: '950px 100%',
+            backgroundPosition: 'center',
         },
         small: {
             width: theme.spacing(2),
