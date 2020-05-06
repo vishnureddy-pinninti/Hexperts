@@ -9,6 +9,7 @@ import { RECEIVE_ADDED_ANSWER,
     RECEIVE_COMMENT_BY_ID,
     RECEIVE_DOWNVOTE_ANSWER,
     REQUEST_ANSWER_BY_ID,
+    EDIT_CODE,
     REQUEST_COMMENT_BY_ID } from '../actions/answer';
 
 import { RECEIVE_QUESTION_BY_ID } from '../actions/questions';
@@ -19,6 +20,7 @@ const initialState = {
     pending: true,
     modifiedAnswers: {},
     comment: {},
+    codeConfig: {},
 };
 
 export default (state = initialState, action) => {
@@ -161,6 +163,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 modifiedAnswers: { ...answer },
+            };
+        case EDIT_CODE:
+            return {
+                ...state,
+                codeConfig: action.data,
             };
         default:
             return state;

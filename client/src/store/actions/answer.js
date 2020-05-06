@@ -18,6 +18,7 @@ export const RECEIVE_DELTEED_ANSWER = 'RECEIVE_DELTEED_ANSWER';
 export const DELETE_ANSWER = 'DELETE_ANSWER';
 export const EDIT_ANSWER = 'EDIT_ANSWER';
 export const RECEIVE_EDITED_ANSWER = 'RECEIVE_EDITED_ANSWER';
+export const EDIT_CODE = 'EDIT_CODE';
 
 export function addAnswerPending() {
     return {
@@ -205,3 +206,10 @@ export const requestCommentById = (id) => {
         },
     };
 };
+
+export function editCode(data) {
+    return {
+        type: EDIT_CODE,
+        data,
+    };
+}

@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import CodeIcon from '@material-ui/icons/Code';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -16,7 +15,6 @@ import 'ace-builds/src-noconflict/mode-jsx';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-min-noconflict/ext-searchbox';
 import 'ace-builds/src-min-noconflict/ext-language_tools';
-import { AtomicBlockUtils } from 'draft-js';
 
 import ReactDOMServer from 'react-dom/server';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -54,53 +52,16 @@ const useStyles = makeStyles((theme) => {
     };
 });
 
-function testJSON(text) {
-    if (typeof text !== 'string') {
-        return false;
-    }
-    try {
-        JSON.parse(text);
-
-        return true;
-    }
-    catch (error) {
-        return false;
-    }
-}
-
-function testXML(text) {
-    const doc = new DOMParser().parseFromString(text, 'text/xml');
-    try {
-        if (doc.body && Array.from(doc.body.childNodes).some((node) => node.nodeName === 'parsererror')) {
-            return false;
-        }
-
-        return Array.from(doc.childNodes).some((node) => node.nodeType === 1);
-    }
-    catch (error) {
-        return false;
-    }
-}
-
-function testHTML(text) {
-    try {
-        const doc = new DOMParser().parseFromString(text, 'text/html');
-
-        return Array.from(doc.body.childNodes).some((node) => node.nodeType === 1);
-    }
-    catch (error) {
-        return false;
-    }
-}
-
 function EditorModal(props) {
     const classes = useStyles();
 
     const {
         title,
         value,
+        lang,
+        open,
+        handleClose,
     } = props;
-
 
     const [
         language,
@@ -110,28 +71,14 @@ function EditorModal(props) {
         newValue,
         setNewValue,
     ] = React.useState();
-    const [
-        open,
-        setOpen,
-    ] = React.useState(false);
 
-    React.useEffect(() => {
-        let languageForEditor = 'none';
-
-        if (testJSON(value)) {
-            languageForEditor = 'json';
-        }
-
-        if (testHTML(value)) {
-            languageForEditor = 'html';
-        }
-
-        if (testXML(value)) {
-            languageForEditor = 'xml';
-        }
+    useEffect(() => {
         setNewValue(value);
-        setLanguage(languageForEditor);
-    }, [ value ]);
+        setLanguage(lang);
+    }, [
+        lang,
+        value,
+    ]);
 
     const handleLanguageChange = (event) => {
         setLanguage(event.target.value);
@@ -141,12 +88,10 @@ function EditorModal(props) {
         setNewValue(val);
     };
 
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
     const handleSave = () => {
-        const { editorState, onChange } = props;
+        const {
+            handleSave,
+        } = props;
         const html = ReactDOMServer.renderToStaticMarkup(<SyntaxHighlighter
             language={ language }
             style={ tomorrowNightBlue }>
@@ -158,36 +103,14 @@ function EditorModal(props) {
             language,
             html,
         };
-        const entityKey = editorState
-            .getCurrentContent()
-            .createEntity('CUSTOMCODE', 'MUTABLE', entityData)
-            .getLastCreatedEntityKey();
-        const newEditorState = AtomicBlockUtils.insertAtomicBlock(
-            editorState,
-            entityKey,
-            ' '
-        );
-        onChange(newEditorState);
-        setTimeout(() => { setOpen(false); }, 0);
-    };
 
-    const handleClose = () => {
-        setOpen(false);
+        if (handleSave){
+            handleSave(entityData);
+        }
     };
 
     return (
         <>
-            <div
-                className="rdw-emoji-wrapper"
-                aria-haspopup="true"
-                aria-label="rdw-emoji-control"
-                title="Code Editor"
-                onClick={ handleOpen }
-                aria-expanded="false">
-                <div className="rdw-option-wrapper">
-                    <CodeIcon />
-                </div>
-            </div>
             <Dialog
                 open={ open }
                 onClose={ handleClose }
@@ -251,7 +174,7 @@ function EditorModal(props) {
                         onClick={ handleSave }
                         variant="contained"
                         color="primary">
-                        Insert
+                        Update
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -260,7 +183,7 @@ function EditorModal(props) {
 }
 
 EditorModal.defaultProps = {
-    title: 'Code Editor',
+    title: 'Edit Code',
 };
 
 EditorModal.propTypes = {
