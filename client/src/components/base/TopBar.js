@@ -24,8 +24,10 @@ import DescriptionModal from './DescriptionModal';
 import SearchBar from './SearchBar';
 import EditTopicsModal from '../topic/EditTopicsModal';
 import EditSuggestedWriters from '../question/EditSuggestedWriters';
+import EditCode from './EditCode';
 
 import getBadge from '../../utils/badge';
+import { editCode } from '../../store/actions/answer';
 import { addUserQuestion, addQuestionPending, toggleQuestionModal } from '../../store/actions/questions';
 
 const useStyles = makeStyles((theme) => {
@@ -194,6 +196,8 @@ const TopBar = (props) => {
         toggleQuestionModal,
         questionModal,
         pageLoader,
+        codeConfig,
+        editCode,
     } = props;
 
     const { path } = match;
@@ -382,6 +386,26 @@ const TopBar = (props) => {
             handleDone={ handleOnAddQuestion } />
     );
 
+    const [
+        codeObj,
+        setCodeObj,
+    ] = React.useState({});
+
+    React.useEffect(() => {
+        setCodeObj(codeConfig);
+    }, [ codeConfig ]);
+
+
+    const handleSave = (data) => {
+        if (codeObj.callback) { codeObj.callback(data); }
+        editCode({});
+    };
+
+    const handleClose = () => {
+        setCodeObj({ open: false });
+        editCode({});
+    };
+
     return (
         <div className={ classes.grow }>
             <AppBar
@@ -530,12 +554,22 @@ const TopBar = (props) => {
             <Snackbar
                 open={ newQuestion.question }
                 message="Adding Question" />
+            { codeObj.open && <EditCode
+                open={ codeObj.open }
+                lang={ codeObj.language }
+                handleClose={ handleClose }
+                handleSave={ handleSave }
+                value={ codeObj.value } /> }
         </div>
     );
 };
 
+TopBar.defaultProps = {
+    codeConfig: {},
+};
+
 TopBar.propTypes = {
-    handleDrawerOpen: PropTypes.func,
+    codeConfig: PropTypes.object,
 };
 
 const mapStateToProps = (state) => {
@@ -547,6 +581,7 @@ const mapStateToProps = (state) => {
         notificationCount: state.user.notificationCount,
         questionModal: state.questions.questionModal,
         pageLoader: state.user.pageLoader,
+        codeConfig: state.answer.codeConfig,
     };
 };
 
@@ -558,6 +593,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         toggleQuestionModal: () => {
             dispatch(toggleQuestionModal());
+        },
+        editCode: (data) => {
+            dispatch(editCode(data));
         },
     };
 };
