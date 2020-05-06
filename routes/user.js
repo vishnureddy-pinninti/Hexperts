@@ -336,7 +336,7 @@ module.exports = (app) => {
                     unfollow: Boolean(isFollowing),
                 };
 
-                if (isFollowing) {
+                if (!Boolean(isFollowing)) {
                     emailNotify('followUser', {
                         ...responseObject,
                         req: req.io,
