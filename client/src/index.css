@@ -25,8 +25,8 @@ pre {
   overflow: auto;
 }
 
-.editor-read-mode mycustomblock pre{
-  max-height: 500px;
+customcodeblock{
+  font-size: 14px;
 }
 
 blockquote {

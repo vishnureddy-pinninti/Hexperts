@@ -12,13 +12,13 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-jsx';
-import 'ace-builds/src-noconflict/theme-github';
+import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-min-noconflict/ext-searchbox';
 import 'ace-builds/src-min-noconflict/ext-language_tools';
 
 import ReactDOMServer from 'react-dom/server';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { tomorrowNightBlue } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const languages = [
     'javascript',
@@ -94,7 +94,7 @@ function EditorModal(props) {
         } = props;
         const html = ReactDOMServer.renderToStaticMarkup(<SyntaxHighlighter
             language={ language }
-            style={ tomorrowNightBlue }>
+            style={ dracula }>
             { newValue }
         </SyntaxHighlighter>);
 
@@ -148,7 +148,7 @@ function EditorModal(props) {
                         placeholder="Start typing..."
                         mode={ language }
                         name="editor"
-                        theme="github"
+                        theme="monokai"
                         onChange={ handleChange }
                         fontSize={ 14 }
                         width="100%"

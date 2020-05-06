@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { EditorState } from 'draft-js';
 import EditIcon from '@material-ui/icons/Edit';
+import IconButton from '@material-ui/core/IconButton';
 import store from '../store';
 import { editCode } from '../store/actions/answer';
 
@@ -46,20 +47,16 @@ const CustomCodeBlock = (props) => {
     return (
         <>
             <pre className="custom-code-block">
-                <div
-                    className="rdw-emoji-wrapper"
-                    aria-haspopup="true"
-                    aria-label="rdw-emoji-control"
-                    title="Code Editor"
-                    style={ {
-                        float: 'right',
-                        paddingTop: 5,
-                    } }
-                    onClick={ handleClick }
-                    aria-expanded="false">
-                    <div className="rdw-option-wrapper">
+                <div style={ {
+                    float: 'right',
+                } }>
+                    <IconButton
+                        aria-label="logout"
+                        title="Edit"
+                        color="secondary"
+                        onClick={ handleClick }>
                         <EditIcon />
-                    </div>
+                    </IconButton>
                 </div>
                 { `<!--code language="${language}">` }
                 <br />
