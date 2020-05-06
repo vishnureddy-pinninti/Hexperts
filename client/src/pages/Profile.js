@@ -63,6 +63,7 @@ function Profile(props) {
         pending,
         userProfile,
         user,
+        followers,
     } = props;
 
     const [
@@ -181,7 +182,7 @@ function Profile(props) {
                                 mail={ userProfile.email }
                                 isOwner={ isOwner }
                                 jobTitle={ userProfile.jobTitle }
-                                followers={ userProfile.followers }
+                                followers={ followers }
                                 id={ userProfile._id }
                                 badge={ getBadge(userProfile.reputation) }
                                 onLogout={ props.onLogout } /> }
@@ -221,6 +222,7 @@ const mapStateToProps = (state) => {
         pending: state.user.pending,
         userProfile: state.user.userProfile,
         questions: state.questions.questions,
+        followers: state.user.userProfile.followers,
         user: state.user.user,
     };
 };

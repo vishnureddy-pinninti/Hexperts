@@ -43,6 +43,7 @@ export default (state = initialState, action) => {
     let followers = [];
     let index;
     let profile;
+    let temp;
     switch (action.type) {
         case RECEIVE_USER_SESSION:
             return {
@@ -292,12 +293,11 @@ export default (state = initialState, action) => {
             else {
                 followers.push(action.res.follower);
             }
+            temp = state.userProfile;
+            temp.followers = followers;
             return {
                 ...state,
-                userProfile: {
-                    ...state.userProfile,
-                    followers,
-                },
+                userProfile: temp,
             };
         case SET_IMAGE: {
             const existingImages = state.images.filter((image) => image.user !== action.image.user);
