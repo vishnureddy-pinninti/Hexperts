@@ -124,7 +124,7 @@ const useStyles = makeStyles((theme) => {
             backgroundImage: 'url(/topbar.png)',
             backgroundRepeat: 'no-repeat',
             objectFit: 'cover',
-            backgroundSize: '950px 100%',
+            backgroundSize: '1250px 100%',
             backgroundPosition: 'center',
         },
         small: {
