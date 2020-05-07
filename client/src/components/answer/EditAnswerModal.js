@@ -9,6 +9,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Editor } from 'react-draft-wysiwyg';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
+import { IconButton } from '@material-ui/core';
+import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 
 import htmlToDraft from '../../utils/html-to-draftjs';
@@ -33,7 +35,7 @@ const useStyles = makeStyles({
         height: '100%',
     },
     content: {
-        height: 'calc(100% - 160px)',
+        height: 'calc(100% - 180px)',
     },
     media: {
 
@@ -46,7 +48,6 @@ const useStyles = makeStyles({
     },
     editor: {
         height: 'inherit',
-        border: '1px solid #F1F1F1',
     },
 
     modal: {
@@ -139,7 +140,24 @@ function DescriptionModal(props) {
                 onSubmit={ handleSubmit(addDescriptionToQuestion) }>
                 <DialogTitle
                     id="draggable-dialog-title">
-                    { newAnswer ? 'Add Answer' : title }
+                    { newAnswer
+                        ? <DialogActions>
+                            Add Answer
+                            <IconButton
+                                aria-label="fullscreen"
+                                title="Full Screen"
+                                edge="end"
+                                style={ {
+                                    marginLeft: 'auto',
+                                    borderRadius: 0,
+                                } }
+                                color="secondary"
+                                fontSize="large"
+                                onClick={ handleClose }>
+                                <FullscreenExitIcon />
+                            </IconButton>
+                        </DialogActions>
+                        : title }
                 </DialogTitle>
                 <DialogContent className={ classes.content }>
                     <DialogContentText>
@@ -159,12 +177,12 @@ function DescriptionModal(props) {
                         toolbar={ config.editorToolbar } />
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    { !fullScreen && <Button
                         autoFocus
                         onClick={ handleClose }
                         color="primary">
                         Cancel
-                    </Button>
+                    </Button> }
                     <Button
                         variant="contained"
                         type="submit"

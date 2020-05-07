@@ -199,6 +199,17 @@ const QuestionCard = (props) => {
                     { ' ' }
                     { question.followers.length }
                 </Button>
+                { open && <IconButton
+                    aria-label="fullscreen"
+                    title="Full Screen"
+                    style={ {
+                        marginLeft: 'auto',
+                        borderRadius: 0,
+                    } }
+                    color="secondary"
+                    onClick={ handleFullScreenEditorOpen }>
+                    <FullscreenIcon />
+                </IconButton> }
             </CardActions>
             <Collapse
                 in={ open }
@@ -230,18 +241,7 @@ const QuestionCard = (props) => {
                         color="primary">
                         Cancel
                     </Button>
-                    <IconButton
-                        aria-label="fullscreen"
-                        title="Full Screen"
-                        style={ {
-                            marginLeft: 'auto',
-                            borderRadius: 0,
-                            marginTop: -15,
-                        } }
-                        color="secondary"
-                        onClick={ handleFullScreenEditorOpen }>
-                        <FullscreenIcon />
-                    </IconButton>
+
                 </CardActions>
             </Collapse>
             { openFullScreenEditor && <EditAnswerModal
