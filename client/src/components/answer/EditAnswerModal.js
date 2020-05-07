@@ -30,19 +30,29 @@ const useStyles = makeStyles({
     root: {
         overflow: 'visible',
         marginTop: 10,
+        height: '100%',
+    },
+    content: {
+        height: 'calc(100% - 160px)',
     },
     media: {
 
     },
     editorWrapper: {
         border: '1px solid #F1F1F1',
-        minHeight: 300,
         padding: 10,
-    },
-    editor: {
-        height: 300,
+        height: 'calc(100% - 70px)',
         overflow: 'auto',
     },
+    editor: {
+        height: 'inherit',
+        border: '1px solid #F1F1F1',
+    },
+
+    modal: {
+        height: 300,
+    },
+
     link: {
         textDecoration: 'none',
         color: 'inherit',
@@ -56,12 +66,13 @@ function DescriptionModal(props) {
     const classes = useStyles();
     const {
         question,
-        handleClose,
         open,
         answerHTML,
         title,
-        onlyDescription,
         handleSubmit,
+        answerEditorState,
+        newAnswer,
+        fullScreen,
     } = props;
 
     const [
@@ -82,6 +93,13 @@ function DescriptionModal(props) {
         }
     }, [ answerHTML ]);
 
+
+    React.useEffect(() => {
+        if (answerEditorState){
+            setAnswer(answerEditorState);
+        }
+    }, [ answerEditorState ]);
+
     const onEditorStateChange = (value) => {
         setAnswer(value);
     };
@@ -99,59 +117,71 @@ function DescriptionModal(props) {
         }
     };
 
+    const handleClose = () => {
+        const { handleClose } = props;
+        if (handleClose){
+            handleClose(answer);
+        }
+    };
+
     return (
-        <div>
-            <Dialog
-                scroll="paper"
-                maxWidth="md"
-                open={ open }
-                onClose={ handleClose }>
-                <form
-                    id="editquestion"
-                    onSubmit={ handleSubmit(addDescriptionToQuestion) }>
-                    <DialogTitle
-                        id="draggable-dialog-title">
-                        { title }
-                    </DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            <b>
-                                { question }
-                            </b>
-                        </DialogContentText>
-                        <Editor
-                            editorState={ answer }
-                            placeholder="Add Answer"
-                            editorRef={ setEditorReference }
-                            wrapperClassName={ classes.editorWrapper }
-                            editorClassName={ `${classes.editor} editor-write-mode` }
-                            onEditorStateChange={ onEditorStateChange }
-                            toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
-                            customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
-                            toolbar={ config.editorToolbar } />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button
-                            autoFocus
-                            onClick={ handleClose }
-                            color="primary">
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="contained"
-                            type="submit"
-                            color="primary">
-                            Done
-                        </Button>
-                    </DialogActions>
-                </form>
-            </Dialog>
-        </div>
+
+        <Dialog
+            scroll="paper"
+            fullScreen={ fullScreen }
+            maxWidth="md"
+            style={ { height: '100vh' } }
+            open={ open }
+            onClose={ handleClose }>
+            <form
+                id="editquestion"
+                className={ classes.root }
+                onSubmit={ handleSubmit(addDescriptionToQuestion) }>
+                <DialogTitle
+                    id="draggable-dialog-title">
+                    { newAnswer ? 'Add Answer' : title }
+                </DialogTitle>
+                <DialogContent className={ classes.content }>
+                    <DialogContentText>
+                        <b>
+                            { question }
+                        </b>
+                    </DialogContentText>
+                    <Editor
+                        editorState={ answer }
+                        placeholder="Add Answer"
+                        editorRef={ setEditorReference }
+                        wrapperClassName={ classes.editorWrapper }
+                        editorClassName={ `${classes.editor} editor-write-mode ${!fullScreen && classes.modal}` }
+                        onEditorStateChange={ onEditorStateChange }
+                        toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
+                        customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
+                        toolbar={ config.editorToolbar } />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        autoFocus
+                        onClick={ handleClose }
+                        color="primary">
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        type="submit"
+                        color="primary">
+                        Submit
+                    </Button>
+                </DialogActions>
+            </form>
+        </Dialog>
+
     );
 }
 
 DescriptionModal.defaultProps = {
     title: 'Edit Answer',
+    newAnswer: false,
+    fullScreen: false,
 };
 
 const mapStateToProps = (state, props) => {
