@@ -21,12 +21,15 @@ import { convertToRaw } from 'draft-js';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+
 import ReadMore from '../base/ReadMore';
 import Avatar from '../base/Avatar';
 import getBadge from '../../utils/badge';
 import QuestionTags from './QuestionTags';
 import EditSuggestedWriters from './EditSuggestedWriters';
 import DescriptionModal from '../base/DescriptionModal';
+import EditAnswerModal from '../answer/EditAnswerModal';
 import { addAnswerToQuestion,
     addAnswerPending } from '../../store/actions/answer';
 import { followQuestion,
@@ -295,6 +298,32 @@ const QuestionSection = (props) => {
 
     const following = followers.indexOf(user._id) >= 0;
 
+    const [
+        openFullScreenEditor,
+        setOpenFullScreenEditor,
+    ] = React.useState(false);
+
+    const handleFullScreenEditorOpen = () => {
+        setOpenFullScreenEditor(true);
+    };
+
+    const handleFullScreenEditorClose = (answer) => {
+        setOpenFullScreenEditor(false);
+        setAnswer(answer);
+    };
+
+    const handleFullScreenEditorDone = (answer) => {
+        setOpenFullScreenEditor(false);
+        setDisableSubmit(true);
+        addAnswerToQuestion(
+            {
+                answer,
+                questionID: question._id,
+            },
+            question
+        );
+    };
+
     return (
         <Card
             className={ `${classes.root}  ${disabled ? classes.disabled : ''}` }>
@@ -421,6 +450,18 @@ const QuestionSection = (props) => {
                         color="primary">
                         Cancel
                     </Button>
+                    <IconButton
+                        aria-label="fullscreen"
+                        title="Full Screen"
+                        style={ {
+                            marginLeft: 'auto',
+                            borderRadius: 0,
+                            marginTop: -15,
+                        } }
+                        color="secondary"
+                        onClick={ handleFullScreenEditorOpen }>
+                        <FullscreenIcon />
+                    </IconButton>
                 </CardActions>
             </Collapse>
             <CardContent>
@@ -448,6 +489,14 @@ const QuestionSection = (props) => {
                 disableBackdropClick
                 handleDone={ handleOnEditQuestion }
                 handleClose={ handleDescriptionModalClose } /> }
+            { openFullScreenEditor && <EditAnswerModal
+                open={ openFullScreenEditor }
+                newAnswer
+                answerEditorState={ answer }
+                question={ question.question }
+                fullScreen
+                handleClose={ handleFullScreenEditorClose }
+                handleDone={ handleFullScreenEditorDone } /> }
         </Card>
     );
 };
