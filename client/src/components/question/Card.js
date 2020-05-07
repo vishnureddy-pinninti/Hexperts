@@ -6,6 +6,7 @@ import { Card,
     Button,
     Typography,
     Collapse,
+    IconButton,
     Box } from '@material-ui/core';
 import { EditTwoTone as EditTwoToneIcon,
     RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
@@ -14,7 +15,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
 import { convertToRaw } from 'draft-js';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import draftToHtml from '../../utils/draftjs-to-html';
+import EditAnswerModal from '../answer/EditAnswerModal';
 
 import { addAnswerToQuestion,
     addAnswerPending } from '../../store/actions/answer';
@@ -119,6 +122,32 @@ const QuestionCard = (props) => {
 
     const following = question.followers.indexOf(user._id) >= 0;
 
+    const [
+        openFullScreenEditor,
+        setOpenFullScreenEditor,
+    ] = React.useState(false);
+
+    const handleFullScreenEditorOpen = () => {
+        setOpenFullScreenEditor(true);
+    };
+
+    const handleFullScreenEditorClose = (answer) => {
+        setOpenFullScreenEditor(false);
+        setAnswer(answer);
+    };
+
+    const handleFullScreenEditorDone = (answer) => {
+        setOpenFullScreenEditor(false);
+        setDisableSubmit(true);
+        addAnswerToQuestion(
+            {
+                answer,
+                questionID: question._id,
+            },
+            question
+        );
+    };
+
     return (
         <Card
             className={ classes.root }
@@ -201,8 +230,28 @@ const QuestionCard = (props) => {
                         color="primary">
                         Cancel
                     </Button>
+                    <IconButton
+                        aria-label="fullscreen"
+                        title="Full Screen"
+                        style={ {
+                            marginLeft: 'auto',
+                            borderRadius: 0,
+                            marginTop: -15,
+                        } }
+                        color="secondary"
+                        onClick={ handleFullScreenEditorOpen }>
+                        <FullscreenIcon />
+                    </IconButton>
                 </CardActions>
             </Collapse>
+            { openFullScreenEditor && <EditAnswerModal
+                open={ openFullScreenEditor }
+                newAnswer
+                answerEditorState={ answer }
+                question={ question.question }
+                fullScreen
+                handleClose={ handleFullScreenEditorClose }
+                handleDone={ handleFullScreenEditorDone } /> }
         </Card>
     );
 };
