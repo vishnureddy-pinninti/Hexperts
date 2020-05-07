@@ -129,7 +129,7 @@ function EditorModal(props) {
         if (testXML(value)) {
             languageForEditor = 'xml';
         }
-        setNewValue(value);
+        setNewValue(value || '');
         setLanguage(languageForEditor);
     }, [ value ]);
 
@@ -151,7 +151,7 @@ function EditorModal(props) {
             language={ language }
             style={ dracula }>
             { newValue }
-        </SyntaxHighlighter>);
+                                                         </SyntaxHighlighter>);
 
         const entityData = {
             value: newValue.replace(/"/g, '\''),

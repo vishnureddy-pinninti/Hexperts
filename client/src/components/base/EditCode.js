@@ -73,8 +73,8 @@ function EditorModal(props) {
     ] = React.useState();
 
     useEffect(() => {
-        setNewValue(value);
-        setLanguage(lang);
+        setNewValue(value || '');
+        setLanguage(lang || 'none');
     }, [
         lang,
         value,
