@@ -11,4 +11,5 @@ module.exports = (app) => {
     require('./notification')(app);
     require('./contributors')(app);
     require('./crawl')(app);
+    require('./dashboard')(app);
 };

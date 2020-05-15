@@ -142,6 +142,7 @@ function DescriptionModal(props) {
                             name="question"
                             component={ renderTextField } /> }
                         <Editor
+                            spellCheck
                             editorState={ description }
                             placeholder="Add Description"
                             editorRef={ setEditorReference }

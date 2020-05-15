@@ -174,6 +174,7 @@ const BlogHeader = (props) => {
     const renderDescriptionField = ({ input }) => (
         <Editor
             { ...input }
+            spellCheck
             place
             editorState={ post }
             wrapperClassName={ classes.editorWrapper }

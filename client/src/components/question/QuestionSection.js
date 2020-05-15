@@ -437,6 +437,7 @@ const QuestionSection = (props) => {
                 unmountOnExit>
                 <CardContent>
                     <Editor
+                        spellCheck
                         editorState={ answer }
                         editorRef={ setEditorReference }
                         wrapperClassName={ classes.editorWrapper }
