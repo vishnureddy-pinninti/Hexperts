@@ -143,6 +143,7 @@ const BlogPostModal = (props) => {
 
     const renderDescriptionField = () => (
         <Editor
+            spellCheck
             editorState={ description }
             placeholder="Start typing..."
             // editorRef={ setEditorReference }

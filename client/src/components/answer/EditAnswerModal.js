@@ -166,6 +166,7 @@ function DescriptionModal(props) {
                         </b>
                     </DialogContentText>
                     <Editor
+                        spellCheck
                         editorState={ answer }
                         placeholder="Add Answer"
                         editorRef={ setEditorReference }
