@@ -362,6 +362,14 @@ const TopBar = (props) => {
                 </IconButton>
                 <p>Notifications</p>
             </MenuItem>
+            <MenuItem onClick={ () => { history.push('/dashboard'); } }>
+                <IconButton
+                    aria-label="show 4 new mails"
+                    color="inherit">
+                    <DashboardIcon />
+                </IconButton>
+                <p>Dashboard</p>
+            </MenuItem>
             <MenuItem
                 onClick={ handleProfileClick }
                 onMouseHover={ handleProfileMenuOpen }>
