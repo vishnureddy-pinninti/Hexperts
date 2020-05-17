@@ -9,6 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Grid from '@material-ui/core/Grid';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import { Link, withRouter } from 'react-router-dom';
@@ -29,6 +30,7 @@ import EditCode from './EditCode';
 import getBadge from '../../utils/badge';
 import { editCode } from '../../store/actions/answer';
 import { addUserQuestion, addQuestionPending, toggleQuestionModal } from '../../store/actions/questions';
+import { isAdmin } from '../../utils/common';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -479,6 +481,22 @@ const TopBar = (props) => {
                                         </Button>
                                     </Badge>
                                 </Link>
+                                {
+                                    isAdmin(user) && <Link
+                                        to="/dashboard"
+                                        className={ classes.link }>
+                                        <Badge
+                                            badgeContent={ notificationCount }
+                                            color="secondary">
+                                            <Button
+                                                startIcon={ <DashboardIcon /> }
+                                                size="large"
+                                                className={ path === '/dashboard' ? classes.activeMenuButton : classes.menuButton }>
+                                                Dashboard
+                                            </Button>
+                                        </Badge>
+                                    </Link>
+                                }
                             </div>
                             <div className={ classes.search }>
                                 <SearchBar />

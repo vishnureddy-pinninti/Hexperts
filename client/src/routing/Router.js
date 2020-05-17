@@ -8,10 +8,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import { connect } from 'react-redux';
 import TopBar from '../components/base/TopBar';
-import routes from './routes';
+import getRoutes from './routes';
 import { requestAddNotification } from '../store/actions/auth';
 import config from '../utils/config';
 import ErrorBoundary from '../components/base/ErrorBoundary';
+import { isAdmin } from '../utils/common';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -89,6 +90,8 @@ const RouteWithSubRoutes = (route) => (
 
 class Router extends Component {
     render() {
+        const { user } = this.props;
+        const routes = getRoutes(isAdmin(user));
         return (
             <ErrorBoundary>
                 <BrowserRouter>
@@ -125,6 +128,7 @@ class Router extends Component {
 const mapStateToProps = (state) => {
     return {
         userid: state.user.user._id,
+        user: state.user.user,
     };
 };
 
