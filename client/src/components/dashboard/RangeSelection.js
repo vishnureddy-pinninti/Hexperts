@@ -21,7 +21,6 @@ class RangeSelection extends Component {
                 <div style={ { display: 'flex', justifyContent: 'space-around', alignItems: 'center', marginBottom: 20 } }>
                     <KeyboardDatePicker
                         margin="normal"
-                        id="date-picker-dialog"
                         emptyLabel="From beginning"
                         label="Start Date"
                         value={ startDate }
@@ -33,7 +32,6 @@ class RangeSelection extends Component {
                     />
                     <KeyboardDatePicker
                         margin="normal"
-                        id="date-picker-dialog"
                         emptyLabel="Till date"
                         label="End Date"
                         value={ endDate }

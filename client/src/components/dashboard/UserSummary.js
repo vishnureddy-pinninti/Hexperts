@@ -40,7 +40,7 @@ class UserSummary extends Component {
                 borderColor: '#AC6715',
                 title: 'Experts',
                 tooltip: 'Number of users who marked themselves as expert in atleast one topic.',
-                value: userSummary.users,
+                value: userSummary.experts,
             },
             {
                 borderColor: '#50AF8F',
