@@ -324,7 +324,7 @@ const TopBar = (props) => {
             } }
             open={ isMobileMenuOpen }
             onClose={ handleMobileMenuClose }>
-            <MenuItem>
+            <MenuItem onClick={ () => { history.push('/'); } }>
                 <IconButton
                     aria-label="show 4 new mails"
                     color="inherit">
@@ -332,32 +332,28 @@ const TopBar = (props) => {
                 </IconButton>
                 <p>Home</p>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={ () => { history.push('/answer'); } }>
                 <IconButton
                     aria-label="show 4 new mails"
                     color="inherit">
-                    <Badge
-                        badgeContent={ 11 }
-                        color="secondary">
-                        <EditIcon />
-                    </Badge>
+                    <EditIcon />
                 </IconButton>
                 <p>Answer</p>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={ () => { history.push('/blogs'); } }>
                 <IconButton
                     aria-label="show 4 new mails"
                     color="inherit">
                     <SubjectIcon />
                 </IconButton>
-                <p>Spaces</p>
+                <p>Blogs</p>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={ () => { history.push('/notifications'); } }>
                 <IconButton
                     aria-label="show 11 new notifications"
                     color="inherit">
                     <Badge
-                        badgeContent={ user.notificationCount }
+                        badgeContent={ notificationCount }
                         color="secondary">
                         <NotificationsIcon />
                     </Badge>
@@ -514,7 +510,7 @@ const TopBar = (props) => {
                                     aria-controls={ mobileMenuId }
                                     aria-haspopup="true"
                                     onClick={ handleMobileMenuOpen }
-                                    color="inherit">
+                                    style={ { color: 'white' } }>
                                     <MoreIcon />
                                 </IconButton>
                             </div>
