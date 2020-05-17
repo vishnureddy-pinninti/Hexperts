@@ -7,11 +7,12 @@ const User = mongoose.model('users');
 
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
+const adminMiddleware = require('../middlewares/adminMiddleware');
 const START_DATE = '2017-02-04T00:00:00.000Z';
 const END_DATE = '3017-02-04T00:00:00.000Z';
 
 module.exports = (app) => {
-    app.get('/api/v1/dashboard-topics', queryMiddleware, async(req, res) => {
+    app.get('/api/v1/dashboard-topics', loginMiddleware, adminMiddleware, queryMiddleware, async(req, res) => {
         const { query } = req.queryParams;
         const {
             startDate = START_DATE,
@@ -219,7 +220,7 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/dashbaord-summary', queryMiddleware, async(req, res) => {
+    app.get('/api/v1/dashbaord-summary', loginMiddleware, adminMiddleware, queryMiddleware, async(req, res) => {
         const { query } = req.queryParams;
         const {
             startDate = START_DATE,
@@ -260,12 +261,24 @@ module.exports = (app) => {
                 },
             ]);
 
+            const topics = await Topic.aggregate([
+                {
+                    $match: {
+                        createdDate: {
+                            $gte: new Date(startDate),
+                            $lte: new Date(endDate)
+                        },
+                    }
+                },
+            ]);
+
             res
                 .status(200)
                 .json({
                     questions: questions.length,
                     answers: answers.length,
                     posts: posts.length,
+                    topics: topics.length,
                 });
         }
         catch (e) {
@@ -279,7 +292,7 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/dashboard-tiles', async(req, res) => {
+    app.get('/api/v1/user-summary', loginMiddleware, adminMiddleware, async(req, res) => {
         try {
             const users = await User.aggregate([
                 {
@@ -287,12 +300,120 @@ module.exports = (app) => {
                         _id: '',
                         users: { $sum: 1 },
                         upvotes: { $sum: '$upvotes' },
-                        followers: {
-                            $sum: { $size: "$interests" }
+                    }
+                }
+            ]);
+
+            const followers = await User.find({ interests: { $exists: true, $ne: [] } });
+            const experts = await User.find({ expertIn: { $exists: true, $ne: [] } });
+
+            users[0].followers = followers.length;
+            users[0].experts = experts.length;
+
+            res
+                .status(200)
+                .json(users[0]);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
+    app.get('/api/v1/dashboard-users', loginMiddleware, adminMiddleware, async(req, res) => {
+        try {
+            const users = await User.aggregate([
+                {
+                    $lookup: {
+                        from: 'answers',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$author',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'answers',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'posts',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$author',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'posts',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'questions',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$author',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'questions',
+                    },
+                },
+                {
+                    $project: {
+                        name: 1,
+                        email: 1,
+                        jobTitle: 1,
+                        role: 1,
+                        answers: {
+                            $cond: {
+                                if: { $isArray: '$answers' },
+                                then: { $size: '$answers' },
+                                else: 0,
+                            },
                         },
-                        experts: {
-                            $sum: { $size: "$expertIn" }
+                        posts: {
+                            $cond: {
+                                if: { $isArray: '$posts' },
+                                then: { $size: '$posts' },
+                                else: 0,
+                            },
                         },
+                        questions: {
+                            $cond: {
+                                if: { $isArray: '$questions' },
+                                then: { $size: '$questions' },
+                                else: 0,
+                            },
+                        },
+                        upvotes: 1,
+                        reputation: 1,
                     }
                 }
             ]);

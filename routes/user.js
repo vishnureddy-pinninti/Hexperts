@@ -11,6 +11,7 @@ const { encrypt } = require('../utils/crypto');
 const config = require('../config/keys');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
+const adminMiddleware = require('../middlewares/adminMiddleware');
 const emailNotify = require('../services/email/emailService');
 const { emailPreferenceTypes } = require('../services/email/emailUtils');
 const {
@@ -68,6 +69,7 @@ module.exports = (app) => {
                         expertIn: 1,
                         interests: 1,
                         upvotes: 1,
+                        role: 1,
                     },
                 },
             ]);
@@ -1188,94 +1190,70 @@ module.exports = (app) => {
         }
     });
 
-    app.post('/api/v1/grant-admin-access', loginMiddleware, async(req, res) => {
-        const { role } = req.user;
+    app.post('/api/v1/grant-admin-access', loginMiddleware, adminMiddleware, async(req, res) => {
+        try {
+            const { userid } = req.body;
+            const user = await User.findById(mongoose.Types.ObjectId(userid));
 
-        if (role === 'admin') {
-            try {
-                const { userid } = req.body;
-                const user = await User.findById(mongoose.Types.ObjectId(userid));
+            if (user) {
+                user.role = 'admin';
 
-                if (user) {
-                    user.role = 'admin';
+                await user.save();
 
-                    await user.save();
-
-                    res
-                        .status(200)
-                        .json(user);
-                }
-                else {
-                    res
-                        .status(404)
-                        .json({
-                            error: true,
-                            response: USER_NOT_FOUND,
-                        });
-                }
-            }
-            catch (e) {
                 res
-                    .status(500)
+                    .status(200)
+                    .json(user);
+            }
+            else {
+                res
+                    .status(404)
                     .json({
                         error: true,
-                        response: String(e),
-                        stack: e.stack,
+                        response: USER_NOT_FOUND,
                     });
             }
         }
-        else {
+        catch (e) {
             res
-                .status(403)
+                .status(500)
                 .json({
                     error: true,
-                    response: UNAUTHORIZED,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
 
-    app.post('/api/v1/revoke-admin-access', loginMiddleware, async(req, res) => {
-        const { role } = req.user;
+    app.post('/api/v1/revoke-admin-access', loginMiddleware, adminMiddleware, async(req, res) => {
+        try {
+            const { userid } = req.body;
+            const user = await User.findById(mongoose.Types.ObjectId(userid));
 
-        if (role === 'admin') {
-            try {
-                const { userid } = req.body;
-                const user = await User.findById(mongoose.Types.ObjectId(userid));
+            if (user) {
+                user.role = 'user';
 
-                if (user) {
-                    user.role = 'user';
+                await user.save();
 
-                    await user.save();
-
-                    res
-                        .status(200)
-                        .json(user);
-                }
-                else {
-                    res
-                        .status(404)
-                        .json({
-                            error: true,
-                            response: USER_NOT_FOUND,
-                        });
-                }
-            }
-            catch (e) {
                 res
-                    .status(500)
+                    .status(200)
+                    .json(user);
+            }
+            else {
+                res
+                    .status(404)
                     .json({
                         error: true,
-                        response: String(e),
-                        stack: e.stack,
+                        response: USER_NOT_FOUND,
                     });
             }
         }
-        else {
+        catch (e) {
             res
-                .status(403)
+                .status(500)
                 .json({
                     error: true,
-                    response: UNAUTHORIZED,
+                    response: String(e),
+                    stack: e.stack,
                 });
         }
     });
