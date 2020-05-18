@@ -1,19 +1,33 @@
 /* eslint-disable no-undef */
 const request = require('request-promise');
 const cheerio = require('cheerio');
+const puppeteer = require('puppeteer');
 const keyword_extractor = require('keyword-extractor');
 const URL = require('url-parse');
 const mongoose = require('mongoose');
 const External = mongoose.model('externals');
+
+require('events').EventEmitter.defaultMaxListeners = 100;
 
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const { errors: { CRAWLER_NOT_FOUND } } = require('../utils/constants');
 
 const onlyUnique = (value, index, self) => value && self.indexOf(value) === index;
 
-const crawler = async(url) => {
+const crawler = async(url, only) => {
+    if (only) {
+        return [ url ];
+    }
     try {
-        const response = await request.get(url);
+        // const response = await request.get(url);
+        const browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
+        await page.setDefaultNavigationTimeout(0); 
+        
+        await page.goto(url, { waitUntil: 'networkidle0' });
+        // const response = await page.content();
+        const response = await page.evaluate(() => document.body.innerHTML);
+
         const $ = cheerio.load(response);
         const allRelativeLinks = [];
         const localUrl = new URL(url);
@@ -48,13 +62,27 @@ module.exports = (app) => {
     app.post('/api/v1/crawler', loginMiddleware, async(req, res) => {
         const {
             url,
+            only = false,
         } = req.body;
 
-        const links = await crawler(url);
+        const links = await crawler(url, only);
 
         try {
             const finalResponse = await Promise.all(links.map(async(link) => {
-                const response = await request.get(link);
+                // const response = await request.get(link);
+                let response;
+                try {
+                    const browser = await puppeteer.launch({ headless: true });
+                    const page = await browser.newPage();
+                    await page.setDefaultNavigationTimeout(0); 
+                    
+                    await page.goto(link, { waitUntil: 'networkidle0' });
+                    response = await page.evaluate(() => document.body.innerHTML);
+                }
+                catch (e) {
+                    response = '';
+                }
+                // const response = await page.content();
                 const $ = cheerio.load(response);
                 const title = $('title').text();
                 $('header').remove();
