@@ -489,16 +489,12 @@ const TopBar = (props) => {
                                     isAdmin(user) && <Link
                                         to="/dashboard"
                                         className={ classes.link }>
-                                        <Badge
-                                            badgeContent={ notificationCount }
-                                            color="secondary">
-                                            <Button
-                                                startIcon={ <DashboardIcon /> }
-                                                size="large"
-                                                className={ path === '/dashboard' ? classes.activeMenuButton : classes.menuButton }>
-                                                Dashboard
-                                            </Button>
-                                        </Badge>
+                                        <Button
+                                            startIcon={ <DashboardIcon /> }
+                                            size="large"
+                                            className={ path === '/dashboard' ? classes.activeMenuButton : classes.menuButton }>
+                                            Dashboard
+                                        </Button>
                                     </Link>
                                 }
                             </div>
