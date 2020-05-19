@@ -180,10 +180,14 @@ const parseResult = (result) => {
         singleResult.type = type;
         singleResult._id = _id;
 
-        singleResult.text = highlight[fields[type].text][0];
+        singleResult.text = highlight[fields[type].text] && highlight[fields[type].text][0];
 
         if (highlight[fields[type].subtext]) {
             singleResult.subtext = highlight[fields[type].subtext][0];
+
+            if (!singleResult.text) {
+                singleResult.text = singleResult.subtext;
+            }
         }
 
         return singleResult;

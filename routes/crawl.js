@@ -13,6 +13,11 @@ const loginMiddleware = require('../middlewares/loginMiddleware');
 const { errors: { CRAWLER_NOT_FOUND } } = require('../utils/constants');
 
 const onlyUnique = (value, index, self) => value && self.indexOf(value) === index;
+const puppeteerConfig = {
+    headless: false,
+    ignoreDefaultArgs: [ '--disable-extensions' ],
+    userDataDir: 'user_dir',
+};
 
 const crawler = async(url, only) => {
     if (only) {
@@ -20,13 +25,15 @@ const crawler = async(url, only) => {
     }
     try {
         // const response = await request.get(url);
-        const browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch(puppeteerConfig);
         const page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0); 
         
         await page.goto(url, { waitUntil: 'networkidle0' });
         // const response = await page.content();
         const response = await page.evaluate(() => document.body.innerHTML);
+        await page.close();
+        await browser.close();
 
         const $ = cheerio.load(response);
         const allRelativeLinks = [];
@@ -59,10 +66,10 @@ const crawler = async(url, only) => {
 };
 
 module.exports = (app) => {
-    app.post('/api/v1/crawler', loginMiddleware, async(req, res) => {
+    app.post('/api/v1/crawler', async(req, res) => {
         const {
             url,
-            only = false,
+            only = true,
         } = req.body;
 
         const links = await crawler(url, only);
@@ -72,12 +79,14 @@ module.exports = (app) => {
                 // const response = await request.get(link);
                 let response;
                 try {
-                    const browser = await puppeteer.launch({ headless: true });
+                    const browser = await puppeteer.launch(puppeteerConfig);
                     const page = await browser.newPage();
                     await page.setDefaultNavigationTimeout(0); 
                     
                     await page.goto(link, { waitUntil: 'networkidle0' });
                     response = await page.evaluate(() => document.body.innerHTML);
+                    await page.close();
+                    await browser.close();
                 }
                 catch (e) {
                     response = '';
