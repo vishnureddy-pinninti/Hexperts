@@ -28,6 +28,7 @@ import EditPostModal from './PostModal';
 import Avatar from '../base/Avatar';
 import { upvotePost, addPostToCache, downvotePost, editPost, deletePost } from '../../store/actions/blog';
 import getBadge from '../../utils/badge';
+import getMinutes from '../../utils/words-to-mins';
 import { isMediaOrCode } from '../../utils/common';
 
 const useStyles = makeStyles((theme) => {
@@ -116,6 +117,7 @@ const AnswerCard = (props) => {
         topics,
         postedDate,
         lastModified,
+        plainText,
     } = post;
 
     const {
@@ -139,6 +141,7 @@ const AnswerCard = (props) => {
         description,
         title,
         lastModified,
+        plainText,
     });
 
     const [
@@ -319,6 +322,7 @@ const AnswerCard = (props) => {
                             className={ classes.link }
                             to={ `/post/${postId}` }>
                             { postObj.lastModified ? `Edited ${formatDistance(new Date(postObj.lastModified), new Date(), { addSuffix: true })}` : `Posted ${formatDistance(new Date(postedDate), new Date(), { addSuffix: true })}` }
+                            { ` - ${getMinutes(postObj.plainText)} min read` }
                         </Link>
                     } />
                 { postObj.description && collapse && renderAnswer(postObj.description) }
