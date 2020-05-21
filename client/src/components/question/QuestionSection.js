@@ -436,6 +436,7 @@ const QuestionSection = (props) => {
                 unmountOnExit>
                 <CardContent>
                     <Editor
+                        initialValue={ answer }
                         handleEditorStateChange={ onEditorStateChange } />
                 </CardContent>
                 <CardActions>
