@@ -7,13 +7,14 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
+import { Editor } from 'react-draft-wysiwyg';
 import { Field, reduxForm, reset } from 'redux-form';
 import { connect } from 'react-redux';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 
 import htmlToDraft from '../../utils/html-to-draftjs';
 import draftToHtml from '../../utils/draftjs-to-html';
-import Editor from './Editor';
+import config from '../../utils/config';
 
 const validate = (values) => {
     const errors = {};
@@ -141,9 +142,16 @@ function DescriptionModal(props) {
                             name="question"
                             component={ renderTextField } /> }
                         <Editor
+                            spellCheck
+                            editorState={ description }
                             placeholder="Add Description"
-                            initialValue={ description }
-                            handleEditorStateChange={ onEditorStateChange } />
+                            editorRef={ setEditorReference }
+                            wrapperClassName={ classes.editorWrapper }
+                            editorClassName={ `${classes.editor} editor-write-mode` }
+                            onEditorStateChange={ onEditorStateChange }
+                            toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
+                            customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
+                            toolbar={ config.editorToolbar } />
                     </DialogContent>
                     <DialogActions>
                         <Button
