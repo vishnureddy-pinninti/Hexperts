@@ -200,14 +200,16 @@ const QuestionCard = (props) => {
                     color="secondary"
                     onClick={ handleFullScreenEditorOpen }>
                     <FullscreenIcon />
-                          </IconButton> }
+                </IconButton> }
             </CardActions>
             <Collapse
                 in={ open }
                 timeout="auto"
                 unmountOnExit>
                 <CardContent>
-                    <Editor handleEditorStateChange={ setAnswer } />
+                    <Editor
+                        handleEditorStateChange={ setAnswer }
+                        initialValue={ answer } />
                 </CardContent>
                 <CardActions>
                     <Button

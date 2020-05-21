@@ -1,5 +1,5 @@
 import { Editor } from 'react-draft-wysiwyg';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { AtomicBlockUtils } from 'draft-js';
 import { connect } from 'react-redux';
@@ -53,6 +53,10 @@ const TextEditor = (props) => {
         value,
         setValue,
     ] = React.useState(initialValue);
+
+    useEffect(() => {
+        setValue(initialValue);
+    }, [ initialValue ]);
 
     const onEditorStateChange = (value) => {
         setValue(value);
