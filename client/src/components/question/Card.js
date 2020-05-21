@@ -10,12 +10,12 @@ import { Card,
     Box } from '@material-ui/core';
 import { EditTwoTone as EditTwoToneIcon,
     RssFeedSharp as RssFeedSharpIcon } from '@material-ui/icons';
-import { Editor } from 'react-draft-wysiwyg';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
 import { convertToRaw } from 'draft-js';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import Editor from '../base/Editor';
 import draftToHtml from '../../utils/draftjs-to-html';
 import EditAnswerModal from '../answer/EditAnswerModal';
 
@@ -23,8 +23,6 @@ import { addAnswerToQuestion,
     addAnswerPending } from '../../store/actions/answer';
 import { followQuestion,
     addQuestionToCache } from '../../store/actions/questions';
-import config from '../../utils/config';
-
 
 const useStyles = makeStyles({
     root: {
@@ -108,13 +106,6 @@ const QuestionCard = (props) => {
         );
     };
 
-    const onEditorStateChange = (value) => {
-        setAnswer(value);
-    };
-
-    const setEditorReference = (ref) => {
-        if (ref) { ref.focus(); }
-    };
 
     const handleFollowClick = () => {
         followQuestion({ questionID: question._id }, question);
@@ -209,23 +200,14 @@ const QuestionCard = (props) => {
                     color="secondary"
                     onClick={ handleFullScreenEditorOpen }>
                     <FullscreenIcon />
-                </IconButton> }
+                          </IconButton> }
             </CardActions>
             <Collapse
                 in={ open }
                 timeout="auto"
                 unmountOnExit>
                 <CardContent>
-                    <Editor
-                        spellCheck
-                        editorState={ answer }
-                        editorRef={ setEditorReference }
-                        wrapperClassName={ classes.editorWrapper }
-                        editorClassName={ `${classes.editor} editor-write-mode` }
-                        onEditorStateChange={ onEditorStateChange }
-                        toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
-                        customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
-                        toolbar={ config.editorToolbar } />
+                    <Editor handleEditorStateChange={ setAnswer } />
                 </CardContent>
                 <CardActions>
                     <Button
