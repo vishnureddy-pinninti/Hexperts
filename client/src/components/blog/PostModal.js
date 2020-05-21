@@ -7,18 +7,23 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { Field, reduxForm, reset } from 'redux-form';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import List from '@material-ui/core/List';
+import { Editor } from 'react-draft-wysiwyg';
+import Chip from '@material-ui/core/Chip';
 import { withRouter } from 'react-router-dom';
-import Editor from '../base/Editor';
 
 import { addPostToBlog, addBlogPending } from '../../store/actions/blog';
 import { addNewTopic, requestTopics } from '../../store/actions/topic';
 import { editQuestion, editQuestionPending } from '../../store/actions/questions';
 import htmlToDraft from '../../utils/html-to-draftjs';
 import draftToHtml from '../../utils/draftjs-to-html';
+import config from '../../utils/config';
 
 const filter = createFilterOptions();
 
@@ -138,8 +143,16 @@ const BlogPostModal = (props) => {
 
     const renderDescriptionField = () => (
         <Editor
-            initialValue={ description }
-            handleEditorStateChange={ onEditorStateChange } />
+            spellCheck
+            editorState={ description }
+            placeholder="Start typing..."
+            // editorRef={ setEditorReference }
+            onEditorStateChange={ onEditorStateChange }
+            wrapperClassName={ classes.editorWrapper }
+            editorClassName={ `${classes.editor} editor-write-mode` }
+            toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
+            customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
+            toolbar={ config.editorToolbar } />
     );
 
     const renderTopicsField = ({ input }) => (
