@@ -14,9 +14,9 @@ const { PORT } = require('./config/keys');
 let server;
 const env = process.env.NODE_ENV;
 const options = {
-    cert: fs.readFileSync('./certs/wc_ingrnet_com_2020.crt'),
+    cert: fs.readFileSync('./certs/hexperts.crt'),
     ca: fs.readFileSync('./certs/DigiCertCA.crt'),
-    key: fs.readFileSync('./certs/wc_ingrnet_com_2020.key'),
+    key: fs.readFileSync('./certs/hexperts.key'),
 };
 
 const ensureSecure = (req, res, next) => {
