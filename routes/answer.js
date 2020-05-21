@@ -16,6 +16,7 @@ module.exports = (app) => {
         } = req.body;
 
         const { _id } = req.user;
+        const { xorigin } = req.headers;
 
         const newAnswer = new Answer({
             answer,
@@ -34,6 +35,7 @@ module.exports = (app) => {
             emailNotify('newAnswer', {
                 ...responseObject,
                 req: req.io,
+                origin: xorigin,
             }, {
                 author: req.user,
             });
@@ -188,6 +190,7 @@ module.exports = (app) => {
 
     app.put('/api/v1/answers/:answerID', loginMiddleware, async(req, res) => {
         try {
+            const { xorigin } = req.headers;
             const { answerID } = req.params;
             const { answer: answerString } = req.body;
 
@@ -205,6 +208,7 @@ module.exports = (app) => {
                         _id: answerID,
                         questionID: answer.questionID,
                         req: req.io,
+                        origin: xorigin,
                     }, {
                         author: req.user,
                     });
@@ -283,6 +287,7 @@ module.exports = (app) => {
         } = req.params;
 
         const { _id } = req.user;
+        const { xorigin } = req.headers;
 
         try {
             const answer = await Answer.findById(answerID);
@@ -300,6 +305,7 @@ module.exports = (app) => {
                 emailNotify('upvoteAnswer', {
                     ...responseObject,
                     req: req.io,
+                    origin: xorigin,
                     secondaryVoted,
                 });
 
@@ -336,6 +342,7 @@ module.exports = (app) => {
         } = req.params;
 
         const { _id } = req.user;
+        const { xorigin } = req.headers;
 
         try {
             const answer = await Answer.findById(answerID);
@@ -353,6 +360,7 @@ module.exports = (app) => {
                 emailNotify('downvoteAnswer', {
                     ...responseObject,
                     req: req.io,
+                    origin: xorigin,
                     secondaryVoted,
                 });
 

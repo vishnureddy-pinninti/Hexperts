@@ -11,6 +11,10 @@ const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const htmlToText = require('../utils/htmlToText');
 const { search } = require('../utils/search');
+const ANSWERED = 'answered';
+const ANSWEREDBYME = 'answeredbyme';
+const UNANSWERED = 'unanswered';
+const availableTypes = [ ANSWERED, ANSWEREDBYME, UNANSWERED ];
 
 module.exports = (app) => {
     app.post('/api/v1/question.add', loginMiddleware, async(req, res) => {
@@ -22,6 +26,7 @@ module.exports = (app) => {
         } = req.body;
 
         const { _id } = req.user;
+        const { xorigin } = req.headers;
 
         try {
             const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
@@ -45,6 +50,8 @@ module.exports = (app) => {
             emailNotify('newQuestion', {
                 ...responseObject,
                 req: req.io,
+                origin: xorigin,
+                
             }, {
                 author: req.user,
                 suggestedExperts,
@@ -55,6 +62,7 @@ module.exports = (app) => {
                 emailNotify('suggestedExpert', {
                     ...responseObject,
                     req: req.io,
+                    origin: xorigin,
                 }, {
                     author: req.user,
                     suggestedExperts,
@@ -330,6 +338,209 @@ module.exports = (app) => {
                         preserveNullAndEmptyArrays: true,
                     },
                 },
+                {
+                    $project: {
+                        followers: 1,
+                        suggestedExperts: 1,
+                        topics: 1,
+                        author: 1,
+                        question: 1,
+                        description: 1,
+                        plainText: 1,
+                        postedDate: 1,
+                        lastModified: 1,
+                        answers: 1,
+                    },
+                },
+            ]);
+
+            res
+                .status(200)
+                .json(questions);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
+    app.get('/api/v1/expertin-questions/:type', loginMiddleware, queryMiddleware, async(req, res) => {
+        const { type } = req.params;
+
+        if (!availableTypes.includes(type)) {
+            return res
+                    .status(400)
+                    .json({
+                        error: true,
+                        response: 'Provided type not supported',
+                    });
+        }
+        try {
+            const {
+                _id,
+                expertIn,
+            } = req.user;
+            const {
+                pagination,
+            } = req.queryParams;
+
+            const answerLookupMatch = [
+                {
+                    $expr: {
+                        $eq: [
+                            '$$id',
+                            '$questionID',
+                        ],
+                    },
+                }
+            ];
+
+            let finalMatch = { $gt: 0 };
+
+            if (type === ANSWEREDBYME) {
+                answerLookupMatch.push({ author: mongoose.Types.ObjectId(_id) });
+            }
+
+            if (type === UNANSWERED) {
+                finalMatch = 0;
+            }
+
+            const questions = await Question.aggregate([
+                {
+                    $match: {
+                        topics: { $in: expertIn }
+                    }
+                },
+                { $sort: { postedDate: -1 } },
+                {
+                    $lookup: {
+                        from: 'answers',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $and: answerLookupMatch,
+                                },
+                            },
+                            {
+                                $lookup: {
+                                    from: 'users',
+                                    localField: 'author',
+                                    foreignField: '_id',
+                                    as: 'author',
+                                },
+                            },
+                            {
+                                $unwind: {
+                                    path: '$author',
+                                    preserveNullAndEmptyArrays: true,
+                                },
+                            },
+                            { $addFields: { upvotersCount: { $size: '$upvoters' } } },
+                            {
+                                $sort: {
+                                    upvotersCount: -1,
+                                    postedDate: -1,
+                                },
+                            },
+                            {
+                                $lookup: {
+                                    from: 'comments',
+                                    let: { id: '$_id' },
+                                    pipeline: [
+                                        {
+                                            $match: {
+                                                $expr: {
+                                                    $eq: [
+                                                        '$$id',
+                                                        '$targetID',
+                                                    ],
+                                                },
+                                            },
+                                        },
+                                    ],
+                                    as: 'comments',
+                                },
+                            },
+                            {
+                                $project: {
+                                    commentsCount: {
+                                        $cond: {
+                                            if: { $isArray: '$comments' },
+                                            then: { $size: '$comments' },
+                                            else: 0,
+                                        },
+                                    },
+                                    answer: 1,
+                                    author: 1,
+                                    downvoters: 1,
+                                    plainText: 1,
+                                    postedDate: 1,
+                                    lastModified: 1,
+                                    questionID: 1,
+                                    upvoters: 1,
+                                    upvotersCount: 1,
+                                },
+                            },
+                            {
+                                $facet: {
+                                    results: [
+                                        {
+                                            $limit: 1,
+                                        },
+                                    ],
+                                    totalCount: [
+                                        {
+                                            $count: 'count',
+                                        },
+                                    ],
+                                },
+                            },
+                            {
+                                $unwind: {
+                                    path: '$totalCount',
+                                    preserveNullAndEmptyArrays: true,
+                                },
+                            },
+                            {
+                                $project: {
+                                    results: 1,
+                                    totalCount: {
+                                        $cond: {
+                                            if: {
+                                                $eq: [
+                                                    { $type: '$totalCount' },
+                                                    'object',
+                                                ],
+                                            },
+                                            then: '$totalCount.count',
+                                            else: 0,
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'answers',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$answers',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $match: {
+                        'answers.totalCount': finalMatch,
+                    }
+                },
+                { $skip: pagination.skip || 0 },
+                { $limit: pagination.limit || 10 },
                 {
                     $project: {
                         followers: 1,
@@ -680,6 +891,7 @@ module.exports = (app) => {
 
     app.put('/api/v1/question/:questionID', loginMiddleware, async(req, res) => {
         try {
+            const { xorigin } = req.headers;
             const { questionID } = req.params;
             const {
                 description,
@@ -704,6 +916,7 @@ module.exports = (app) => {
                         question: questionString || question.question,
                         _id: questionID,
                         req: req.io,
+                        origin: xorigin,
                     }, {
                         author: req.user,
                         suggestedExperts,
@@ -739,6 +952,7 @@ module.exports = (app) => {
                         question: questionString || question.question,
                         _id: questionID,
                         req: req.io,
+                        origin: xorigin,
                     }, {
                         author: req.user,
                         suggestedExperts,
@@ -814,6 +1028,7 @@ module.exports = (app) => {
         const {
             _id,
         } = req.user;
+        const { xorigin } = req.headers;
 
         try {
             const question = await Question.findById(questionID);
@@ -841,6 +1056,7 @@ module.exports = (app) => {
                 emailNotify('followQuestion', {
                     ...responseObject,
                     req: req.io,
+                    origin: xorigin,
                 });
 
                 res

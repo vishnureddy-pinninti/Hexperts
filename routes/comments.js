@@ -16,6 +16,7 @@ module.exports = (app) => {
         } = req.body;
 
         const { _id } = req.user;
+        const { xorigin } = req.headers;
 
         const newComment = new Comment({
             author: mongoose.Types.ObjectId(_id),
@@ -34,6 +35,7 @@ module.exports = (app) => {
             emailNotify('newComment', {
                 ...responseObject,
                 req: req.io,
+                origin: xorigin,
             });
 
             res
@@ -411,6 +413,7 @@ module.exports = (app) => {
         } = req.params;
 
         const { _id } = req.user;
+        const { xorigin } = req.headers;
 
         try {
             const comment = await Comment.findById(commentID);
@@ -428,6 +431,7 @@ module.exports = (app) => {
                 emailNotify('upvoteComment', {
                     ...responseObject,
                     req: req.io,
+                    origin: xorigin,
                     secondaryVoted,
                 });
 
@@ -464,6 +468,7 @@ module.exports = (app) => {
         } = req.params;
 
         const { _id } = req.user;
+        const { xorigin } = req.headers;
 
         try {
             const comment = await Comment.findById(commentID);
@@ -481,6 +486,7 @@ module.exports = (app) => {
                 emailNotify('downvoteComment', {
                     ...responseObject,
                     req: req.io,
+                    origin: xorigin,
                     secondaryVoted,
                 });
 

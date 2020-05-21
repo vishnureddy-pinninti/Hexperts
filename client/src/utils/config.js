@@ -68,6 +68,3 @@ export default {
         },
     },
 };
-
-// production https://hexperts.ingrnet.com
-// QA https://192.168.116.118:1515

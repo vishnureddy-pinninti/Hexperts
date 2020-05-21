@@ -22,6 +22,7 @@ module.exports = (app) => {
         } = req.body;
 
         const { _id } = req.user;
+        const { xorigin } = req.headers;
 
         try {
             // const chosenBlog = await Blog.findById(mongoose.Types.ObjectId(blog));
@@ -47,6 +48,7 @@ module.exports = (app) => {
             emailNotify('newPost', {
                 ...responseObject,
                 req: req.io,
+                origin: xorigin,
             });
 
             res
@@ -309,6 +311,7 @@ module.exports = (app) => {
 
     app.put('/api/v1/post/:postID', loginMiddleware, async(req, res) => {
         try {
+            const { xorigin } = req.headers;
             const { postID } = req.params;
             const {
                 title,
@@ -353,6 +356,7 @@ module.exports = (app) => {
                         title: post.title,
                         _id: post._id,
                         req: req.io,
+                        origin: xorigin,
                     });
                 }
 
@@ -424,6 +428,7 @@ module.exports = (app) => {
         } = req.params;
 
         const { _id } = req.user;
+        const { xorigin } = req.headers;
 
         try {
             const post = await Post.findById(postID);
@@ -442,6 +447,7 @@ module.exports = (app) => {
                 emailNotify('upvotePost', {
                     ...responseObject,
                     req: req.io,
+                    origin: xorigin,
                     secondaryVoted,
                 });
 
@@ -478,6 +484,7 @@ module.exports = (app) => {
         } = req.params;
 
         const { _id } = req.user;
+        const { xorigin } = req.headers;
 
         try {
             const post = await Post.findById(postID);
@@ -496,6 +503,7 @@ module.exports = (app) => {
                 emailNotify('downvotePost', {
                     ...responseObject,
                     req: req.io,
+                    origin: xorigin,
                     secondaryVoted,
                 });
 
