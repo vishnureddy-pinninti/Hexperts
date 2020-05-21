@@ -313,6 +313,7 @@ module.exports = (app) => {
         const {
             _id,
         } = req.body;
+        const { xorigin } = req.headers;
 
         try {
             const user = await User.findById(_id);
@@ -342,6 +343,7 @@ module.exports = (app) => {
                     emailNotify('followUser', {
                         ...responseObject,
                         req: req.io,
+                        origin: xorigin,
                     });
                 }
 

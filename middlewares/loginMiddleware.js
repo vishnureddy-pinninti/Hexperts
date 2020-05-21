@@ -15,7 +15,9 @@ module.exports = async(req, res, next) => {
                 response: constants.errors.UNAUTHORIZED,
             });
     };
-    if (req.cookies && req.cookies[COOKIEKEY] && req.headers && req.headers._id) {
+    const {  _id } = req.headers;
+
+    if (req.cookies && req.cookies[COOKIEKEY] && _id) {
         const user = JSON.parse(decrypt(req.cookies[COOKIEKEY]));
         try {
             const dbUser = await User.findById(user._id);

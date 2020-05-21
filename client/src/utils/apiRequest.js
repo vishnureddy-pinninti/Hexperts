@@ -34,6 +34,7 @@ const apiRequest = (store) => (next) => (action) => {
         headers: {
             userid: user.user.userid,
             _id: user.user._id,
+            xorigin: window.location.origin,
         },
     };
 

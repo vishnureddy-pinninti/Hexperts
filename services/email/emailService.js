@@ -2,6 +2,7 @@ const email = require('./email');
 const emailMap = require('./emailMap');
 const notificationService = require('../notifications/notificationService');
 const reputationService = require('../reputation/reputationService');
+const keys = require('../../config/keys');
 
 const emailService = async(type, data, options) => {
     const {
@@ -11,7 +12,7 @@ const emailService = async(type, data, options) => {
     } = await emailMap[type](data,
         options);
 
-
+    const { origin = keys.emailUrl } = data;
     const {
         template,
         locals,
@@ -19,6 +20,8 @@ const emailService = async(type, data, options) => {
         type: emailType,
         user,
     } = emailData;
+
+    locals.link = `${origin}${locals.link}`;
 
     notificationService(notification);
 
