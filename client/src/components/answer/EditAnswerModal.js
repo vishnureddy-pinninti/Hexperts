@@ -6,16 +6,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { makeStyles } from '@material-ui/core/styles';
-import { Editor } from 'react-draft-wysiwyg';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { IconButton } from '@material-ui/core';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import Editor from '../base/Editor';
 
 import htmlToDraft from '../../utils/html-to-draftjs';
 import draftToHtml from '../../utils/draftjs-to-html';
-import config from '../../utils/config';
 
 const validate = (values) => {
     const errors = {};
@@ -105,10 +104,6 @@ function DescriptionModal(props) {
         setAnswer(value);
     };
 
-    const setEditorReference = (ref) => {
-        if (ref) { ref.focus(); }
-    };
-
     const addDescriptionToQuestion = () => {
         const { handleDone } = props;
         const contentState = answer.getCurrentContent();
@@ -126,7 +121,6 @@ function DescriptionModal(props) {
     };
 
     return (
-
         <Dialog
             scroll="paper"
             fullScreen={ fullScreen }
@@ -166,16 +160,9 @@ function DescriptionModal(props) {
                         </b>
                     </DialogContentText>
                     <Editor
-                        spellCheck
-                        editorState={ answer }
                         placeholder="Add Answer"
-                        editorRef={ setEditorReference }
-                        wrapperClassName={ classes.editorWrapper }
-                        editorClassName={ `${classes.editor} editor-write-mode ${!fullScreen && classes.modal}` }
-                        onEditorStateChange={ onEditorStateChange }
-                        toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
-                        customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
-                        toolbar={ config.editorToolbar } />
+                        initialValue={ answer }
+                        handleEditorStateChange={ onEditorStateChange } />
                 </DialogContent>
                 <DialogActions>
                     { !fullScreen && <Button
