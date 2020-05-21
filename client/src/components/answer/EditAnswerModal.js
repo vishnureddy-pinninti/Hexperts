@@ -161,6 +161,7 @@ function DescriptionModal(props) {
                     </DialogContentText>
                     <Editor
                         placeholder="Add Answer"
+                        fullScreen={ fullScreen }
                         initialValue={ answer }
                         handleEditorStateChange={ onEditorStateChange } />
                 </DialogContent>
