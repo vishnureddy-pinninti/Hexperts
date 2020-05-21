@@ -16,12 +16,12 @@ import { EditTwoTone as EditTwoToneIcon,
 import EditIcon from '@material-ui/icons/Edit';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { Editor } from 'react-draft-wysiwyg';
 import { convertToRaw } from 'draft-js';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import Editor from '../base/Editor';
 
 import ReadMore from '../base/ReadMore';
 import Avatar from '../base/Avatar';
@@ -35,7 +35,6 @@ import { addAnswerToQuestion,
 import { followQuestion,
     addQuestionToCache, editQuestion, editQuestionPending, deleteQuestion } from '../../store/actions/questions';
 import draftToHtml from '../../utils/draftjs-to-html';
-import config from '../../utils/config';
 import { isMediaOrCode } from '../../utils/common';
 
 const useStyles = makeStyles((theme) => {
@@ -374,7 +373,7 @@ const QuestionSection = (props) => {
                                 Delete
                             </MenuItem>
                         </Menu>
-                                        </> } />
+                    </> } />
                 <QuestionTags
                     question={ question }
                     topics={ topics }
@@ -393,7 +392,7 @@ const QuestionSection = (props) => {
                          Description:
                      </Typography>
                      { renderDescription(updatedQuestion.description) }
-                    </CardContent> }
+                 </CardContent> }
             </CardContent>
             <CardActions disableSpacing>
                 <Button
@@ -429,7 +428,7 @@ const QuestionSection = (props) => {
                     color="secondary"
                     onClick={ handleFullScreenEditorOpen }>
                     <FullscreenIcon />
-                </IconButton> }
+                          </IconButton> }
             </CardActions>
             <Collapse
                 in={ open }
@@ -437,15 +436,7 @@ const QuestionSection = (props) => {
                 unmountOnExit>
                 <CardContent>
                     <Editor
-                        spellCheck
-                        editorState={ answer }
-                        editorRef={ setEditorReference }
-                        wrapperClassName={ classes.editorWrapper }
-                        editorClassName={ `${classes.editor} editor-write-mode` }
-                        onEditorStateChange={ onEditorStateChange }
-                        toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
-                        customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
-                        toolbar={ config.editorToolbar } />
+                        handleEditorStateChange={ onEditorStateChange } />
                 </CardContent>
                 <CardActions>
                     <Button
