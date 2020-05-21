@@ -1162,6 +1162,7 @@ module.exports = (app) => {
                         topics: 1,
                         title: 1,
                         description: 1,
+                        plainText:1,
                         upvoters: 1,
                         commentsCount: {
                             $cond: {
