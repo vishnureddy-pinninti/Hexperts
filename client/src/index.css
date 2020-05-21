@@ -40,6 +40,10 @@ blockquote {
   object-fit: contain;
 }
 
+.editor-write-mode img{
+  width:100% !important;
+}
+
 .editor-read-mode pre {
   max-height: 500px;
 }

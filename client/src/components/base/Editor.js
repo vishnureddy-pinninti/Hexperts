@@ -18,12 +18,15 @@ const useStyles = makeStyles({
     },
     editorWrapper: {
         border: '1px solid #F1F1F1',
-        minHeight: 300,
         padding: 10,
+        height: 'calc(100% - 70px)',
+        overflow: 'auto',
     },
     editor: {
+        height: 'inherit',
+    },
+    modal: {
         height: 300,
-        overflow: 'auto',
     },
     link: {
         textDecoration: 'none',
@@ -43,6 +46,7 @@ const TextEditor = (props) => {
         handleEditorStateChange,
         placeholder,
         initialValue,
+        fullScreen,
     } = props;
 
     const [
@@ -97,7 +101,7 @@ const TextEditor = (props) => {
             editorState={ value }
             editorRef={ setEditorReference }
             wrapperClassName={ classes.editorWrapper }
-            editorClassName={ `${classes.editor} editor-write-mode` }
+            editorClassName={ `${classes.editor} editor-write-mode ${!fullScreen && classes.modal}` }
             onEditorStateChange={ onEditorStateChange }
             toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
             customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
@@ -109,6 +113,7 @@ const TextEditor = (props) => {
 
 TextEditor.defaultProps = {
     placeholder: 'Start typing...',
+    fullScreen: false,
 };
 
 const mapStateToProps = () => {

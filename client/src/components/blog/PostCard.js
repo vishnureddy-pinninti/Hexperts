@@ -318,12 +318,16 @@ const AnswerCard = (props) => {
                         </Link>
                     }
                     subheader={
-                        <Link
-                            className={ classes.link }
-                            to={ `/post/${postId}` }>
-                            { postObj.lastModified ? `Edited ${formatDistance(new Date(postObj.lastModified), new Date(), { addSuffix: true })}` : `Posted ${formatDistance(new Date(postedDate), new Date(), { addSuffix: true })}` }
-                            { ` - ${getMinutes(postObj.plainText)} min read` }
-                        </Link>
+                        <>
+                            <Link
+                                className={ classes.link }
+                                to={ `/post/${postId}` }>
+                                { postObj.lastModified ? `Edited ${formatDistance(new Date(postObj.lastModified), new Date(), { addSuffix: true })}` : `Posted ${formatDistance(new Date(postedDate), new Date(), { addSuffix: true })}` }
+
+                            </Link>
+                            <b> - </b>
+                            { `${getMinutes(postObj.plainText)} min read` }
+                        </>
                     } />
                 { postObj.description && collapse && renderAnswer(postObj.description) }
                 { !collapse && <div
