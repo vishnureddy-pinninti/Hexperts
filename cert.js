@@ -67,14 +67,7 @@ const secureContexts = getSecureContexts(certificates);
 const options = {
     // A function that will be called if the client supports SNI TLS extension.
     SNICallback: (servername, cb) => {
-
         const ctx = secureContexts[servername];
-
-        if (!ctx) {
-            console.debug(`Not found SSL certificate for host: ${servername}`);
-        } else {
-            console.debug(`SSL certificate has been found and assigned to ${servername}`);
-        }
 
         if (cb) {
             cb(null, ctx);
@@ -85,9 +78,3 @@ const options = {
 };
 
 module.exports = options;
-
-// var https = require('https');
-// var httpsServer = https.createServer(options, (req, res) => { console.log(res, req)});
-// httpsServer.listen(443, function () {
-//    console.log("Listening https on port: 443")
-// });
