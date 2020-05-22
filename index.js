@@ -3,21 +3,15 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const http = require('http');
 const https = require('https');
-const httpolyglot = require('httpolyglot');
 
 const app = express();
 const { PORT } = require('./config/keys');
+const options = require('./cert');
 
 let server;
 const env = process.env.NODE_ENV;
-const options = {
-    cert: fs.readFileSync('./certs/hexperts.crt'),
-    ca: fs.readFileSync('./certs/DigiCertCA.crt'),
-    key: fs.readFileSync('./certs/hexperts.key'),
-};
 
 const ensureSecure = (req, res, next) => {
     if (req.secure) {
@@ -27,11 +21,11 @@ const ensureSecure = (req, res, next) => {
     return res.redirect(redirectUrl);
 };
 
-if (env === 'qa') {
-    app.all('*', ensureSecure);
-    server = httpolyglot.createServer(options, app);
-}
-else if (env === 'production') {
+// if (env === 'qa') {
+//     app.all('*', ensureSecure);
+//     server = httpolyglot.createServer(options, app);
+// }
+if (env === 'production') {
     app.all('*', ensureSecure);
     server = https.createServer(options, app);
 }
