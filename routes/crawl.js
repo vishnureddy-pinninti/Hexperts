@@ -14,7 +14,7 @@ const { errors: { CRAWLER_NOT_FOUND } } = require('../utils/constants');
 
 const onlyUnique = (value, index, self) => value && self.indexOf(value) === index;
 const puppeteerConfig = {
-    headless: true,
+    headless: false,
     args: [
         '--start-fullscreen',
     ],
@@ -143,6 +143,7 @@ const crawlLinks = async (links) => {
             }
             catch (e) {
                 console.log('exception', link);
+                console.log(e);
                 response = '';
                 if (page) {
                     await page.close();

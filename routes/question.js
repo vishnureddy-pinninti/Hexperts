@@ -386,8 +386,28 @@ module.exports = (app) => {
                 expertIn,
             } = req.user;
             const {
+                custom,
                 pagination,
             } = req.queryParams;
+
+            let mainMatch;
+
+            if (!custom._onlySuggested && !custom._onlyExpertIn) {
+                return res
+                    .status(400)
+                    .json({
+                        error: true,
+                        response: 'Provided custom type not supported',
+                    });
+            }
+
+            if (custom._onlySuggested) {
+                mainMatch = { suggestedExperts: mongoose.Types.ObjectId(_id) };
+            }
+    
+            if (custom._onlyExpertIn) {
+                mainMatch = { topics: { $in: expertIn } };
+            }
 
             const answerLookupMatch = [
                 {
@@ -412,9 +432,7 @@ module.exports = (app) => {
 
             const questions = await Question.aggregate([
                 {
-                    $match: {
-                        topics: { $in: expertIn }
-                    }
+                    $match: mainMatch
                 },
                 { $sort: { postedDate: -1 } },
                 {
