@@ -186,7 +186,7 @@ const parseResult = (result) => {
             singleResult.subtext = highlight[fields[type].subtext][0];
 
             if (!singleResult.text) {
-                singleResult.text = singleResult.subtext;
+                singleResult.text = options.link || singleResult.subtext;
             }
         }
 

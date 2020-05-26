@@ -14,7 +14,11 @@ const { errors: { CRAWLER_NOT_FOUND } } = require('../utils/constants');
 
 const onlyUnique = (value, index, self) => value && self.indexOf(value) === index;
 const puppeteerConfig = {
-    headless: false,
+    headless: true,
+    args: [
+        '--start-fullscreen',
+    ],
+    defaultViewport: null,
     ignoreDefaultArgs: [ '--disable-extensions' ],
     userDataDir: 'user_dir',
 };
@@ -23,11 +27,13 @@ const crawler = async(url, only) => {
     if (only) {
         return [ url ];
     }
+    let browser;
+    let page;
     try {
         // const response = await request.get(url);
-        const browser = await puppeteer.launch(puppeteerConfig);
-        const page = await browser.newPage();
-        await page.setDefaultNavigationTimeout(0); 
+        browser = await puppeteer.launch(puppeteerConfig);
+        page = await browser.newPage();
+        await page.setDefaultNavigationTimeout(0);
         
         await page.goto(url, { waitUntil: 'networkidle0' });
         // const response = await page.content();
@@ -61,36 +67,31 @@ const crawler = async(url, only) => {
         return allRelativeLinks.filter(onlyUnique);
     }
     catch (e) {
+        if (page) {
+            await page.close();
+        }
+        if (browser) {
+            await browser.close();
+        }
         return [];
     }
 };
 
-module.exports = (app) => {
-    app.post('/api/v1/crawler', async(req, res) => {
-        const {
-            url,
-            only = true,
-        } = req.body;
+const crawlLinks = async (links) => {
+    const results = [];
+    for (let link of links) {
+        await new Promise(async (resolve) => {
+            let response;
+            let browser;
+            let page;
+            try {
+                browser = await puppeteer.launch(puppeteerConfig);
+                page = await browser.newPage();
+                await page.setDefaultNavigationTimeout(0);
+                
+                await page.goto(link, { waitUntil: 'networkidle0' });
+                response = await page.evaluate(() => document.body.innerHTML);
 
-        const links = await crawler(url, only);
-
-        try {
-            const finalResponse = await Promise.all(links.map(async(link) => {
-                // const response = await request.get(link);
-                let response;
-                try {
-                    const browser = await puppeteer.launch(puppeteerConfig);
-                    const page = await browser.newPage();
-                    await page.setDefaultNavigationTimeout(0); 
-                    
-                    await page.goto(link, { waitUntil: 'networkidle0' });
-                    response = await page.evaluate(() => document.body.innerHTML);
-                    await page.close();
-                    await browser.close();
-                }
-                catch (e) {
-                    response = '';
-                }
                 // const response = await page.content();
                 const $ = cheerio.load(response);
                 const title = $('title').text();
@@ -111,14 +112,14 @@ module.exports = (app) => {
                     return_changed_case: true,
                     remove_duplicates: true,
                 }).join(' ');
-
+            
                 const dbLink = await External.findOne({ link });
-
+            
                 if (dbLink) {
                     dbLink.title = title;
                     dbLink.content = extraction_result;
                     dbLink.lastModified = Date.now();
-
+            
                     await dbLink.save();
                 }
                 else {
@@ -127,16 +128,50 @@ module.exports = (app) => {
                         title,
                         content: extraction_result,
                     });
-
+            
                     await newExternal.save();
                 }
-
-                return {
+            
+                results.push({
                     link,
                     title,
                     content: extraction_result,
-                };
-            }));
+                });
+
+                await page.close();
+                await browser.close();
+            }
+            catch (e) {
+                console.log('exception', link);
+                response = '';
+                if (page) {
+                    await page.close();
+                }
+                if (browser) {
+                    await browser.close();
+                }
+            }
+
+            resolve();
+        });
+    }
+
+    return results;    
+};
+
+module.exports = (app) => {
+    app.post('/api/v1/crawler', async(req, res) => {
+        // Set infinite timeout for this api.
+        req.setTimeout(0);
+        const {
+            url,
+            only = true,
+        } = req.body;
+
+        const links = await crawler(url, only);
+
+        try {
+            const finalResponse = await crawlLinks(links);
 
             res
                 .status(200)
