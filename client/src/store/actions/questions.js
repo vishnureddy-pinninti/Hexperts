@@ -77,6 +77,18 @@ export const requestQuestionsForUser = (params = { skip: 0 }) => {
     };
 };
 
+export const requestQuestionsForUserByType = (params = { skip: 0 }) => {
+    const type = params.type || 'unanswered';
+    return {
+        type: REQUEST_ANSWER_REQUESTS,
+        makeApiRequest: {
+            url: `/api/v1/expertin-questions/${type}?_onlyExpertIn=true&skip=${params.skip}`,
+            method: 'GET',
+            success: receiveQuestionsForUser,
+        },
+    };
+};
+
 const receiveAnswerRequests = (questions) => {
     return {
         type: RECEIVE_ANSWER_REQUESTS,
@@ -89,6 +101,18 @@ export const requestAnswerRequests = (params = { skip: 0 }) => {
         type: REQUEST_ANSWER_REQUESTS,
         makeApiRequest: {
             url: `/api/v1/questions?_onlySuggested=true&skip=${params.skip}`,
+            method: 'GET',
+            success: receiveAnswerRequests,
+        },
+    };
+};
+
+export const requestAnswerRequestsByType = (params = { skip: 0 }) => {
+    const type = params.type || 'unanswered';
+    return {
+        type: REQUEST_ANSWER_REQUESTS,
+        makeApiRequest: {
+            url: `/api/v1/expertin-questions/${type}?_onlySuggested=true&skip=${params.skip}`,
             method: 'GET',
             success: receiveAnswerRequests,
         },

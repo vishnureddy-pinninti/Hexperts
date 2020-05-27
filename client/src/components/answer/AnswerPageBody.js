@@ -2,22 +2,131 @@ import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import List from '@material-ui/core/List';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import ContactSupportIcon from '@material-ui/icons/ContactSupport';
-import EmptyResults from '../base/EmptyResults';
-import AnswerCard from './Card';
-import CardLoader from '../base/CardLoader';
+import PropTypes from 'prop-types';
+import TreeView from '@material-ui/lab/TreeView';
+import TreeItem from '@material-ui/lab/TreeItem';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
+import SpeakerNotesOffIcon from '@material-ui/icons/SpeakerNotesOff';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import { requestAnswerRequests, requestQuestionsForUser,
+    requestQuestionsForUserByType, requestAnswerRequestsByType } from '../../store/actions/questions';
 import QuestionCard from '../question/Card';
-import { requestAnswerRequests, requestQuestionsForUser } from '../../store/actions/questions';
+import CardLoader from '../base/CardLoader';
+import AnswerCard from './Card';
+import EmptyResults from '../base/EmptyResults';
+
+const useTreeItemStyles = makeStyles((theme) => {
+    return {
+        root: {
+            color: theme.palette.text.secondary,
+            '&:hover > $content': {
+                backgroundColor: theme.palette.action.hover,
+            },
+            '&:focus > $content, &$selected > $content': {
+                backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
+                color: 'var(--tree-view-color)',
+            },
+            '&:focus > $content $label, &:hover > $content $label, &$selected > $content $label': {
+                backgroundColor: 'transparent',
+            },
+        },
+        content: {
+            color: theme.palette.text.secondary,
+            paddingRight: theme.spacing(1),
+            fontWeight: theme.typography.fontWeightMedium,
+            width: 'inherit',
+            '$expanded > &': {
+                fontWeight: theme.typography.fontWeightRegular,
+            },
+        },
+        group: {
+            marginLeft: 0,
+            '& $content': {
+                paddingLeft: theme.spacing(2),
+            },
+        },
+        expanded: {},
+        selected: {},
+        label: {
+            fontWeight: 'inherit',
+            color: 'inherit',
+        },
+        labelRoot: {
+            display: 'flex',
+            alignItems: 'center',
+            padding: theme.spacing(0.5, 0),
+        },
+        labelIcon: {
+            marginRight: theme.spacing(1),
+        },
+        labelText: {
+            fontWeight: 'inherit',
+            flexGrow: 1,
+        },
+    };
+});
+
+function StyledTreeItem(props) {
+    const classes = useTreeItemStyles();
+    const {
+        labelText,
+        labelIcon: LabelIcon,
+        labelInfo,
+        color,
+        bgColor,
+        ...other
+    } = props;
+
+    return (
+        <TreeItem
+            label={
+                <div className={ classes.labelRoot }>
+                    <LabelIcon
+                        color="inherit"
+                        className={ classes.labelIcon } />
+                    <Typography
+                        variant="body2"
+                        className={ classes.labelText }>
+                        { labelText }
+                    </Typography>
+                </div>
+            }
+            style={ {
+                '--tree-view-color': color,
+                '--tree-view-bg-color': bgColor,
+            } }
+            classes={ {
+                root: classes.root,
+                content: classes.content,
+                expanded: classes.expanded,
+                selected: classes.selected,
+                group: classes.group,
+                label: classes.label,
+            } }
+            { ...other } />
+    );
+}
+
+StyledTreeItem.propTypes = {
+    bgColor: PropTypes.string,
+    color: PropTypes.string,
+    labelIcon: PropTypes.elementType.isRequired,
+    labelInfo: PropTypes.string,
+    labelText: PropTypes.string.isRequired,
+};
 
 const useStyles = makeStyles((theme) => {
     return {
         root: {
-            width: 100,
+            height: 264,
+            flexGrow: 1,
+            width: 200,
         },
         small: {
             width: theme.spacing(3),
@@ -54,6 +163,8 @@ function AnswerPageBody(props) {
     const {
         requestAnswerRequests,
         requestQuestionsForUser,
+        requestQuestionsForUserByType,
+        requestAnswerRequestsByType,
         questions,
     } = props;
 
@@ -66,7 +177,7 @@ function AnswerPageBody(props) {
     const [
         requestType,
         setRequestType,
-    ] = React.useState('answerRequests');
+    ] = React.useState('answerrequests');
 
     const [
         pagination,
@@ -97,11 +208,55 @@ function AnswerPageBody(props) {
 
     const loadMore = () => {
         if (pagination.index > 0){
-            if (requestType === 'questions') {
-                requestQuestionsForUser({ skip: pagination.index * 10 });
-            }
-            else {
-                requestAnswerRequests({ skip: pagination.index * 10 });
+            switch (requestType){
+                case 'questions':
+                    requestQuestionsForUser({ skip: pagination.index * 10 });
+                    break;
+                case 'questionsunanswered':
+                    requestQuestionsForUserByType({
+                        skip: pagination.index * 10,
+                        type: 'unanswered',
+                    });
+                    break;
+                case 'questionsanswered':
+                    requestQuestionsForUserByType({
+                        skip: pagination.index * 10,
+                        type: 'answered',
+                    });
+                    break;
+                case 'questionsansweredbyme':
+                    requestQuestionsForUserByType({
+                        skip: pagination.index * 10,
+                        type: 'answeredbyme',
+                    });
+                    break;
+                case 'answerrequests':
+                    requestAnswerRequests({
+                        skip: pagination.index * 10,
+                    });
+                    break;
+                case 'answerrequestsunanswered':
+                    requestAnswerRequestsByType({
+                        skip: pagination.index * 10,
+                        type: 'unanswered',
+                    });
+                    break;
+                case 'answerrequestsanswered':
+                    requestAnswerRequestsByType({
+                        skip: pagination.index * 10,
+                        type: 'answered',
+                    });
+                    break;
+                case 'answerrequestsansweredbyme':
+                    requestAnswerRequestsByType({
+                        skip: pagination.index * 10,
+                        type: 'answeredbyme',
+                    });
+                    break;
+                default:
+                    requestAnswerRequests({
+                        skip: pagination.index * 10,
+                    });
             }
         }
     };
@@ -122,11 +277,56 @@ function AnswerPageBody(props) {
             hasMore: true,
         });
         setItems([]);
-        if (type === 'questions') {
-            requestQuestionsForUser({ skip: 0 });
-        }
-        else {
-            requestAnswerRequests({ skip: 0 });
+        window.scrollTo(0, 0);
+        switch (type){
+            case 'questions':
+                requestQuestionsForUser({ skip: 0 });
+                break;
+            case 'questionsunanswered':
+                requestQuestionsForUserByType({
+                    skip: 0,
+                    type: 'unanswered',
+                });
+                break;
+            case 'questionsanswered':
+                requestQuestionsForUserByType({
+                    skip: 0,
+                    type: 'answered',
+                });
+                break;
+            case 'questionsansweredbyme':
+                requestQuestionsForUserByType({
+                    skip: 0,
+                    type: 'answeredbyme',
+                });
+                break;
+            case 'answerrequests':
+                requestAnswerRequests({
+                    skip: 0,
+                });
+                break;
+            case 'answerrequestsunanswered':
+                requestAnswerRequestsByType({
+                    skip: 0,
+                    type: 'unanswered',
+                });
+                break;
+            case 'answerrequestsanswered':
+                requestAnswerRequestsByType({
+                    skip: 0,
+                    type: 'answered',
+                });
+                break;
+            case 'answerrequestsansweredbyme':
+                requestAnswerRequestsByType({
+                    skip: 0,
+                    type: 'answeredbyme',
+                });
+                break;
+            default:
+                requestAnswerRequests({
+                    skip: 0,
+                });
         }
     };
 
@@ -162,33 +362,67 @@ function AnswerPageBody(props) {
         );
     });
 
-    const renderMenu = () => (
-        <List className={ classes.list }>
-            <Chip
-                icon={ <ContactSupportIcon /> }
-                label={ <div className={ classes.chipLabel }>
-                    Specific Questions
-                    <br />
-                    for me
-                        </div> }
-                className={ classes.chip }
-                color="primary"
-                variant={ selectedTab === 'AnswerRequests' ? 'default' : 'outlined' }
-                onClick={ () => { getData('answerRequests'); setSelectedTab('AnswerRequests'); } }
-                clickable />
-            <Chip
-                icon={ <ContactSupportIcon /> }
-                label={ <div className={ classes.chipLabel }>
-                    Questions in my
-                    <br />
-                    area of expertise
-                        </div> }
-                className={ classes.chip }
-                color="primary"
-                variant={ selectedTab === 'Questions' ? 'default' : 'outlined' }
-                onClick={ () => { getData(); setSelectedTab('Questions'); } }
-                clickable />
-        </List>
+    const renderNavigation = () => (
+        <TreeView
+            className={ classes.root }
+            defaultSelected="answerrequests"
+            defaultCollapseIcon={ <ArrowDropDownIcon /> }
+            defaultExpandIcon={ <ArrowRightIcon /> }
+            onNodeSelect={ (e, value) => { getData(value); } }
+            defaultEndIcon={ <div style={ { width: 24 } } /> }>
+            <StyledTreeItem
+                nodeId="answerrequests"
+                labelText=" Specific Questions
+                for me"
+                color="#3c8039"
+                bgColor="#e6f4ea"
+                labelIcon={ ContactSupportIcon }>
+                <StyledTreeItem
+                    nodeId="answerrequestsunanswered"
+                    labelText="Unanswered"
+                    color="#e3742f"
+                    bgColor="#fcefe3"
+                    labelIcon={ SpeakerNotesOffIcon } />
+                <StyledTreeItem
+                    nodeId="answerrequestsanswered"
+                    labelText="Answered"
+                    color="#e3742f"
+                    bgColor="#fcefe3"
+                    labelIcon={ SpeakerNotesIcon } />
+                <StyledTreeItem
+                    nodeId="answerrequestsansweredbyme"
+                    labelText="Answered by me"
+                    color="#e3742f"
+                    bgColor="#fcefe3"
+                    labelIcon={ AccountCircleIcon } />
+            </StyledTreeItem>
+            <StyledTreeItem
+                nodeId="questions"
+                labelText=" Questions in my
+                area of expertise"
+                color="#3c8039"
+                bgColor="#e6f4ea"
+                labelIcon={ ContactSupportIcon }>
+                <StyledTreeItem
+                    nodeId="questionsunanswered"
+                    labelText="Unanswered"
+                    color="#e3742f"
+                    bgColor="#fcefe3"
+                    labelIcon={ SpeakerNotesOffIcon } />
+                <StyledTreeItem
+                    nodeId="questionsanswered"
+                    labelText="Answered"
+                    color="#e3742f"
+                    bgColor="#fcefe3"
+                    labelIcon={ SpeakerNotesIcon } />
+                <StyledTreeItem
+                    nodeId="questionsansweredbyme"
+                    labelText="Answered by me"
+                    color="#e3742f"
+                    bgColor="#fcefe3"
+                    labelIcon={ AccountCircleIcon } />
+            </StyledTreeItem>
+        </TreeView>
     );
 
 
@@ -206,7 +440,7 @@ function AnswerPageBody(props) {
                             Questions
                         </Box>
                     </Typography>
-                    { renderMenu() }
+                    { renderNavigation() }
                 </div>
             </Grid>
             <Grid
@@ -234,7 +468,7 @@ function AnswerPageBody(props) {
             </Grid>
             <Grid
                 item
-                xs={ 2 } />
+                xs={ 3 } />
         </>
     );
 }
@@ -257,6 +491,12 @@ const mapDispatchToProps = (dispatch) => {
         },
         requestQuestionsForUser: (params) => {
             dispatch(requestQuestionsForUser(params));
+        },
+        requestQuestionsForUserByType: (params) => {
+            dispatch(requestQuestionsForUserByType(params));
+        },
+        requestAnswerRequestsByType: (params) => {
+            dispatch(requestAnswerRequestsByType(params));
         },
     };
 };
