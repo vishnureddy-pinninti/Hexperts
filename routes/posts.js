@@ -11,6 +11,7 @@ const voting = require('../utils/voting');
 const emailNotify = require('../services/email/emailService');
 const { deleteService, updateService } = require('../services/common');
 const htmlToText = require('../utils/htmlToText');
+const { topicsAsString } = require('../utils/common');
 
 module.exports = (app) => {
     app.post('/api/v1/post.add', loginMiddleware, async(req, res) => {
@@ -35,6 +36,7 @@ module.exports = (app) => {
                 title,
                 description,
                 plainText: htmlToText(description),
+                topicsAsString: topicsAsString(topics),
             });
 
             await newPost.save();
@@ -344,6 +346,7 @@ module.exports = (app) => {
                 if (topics) {
                     const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
                     post.topics = topics;
+                    post.topicsAsString = topicsAsString(topics);
                     responseObject.topics = chosenTopics;
                 }
 

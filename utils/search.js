@@ -197,11 +197,36 @@ const parseResult = (result) => {
     return response;
 };
 
-const search = async(text, categories = [], pagination = {}, exclude = true, sfield) => {
+const search = async(properties) => {
+    const {
+        text,
+        categories = [],
+        pagination = {},
+        exclude = true,
+        sfield,
+        topics,
+    } = properties;
     const searchFields = sfield || getSearchFields(categories);
     const excludeFields = exclude ? getExcludeFields(categories) : [];
     const highlightFields = getHighlightFields(searchFields);
     const requestUrl = getRequestUrl(categories);
+
+    const mustQuery = [
+        {
+            multi_match: {
+                query: text,
+                fields: searchFields,
+            },
+        }
+    ];
+
+    if (topics) {
+        mustQuery.unshift({
+            match: {
+                topicsAsString: topics
+            }
+        });
+    }
 
     try {
         const results = await request.get(requestUrl, {
@@ -213,10 +238,9 @@ const search = async(text, categories = [], pagination = {}, exclude = true, sfi
                 query: {
                     boosting: {
                         positive: {
-                            multi_match: {
-                                query: text,
-                                fields: searchFields,
-                            },
+                            bool: {
+                                must: mustQuery
+                            }
                         },
                         negative: {
                             terms: {

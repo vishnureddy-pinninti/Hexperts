@@ -42,6 +42,11 @@ const questionSchema = new Schema({
         type: String,
         es_indexed: false,
     },
+    topicsAsString: {
+        type: String,
+        trim: true,
+        es_indexed: true,
+    },
 });
 
 questionSchema.index({ question: 'text' });
