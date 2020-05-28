@@ -26,7 +26,7 @@ const questionSchema = new Schema({
     },
     topics: {
         type: [ mongoose.Types.ObjectId ],
-        es_indexed: false,
+        es_indexed: true,
     },
     question: {
         type: String,
@@ -41,11 +41,6 @@ const questionSchema = new Schema({
     description: {
         type: String,
         es_indexed: false,
-    },
-    topicsAsString: {
-        type: String,
-        trim: true,
-        es_indexed: true,
     },
 });
 

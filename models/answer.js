@@ -40,6 +40,10 @@ const answerSchema = new Schema({
         type: [ mongoose.Types.ObjectId ],
         es_indexed: false,
     },
+    topics: {
+        type: [ mongoose.Types.ObjectId ],
+        es_indexed: true,
+    },
 });
 
 answerSchema.plugin(mongoosastic, {

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Answer = mongoose.model('answers');
+const Question = mongoose.model('questions');
 
 const { errors: { ANSWER_NOT_FOUND } } = require('../utils/constants');
 const voting = require('../utils/voting');
@@ -18,14 +19,22 @@ module.exports = (app) => {
         const { _id } = req.user;
         const { xorigin } = req.headers;
 
-        const newAnswer = new Answer({
-            answer,
-            author: mongoose.Types.ObjectId(_id),
-            plainText: htmlToText(answer),
-            questionID: mongoose.Types.ObjectId(questionID),
-        });
-
         try {
+            const answerObject = {
+                answer,
+                author: mongoose.Types.ObjectId(_id),
+                plainText: htmlToText(answer),
+                questionID: mongoose.Types.ObjectId(questionID),
+            };
+
+            const question = await Question.findById(questionID);
+
+            if (question) {
+                answerObject.topics = question.topics;
+            }
+
+            const newAnswer = new Answer(answerObject);
+
             await newAnswer.save();
 
             const responseObject = {

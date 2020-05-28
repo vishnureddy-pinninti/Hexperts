@@ -11,11 +11,22 @@ const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const htmlToText = require('../utils/htmlToText');
 const { search } = require('../utils/search');
-const { topicsAsString } = require('../utils/common');
 const ANSWERED = 'answered';
 const ANSWEREDBYME = 'answeredbyme';
 const UNANSWERED = 'unanswered';
 const availableTypes = [ ANSWERED, ANSWEREDBYME, UNANSWERED ];
+
+const updateTopicsInAnswers = async (questionID, topics) => {
+    const answers = await Answer.find({ questionID });
+
+    answers.forEach(async (a) => {
+        const answer = await Answer.findById(a._id);
+
+        answer.topics = topics;
+
+        await answer.save();
+    });
+}
 
 module.exports = (app) => {
     app.post('/api/v1/question.add', loginMiddleware, async(req, res) => {
@@ -39,7 +50,6 @@ module.exports = (app) => {
                 question,
                 description,
                 plainText: htmlToText(description),
-                topicsAsString: topicsAsString(topics),
             });
 
             await newQuestion.save();
@@ -955,8 +965,8 @@ module.exports = (app) => {
                 if (topics) {
                     const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
                     question.topics = topics;
-                    question.topicsAsString = topicsAsString(topics);
                     responseObject.topics = chosenTopics;
+                    updateTopicsInAnswers(questionID, topics);
                 }
 
                 if (questionString) {

@@ -26,7 +26,7 @@ const postSchema = new Schema({
     // },
     topics: {
         type: [ mongoose.Types.ObjectId ],
-        es_indexed: false,
+        es_indexed: true,
     },
     title: {
         type: String,
@@ -45,11 +45,6 @@ const postSchema = new Schema({
     upvoters: {
         type: [ mongoose.Types.ObjectId ],
         es_indexed: false,
-    },
-    topicsAsString: {
-        type: String,
-        trim: true,
-        es_indexed: true,
     },
 });
 
