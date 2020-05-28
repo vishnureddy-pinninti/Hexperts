@@ -222,9 +222,7 @@ const search = async(properties) => {
 
     if (topics) {
         mustQuery.unshift({
-            match: {
-                topicsAsString: topics
-            }
+            match: { topics }
         });
     }
 

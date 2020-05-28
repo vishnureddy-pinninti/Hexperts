@@ -68,6 +68,29 @@ module.exports = (app) => {
                     },
                 },
                 {
+                    $lookup: {
+                        from: 'answers',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    postedDate: {
+                                        $gte: new Date(startDate),
+                                        $lte: new Date(endDate)
+                                    },
+                                    $expr: {
+                                        $in: [
+                                            '$$id',
+                                            '$topics',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'answers',
+                    },
+                },
+                {
                     $project: {
                         posts: {
                             $cond: {
@@ -80,6 +103,13 @@ module.exports = (app) => {
                             $cond: {
                                 if: { $isArray: '$questions' },
                                 then: { $size: '$questions' },
+                                else: 0,
+                            },
+                        },
+                        answers: {
+                            $cond: {
+                                if: { $isArray: '$answers' },
+                                then: { $size: '$answers' },
                                 else: 0,
                             },
                         },
@@ -129,81 +159,27 @@ module.exports = (app) => {
                 }
             ]);
 
-            emptyTopicResponse.questions = emptyTopicQuestions.length;
-            emptyTopicResponse.posts = emptyTopicPosts.length;
-
-            topics.push(emptyTopicResponse);
-
-            const answers = await Answer.aggregate([
+            const emptyTopicAnswers = await Answer.aggregate([
                 {
                     $match: {
-                        postedDate: {
-                            $gte: new Date(startDate),
-                            $lte: new Date(endDate)
-                        },
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'questions',
-                        let: { id: '$questionID' },
-                        pipeline: [
+                        $and: [
                             {
-                                $match: {
-                                    $expr: {
-                                        $eq: [
-                                            '$$id',
-                                            '$_id',
-                                        ],
-                                    },
+                                postedDate: {
+                                    $gte: new Date(startDate),
+                                    $lte: new Date(endDate)
                                 },
                             },
-                            {
-                                $project: {
-                                    topics: 1,
-                                }
-                            }
-                        ],
-                        as: 'question',
-                    },
-                },
-                {
-                    $unwind: {
-                        path: '$question',
-                        preserveNullAndEmptyArrays: true,
-                    },
-                },
-                {
-                    $project: {
-                        topics: '$question.topics',
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$topics',
-                        preserveNullAndEmptyArrays: true,
-                    },
-                },
-                {
-                    $group: {
-                        _id: '$topics',
-                        count: { $sum: 1 }
+                            { topics: { $size: 0 } }
+                        ]
                     }
                 }
             ]);
 
-            answers.forEach((topic) => {
-                const dashboardTopic = topics.find(t => {
-                    if (t._id === null) {
-                        return t._id === topic._id;
-                    }
-                    return t._id.equals(topic._id);
-                });
+            emptyTopicResponse.questions = emptyTopicQuestions.length;
+            emptyTopicResponse.posts = emptyTopicPosts.length;
+            emptyTopicResponse.answers = emptyTopicAnswers.length;
 
-                if (dashboardTopic) {
-                    dashboardTopic.answers = topic.count;
-                }
-            });
+            topics.push(emptyTopicResponse);
 
             res
                 .status(200)

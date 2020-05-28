@@ -2,19 +2,19 @@
 const mongoose = require('mongoose');
 const keys = require('../config/keys');
 
-mongoose.connect(keys.dbURL);
+const connectWithRetry = () => {
+    return mongoose.connect(keys.dbURL, (err) => {
+        if (err) {
+            console.error('Failed to connect to mongo on startup - retrying in 5 sec', err);
+            setTimeout(connectWithRetry, 5000);
+        }
+        else {
+            console.log('Mongoose connected to ', keys.dbURL);
+        }
+    });
+};
 
-mongoose.connection.on('connected', () => {
-    console.log('Mongoose connected to ', keys.dbURL);
-});
-
-mongoose.connection.on('disconnected', () => {
-    console.log('Mongoose disconnected');
-});
-
-mongoose.connection.on('error', (err) => {
-    console.log('Error connecting to db ', err);
-});
+connectWithRetry();
 
 require('./answer');
 require('./question');
