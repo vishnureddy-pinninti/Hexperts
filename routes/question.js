@@ -11,6 +11,7 @@ const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const htmlToText = require('../utils/htmlToText');
 const { search } = require('../utils/search');
+const { topicsAsString } = require('../utils/common');
 const ANSWERED = 'answered';
 const ANSWEREDBYME = 'answeredbyme';
 const UNANSWERED = 'unanswered';
@@ -38,6 +39,7 @@ module.exports = (app) => {
                 question,
                 description,
                 plainText: htmlToText(description),
+                topicsAsString: topicsAsString(topics),
             });
 
             await newQuestion.save();
@@ -90,8 +92,17 @@ module.exports = (app) => {
         } = req.body;
 
         try {
-            const { results: topicSuggestions } = await search(question, [ 'topics' ], {}, false);
-            const { results: questionSuggestions } = await search(question, [ 'questions' ], {}, false, [ 'question' ]);
+            const { results: topicSuggestions } = await search({
+                text: question,
+                categories: [ 'topics' ],
+                exclude: false,
+            });
+            const { results: questionSuggestions } = await search({
+                text: question,
+                categories: [ 'questions' ],
+                exclude: false,
+                sfield: [ 'question' ],
+            });
 
             res
                 .status(200)
@@ -944,6 +955,7 @@ module.exports = (app) => {
                 if (topics) {
                     const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
                     question.topics = topics;
+                    question.topicsAsString = topicsAsString(topics);
                     responseObject.topics = chosenTopics;
                 }
 

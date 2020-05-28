@@ -46,6 +46,11 @@ const postSchema = new Schema({
         type: [ mongoose.Types.ObjectId ],
         es_indexed: false,
     },
+    topicsAsString: {
+        type: String,
+        trim: true,
+        es_indexed: true,
+    },
 });
 
 postSchema.plugin(mongoosastic, {
