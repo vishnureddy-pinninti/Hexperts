@@ -259,10 +259,17 @@ const Search = (props) => {
             requestSearch({ text: query }, { skip: paginationIndex * 10 });
         }
         else {
-            requestSearch({
+            const req = {
                 text: query,
                 categories: [ selectedTab ],
-            }, { skip: paginationIndex * 10 });
+            };
+            if ([
+                'users',
+                'externals',
+            ].indexOf(selectedTab) < 0){
+                req.topics = checked;
+            }
+            requestSearch(req, { skip: paginationIndex * 10 });
         }
     };
 
