@@ -17,11 +17,15 @@ class Dashboard extends Component {
             users,
             requestDashboardSummary,
             requestDashboardTopics,
+            requestDashboardUsers,
         } = this.props;
         return (
             <div style={{ width: '80%', margin: 'auto', marginTop: 100 }}>
                 <UserSummary userSummary={ userSummary } />
-                <RangeSelection requestDashboardSummary={ requestDashboardSummary } requestDashboardTopics={ requestDashboardTopics } />
+                <RangeSelection
+                    requestDashboardSummary={ requestDashboardSummary }
+                    requestDashboardTopics={ requestDashboardTopics }
+                    requestDashboardUsers={ requestDashboardUsers } />
                 <Summary summary={ summary } />
                 <Topics data={ topics } />
                 <Users users={ users }/>
@@ -55,17 +59,17 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestDashboardSummary: (params = {}) => {
+        requestDashboardSummary: (params) => {
             dispatch(requestDashboardSummary(params));
         },
         requestUserSummary: () => {
             dispatch(requestUserSummary());
         },
-        requestDashboardTopics: (params = {}) => {
+        requestDashboardTopics: (params) => {
             dispatch(requestDashboardTopics(params));
         },
-        requestDashboardUsers: () => {
-            dispatch(requestDashboardUsers());
+        requestDashboardUsers: (params) => {
+            dispatch(requestDashboardUsers(params));
         }
     }
 }

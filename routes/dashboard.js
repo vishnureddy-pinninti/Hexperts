@@ -301,7 +301,13 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/api/v1/dashboard-users', loginMiddleware, adminMiddleware, async(req, res) => {
+    app.get('/api/v1/dashboard-users', loginMiddleware, adminMiddleware, queryMiddleware, async(req, res) => {
+        const { query } = req.queryParams;
+        const {
+            startDate = START_DATE,
+            endDate = END_DATE,
+        } = query;
+
         try {
             const users = await User.aggregate([
                 {
@@ -311,6 +317,10 @@ module.exports = (app) => {
                         pipeline: [
                             {
                                 $match: {
+                                    postedDate: {
+                                        $gte: new Date(startDate),
+                                        $lte: new Date(endDate)
+                                    },
                                     $expr: {
                                         $eq: [
                                             '$$id',
@@ -330,6 +340,10 @@ module.exports = (app) => {
                         pipeline: [
                             {
                                 $match: {
+                                    postedDate: {
+                                        $gte: new Date(startDate),
+                                        $lte: new Date(endDate)
+                                    },
                                     $expr: {
                                         $eq: [
                                             '$$id',
@@ -349,6 +363,10 @@ module.exports = (app) => {
                         pipeline: [
                             {
                                 $match: {
+                                    postedDate: {
+                                        $gte: new Date(startDate),
+                                        $lte: new Date(endDate)
+                                    },
                                     $expr: {
                                         $eq: [
                                             '$$id',

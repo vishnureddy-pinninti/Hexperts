@@ -56,11 +56,11 @@ const receiveDashboardUsers = (users) => {
     }
 }
 
-export const requestDashboardUsers = () => {
+export const requestDashboardUsers = (params) => {
     return {
         type: REQUEST_DASHBOARD_USERS,
         makeApiRequest: {
-            url: '/api/v1/dashboard-users',
+            url: buildApiUrl('/api/v1/dashboard-users', params),
             method: 'GET',
             success: (response) => receiveDashboardUsers(response),
         },
