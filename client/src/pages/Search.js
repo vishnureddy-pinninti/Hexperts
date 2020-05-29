@@ -265,6 +265,7 @@ const Search = (props) => {
             };
             if ([
                 'users',
+                'topics',
                 'externals',
             ].indexOf(selectedTab) < 0){
                 req.topics = checked;
@@ -299,26 +300,24 @@ const Search = (props) => {
     });
 
     const filterByTopics = (type, topics) => {
+        const req = { text: query };
+        if (selectedTab !== 'all'){
+            req.categories = [ selectedTab ];
+        }
         switch (type){
             case 'all':
                 setChecked([]);
                 setSelectedTopics([]);
                 setTopicsTab('all');
-                requestSearch({
-                    text: query,
-                    categories: [ selectedTab ],
-                }, {
+                requestSearch(req, {
                     skip: 0,
                     limit: 20,
                 });
                 break;
             default:
+                req.topics = topics;
                 setTopicsTab('none');
-                requestSearch({
-                    text: query,
-                    topics,
-                    categories: [ selectedTab ],
-                }, {
+                requestSearch(req, {
                     skip: 0,
                     limit: 20,
                 });
@@ -326,31 +325,29 @@ const Search = (props) => {
     };
 
     const getData = (type = 'all') => {
+        const req = { text: query };
         setSelectedTab(type);
         if ([
             'users',
             'externals',
+            'topics',
         ].indexOf(type) >= 0){
             setShowTopicSearch(false);
         }
         else {
             setShowTopicSearch(true);
+            req.topics = checked;
         }
         switch (type){
             case 'all':
-                requestSearch({
-                    text: query,
-
-                }, {
+                requestSearch(req, {
                     skip: 0,
                     limit: 20,
                 });
                 break;
             default:
-                requestSearch({
-                    text: query,
-                    categories: [ type ],
-                }, {
+                req.categories = [ type ];
+                requestSearch(req, {
                     skip: 0,
                     limit: 20,
                 });
@@ -507,7 +504,7 @@ const Search = (props) => {
                     disabled={ loading }
                     options={ topicsList }
                     onChange={ onTopicSelect }
-                    // getOptionLabel={ (option) => {} }
+                    getOptionLabel={ (option) => option.topic }
                     filterOptions={ (options, params) => {
                         const filtered = filter(options, params);
                         return filtered;
