@@ -81,6 +81,7 @@ class RangeSelection extends Component {
         const {
             requestDashboardSummary,
             requestDashboardTopics,
+            requestDashboardUsers,
         } = this.props;
 
         const params = {};
@@ -95,6 +96,7 @@ class RangeSelection extends Component {
 
         requestDashboardSummary(params);
         requestDashboardTopics(params);
+        requestDashboardUsers(params);
     }
 }
 

@@ -66,6 +66,16 @@ class Users extends Component {
         );
     }
 
+    renderUpvotesColumn = (rowData) => {
+        return (
+            <Tooltip title="Total upvotes received irrespective of time frame">
+                <Typography>
+                    { rowData.upvotes }
+                </Typography>
+            </Tooltip>
+        );
+    }
+
     getColumns = () => {
         return [
             { field: 'name', title: 'Name' },
@@ -73,7 +83,7 @@ class Users extends Component {
             { field: 'questions', title: 'Questions' },
             { field: 'answers', title: 'Answers' },
             { field: 'posts', title: 'Blog Posts' },
-            { field: 'upvotes', title: 'Upvotes' },
+            { field: 'upvotes', title: 'Upvotes', render: this.renderUpvotesColumn },
             { field: 'role', title: 'Role', render: this.renderRoleColumn },
         ]
     }

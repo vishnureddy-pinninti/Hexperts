@@ -12,7 +12,7 @@ const isAdmin = (user) => {
     return user.role === 'admin';
 }
 
-const buildApiUrl = (url, params) => {
+const buildApiUrl = (url, params = {}) => {
     return `${url}?${Object.keys(params).map(x => `${x}=${params[x]}`).join('&')}`;
 };
 
