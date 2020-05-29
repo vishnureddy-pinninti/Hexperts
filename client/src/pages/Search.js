@@ -3,15 +3,30 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Container, Typography, List, ListItem, ListItemText, ListItemAvatar, Box, Chip, Avatar, Divider, Tooltip, Button, CardHeader } from '@material-ui/core';
+import { Grid,
+    TextField,
+    Container,
+    Typography,
+    List, ListItem, ListItemText,
+    ListItemAvatar, Box, Chip, Avatar,
+    Divider, Tooltip, Button, CardHeader } from '@material-ui/core';
 import { Help as HelpIcon, Link as LinkIcon, QuestionAnswerOutlined as QuestionAnswerOutlinedIcon } from '@material-ui/icons';
 import AddIcon from '@material-ui/icons/Add';
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Checkbox from '@material-ui/core/Checkbox';
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
 import EmptyResults from '../components/base/EmptyResults';
 import CardLoader from '../components/base/CardLoader';
 import { requestAdvancedSearch } from '../store/actions/search';
 import { toggleQuestionModal } from '../store/actions/questions';
 import UserAvatar from '../components/base/Avatar';
 import getBadge from '../utils/badge';
+import { requestTopics } from '../store/actions/topic';
+
+
+const filter = createFilterOptions();
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -58,12 +73,39 @@ const Search = (props) => {
         totalCount,
         toggleQuestionModal,
         loading,
+        topicsList,
+        requestTopics,
     } = props;
 
     const [
         selectedTab,
         setSelectedTab,
     ] = React.useState('all');
+
+    const [
+        showTopicSearch,
+        setShowTopicSearch,
+    ] = React.useState(true);
+
+    const [
+        topicsTab,
+        setTopicsTab,
+    ] = React.useState('all');
+
+    const [
+        checked,
+        setChecked,
+    ] = React.useState([]);
+
+    const [
+        selectedTopics,
+        setSelectedTopics,
+    ] = React.useState([]);
+
+
+    useEffect(() => {
+        requestTopics();
+    }, [ requestTopics ]);
 
     const classes = useStyles();
 
@@ -217,10 +259,17 @@ const Search = (props) => {
             requestSearch({ text: query }, { skip: paginationIndex * 10 });
         }
         else {
-            requestSearch({
+            const req = {
                 text: query,
                 categories: [ selectedTab ],
-            }, { skip: paginationIndex * 10 });
+            };
+            if ([
+                'users',
+                'externals',
+            ].indexOf(selectedTab) < 0){
+                req.topics = checked;
+            }
+            requestSearch(req, { skip: paginationIndex * 10 });
         }
     };
 
@@ -249,8 +298,44 @@ const Search = (props) => {
         );
     });
 
+    const filterByTopics = (type, topics) => {
+        switch (type){
+            case 'all':
+                setChecked([]);
+                setSelectedTopics([]);
+                setTopicsTab('all');
+                requestSearch({
+                    text: query,
+                    categories: [ selectedTab ],
+                }, {
+                    skip: 0,
+                    limit: 20,
+                });
+                break;
+            default:
+                setTopicsTab('none');
+                requestSearch({
+                    text: query,
+                    topics,
+                    categories: [ selectedTab ],
+                }, {
+                    skip: 0,
+                    limit: 20,
+                });
+        }
+    };
+
     const getData = (type = 'all') => {
         setSelectedTab(type);
+        if ([
+            'users',
+            'externals',
+        ].indexOf(type) >= 0){
+            setShowTopicSearch(false);
+        }
+        else {
+            setShowTopicSearch(true);
+        }
         switch (type){
             case 'all':
                 requestSearch({
@@ -280,6 +365,7 @@ const Search = (props) => {
         <List className={ classes.menu }>
             <Chip
                 label="All Types"
+                size="small"
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'all' ? 'default' : 'outlined' }
@@ -288,6 +374,7 @@ const Search = (props) => {
                 disabled={ loading } />
             <Chip
                 label="Questions"
+                size="small"
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'questions' ? 'default' : 'outlined' }
@@ -296,6 +383,7 @@ const Search = (props) => {
                 disabled={ loading } />
             <Chip
                 label="Answers"
+                size="small"
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'answers' ? 'default' : 'outlined' }
@@ -305,6 +393,7 @@ const Search = (props) => {
             <Chip
                 label="Topics"
                 className={ classes.chip }
+                size="small"
                 color="primary"
                 variant={ selectedTab === 'topics' ? 'default' : 'outlined' }
                 onClick={ () => { getData('topics'); } }
@@ -313,6 +402,7 @@ const Search = (props) => {
             <Chip
                 label="Blog Posts"
                 className={ classes.chip }
+                size="small"
                 color="primary"
                 variant={ selectedTab === 'posts' ? 'default' : 'outlined' }
                 onClick={ () => { getData('posts'); } }
@@ -320,6 +410,7 @@ const Search = (props) => {
                 disabled={ loading } />
             <Chip
                 label="Users"
+                size="small"
                 className={ classes.chip }
                 color="primary"
                 variant={ selectedTab === 'users' ? 'default' : 'outlined' }
@@ -330,12 +421,126 @@ const Search = (props) => {
                 label="Externals"
                 className={ classes.chip }
                 color="primary"
+                size="small"
                 variant={ selectedTab === 'externals' ? 'default' : 'outlined' }
                 onClick={ () => { getData('externals'); } }
                 clickable
                 disabled={ loading } />
         </List>
     );
+
+    const onTopicSelect = (obj, value) => {
+        if (value){
+            const currentIndex = checked.indexOf(value._id);
+            const newChecked = [ ...checked ];
+
+            if (currentIndex === -1) {
+                newChecked.push(value._id);
+                setSelectedTopics([
+                    ...selectedTopics,
+                    value,
+                ]);
+            }
+            setChecked(newChecked);
+            filterByTopics('topics', newChecked);
+        }
+    };
+
+
+    const handleToggle = ((value) => () => {
+        const currentIndex = checked.indexOf(value._id);
+        const newChecked = [ ...checked ];
+
+        if (currentIndex === -1) {
+            newChecked.push(value._id);
+        }
+        else {
+            newChecked.splice(currentIndex, 1);
+        }
+
+        setChecked(newChecked);
+        filterByTopics('topics', newChecked);
+    });
+
+    const renderSelectedTopics = () => (
+        <List>
+            { selectedTopics.map((value) => {
+                const labelId = `checkbox-list-label-${value._id}`;
+                return (
+                    <ListItem
+                        key={ value._id }
+                        dense
+                        button
+                        disabled={ loading }
+                        onClick={ handleToggle(value) }>
+                        <ListItemIcon style={ { minWidth: '0px' } }>
+                            <Checkbox
+                                edge="start"
+                                checked={ checked.indexOf(value._id) !== -1 }
+                                tabIndex={ -1 }
+                                disableRipple
+                                inputProps={ { 'aria-labelledby': labelId } } />
+                        </ListItemIcon>
+                        <ListItemText
+                            id={ labelId }
+                            primary={ value.topic || value.value } />
+                    </ListItem>
+                );
+            }) }
+        </List>
+    );
+    const renderTopicSearch = () => (
+        <>
+            <div className={ classes.menu }>
+                <Chip
+                    label="All Types"
+                    size="small"
+                    className={ classes.topicchip }
+                    color="primary"
+                    variant={ topicsTab === 'all' ? 'default' : 'outlined' }
+                    onClick={ () => { filterByTopics('all'); } }
+                    clickable
+                    disabled={ loading } />
+                { renderSelectedTopics() }
+                <Autocomplete
+                    id="highlights-demo"
+                    disabled={ loading }
+                    options={ topicsList }
+                    onChange={ onTopicSelect }
+                    // getOptionLabel={ (option) => {} }
+                    filterOptions={ (options, params) => {
+                        const filtered = filter(options, params);
+                        return filtered;
+                    } }
+
+                    renderInput={ (params) => (
+                        <TextField
+                            { ...params }
+                            label="Search"
+                            variant="outlined"
+                            size="small"
+                            margin="none" />
+                    ) }
+                    renderOption={ (option, { inputValue }) => {
+                        const matches = match(option.topic, inputValue);
+                        const parts = parse(option.topic, matches);
+
+                        return (
+                            <div>
+                                { parts.map((part, index) => (
+                                    <span
+                                        key={ index }
+                                        style={ { fontWeight: part.highlight ? 700 : 400 } }>
+                                        { part.text }
+                                    </span>
+                                )) }
+                            </div>
+                        );
+                    } } />
+            </div>
+        </>
+    );
+
 
     return (
         <div className="App">
@@ -348,7 +553,7 @@ const Search = (props) => {
                     <Grid
                         item
                         xs={ 2 }>
-                        <div className={ classes.heading }>
+                        <div>
                             <Typography
                                 component="div">
                                 <Box
@@ -357,8 +562,18 @@ const Search = (props) => {
                                     By Type
                                 </Box>
                             </Typography>
-                            <Divider />
                             { renderMenu() }
+                            { showTopicSearch && <>
+                                <Typography
+                                    component="div">
+                                    <Box
+                                        fontWeight="fontWeightBold"
+                                        m={ 1 }>
+                                        By Topic
+                                    </Box>
+                                </Typography>
+                                { renderTopicSearch() }
+                                                 </> }
                         </div>
                     </Grid>
                     <Grid
@@ -427,6 +642,7 @@ const mapStateToProps = (state) => {
         paginationHasMore: state.search.paginationHasMore,
         newResults: state.search.newResults,
         loading: state.search.loading,
+        topicsList: state.topic.topics,
     };
 };
 
@@ -437,6 +653,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         toggleQuestionModal: (question) => {
             dispatch(toggleQuestionModal(question));
+        },
+        requestTopics: (body) => {
+            dispatch(requestTopics(body));
         },
     };
 };
