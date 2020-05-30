@@ -433,6 +433,8 @@ const Search = (props) => {
         </List>
     );
 
+    const findTopicById = (id) => selectedTopics.find((x) => x._id === id);
+
     const onTopicSelect = (obj, value) => {
         if (value){
             const currentIndex = checked.indexOf(value._id);
@@ -440,10 +442,12 @@ const Search = (props) => {
 
             if (currentIndex === -1) {
                 newChecked.push(value._id);
-                setSelectedTopics([
-                    ...selectedTopics,
-                    value,
-                ]);
+                if (!findTopicById(value._id)){
+                    setSelectedTopics([
+                        ...selectedTopics,
+                        value,
+                    ]);
+                }
             }
             setChecked(newChecked);
             filterByTopics('topics', newChecked);
