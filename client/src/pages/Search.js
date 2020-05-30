@@ -102,6 +102,10 @@ const Search = (props) => {
         setSelectedTopics,
     ] = React.useState([]);
 
+    const [
+        value,
+        setValue,
+    ] = React.useState(null);
 
     useEffect(() => {
         requestTopics();
@@ -256,7 +260,10 @@ const Search = (props) => {
 
     const loadMore = () => {
         if (selectedTab === 'all'){
-            requestSearch({ text: query }, { skip: paginationIndex * 10 });
+            requestSearch({
+                text: query,
+                topics: checked,
+            }, { skip: paginationIndex * 10 });
         }
         else {
             const req = {
@@ -440,6 +447,7 @@ const Search = (props) => {
             }
             setChecked(newChecked);
             filterByTopics('topics', newChecked);
+            setValue({ topic: '' });
         }
     };
 
@@ -490,7 +498,7 @@ const Search = (props) => {
         <>
             <div className={ classes.menu }>
                 <Chip
-                    label="All Types"
+                    label="All Topics"
                     size="small"
                     className={ classes.topicchip }
                     color="primary"
@@ -501,6 +509,7 @@ const Search = (props) => {
                 { renderSelectedTopics() }
                 <Autocomplete
                     id="highlights-demo"
+                    value={ value }
                     disabled={ loading }
                     options={ topicsList }
                     onChange={ onTopicSelect }
