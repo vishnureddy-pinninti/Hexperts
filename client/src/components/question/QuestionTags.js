@@ -44,10 +44,6 @@ const QuestionTags = (props) => {
         setChipData(topics);
     }, [ topics ]);
 
-    const handleDelete = (chipToDelete) => () => {
-        setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
-    };
-
     const [
         openEditTopicsModal,
         setOpenEditTopicsModal,
@@ -92,7 +88,6 @@ const QuestionTags = (props) => {
                 );
             }) }
             { !chipData.length && <Chip
-                variant="contained"
                 avatar={
                     <Avatar>
                         <AddIcon />

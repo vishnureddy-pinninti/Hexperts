@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActionArea from '@material-ui/core/CardActionArea';
-
-import { red } from '@material-ui/core/colors';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Avatar from '../base/Avatar';

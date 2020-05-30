@@ -77,6 +77,7 @@ const useStyles = makeStyles((theme) => {
             '&:hover': {
                 textDecoration: 'underline',
             },
+            cursor: 'pointer',
         },
         menuIcon: {
             paddingRight: 5,
@@ -125,7 +126,6 @@ const QuestionSection = (props) => {
     ] = React.useState(question.question);
 
     const [
-        description,
         setDescription,
     ] = React.useState(question.description);
 
@@ -163,7 +163,6 @@ const QuestionSection = (props) => {
     const {
         _id,
         name,
-        jobTitle,
         email,
         reputation,
     } = author;
@@ -199,10 +198,6 @@ const QuestionSection = (props) => {
 
     const onEditorStateChange = (value) => {
         setAnswer(value);
-    };
-
-    const setEditorReference = (ref) => {
-        if (ref) { ref.focus(); }
     };
 
     const handleFollowClick = () => {
@@ -273,13 +268,13 @@ const QuestionSection = (props) => {
             initialHeight={ 300 }
             mediaExists={ isMediaOrCode(description) }
             readMore={ (props) => (
-                <Link
-                    className={ classes.more }
+                <a
+                    className={ classes.link }
                     onClick={ props.onClick }>
                     <b>
                         { props.open ? 'Read less' : 'Read more...' }
                     </b>
-                </Link>
+                </a>
             ) }>
             <div
                 style={ {
@@ -342,7 +337,7 @@ const QuestionSection = (props) => {
                     title={
                         <Link
                             className={ classes.link }
-                            onClick={ onProfileClick }>
+                            to={ `/profile/${_id}` }>
                             Asked by
                             { '  ' }
                             { isOwner ? 'me' : name }
@@ -458,7 +453,6 @@ const QuestionSection = (props) => {
             </Collapse>
             <CardContent>
                 <Typography
-                    variant="h7"
                     color="textSecondary"
                     component="p">
                     { answers ? `${answers.totalCount} answers` : 'No answers yet' }

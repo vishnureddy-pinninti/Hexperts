@@ -17,7 +17,6 @@ function Post(props) {
         },
         requestPost,
         post,
-        pending,
     } = props;
 
     const [

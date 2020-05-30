@@ -102,10 +102,6 @@ const BlogPostModal = (props) => {
         setDescription(value);
     };
 
-    const setEditorReference = (ref) => {
-        if (ref) { ref.focus(); }
-    };
-
     useEffect(() => {
         requestTopics();
     }, [ requestTopics ]);
@@ -230,7 +226,7 @@ const BlogPostModal = (props) => {
                 <DialogContent
                     className={ classes.post }
                     dividers>
-                    <DialogContentText>
+                    <DialogContentText component="div">
                         <Field
                             name="title"
                             component={ renderTextField } />

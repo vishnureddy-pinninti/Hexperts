@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -82,6 +82,7 @@ const useStyles = makeStyles((theme) => {
             '&:hover': {
                 textDecoration: 'underline',
             },
+            cursor: 'pointer',
         },
         menuIcon: {
             paddingRight: 5,
@@ -97,10 +98,8 @@ const AnswerCard = (props) => {
         hideHeader,
         history,
         upvotePost,
-        downvotePost,
         deletePost,
         editPost,
-        modifiedPosts,
         hideHeaderHelperText,
         user,
         collapse,
@@ -111,9 +110,7 @@ const AnswerCard = (props) => {
         title,
         description,
         author,
-        downvoters,
         upvoters,
-        blogs,
         topics,
         postedDate,
         lastModified,
@@ -154,13 +151,13 @@ const AnswerCard = (props) => {
             initialHeight={ 300 }
             mediaExists={ isMediaOrCode(post) }
             readMore={ (props) => (
-                <Link
+                <a
                     className={ classes.more }
                     onClick={ props.onClick }>
                     <b>
                         { props.open ? 'Read less' : 'Read more...' }
                     </b>
-                </Link>
+                </a>
             ) }>
             <div
                 style={ {
@@ -248,7 +245,6 @@ const AnswerCard = (props) => {
     const isOwner = user._id === _id;
 
     const upvoted = upvoters.indexOf(user._id) >= 0;
-    const downvoted = downvoters.indexOf(user._id) >= 0;
 
     return (
         <Card
@@ -258,17 +254,15 @@ const AnswerCard = (props) => {
                 {
                     !hideHeader && <>
                         { !hideHeaderHelperText && renderHeaderHelperText(postObj.topics) }
-                        <Typography>
-                            <Link
-                                to={ `/post/${postId}` }
-                                className={ classes.link }>
-                                <Box
-                                    fontWeight="fontWeightBold"
-                                    fontSize={ 20 }>
-                                    { postObj.title }
-                                </Box>
-                            </Link>
-                        </Typography>
+                        <Link
+                            to={ `/post/${postId}` }
+                            className={ classes.link }>
+                            <Box
+                                fontWeight="fontWeightBold"
+                                fontSize={ 20 }>
+                                { postObj.title }
+                            </Box>
+                        </Link>
                     </>
                 }
                 <CardHeader
@@ -310,7 +304,7 @@ const AnswerCard = (props) => {
                     title={
                         <Link
                             className={ classes.link }
-                            onClick={ onProfileClick }>
+                            to={ `/profile/${_id}` }>
                             { name }
                             ,
                             { ' ' }

@@ -151,17 +151,15 @@ const QuestionCard = (props) => {
                     { question.lastModified ? `Question edited ${formatDistance(new Date(question.lastModified), new Date(), { addSuffix: true })}`
                         : `Question added ${formatDistance(new Date(date), new Date(), { addSuffix: true })}` }
                 </Typography>
-                <Typography>
-                    <Link
-                        to={ `/question/${id}` }
-                        className={ classes.link }>
-                        <Box
-                            fontWeight="fontWeightBold"
-                            fontSize={ 20 }>
-                            { question.question }
-                        </Box>
-                    </Link>
-                </Typography>
+                <Link
+                    to={ `/question/${id}` }
+                    className={ classes.link }>
+                    <Box
+                        fontWeight="fontWeightBold"
+                        fontSize={ 20 }>
+                        { question.question }
+                    </Box>
+                </Link>
                 <Typography
                     variant="body2"
                     color="textSecondary"

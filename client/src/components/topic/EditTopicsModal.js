@@ -9,7 +9,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import TextField from '@material-ui/core/TextField';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { Field, reduxForm, reset } from 'redux-form';
+import { reduxForm, reset } from 'redux-form';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -25,7 +25,7 @@ import { editQuestion, editQuestionPending } from '../../store/actions/questions
 
 const filter = createFilterOptions();
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(() => {
     return {
         root: {
         },

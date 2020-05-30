@@ -102,12 +102,9 @@ const EditSuggestedWriters = (props) => {
 
 
     const {
-        addNewTopic,
-        handleSubmit,
         question,
         questionID,
         topics,
-        requestTopics,
         editQuestion,
         suggestedExperts,
         requestSuggestedExperts,
@@ -254,14 +251,16 @@ const EditSuggestedWriters = (props) => {
                                 secondary={
                                     <>
                                         <Typography
-                                            component="div"
+                                            component="span"
+                                            style={{ display: 'block' }}
                                             variant="body2"
                                             color="textPrimary">
                                             { user.jobTitle }
                                         </Typography>
                                         <Typography
-                                            component="div"
+                                            component="span"
                                             variant="body2"
+                                            style={{ display: 'block' }}
                                             className={ classes.badge }
                                             color="textSecondary">
                                             { getBadge(user.reputation) }
@@ -317,14 +316,16 @@ const EditSuggestedWriters = (props) => {
                             secondary={
                                 <>
                                     <Typography
-                                        component="div"
+                                        component="span"
+                                        style={{ display: 'block' }}
                                         variant="body2"
                                         color="textPrimary">
                                         { user.jobTitle }
                                     </Typography>
                                     <Typography
-                                        component="div"
+                                        component="span"
                                         variant="body2"
+                                        style={{ display: 'block' }}
                                         className={ classes.badge }
                                         color="textSecondary">
                                         { getBadge(user.reputation) }

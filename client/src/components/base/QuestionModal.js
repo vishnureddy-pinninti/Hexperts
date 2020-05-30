@@ -39,7 +39,6 @@ const QuestionModal = (props) => {
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const {
-        questionSuggestions,
         handleSubmit,
         handleClose,
         getQuestionSuggestions,

@@ -46,13 +46,10 @@ const useStyles = makeStyles((theme) => {
 function ProfileBody(props) {
     const classes = useStyles();
     const {
-        topic,
         requestUserQuestions,
         requestUserAnswers,
-        topic: { questions },
         userFeed,
         userProfile,
-        followedTopics,
         requestUserPosts,
         requestUserFollowers,
         requestUserFollowing,

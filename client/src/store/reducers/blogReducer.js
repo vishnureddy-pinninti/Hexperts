@@ -32,7 +32,6 @@ export default (state = initialState, action) => {
     let post;
     let id;
     let followers = [];
-    let blogs;
     let temp;
     switch (action.type) {
         case ADD_BLOG_PENDING:
