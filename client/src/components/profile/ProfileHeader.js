@@ -105,8 +105,6 @@ const TopicSection = (props) => {
                         aria-label={ name }
                         alt={ name }
                         badge={ badge }
-                        badgeWidth={ 140 }
-                        badgeStyle={ { paddingLeft: 80 } }
                         variant="rounded"
                         user={ mail }
                         className={ classes.large } />
