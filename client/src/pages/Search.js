@@ -102,6 +102,10 @@ const Search = (props) => {
         setSelectedTopics,
     ] = React.useState([]);
 
+    const [
+        value,
+        setValue,
+    ] = React.useState(null);
 
     useEffect(() => {
         requestTopics();
@@ -256,7 +260,10 @@ const Search = (props) => {
 
     const loadMore = () => {
         if (selectedTab === 'all'){
-            requestSearch({ text: query }, { skip: paginationIndex * 10 });
+            requestSearch({
+                text: query,
+                topics: checked,
+            }, { skip: paginationIndex * 10 });
         }
         else {
             const req = {
@@ -426,6 +433,8 @@ const Search = (props) => {
         </List>
     );
 
+    const findTopicById = (id) => selectedTopics.find((x) => x._id === id);
+
     const onTopicSelect = (obj, value) => {
         if (value){
             const currentIndex = checked.indexOf(value._id);
@@ -433,13 +442,16 @@ const Search = (props) => {
 
             if (currentIndex === -1) {
                 newChecked.push(value._id);
-                setSelectedTopics([
-                    ...selectedTopics,
-                    value,
-                ]);
+                if (!findTopicById(value._id)){
+                    setSelectedTopics([
+                        ...selectedTopics,
+                        value,
+                    ]);
+                }
             }
             setChecked(newChecked);
             filterByTopics('topics', newChecked);
+            setValue({ topic: '' });
         }
     };
 
@@ -490,7 +502,7 @@ const Search = (props) => {
         <>
             <div className={ classes.menu }>
                 <Chip
-                    label="All Types"
+                    label="All Topics"
                     size="small"
                     className={ classes.topicchip }
                     color="primary"
@@ -501,6 +513,7 @@ const Search = (props) => {
                 { renderSelectedTopics() }
                 <Autocomplete
                     id="highlights-demo"
+                    value={ value }
                     disabled={ loading }
                     options={ topicsList }
                     onChange={ onTopicSelect }

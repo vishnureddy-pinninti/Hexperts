@@ -281,7 +281,7 @@ function SearchBar(props) {
             <Popper
                 id={ id }
                 open={ open }
-                style={ { zIndex: 2 } }
+                style={ { zIndex: 20 } }
                 placement="bottom-end"
                 modifiers={ {
                     flip: {

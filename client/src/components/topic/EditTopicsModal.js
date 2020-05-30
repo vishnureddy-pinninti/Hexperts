@@ -80,6 +80,11 @@ const EditTopicsModal = (props) => {
         setSelectedTopics,
     ] = React.useState(topics);
 
+    const [
+        value,
+        setValue,
+    ] = React.useState(null);
+
     useEffect(() => {
         const newChecked = [];
         topics.map((topic) => (newChecked.push(topic._id)));
@@ -122,6 +127,8 @@ const EditTopicsModal = (props) => {
         setChecked(newChecked);
     });
 
+    const findTopicById = (id) => selectedTopics.find((x) => x._id === id);
+
     const onTopicSelect = (obj, value) => {
         if (value && value.inputValue) {
             addNewTopic({ topics: [ value.inputValue ] }, addTopicCallback);
@@ -134,12 +141,15 @@ const EditTopicsModal = (props) => {
 
             if (currentIndex === -1) {
                 newChecked.push(value._id);
-                setSelectedTopics([
-                    ...selectedTopics,
-                    value,
-                ]);
+                if (!findTopicById(value._id)){
+                    setSelectedTopics([
+                        ...selectedTopics,
+                        value,
+                    ]);
+                }
             }
             setChecked(newChecked);
+            setValue({ topic: '' });
         }
     };
 
@@ -205,9 +215,10 @@ const EditTopicsModal = (props) => {
                 <div className={ classes.container }>
                     <Autocomplete
                         id="highlights-demo"
+                        value={ value }
                         options={ topicsList }
                         onChange={ onTopicSelect }
-                        // getOptionLabel={ (option) => {} }
+                        getOptionLabel={ (option) => option.topic }
                         filterOptions={ (options, params) => {
                             const filtered = filter(options, params);
 
