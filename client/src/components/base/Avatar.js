@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Avatar as MuiAvatar } from '@material-ui/core';
 import { connect } from 'react-redux';
-import Badge from '@material-ui/core/Badge';
 import { authService } from '../../services/authService';
 import { setImage } from '../../store/actions/auth';
 
@@ -11,6 +10,7 @@ class Avatar extends Component {
         const {
             currentUserImage,
             badge,
+            setImage,
             ...rest
         } = this.props;
         let color = badge;

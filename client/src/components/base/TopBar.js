@@ -150,10 +150,6 @@ const TopBar = (props) => {
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-    const handleProfileMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
     const handleMobileMenuClose = () => {
         setMobileMoreAnchorEl(null);
     };
@@ -568,7 +564,7 @@ const TopBar = (props) => {
                 handleDone={ handleOnAddDescription }
                 handleClose={ handleDescriptionModalClose } /> }
             <Snackbar
-                open={ newQuestion.question }
+                open={ !!newQuestion.question }
                 message="Adding Question" />
             { codeObj.open && <EditCode
                 open={ codeObj.open }

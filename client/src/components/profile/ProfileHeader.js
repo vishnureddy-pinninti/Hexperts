@@ -8,8 +8,6 @@ import RssFeedSharpIcon from '@material-ui/icons/RssFeedSharp';
 import CardHeader from '@material-ui/core/CardHeader';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import { Avatar as MuiAvatar } from '@material-ui/core';
 
 import Avatar from '../base/Avatar';
 import { addAnswerToQuestion, addAnswerPending } from '../../store/actions/answer';
@@ -48,10 +46,6 @@ const TopicSection = (props) => {
         mail,
         jobTitle,
         id,
-        description,
-        pending,
-        followTopic,
-        topic,
         followers,
         user,
         isOwner,

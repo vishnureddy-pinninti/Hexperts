@@ -14,11 +14,6 @@ import EmptyResults from '../components/base/EmptyResults';
 import { requestQuestionById, requestRelatedQuestions } from '../store/actions/questions';
 
 function Question(props) {
-    const [
-        open,
-        setOpen,
-    ] = React.useState(false);
-
     const {
         match: {
             params: { questionId 
@@ -29,7 +24,6 @@ function Question(props) {
         question,
  relatedQuestions,
  modifiedQuestions,
- newAnswer,
     } = props;
 
     const [

@@ -6,8 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
-import { Field, reduxForm, reset } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 
@@ -26,35 +25,7 @@ const validate = (values) => {
     return errors;
 };
 
-
-const useStyles = makeStyles({
-    root: {
-        overflow: 'visible',
-        marginTop: 10,
-    },
-    media: {
-
-    },
-    editorWrapper: {
-        border: '1px solid #F1F1F1',
-        minHeight: 300,
-        padding: 10,
-    },
-    editor: {
-        height: 300,
-        overflow: 'auto',
-    },
-    link: {
-        textDecoration: 'none',
-        color: 'inherit',
-        '&:hover': {
-            textDecoration: 'underline',
-        },
-    },
-});
-
 function DescriptionModal(props) {
-    const classes = useStyles();
     const {
         questionText,
         handleClose,
@@ -82,10 +53,6 @@ function DescriptionModal(props) {
 
     const onEditorStateChange = (value) => {
         setDescription(value);
-    };
-
-    const setEditorReference = (ref) => {
-        if (ref) { ref.focus(); }
     };
 
     const addDescriptionToQuestion = (values) => {

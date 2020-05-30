@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
-import { withStyles,
-    useTheme,
-    makeStyles } from '@material-ui/core/styles';
+import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { Button,
     Dialog,
     DialogActions,
@@ -20,8 +18,6 @@ import { Button,
     Checkbox } from '@material-ui/core';
 import { CheckCircleRounded as CheckCircleRoundedIcon,
     CheckCircleOutlined as CheckCircleOutlinedIcon } from '@material-ui/icons';
-import ExplicitIcon from '@material-ui/icons/Explicit';
-import ExplicitOutlinedIcon from '@material-ui/icons/ExplicitOutlined';
 import StarsOutlinedIcon from '@material-ui/icons/StarsOutlined';
 import StarsRoundedIcon from '@material-ui/icons/StarsRounded';
 import { addNewTopic,
@@ -38,7 +34,6 @@ const useStyles = makeStyles(() => {
             flexWrap: 'wrap',
             justifyContent: 'space-around',
             overflow: 'hidden',
-
         },
         gridList: {
             width: 700,
@@ -55,9 +50,6 @@ const useStyles = makeStyles(() => {
         },
         checkbox: {
             color: '#bdbdbd',
-            '&$checked': {
-                color: 'red',
-            },
         },
     };
 });
@@ -73,20 +65,6 @@ const validate = (values) => {
     return errors;
 };
 
-const WhiteCheckbox = withStyles({
-    root: {
-        color: 'white',
-        '&$checked': {
-            color: 'white',
-        },
-    },
-    checked: {},
-})((props) => (
-    <Checkbox
-        color="default"
-        { ...props } />
-));
-
 const FollowTopicsModal = (props) => {
     const classes = useStyles();
     const theme = useTheme();
@@ -96,7 +74,6 @@ const FollowTopicsModal = (props) => {
         topics,
         followedTopics,
         requestTopics,
-        user,
         maangeUserPreferences,
         open,
         handleFollowTopicsModalClose,

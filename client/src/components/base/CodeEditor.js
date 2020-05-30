@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import CodeIcon from '@material-ui/icons/Code';
 import Button from '@material-ui/core/Button';

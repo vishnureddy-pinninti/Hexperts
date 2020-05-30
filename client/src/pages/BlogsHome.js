@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => {
 function Home(props) {
     const {
         requestPostsFeed,
-        user,
         pending,
         expertIn,
         history,
@@ -64,10 +63,6 @@ function Home(props) {
         setOpenExpertInModal,
     ] = React.useState(false);
 
-    const handleExpertInModalOpen = () => {
-        setOpenExpertInModal(true);
-    };
-
     const handleExpertInModalClose = () => {
         setOpenExpertInModal(false);
     };
@@ -76,10 +71,6 @@ function Home(props) {
         openQModal,
         setOpenQModal,
     ] = React.useState(false);
-
-    const handleClickQuestionModalOpen = () => {
-        setOpenQModal(true);
-    };
 
     const handleQuestionModalClose = () => {
         setOpenQModal(false);

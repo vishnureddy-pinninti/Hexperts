@@ -56,9 +56,6 @@ const useStyles = makeStyles(() => {
         },
         checkbox: {
             color: 'white',
-            '&$checked': {
-                color: 'red',
-            },
         },
     };
 });

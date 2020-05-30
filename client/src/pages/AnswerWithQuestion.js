@@ -16,7 +16,6 @@ function Answer(props) {
         },
         requestAnswer,
         answer,
-        pending,
     } = props;
 
     const [

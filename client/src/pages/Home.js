@@ -13,7 +13,6 @@ import Topics from '../components/topic/TopicsList';
 import CardLoader from '../components/base/CardLoader';
 import TopCreators from '../components/answer/TopCreators';
 import EmptyResults from '../components/base/EmptyResults';
-import AskQuestionCard from '../components/question/AskQuestionCard';
 import QuestionsList from '../components/question/QuestionsList';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
@@ -44,12 +43,9 @@ function Home(props) {
     const {
         requestUserQuestions,
         requestTrendingQuestions,
-        user,
         questions,
         trendingQuestions,
-        pending,
         expertIn,
-        toggleQuestionModal,
     } = props;
 
     const classes = useStyles();

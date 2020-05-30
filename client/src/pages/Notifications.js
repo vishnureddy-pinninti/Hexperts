@@ -233,7 +233,7 @@ function Notifications(props) {
 
                 return (
                     <ListItem
-                        key={ item.display }
+                        key={ item.id }
                         role={ undefined }
                         disabled={ !emailSubscription }
                         dense

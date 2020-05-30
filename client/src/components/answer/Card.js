@@ -15,12 +15,9 @@ import { Card,
     Menu,
     MenuItem,
     Collapse } from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
 import { ChatBubbleOutlineRounded as ChatBubbleOutlineRoundedIcon,
     ThumbUpOutlined as ThumbUpOutlinedIcon,
-    ThumbDownOutlined as ThumbDownOutlinedIcon,
     ThumbUpAlt as ThumbUpAltIcon,
-    ThumbDownAlt as ThumbDownAltIcon,
     ChatBubble as ChatBubbleIcon } from '@material-ui/icons';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -88,6 +85,7 @@ const useStyles = makeStyles((theme) => {
             '&:hover': {
                 textDecoration: 'underline',
             },
+            cursor: 'pointer',
         },
         menuIcon: {
             paddingRight: 5,
@@ -113,11 +111,8 @@ const AnswerCard = (props) => {
             reputation,
 },
         topics,
-        downvoters,
         upvoters,
         upvoteAnswer,
-        downvoteAnswer,
-        modifiedAnswers,
         hideHeaderHelperText,
         user,
         deleteAnswer,
@@ -155,13 +150,13 @@ const AnswerCard = (props) => {
             initialHeight={ 300 }
             mediaExists={ isMediaOrCode(answer) }
             readMore={ (props) => (
-                <Link
+                <a
                     className={ classes.more }
                     onClick={ props.onClick }>
                     <b>
                         { props.open ? 'Read less' : 'Read more...' }
                     </b>
-                </Link>
+                </a>
             ) }>
             <div
                 style={ {
@@ -254,7 +249,7 @@ const AnswerCard = (props) => {
                 {
                     !hideHeader && <>
                         { !hideHeaderHelperText && renderHeaderHelperText() }
-                        <Typography>
+                        <div>
                             <Link
                                 disabled={ disabled }
                                 to={ `/question/${questionId}` }
@@ -265,8 +260,8 @@ const AnswerCard = (props) => {
                                     { question }
                                 </Box>
                             </Link>
-                        </Typography>
-                                   </>
+                        </div>
+                    </>
                 }
                 <div className={ disabled ? classes.disabled : '' }>
                     <CardHeader
@@ -306,7 +301,7 @@ const AnswerCard = (props) => {
                         title={
                             <Link
                                 className={ classes.link }
-                                onClick={ onProfileClick }>
+                                to={ `/profile/${_id}` }>
                                 { name }
                                 ,
                                 { ' ' }

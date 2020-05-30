@@ -330,11 +330,6 @@ function AnswerPageBody(props) {
         }
     };
 
-    const [
-        selectedTab,
-        setSelectedTab,
-    ] = React.useState('AnswerRequests');
-
     const renderQuestions = (items) => items.map((item) => {
         if (item.answer){
             return (

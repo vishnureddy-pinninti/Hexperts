@@ -5,12 +5,10 @@ import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import { Avatar as MuiAvatar } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Badge from '@material-ui/core/Badge';
 
 import { requestTopCreators } from '../../store/actions/auth';
 import Avatar from '../base/Avatar';
@@ -65,7 +63,8 @@ function TopCreators(props) {
                     secondary={
                         <>
                             <Typography
-                                component="div"
+                                component="span"
+                                style={{ display: 'block' }}
                                 variant="body2"
                                 color="textPrimary">
                                 { user.jobTitle }

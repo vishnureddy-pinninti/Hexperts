@@ -9,7 +9,6 @@ import { createTextChunk,
     getBlockDividerChunk,
     getFirstBlockChunk,
     getAtomicBlockChunk,
-    getCustomCodeBlockChunk,
     joinChunks } from './chunkBuilder';
 import getBlockTypeForTag from './getBlockTypeForTag';
 import processInlineTag from './processInlineTag';
