@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Popper from '@material-ui/core/Popper';
 import TextField from '@material-ui/core/TextField';
@@ -9,6 +9,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Typography from '@material-ui/core/Typography';
 import HelpIcon from '@material-ui/icons/Help';
 import { Avatar as MuiAvatar, Divider, Tooltip } from '@material-ui/core';
 import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
@@ -101,7 +102,7 @@ function SearchBar(props) {
                 </ListItemAvatar>
                 <ListItemText
                     primary="Topic"
-                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+                    secondary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> } />
             </ListItem>
         </Link>
     );
@@ -119,7 +120,7 @@ function SearchBar(props) {
                 </ListItemAvatar>
                 <ListItemText
                     primary="Blog"
-                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+                    secondary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> } />
             </ListItem>
         </Link>
     );
@@ -135,7 +136,7 @@ function SearchBar(props) {
                     </MuiAvatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+                    primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> } />
             </ListItem>
         </Link>
     );
@@ -151,7 +152,7 @@ function SearchBar(props) {
                     </MuiAvatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+                    primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> } />
             </ListItem>
         </Link>
     );
@@ -162,10 +163,12 @@ function SearchBar(props) {
             to={ `/post/${item._id}` }>
             <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
-                    Post:
+                    <Typography>
+                        Post:
+                    </Typography>
                 </ListItemAvatar>
                 <ListItemText
-                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+                    primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> } />
             </ListItem>
         </Link>
     );
@@ -182,7 +185,7 @@ function SearchBar(props) {
                         className={ classes.avatar } />
                 </ListItemAvatar>
                 <ListItemText
-                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+                    primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> } />
             </ListItem>
         </Link>
     );
@@ -203,7 +206,7 @@ function SearchBar(props) {
                 </Tooltip>
                 <ListItemText
                     primary="External Source"
-                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+                    secondary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> } />
             </ListItem>
         </a>
     );
@@ -234,10 +237,10 @@ function SearchBar(props) {
             className={ classes.root }
             id="search-results">
             { results.map((item) => (
-                <>
+                <Fragment key={ item._id }>
                     { renderResult(item) }
                     <Divider />
-                </>
+                </Fragment>
             )) }
         </List>
     );

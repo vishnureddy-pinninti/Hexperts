@@ -371,8 +371,7 @@ const TopBar = (props) => {
                 <p>Dashboard</p>
             </MenuItem>
             <MenuItem
-                onClick={ handleProfileClick }
-                onMouseHover={ handleProfileMenuOpen }>
+                onClick={ handleProfileClick }>
                 <IconButton
                     aria-label="account of current user"
                     aria-controls="primary-search-account-menu"
@@ -517,7 +516,6 @@ const TopBar = (props) => {
                                     aria-controls={ menuId }
                                     aria-haspopup="true"
                                     onClick={ handleProfileClick }
-                                    onMouseHover={ handleProfileMenuOpen }
                                     color="inherit">
                                     <Avatar
                                         alt={ user.name }

@@ -126,7 +126,7 @@ const Search = (props) => {
                 </ListItemAvatar>
                 <ListItemText
                     primary="Topic"
-                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+                    secondary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> } />
             </ListItem>
         </Link>
     );
@@ -144,7 +144,7 @@ const Search = (props) => {
                 </ListItemAvatar>
                 <ListItemText
                     primary="Blog"
-                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> } />
+                    secondary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> } />
             </ListItem>
         </Link>
     );
@@ -160,8 +160,8 @@ const Search = (props) => {
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> }
-                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
+                    primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> }
+                    secondary={ <span dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
             </ListItem>
         </Link>
     );
@@ -177,8 +177,8 @@ const Search = (props) => {
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> }
-                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
+                    primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> }
+                    secondary={ <span dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
             </ListItem>
         </Link>
     );
@@ -189,11 +189,13 @@ const Search = (props) => {
             to={ `/post/${item._id}` }>
             <ListItem>
                 <ListItemAvatar>
-                    Post:
+                    <Typography>
+                        Post:
+                    </Typography>
                 </ListItemAvatar>
                 <ListItemText
-                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> }
-                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
+                    primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> }
+                    secondary={ <span dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
             </ListItem>
         </Link>
     );
@@ -210,8 +212,8 @@ const Search = (props) => {
                         className={ classes.avatar } />
                 </ListItemAvatar>
                 <ListItemText
-                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> }
-                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
+                    primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> }
+                    secondary={ <span dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
             </ListItem>
         </Link>
     );
@@ -231,8 +233,8 @@ const Search = (props) => {
                     </ListItemAvatar>
                 </Tooltip>
                 <ListItemText
-                    primary={ <div dangerouslySetInnerHTML={ { __html: item.text } } /> }
-                    secondary={ <div dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
+                    primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> }
+                    secondary={ <span dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
             </ListItem>
         </a>
     );

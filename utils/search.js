@@ -204,7 +204,7 @@ const search = async(properties) => {
         pagination = {},
         exclude = true,
         sfield,
-        topics,
+        topics = [],
     } = properties;
     const searchFields = sfield || getSearchFields(categories);
     const excludeFields = exclude ? getExcludeFields(categories) : [];
@@ -220,7 +220,7 @@ const search = async(properties) => {
         }
     ];
 
-    if (topics) {
+    if (topics.length) {
         mustQuery.unshift({
             match: { topics }
         });

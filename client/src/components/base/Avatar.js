@@ -11,6 +11,7 @@ class Avatar extends Component {
         const {
             currentUserImage,
             badge,
+            ...rest
         } = this.props;
         let color = badge;
 
@@ -20,7 +21,7 @@ class Avatar extends Component {
 
         return (
             <MuiAvatar
-                { ...this.props }
+                { ...rest }
                 title={ badge }
                 style={ { border: `3px solid ${color}` } }
                 alt="Avatar Image"
@@ -60,11 +61,6 @@ class Avatar extends Component {
         }
     }
 }
-
-Avatar.defaultProps = {
-    badgeWidth: 40,
-    badgeStyle: { paddingLeft: 26 },
-};
 
 const mapStateToProps = (state, ownProps) => {
     const userImage = state.user.images.find((image) => image.user === ownProps.user);

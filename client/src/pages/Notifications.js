@@ -274,7 +274,7 @@ function Notifications(props) {
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary={ <div dangerouslySetInnerHTML={ { __html: notification.message } } /> }
+                    primary={ <span dangerouslySetInnerHTML={ { __html: notification.message } } /> }
                     secondary={ formatDistanceToNow(new Date(notification.postedDate), { addSuffix: true }) } />
             </ListItem>
             <Divider />

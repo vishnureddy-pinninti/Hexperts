@@ -57,8 +57,6 @@ function AskQuestionCard(props) {
                         aria-label={ name }
                         className={ classes.avatar }
                         badge={ getBadge(reputation) }
-                        badgeWidth={ 20 }
-                        badgeStyle={ { paddingLeft: 16 } }
                         user={ email } />
                 }
                 className={ classes.title }
