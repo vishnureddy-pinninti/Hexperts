@@ -19,6 +19,7 @@ const {
         USER_NOT_FOUND, TOPIC_NOT_FOUND, BLOG_NOT_FOUND, UNAUTHORIZED, INCORRECT_EMAIL_CATEGORY,
     },
 } = require('../utils/constants');
+const { search } = require('../utils/search');
 
 module.exports = (app) => {
     app.post('/api/v1/user.read', async(req, res) => {
@@ -124,6 +125,33 @@ module.exports = (app) => {
                     ...resUser,
                     notificationCount: notifications.length,
                 });
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
+    app.post('/api/v1/user-suggestions', loginMiddleware, async(req, res) => {
+        const {
+            user,
+        } = req.body;
+
+        try {
+            const userSuggestions = await search({
+                text: user,
+                categories: [ 'users' ],
+                exclude: false,
+            });
+
+            res
+                .status(200)
+                .json(userSuggestions);
         }
         catch (e) {
             res
