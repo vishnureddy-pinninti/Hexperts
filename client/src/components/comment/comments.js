@@ -127,7 +127,7 @@ const Comments = (props) => {
     const renderTextField = () => (
         <Editor
             toolbarHidden
-            placeholder="Type @ to mention someone"
+            placeholder="Type @ to mention someone in the comment"
             handleEditorStateChange={ onEditorStateChange } />
     );
 
