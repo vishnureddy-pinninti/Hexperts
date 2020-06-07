@@ -5,22 +5,27 @@ import { List,
     Divider,
     ListItemText,
     ListItemAvatar,
-    TextField,
     Button,
     Grid,
     CardContent,
     CardHeader } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
-import { Field, reduxForm, reset } from 'redux-form';
+import { reduxForm, reset } from 'redux-form';
 import { formatDistanceToNow } from 'date-fns';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { convertToRaw } from 'draft-js';
+import Editor from '../base/Editor';
 
 import CardLoader from '../base/CardLoader';
 import Avatar from '../base/Avatar';
 import { commentAnswer,
     requestCommentsForAnswer } from '../../store/actions/answer';
+import { isMediaOrCode } from '../../utils/common';
+import ReadMore from '../base/ReadMore';
+import draftToHtml from '../../utils/draftjs-to-html';
+
 import getBadge from '../../utils/badge';
 
 const validate = (values) => {
@@ -61,6 +66,13 @@ const useStyles = makeStyles((theme) => {
                 textDecoration: 'underline',
             },
         },
+        more: {
+            textDecoration: 'none',
+            '&:hover': {
+                textDecoration: 'underline',
+            },
+            cursor: 'pointer',
+        },
         headerRoot: {
             paddingLeft: 0,
             paddingRight: 0,
@@ -71,17 +83,6 @@ const useStyles = makeStyles((theme) => {
     };
 });
 
-const renderTextField = ({ input }) => (
-    <TextField
-        { ...input }
-        margin="dense"
-        id="name"
-        placeholder="Start typing your comment..."
-        type="text"
-        required
-        variant="outlined"
-        fullWidth />
-);
 
 const Comments = (props) => {
     const classes = useStyles();
@@ -114,6 +115,22 @@ const Comments = (props) => {
         setItems,
     ] = React.useState([]);
 
+    const [
+        description,
+        setDescription,
+    ] = React.useState('');
+
+    const onEditorStateChange = (value) => {
+        setDescription(value);
+    };
+
+    const renderTextField = () => (
+        <Editor
+            toolbarHidden
+            placeholder="Type @ to mention someone"
+            handleEditorStateChange={ onEditorStateChange } />
+    );
+
     const newCommentCallback = (res) => {
         setItems([
             res,
@@ -125,11 +142,11 @@ const Comments = (props) => {
         }
     };
 
-    const addUserComment = (values) => {
+    const addUserComment = () => {
         commentAnswer({
             targetID: target._id,
             target: targetType,
-            ...values,
+            comment: description && draftToHtml(convertToRaw(description.getCurrentContent())),
         }, newCommentCallback, () => {});
     };
 
@@ -160,11 +177,36 @@ const Comments = (props) => {
         }
     };
 
+    const renderComment = (post) => (
+        <ReadMore
+            initialHeight={ 300 }
+            mediaExists={ isMediaOrCode(post) }
+            readMore={ (props) => (
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
+                <a
+                    className={ classes.more }
+                    onClick={ props.onClick }>
+                    <b>
+                        { props.open ? 'Read less' : 'Read more...' }
+                    </b>
+                </a>
+            ) }>
+            <div
+                style={ {
+                    display: 'flex',
+                    flexDirection: 'column',
+                } }
+                className="editor-read-mode"
+                dangerouslySetInnerHTML={ { __html: post } } />
+        </ReadMore>
+    );
+
     React.useEffect(() => {
         requestCommentsForAnswer(target._id,
             { skip: 0 },
             getCommentsCallback,
             () => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ target ]);
 
     const onProfileClick = (_id) => {
@@ -204,7 +246,7 @@ const Comments = (props) => {
                                 { `Commented ${formatDistanceToNow(new Date(comment.postedDate), { addSuffix: true })}` }
                             </Link>
                         } />
-                    { comment.comment }
+                    { renderComment(comment.comment) }
                 </CardContent>
             </ListItem>
             <Divider />
@@ -232,9 +274,7 @@ const Comments = (props) => {
                             <Grid
                                 item
                                 xs={ 10 }>
-                                <Field
-                                    name="comment"
-                                    component={ renderTextField } />
+                                { renderTextField() }
                             </Grid>
                             <Grid
                                 item

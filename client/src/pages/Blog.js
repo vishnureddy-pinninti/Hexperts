@@ -23,16 +23,15 @@ import { requestBlogById } from '../store/actions/blog';
 
 function Topic(props) {
     const {
-        match: {
-            params: { blogId 
-},
-        },
+        match,
         requestBlog,
         pending,
         newPost,
         modifiedBlogs,
         followers,
     } = props;
+
+    const { params: { blogId } } = match;
 
     const [
         openFollowTopicsModal,
@@ -100,6 +99,7 @@ function Topic(props) {
             });
         }
         setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ blog ]);
 
     const [
@@ -111,7 +111,10 @@ function Topic(props) {
         if (modifiedBlogs && modifiedBlogs[blogId] && modifiedBlogs[blogId].newAnswers){
             setNewPosts([ ...modifiedBlogs[blogId].newPosts ]);
         }
-    }, [ modifiedBlogs ]);
+    }, [
+        blogId,
+        modifiedBlogs,
+    ]);
 
     useEffect(() => {
         setItems([]);
@@ -133,6 +136,7 @@ function Topic(props) {
                 ...items,
             ]);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ newPost ]);
 
 

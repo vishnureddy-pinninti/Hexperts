@@ -143,7 +143,13 @@ function Comment(props) {
                             { `Commented ${formatDistanceToNow(new Date(comment.postedDate), { addSuffix: true })}` }
                         </Link>
                     } />
-                { comment.comment }
+                <div
+                    style={ {
+                        display: 'flex',
+                        flexDirection: 'column',
+                    } }
+                    className="editor-read-mode"
+                    dangerouslySetInnerHTML={ { __html: comment.comment } } />
             </CardContent>
         </Card>
     );
