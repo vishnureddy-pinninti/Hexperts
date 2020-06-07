@@ -3,6 +3,8 @@ export const RECEIVE_SEARCH = 'RECEIVE_SEARCH';
 export const REQUEST_ADVANCED_SEARCH = 'REQUEST_ADVANCED_SEARCH';
 export const RECEIVE_ADVANCED_SEARCH = 'RECEIVE_ADVANCED_SEARCH';
 export const RECEIVE_FAILURE_RESPONSE = 'RECEIVE_FAILURE_RESPONSE';
+export const REQUEST_USERS = 'REQUEST_USERS';
+export const RECEIVE_USERS = 'RECEIVE_USERS';
 
 const receiveSearchResults = (res) => {
     return {
@@ -34,9 +36,9 @@ const receiveAdvancedSearchResults = (res, skip, limit) => {
 
 const receiveFailureResponse = () => {
     return {
-        type: RECEIVE_FAILURE_RESPONSE
-    }
-}
+        type: RECEIVE_FAILURE_RESPONSE,
+    };
+};
 
 export const requestAdvancedSearch = (body, params) => {
     const {
@@ -53,7 +55,28 @@ export const requestAdvancedSearch = (body, params) => {
             method: 'POST',
             body,
             success: (res) => receiveAdvancedSearchResults(res, skip, limit),
-            failure: receiveFailureResponse
+            failure: receiveFailureResponse,
+        },
+    };
+};
+
+const receiveUsers = (res) => {
+    return {
+        type: RECEIVE_USERS,
+        res,
+    };
+};
+
+export const requestUsers = (body, callback, errback) => {
+    return {
+        type: REQUEST_USERS,
+        makeApiRequest: {
+            url: '/api/v1/user-suggestions',
+            method: 'POST',
+            body,
+            success: receiveUsers,
+            successcb: callback,
+            errorcb: errback,
         },
     };
 };

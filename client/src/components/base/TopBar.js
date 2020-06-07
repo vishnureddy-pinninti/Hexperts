@@ -126,7 +126,15 @@ const useStyles = makeStyles((theme) => {
             backgroundImage: 'url(/topbar.png)',
             backgroundRepeat: 'no-repeat',
             objectFit: 'cover',
-            backgroundSize: '1250px 100%',
+            backgroundSize: '1400px 100%',
+            backgroundPosition: 'center',
+        },
+        adminTopBar: {
+            backgroundColor: '#0088ac',
+            backgroundImage: 'url(/topbar.png)',
+            backgroundRepeat: 'no-repeat',
+            objectFit: 'cover',
+            backgroundSize: '1400px 100%',
             backgroundPosition: 'center',
         },
         small: {
@@ -412,7 +420,7 @@ const TopBar = (props) => {
             <AppBar
                 position="fixed"
                 elevation={ 1 }
-                className={ classes.topBar }
+                className={ isAdmin(user) ? classes.adminTopBar : classes.topBar }
                 color="default">
                 <Grid
                     container
