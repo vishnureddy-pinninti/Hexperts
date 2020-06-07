@@ -29,6 +29,7 @@ const styles = () => {
         },
         editor: {
             height: 'inherit',
+            maxHeight: 300,
         },
         modal: {
             height: 300,
@@ -98,6 +99,7 @@ class TextEditor extends React.Component {
             placeholder,
             fullScreen,
             classes,
+            toolbarHidden,
         } = this.props;
 
         const { value } = this.state;
@@ -146,7 +148,7 @@ class TextEditor extends React.Component {
                     editorState={ value }
                     editorRef={ setEditorReference }
                     wrapperClassName={ classes.editorWrapper }
-                    editorClassName={ `${classes.editor} editor-write-mode ${!fullScreen && classes.modal}` }
+                    editorClassName={ `${classes.editor} editor-write-mode ${!fullScreen && !toolbarHidden && classes.modal}` }
                     onEditorStateChange={ this.handleEditorStateChange }
                     toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
                     customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
@@ -155,7 +157,7 @@ class TextEditor extends React.Component {
                     handleReturn={ this.onReturn }
                     onEscape={ this.handleEscape }
                     onTab={ this.handleTab }
-                    toolbar={ config.editorToolbar } />
+                    toolbarHidden={ toolbarHidden } />
             </div>
         );
     }
@@ -343,6 +345,7 @@ class TextEditor extends React.Component {
 TextEditor.defaultProps = {
     placeholder: 'Start typing...',
     fullScreen: false,
+    toolbarHidden: false,
 };
 
 const mapStateToProps = () => {
