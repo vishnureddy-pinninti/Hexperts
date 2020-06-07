@@ -8,10 +8,10 @@ const addSuggestion = (obj) => {
         trigger,
         suggestion,
     } = obj;
-    const { value, url } = suggestion;
+    const { value, url, text } = suggestion;
 
     const entityKey = Entity.create('MENTION', 'IMMUTABLE', {
-        text: `${trigger}${value}`,
+        text: `${trigger}${text}`,
         value,
         url,
     });
@@ -24,7 +24,7 @@ const addSuggestion = (obj) => {
     let insertingContent = Modifier.replaceText(
         editorState.getCurrentContent(),
         mentionTextSelection,
-        `${trigger}${value}`, [ 'link' ],
+        `${trigger}${text}`, [ 'link' ],
         entityKey
     );
 

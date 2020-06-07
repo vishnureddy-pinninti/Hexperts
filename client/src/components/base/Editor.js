@@ -83,7 +83,8 @@ class TextEditor extends React.Component {
         this.onInsert = (state) => {
             const insertState = state;
             insertState.suggestion = {
-                value: insertState.selectedItem.options.name,
+                text: insertState.selectedItem.options.name,
+                value: insertState.selectedItem.options.email,
                 url: `/Profile/${insertState.selectedItem._id}`,
             };
             return addSuggestion(insertState);
