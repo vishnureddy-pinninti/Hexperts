@@ -131,10 +131,18 @@ function ProfileBody(props) {
                     requestUserPosts(userProfile._id, { skip: pagination.index * 10 });
                     break;
                 case 'Followers':
-                // requestUserFollowers(userProfile._id, { skip: pagination.index * 10 });
+                    setPagination({
+                        ...pagination,
+                        hasMore: false,
+                    });
+                    // requestUserFollowers(userProfile._id, { skip: pagination.index * 10 });
                     break;
                 case 'Following':
-                // requestUserFollowing(userProfile._id, { skip: pagination.index * 10 });
+                    setPagination({
+                        ...pagination,
+                        hasMore: false,
+                    });
+                    // requestUserFollowing(userProfile._id, { skip: pagination.index * 10 });
                     break;
                 default:
                     requestUserQuestions(userProfile._id, { skip: pagination.index * 10 });
@@ -330,7 +338,7 @@ function ProfileBody(props) {
                     endMessage={ items.length !== 0
                         && <p style={ { textAlign: 'center' } }>
                             <b>Yay! You have seen it all</b>
-                           </p> }>
+                        </p> }>
                     { renderResults(items) }
                 </InfiniteScroll>
                 { items && items.length === 0 && !pagination.hasMore && <EmptyResults
