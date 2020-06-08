@@ -99,7 +99,6 @@ class TextEditor extends React.Component {
 
     render() {
         const {
-            uploadImage,
             placeholder,
             fullScreen,
             classes,
@@ -108,41 +107,6 @@ class TextEditor extends React.Component {
 
         const { value } = this.state;
 
-        const setEditorReference = (ref) => {
-            if (ref) { ref.focus(); }
-        };
-
-        const callback = (res) => {
-            const entityData = {
-                src: res.path,
-                height: 'auto',
-                width: 'auto',
-            };
-
-            const entityKey = value
-                .getCurrentContent()
-                .createEntity('IMAGE', 'MUTABLE', entityData)
-                .getLastCreatedEntityKey();
-            const newEditorState = AtomicBlockUtils.insertAtomicBlock(
-                value,
-                entityKey,
-                ' '
-            );
-            this.setState({ value: newEditorState });
-        };
-
-        const handleImageUpload = (files) => {
-            const formdata = new FormData();
-            formdata.append('file', files[0]);
-            uploadImage(formdata, callback);
-        };
-
-        const handleDropImageUpload = (se, files) => {
-            const formdata = new FormData();
-            formdata.append('file', files[0]);
-            uploadImage(formdata, callback);
-        };
-
         return (
             <div>
                 { this.renderAutocomplete() }
@@ -150,14 +114,14 @@ class TextEditor extends React.Component {
                     spellCheck
                     placeholder={ placeholder }
                     editorState={ value }
-                    editorRef={ setEditorReference }
+                    editorRef={ this.setEditorReference }
                     wrapperClassName={ `${classes.editorWrapper} ${toolbarHidden && classes.comment}` }
                     editorClassName={ `${classes.editor} editor-write-mode ${!fullScreen && !toolbarHidden && classes.modal}` }
                     onEditorStateChange={ this.handleEditorStateChange }
                     toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }
                     customBlockRenderFunc={ config.editorConfig.customBlockRenderer }
-                    handlePastedFiles={ handleImageUpload }
-                    handleDroppedFiles={ handleDropImageUpload }
+                    handlePastedFiles={ this.onImageUpload }
+                    handleDroppedFiles={ this.onDropImageUpload }
                     handleReturn={ this.onReturn }
                     onEscape={ this.handleEscape }
                     onTab={ this.handleTab }
@@ -180,6 +144,44 @@ class TextEditor extends React.Component {
                 handleSuggestionItemClick={ this.onSuggestionItemClick } />
         );
     }
+
+    setEditorReference = (ref) => {
+        if (ref) { ref.focus(); }
+    };
+
+    uploadCallback = (res) => {
+        const entityData = {
+            src: res.path,
+            height: 'auto',
+            width: 'auto',
+        };
+        const { value } = this.state;
+
+        const entityKey = value
+            .getCurrentContent()
+            .createEntity('IMAGE', 'MUTABLE', entityData)
+            .getLastCreatedEntityKey();
+        const newEditorState = AtomicBlockUtils.insertAtomicBlock(
+            value,
+            entityKey,
+            ' '
+        );
+        this.setState({ value: newEditorState });
+    };
+
+    onImageUpload = (files) => {
+        const { uploadImage } = this.props;
+        const formdata = new FormData();
+        formdata.append('file', files[0]);
+        uploadImage(formdata, this.uploadCallback);
+    };
+
+    onDropImageUpload = (se, files) => {
+        const { uploadImage } = this.props;
+        const formdata = new FormData();
+        formdata.append('file', files[0]);
+        uploadImage(formdata, this.uploadCallback);
+    };
 
     onSuggestionItemClick = (e, item) => {
         const autocompleteState = this.getAutocompleteState(false);
