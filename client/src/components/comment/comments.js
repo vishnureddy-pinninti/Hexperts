@@ -122,6 +122,7 @@ const Comments = (props) => {
     const renderTextField = () => (
         <Editor
             toolbarHidden
+            initialValue={ description }
             placeholder="Type @ to mention someone in the comment"
             handleEditorStateChange={ onEditorStateChange } />
     );
@@ -131,6 +132,7 @@ const Comments = (props) => {
             res,
             ...items,
         ]);
+        setDescription('');
         setNewComments(newComments + 1);
         if (handleNewComment){
             handleNewComment();

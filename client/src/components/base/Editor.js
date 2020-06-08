@@ -130,6 +130,13 @@ class TextEditor extends React.Component {
         );
     }
 
+    componentDidUpdate(nextProps) {
+        const { initialValue } = this.props;
+        if (nextProps.initialValue !== initialValue) {
+            // eslint-disable-next-line react/no-did-update-set-state
+            this.setState({ value: initialValue });
+        }
+    }
 
     renderAutocomplete() {
         const {
