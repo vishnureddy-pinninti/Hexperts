@@ -2,18 +2,13 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography,
-    Card,
-    CardContent,
-    CardHeader,
     Container,
     Grid } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Link } from 'react-router-dom';
-import { formatDistanceToNow } from 'date-fns';
-
-import Avatar from '../components/base/Avatar';
+import CommentCard from '../components/comment/Card';
+import EmptyResults from '../components/base/EmptyResults';
 import { requestCommentById } from '../store/actions/answer';
-import getBadge from '../utils/badge';
 
 const useStyles = makeStyles(() => {
     return {
@@ -37,27 +32,41 @@ const useStyles = makeStyles(() => {
 function Comment(props) {
     const classes = useStyles();
     const {
-        match: {
-            params: { commentId 
-},
-        },
+        match,
         requestComent,
         comment,
         postComment,
-        history,
-        pending,
     } = props;
 
+    const {
+        params: { commentId },
+    } = match;
+
+    const [
+        error,
+        setError,
+    ] = React.useState();
+
+    const [
+        loading,
+        setLoading,
+    ] = React.useState(false);
+
     useEffect(() => {
-        requestComent(commentId);
+        if (comment.comment){
+            setLoading(false);
+        }
+    }, [ comment ]);
+
+    useEffect(() => {
+        requestComent(commentId, () => {}, () => {
+            setLoading(false);
+            setError('Comment not found. It may have been deleted by the author.');
+        });
     }, [
         requestComent,
         commentId,
     ]);
-
-    const onProfileClick = (_id) => {
-        history.push(`/profile/${_id}`);
-    };
 
     const renderTitle = (comment) => (
         <Typography
@@ -114,44 +123,9 @@ function Comment(props) {
     );
 
     const renderComment = (comment) => (
-        <Card>
-            <CardContent className={ classes.cartContent }>
-                <CardHeader
-                    className={ classes.headerRoot }
-                    avatar={
-                        <Avatar
-                            alt={ comment.author.name }
-                            user={ comment.author.email }
-                            badge={ getBadge(comment.author.reputation) }
-                            onClick={ () => onProfileClick(comment.author._id) }
-                            className={ classes.avatar } />
-                    }
-                    title={
-                        <Link
-                            className={ classes.link }
-                            onClick={ () => onProfileClick(comment.author._id) }>
-                            { comment.author.name }
-                            ,
-                            { ' ' }
-                            { comment.author.jobTitle }
-                        </Link>
-                    }
-                    subheader={
-                        <Link
-                            className={ classes.link }
-                            to={ `/comment/${comment._id}` }>
-                            { `Commented ${formatDistanceToNow(new Date(comment.postedDate), { addSuffix: true })}` }
-                        </Link>
-                    } />
-                <div
-                    style={ {
-                        display: 'flex',
-                        flexDirection: 'column',
-                    } }
-                    className="editor-read-mode"
-                    dangerouslySetInnerHTML={ { __html: comment.comment } } />
-            </CardContent>
-        </Card>
+        <CommentCard
+            comment={ comment }
+            collapse={ false } />
     );
 
     return (
@@ -168,14 +142,19 @@ function Comment(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        { pending ? <Skeleton
+                        { loading ? <Skeleton
                             variant="rect"
                             height={ 150 } /> : <>
-                                { comment && comment.answer && renderTitle(comment) }
-                                { comment && comment.answer && renderComment(comment) }
-                                { postComment && postComment.post && renderPostCommentTitle(postComment) }
-                                { postComment && postComment.post && renderComment(postComment) }
-                            </> }
+                            { comment && comment.answer && renderTitle(comment) }
+                            { comment && comment.answer && renderComment(comment) }
+                            { postComment && postComment.post && renderPostCommentTitle(postComment) }
+                            { postComment && postComment.post && renderComment(postComment) }
+                        </> }
+                        { error
+                            && <EmptyResults
+                                style={ { marginTop: 30 } }
+                                title={ error }
+                                showBackButton /> }
                     </Grid>
                     <Grid
                         item
@@ -190,14 +169,13 @@ const mapStateToProps = (state) => {
     return {
         comment: state.answer.comment,
         postComment: state.blog.comment,
-        pending: state.answer.pending,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestComent: (id) => {
-            dispatch(requestCommentById(id));
+        requestComent: (id, success, error) => {
+            dispatch(requestCommentById(id, success, error));
         },
     };
 };

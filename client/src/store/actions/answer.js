@@ -19,6 +19,10 @@ export const DELETE_ANSWER = 'DELETE_ANSWER';
 export const EDIT_ANSWER = 'EDIT_ANSWER';
 export const RECEIVE_EDITED_ANSWER = 'RECEIVE_EDITED_ANSWER';
 export const EDIT_CODE = 'EDIT_CODE';
+export const RECEIVE_DELETED_COMMENT = 'RECEIVE_DELETED_COMMENT';
+export const DELETE_COMMENT = 'DELETE_COMMENT';
+export const RECEIVE_EDITED_COMMENT = 'RECEIVE_EDITED_COMMENT';
+export const EDIT_COMMENT = 'EDIT_COMMENT';
 
 export function addAnswerPending() {
     return {
@@ -196,13 +200,15 @@ const receiveCommentById = (comment) => {
     };
 };
 
-export const requestCommentById = (id) => {
+export const requestCommentById = (id, success, error) => {
     return {
         type: REQUEST_COMMENT_BY_ID,
         makeApiRequest: {
             url: `/api/v1/comment/${id}`,
             method: 'GET',
             success: receiveCommentById,
+            successcb: success,
+            errorcb: error,
         },
     };
 };
@@ -213,3 +219,43 @@ export function editCode(data) {
         data,
     };
 }
+
+const receiveDeletedComment = (res) => {
+    return {
+        type: RECEIVE_DELETED_COMMENT,
+        res,
+    };
+};
+
+export const deleteComment = (id, cb, error) => {
+    return {
+        type: DELETE_COMMENT,
+        makeApiRequest: {
+            url: `/api/v1/comments/${id}`,
+            method: 'DELETE',
+            success: receiveDeletedComment,
+            successcb: cb,
+            errorcb: error,
+        },
+    };
+};
+
+const receiveEditedComment = (res) => {
+    return {
+        type: RECEIVE_EDITED_COMMENT,
+        res,
+    };
+};
+
+export const editComment = (id, body, cb) => {
+    return {
+        type: EDIT_COMMENT,
+        makeApiRequest: {
+            url: `/api/v1/comments/${id}`,
+            method: 'PUT',
+            body,
+            success: receiveEditedComment,
+            successcb: cb,
+        },
+    };
+};

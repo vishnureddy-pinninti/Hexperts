@@ -2,28 +2,22 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { List,
     ListItem,
-    Divider,
     ListItemText,
     ListItemAvatar,
     Button,
-    Grid,
-    CardContent,
-    CardHeader } from '@material-ui/core';
+    Grid } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { reduxForm, reset } from 'redux-form';
-import { formatDistanceToNow } from 'date-fns';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { convertToRaw } from 'draft-js';
 import Editor from '../base/Editor';
-
 import CardLoader from '../base/CardLoader';
+import CommentCard from './Card';
 import Avatar from '../base/Avatar';
 import { commentAnswer,
     requestCommentsForAnswer } from '../../store/actions/answer';
-import { isMediaOrCode } from '../../utils/common';
-import ReadMore from '../base/ReadMore';
 import draftToHtml from '../../utils/draftjs-to-html';
 
 import getBadge from '../../utils/badge';
@@ -78,7 +72,9 @@ const useStyles = makeStyles((theme) => {
             paddingRight: 0,
         },
         cartContent: {
-            padding: 0,
+        },
+        menuIcon: {
+            paddingRight: 5,
         },
     };
 });
@@ -92,7 +88,6 @@ const Comments = (props) => {
         target,
         commentAnswer,
         requestCommentsForAnswer,
-        history,
         handleNewComment,
         targetType,
     } = props;
@@ -177,30 +172,6 @@ const Comments = (props) => {
         }
     };
 
-    const renderComment = (post) => (
-        <ReadMore
-            initialHeight={ 300 }
-            mediaExists={ isMediaOrCode(post) }
-            readMore={ (props) => (
-                // eslint-disable-next-line jsx-a11y/anchor-is-valid
-                <a
-                    className={ classes.more }
-                    onClick={ props.onClick }>
-                    <b>
-                        { props.open ? 'Read less' : 'Read more...' }
-                    </b>
-                </a>
-            ) }>
-            <div
-                style={ {
-                    display: 'flex',
-                    flexDirection: 'column',
-                } }
-                className="editor-read-mode"
-                dangerouslySetInnerHTML={ { __html: post } } />
-        </ReadMore>
-    );
-
     React.useEffect(() => {
         requestCommentsForAnswer(target._id,
             { skip: 0 },
@@ -209,48 +180,10 @@ const Comments = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ target ]);
 
-    const onProfileClick = (_id) => {
-        history.push(`/profile/${_id}`);
-    };
-
     const renderComments = (comments) => comments.map((comment) => (
-        <React.Fragment key={ comment._id }>
-            <ListItem
-                alignItems="flex-start">
-
-                <CardContent className={ classes.cartContent }>
-                    <CardHeader
-                        className={ classes.headerRoot }
-                        avatar={
-                            <Avatar
-                                alt={ comment.author.name }
-                                badge={ getBadge(comment.author.reputation) }
-                                user={ comment.author.email }
-                                onClick={ () => onProfileClick(comment.author._id) }
-                                className={ classes.avatar } />
-                        }
-                        title={
-                            <Link
-                                className={ classes.link }
-                                onClick={ () => onProfileClick(comment.author._id) }>
-                                { comment.author.name }
-                                ,
-                                { ' ' }
-                                { comment.author.jobTitle }
-                            </Link>
-                        }
-                        subheader={
-                            <Link
-                                className={ classes.link }
-                                to={ `/comment/${comment._id}` }>
-                                { `Commented ${formatDistanceToNow(new Date(comment.postedDate), { addSuffix: true })}` }
-                            </Link>
-                        } />
-                    { renderComment(comment.comment) }
-                </CardContent>
-            </ListItem>
-            <Divider />
-        </React.Fragment>
+        <CommentCard
+            key={ comment._id }
+            comment={ comment } />
     ));
 
     return (
