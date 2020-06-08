@@ -34,6 +34,10 @@ const styles = () => {
         modal: {
             height: 300,
         },
+        comment: {
+            paddingTop: 0,
+            paddingBottom: 0,
+        },
         link: {
             textDecoration: 'none',
             color: 'inherit',
@@ -147,7 +151,7 @@ class TextEditor extends React.Component {
                     placeholder={ placeholder }
                     editorState={ value }
                     editorRef={ setEditorReference }
-                    wrapperClassName={ classes.editorWrapper }
+                    wrapperClassName={ `${classes.editorWrapper} ${toolbarHidden && classes.comment}` }
                     editorClassName={ `${classes.editor} editor-write-mode ${!fullScreen && !toolbarHidden && classes.modal}` }
                     onEditorStateChange={ this.handleEditorStateChange }
                     toolbarCustomButtons={ config.editorConfig.toolbarCustomButtons }

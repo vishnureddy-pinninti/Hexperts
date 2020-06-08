@@ -116,9 +116,11 @@ function Notifications(props) {
                 hasMore: false,
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ notifications ]);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         setItems([]);
         setPagination({
             index: 1,
@@ -129,7 +131,8 @@ function Notifications(props) {
             limit: 20,
         });
         requestEmailPreferences();
-    }, [ 1 ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const loadMore = () => {
         if (pagination.index > 1){

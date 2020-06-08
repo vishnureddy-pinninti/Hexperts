@@ -104,7 +104,7 @@ const BlogPostModal = (props) => {
 
     useEffect(() => {
         requestTopics();
-    }, [ requestTopics ]);
+    }, []);
 
     const [
         disableSubmit,
@@ -117,6 +117,7 @@ const BlogPostModal = (props) => {
             resetPost();
             history.push(`/post/${newPost._id}`);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ newPost ]);
 
     const renderTextField = ({ input }) => (
