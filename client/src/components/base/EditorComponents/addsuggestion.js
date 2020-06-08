@@ -8,12 +8,16 @@ const addSuggestion = (obj) => {
         trigger,
         suggestion,
     } = obj;
-    const { value, url, text } = suggestion;
+    const {
+        value,
+        text,
+    } = suggestion;
 
     const entityKey = Entity.create('MENTION', 'IMMUTABLE', {
         text: `${trigger}${text}`,
         value,
-        url,
+        // eslint-disable-next-line no-script-url
+        url: 'javascript:void(0);',
     });
     const currentSelectionState = editorState.getSelection();
     const mentionTextSelection = currentSelectionState.merge({
