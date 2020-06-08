@@ -213,8 +213,7 @@ const Comments = (props) => {
                             </Grid>
                             <Grid
                                 item
-                                xs={ 2 }
-                                alignItems="center">
+                                xs={ 2 }>
                                 <Button
                                     size="medium"
                                     variant="contained"
