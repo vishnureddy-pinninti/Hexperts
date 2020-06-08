@@ -16,15 +16,16 @@ import { requestTopicById } from '../store/actions/topic';
 
 function Topic(props) {
     const {
-        match: {
-            params: { topicID 
-},
-        },
+        match,
         requestTopic,
         pending,
         topic,
         followers,
     } = props;
+
+    const {
+        params: { topicID },
+    } = match;
 
     const [
         openFollowTopicsModal,
@@ -90,10 +91,12 @@ function Topic(props) {
             });
         }
         setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ topic ]);
 
     useEffect(() => {
         setItems([]);
+        window.scrollTo(0, 0);
         setLoading(true);
         setPagination({
             index: 0,
@@ -176,11 +179,11 @@ function Topic(props) {
                                         </p>
                                     }>
                                     { renderQuestions(items) }
-                                                      </InfiniteScroll> }
+                                </InfiniteScroll> }
                                 { items.length === 0 && !pagination.hasMore && <EmptyResults
                                     title="No questions posted yet."
                                     description="Feel free to ask a question to this topic." /> }
-                              </> }
+                            </> }
                     </Grid>
                     <Grid
                         item

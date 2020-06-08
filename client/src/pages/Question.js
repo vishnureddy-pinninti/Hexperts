@@ -15,16 +15,17 @@ import { requestQuestionById, requestRelatedQuestions } from '../store/actions/q
 
 function Question(props) {
     const {
-        match: {
-            params: { questionId 
-},
-        },
+        match,
         requestQuestion,
         requestRelatedQuestions,
         question,
- relatedQuestions,
- modifiedQuestions,
+        relatedQuestions,
+        modifiedQuestions,
     } = props;
+
+    const {
+        params: { questionId },
+    } = match;
 
     const [
         loading,
@@ -51,6 +52,7 @@ function Question(props) {
 
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         if (question.answers && question.answers.results){
             const { answers: { results } } = question;
             if (results.length) {
@@ -77,6 +79,7 @@ function Question(props) {
             });
         }
         setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ question ]);
 
     const [
@@ -93,6 +96,7 @@ function Question(props) {
         if (modifiedQuestions && modifiedQuestions[questionId] && modifiedQuestions[questionId].newAnswers){
             setNewAnswers([ ...modifiedQuestions[questionId].newAnswers ]);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ modifiedQuestions ]);
 
     useEffect(() => {
@@ -109,6 +113,7 @@ function Question(props) {
         });
         setRelatedQuestionsloading(true);
         requestRelatedQuestions(questionId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         questionId,
         requestQuestion,
@@ -202,12 +207,12 @@ function Question(props) {
                                         </p>
                                     }>
                                     { renderAnswers(items) }
-                                </InfiniteScroll> }
+                                   </InfiniteScroll> }
                                 { (items.length === 0 && newAnswers.length === 0) && !pagination.hasMore && <EmptyResults
                                     title="No answer posted yet."
                                     description="Feel free to add an answer to this question."
                                     showBackButton={ false } /> }
-                            </> }
+                              </> }
                     </Grid>
                     <Grid
                         item

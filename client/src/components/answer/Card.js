@@ -150,6 +150,7 @@ const AnswerCard = (props) => {
             initialHeight={ 300 }
             mediaExists={ isMediaOrCode(answer) }
             readMore={ (props) => (
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
                 <a
                     className={ classes.more }
                     onClick={ props.onClick }>
@@ -261,7 +262,7 @@ const AnswerCard = (props) => {
                                 </Box>
                             </Link>
                         </div>
-                    </>
+                                   </>
                 }
                 <div className={ disabled ? classes.disabled : '' }>
                     <CardHeader
@@ -297,7 +298,7 @@ const AnswerCard = (props) => {
                                     Delete
                                 </MenuItem>
                             </Menu>
-                        </> }
+                                            </> }
                         title={
                             <Link
                                 className={ classes.link }

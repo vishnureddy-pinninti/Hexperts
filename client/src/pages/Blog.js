@@ -73,6 +73,7 @@ function Topic(props) {
     const { blog } = props;
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         if (blog && blog.posts){
             const { posts } = blog;
             if (posts.length) {

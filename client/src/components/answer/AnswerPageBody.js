@@ -204,6 +204,7 @@ function AnswerPageBody(props) {
                 hasMore: false,
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ questions ]);
 
     const loadMore = () => {
@@ -263,11 +264,13 @@ function AnswerPageBody(props) {
 
     useEffect(() => {
         setItems([]);
+        window.scrollTo(0, 0);
         setPagination({
             index: 0,
             hasMore: true,
         });
         requestAnswerRequests({ skip: pagination.index * 10 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getData = (type = 'questions') => {

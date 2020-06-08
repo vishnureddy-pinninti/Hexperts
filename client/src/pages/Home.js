@@ -108,10 +108,12 @@ function Home(props) {
                 hasMore: false,
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ questions ]);
 
     useEffect(() => {
         setItems([]);
+        window.scrollTo(0, 0);
         setPagination({
             index: 0,
             hasMore: true,

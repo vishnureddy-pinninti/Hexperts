@@ -125,9 +125,7 @@ const QuestionSection = (props) => {
         setQuestionText,
     ] = React.useState(question.question);
 
-    const [
-        setDescription,
-    ] = React.useState(question.description);
+    const [ setDescription ] = React.useState(question.description);
 
     const [
         disableSubmit,
@@ -268,6 +266,7 @@ const QuestionSection = (props) => {
             initialHeight={ 300 }
             mediaExists={ isMediaOrCode(description) }
             readMore={ (props) => (
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
                 <a
                     className={ classes.link }
                     onClick={ props.onClick }>

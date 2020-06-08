@@ -365,6 +365,7 @@ const Search = (props) => {
 
     useEffect(() => {
         getData(selectedTab);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ query ]);
 
     const renderMenu = () => (
@@ -585,7 +586,7 @@ const Search = (props) => {
                                     </Box>
                                 </Typography>
                                 { renderTopicSearch() }
-                                                 </> }
+                            </> }
                         </div>
                     </Grid>
                     <Grid
@@ -604,7 +605,7 @@ const Search = (props) => {
                                 startIcon={ <AddIcon /> }
                                 color="primary">
                                 Add Question
-                                     </Button> }
+                            </Button> }
                             title={ <Typography
                                 component="div"
                                 className={ classes.heading }>
@@ -619,7 +620,7 @@ const Search = (props) => {
                                 <b>
                                     { query }
                                 </b>
-                            </Typography> } />
+                                    </Typography> } />
 
                         { totalCount === null ? <CardLoader height={ 50 } />
                             : <List className={ classes.root }>
@@ -635,7 +636,7 @@ const Search = (props) => {
                                         showBackButton={ false }
                                         title=" Oops! No results matching with your criteria."
                                         description="Try different or less specific keywords and reset your filters." /> }
-                            </List> }
+                              </List> }
                     </Grid>
                     <Grid
                         item

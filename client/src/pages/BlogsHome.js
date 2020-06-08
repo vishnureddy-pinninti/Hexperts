@@ -90,10 +90,12 @@ function Home(props) {
     };
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         if (!blogPending && newBlog && newBlog._id) {
             setOpenQModal(blogPending);
             history.push(`/blog/${newBlog._id}`);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ blogPending ]);
 
     const [
@@ -126,12 +128,14 @@ function Home(props) {
                 hasMore: false,
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ posts ]);
 
     useEffect(() => {
         if (!pending && openFollowTopicsModal) {
             setOpenFollowTopicsModal(pending);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         pending,
         requestPostsFeed,

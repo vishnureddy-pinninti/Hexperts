@@ -55,16 +55,17 @@ const useStyles = makeStyles((theme) => {
 function Profile(props) {
     const classes = useStyles();
     const {
-        match: {
-            params: { userId 
-},
-        },
+        match,
         requestUser,
         pending,
         userProfile,
         user,
         followers,
     } = props;
+
+    const {
+        params: { userId },
+    } = match;
 
     const [
         loading,
@@ -75,6 +76,7 @@ function Profile(props) {
 
     useEffect(() => {
         setLoading(true);
+        window.scrollTo(0, 0);
         requestUser(userId, () => {
             setLoading(false);
         });
