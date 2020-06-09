@@ -150,6 +150,7 @@ const AnswerCard = (props) => {
         <ReadMore
             initialHeight={ 300 }
             mediaExists={ isMediaOrCode(post) }
+            collapse={ collapse }
             readMore={ (props) => (
                 // eslint-disable-next-line jsx-a11y/anchor-is-valid
                 <a
@@ -324,14 +325,7 @@ const AnswerCard = (props) => {
                             { `${getMinutes(postObj.plainText)} min read` }
                         </>
                     } />
-                { postObj.description && collapse && renderAnswer(postObj.description) }
-                { !collapse && <div
-                    style={ {
-                        display: 'flex',
-                        flexDirection: 'column',
-                    } }
-                    className="editor-read-mode"
-                    dangerouslySetInnerHTML={ { __html: postObj.description } } /> }
+                { renderAnswer(postObj.description) }
             </CardContent>
             <CardActions disableSpacing>
                 <Button
