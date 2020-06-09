@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 
 class ReadMore extends React.Component {
     constructor({ initialHeight }) {
@@ -16,6 +17,8 @@ class ReadMore extends React.Component {
             readMore,
             blurStyle,
             overhangSize,
+            history,
+            collapse,
         } = this.props;
         const {
             maxHeight,
@@ -34,6 +37,7 @@ class ReadMore extends React.Component {
                         position: 'relative',
                         overflow: 'hidden',
                     } }
+                    onClick={ this.handleMentionClick }
                     ref={ (el) => (this.container = el) }>
                     { children }
                     { (hideReadMore || open) ? null : (
@@ -65,10 +69,6 @@ class ReadMore extends React.Component {
         );
     }
 
-    componentDidMount() {
-        this.toggleReadMore();
-    }
-
     componentDidUpdate(prevProps) {
         const {
             mediaExists,
@@ -77,6 +77,10 @@ class ReadMore extends React.Component {
         if (prevProps.mediaExists !== mediaExists) {
             this.toggleReadMore();
         }
+    }
+
+    componentDidMount() {
+        this.toggleReadMore();
     }
 
     toggle() {
@@ -95,11 +99,24 @@ class ReadMore extends React.Component {
         const {
             mediaExists,
             initialHeight,
+            collapse,
         } = this.props;
         let hideReadMore = false;
 
         if (!mediaExists && (this.calculateHeight() <= initialHeight)) {
             hideReadMore = true;
+        }
+
+        if (!collapse){
+            hideReadMore = true;
+            const height = this.calculateHeight();
+
+            // set the full height
+            this.setState({
+                maxHeight: height,
+                hideReadMore,
+            });
+            return;
         }
 
         this.setState({ hideReadMore });
@@ -110,13 +127,22 @@ class ReadMore extends React.Component {
         const children = [ ...this.container.children ];
         let height = 0;
         children.forEach((child) => (height += child.offsetHeight));
-        
+
         return height;
+    }
+
+    handleMentionClick=(e) => {
+        const { history } = this.props;
+        if (e.target.classList[0] === 'wysiwyg-mention'){
+            history.push(e.target.getAttribute('href'));
+            e.preventDefault();
+        }
     }
 }
 
 ReadMore.defaultProps = {
     overhangSize: 50,
+    collapse: true,
 };
 
-export default ReadMore;
+export default withRouter(ReadMore);
