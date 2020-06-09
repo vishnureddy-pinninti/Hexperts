@@ -15,11 +15,7 @@ import config from '../../utils/config';
 const styles = () => {
     return {
         root: {
-            overflow: 'visible',
-            marginTop: 10,
-        },
-        media: {
-
+            height: '100%',
         },
         editorWrapper: {
             border: '1px solid #F1F1F1',
@@ -29,7 +25,6 @@ const styles = () => {
         },
         editor: {
             height: 'inherit',
-            maxHeight: 300,
         },
         modal: {
             height: 300,
@@ -37,6 +32,7 @@ const styles = () => {
         comment: {
             paddingTop: 0,
             paddingBottom: 0,
+            maxHeight: 300,
         },
         link: {
             textDecoration: 'none',
@@ -108,7 +104,7 @@ class TextEditor extends React.Component {
         const { value } = this.state;
 
         return (
-            <div>
+            <div className={ classes.root }>
                 { this.renderAutocomplete() }
                 <Editor
                     spellCheck
