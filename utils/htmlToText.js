@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const { onlyUnique } = require('./common');
 
 const htmlToText = (html = '') => {
     const $ = cheerio.load(html);
@@ -10,7 +11,17 @@ const htmlToText = (html = '') => {
         })
         .get()
         .join('');
-    return content.trim();
+    const mentions = $('.wysiwyg-mention');
+    const userMentions = [];
+    mentions.each(function() {
+        const eachMention = $(this).attr('data-value');
+        userMentions.push(eachMention);
+    });
+
+    return {
+        plainText: content.trim(),
+        userMentions: onlyUnique(userMentions),
+    };
 };
 
 module.exports = htmlToText;

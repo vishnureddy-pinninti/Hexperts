@@ -235,8 +235,7 @@ const CommentCard = (props) => {
                         title={
                             <Link
                                 className={ classes.link }
-                                to={ `/profile/${_id}` }
-                                onClick={ () => onProfileClick(_id) }>
+                                to={ `/profile/${_id}` }>
                                 { name }
                                 ,
                                 { ' ' }

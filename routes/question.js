@@ -15,6 +15,7 @@ const ANSWERED = 'answered';
 const ANSWEREDBYME = 'answeredbyme';
 const UNANSWERED = 'unanswered';
 const availableTypes = [ ANSWERED, ANSWEREDBYME, UNANSWERED ];
+const { inBButNotInA } = require('../utils/common');
 
 const updateTopicsInAnswers = async (questionID, topics) => {
     const answers = await Answer.find({ questionID });
@@ -42,14 +43,14 @@ module.exports = (app) => {
 
         try {
             const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
-
+            const { plainText, userMentions } = htmlToText(description);
             const newQuestion = new Question({
                 author: _id,
                 suggestedExperts,
                 topics: chosenTopics.map((t) => t._id),
                 question,
                 description,
-                plainText: htmlToText(description),
+                plainText,
             });
 
             await newQuestion.save();
@@ -63,7 +64,7 @@ module.exports = (app) => {
                 ...responseObject,
                 req: req.io,
                 origin: xorigin,
-                
+                userMentions,
             }, {
                 author: req.user,
                 suggestedExperts,
@@ -975,9 +976,13 @@ module.exports = (app) => {
                     edited = true;
                 }
 
+                let newMentions = [];
+
                 if (description || description === '') {
                     updateService(question.description, description);
-                    const plainText = htmlToText(description);
+                    const { plainText, userMentions } = htmlToText(description);
+                    const { userMentions: oldUserMentions } = htmlToText(question.description);
+                    newMentions = inBButNotInA(oldUserMentions, userMentions);
                     question.description = description;
                     question.plainText = plainText;
                     responseObject.description = description;
@@ -993,6 +998,7 @@ module.exports = (app) => {
                         _id: questionID,
                         req: req.io,
                         origin: xorigin,
+                        userMentions: newMentions,
                     }, {
                         author: req.user,
                         suggestedExperts,

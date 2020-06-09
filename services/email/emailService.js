@@ -3,6 +3,17 @@ const emailMap = require('./emailMap');
 const notificationService = require('../notifications/notificationService');
 const reputationService = require('../reputation/reputationService');
 const keys = require('../../config/keys');
+const { notMentions } = require('./emailUtils');
+
+const mentionMap = {
+    newQuestion: 'question',
+    editQuestion: 'question',
+    newAnswer: 'answer',
+    editAnswer: 'answer',
+    newComment: 'comment',
+    newPost: 'post',
+    editPost: 'post',
+}
 
 const emailService = async(type, data, options) => {
     const {
@@ -12,7 +23,12 @@ const emailService = async(type, data, options) => {
     } = await emailMap[type](data,
         options);
 
-    const { origin = keys.emailUrl } = data;
+    const {
+        origin = keys.emailUrl,
+        userMentions = [],
+        _id,
+        req,
+    } = data;
     const {
         template,
         locals,
@@ -20,8 +36,24 @@ const emailService = async(type, data, options) => {
         type: emailType,
         user,
     } = emailData;
+    const recipientsWIthoutMentions = notMentions(recipients, userMentions);
+    const mentionType = mentionMap[emailType];
+
+    if (userMentions.length && mentionType) {
+        emailService('userMention', {
+            author: user,
+            data: locals.data,
+            id: _id,
+            recipients: userMentions,
+            type: mentionType,
+            mailType: type,
+            req,
+            origin,
+        });
+    }
 
     locals.link = `${origin}${locals.link}`;
+    notification.recipients = recipientsWIthoutMentions;
 
     notificationService(notification);
 
@@ -32,7 +64,7 @@ const emailService = async(type, data, options) => {
     const mailOptions = {
         template,
         locals,
-        bcc: recipients
+        bcc: recipientsWIthoutMentions
                 .filter((recipient) => 
                         recipient.emailSubscription
                         && recipient.emailPreferences
