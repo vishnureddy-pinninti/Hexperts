@@ -6,6 +6,8 @@ const voting = require('../utils/voting');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const emailNotify = require('../services/email/emailService');
+const htmlToText = require('../utils/htmlToText');
+const { inBButNotInA } = require('../utils/common');
 
 module.exports = (app) => {
     app.post('/api/v1/comment.add', loginMiddleware, async(req, res) => {
@@ -26,6 +28,7 @@ module.exports = (app) => {
         });
 
         try {
+            const { userMentions, plainText } = htmlToText(comment);
             await newComment.save();
 
             const responseObject = {
@@ -36,6 +39,8 @@ module.exports = (app) => {
                 ...responseObject,
                 req: req.io,
                 origin: xorigin,
+                comment: plainText,
+                userMentions,
             });
 
             res
@@ -342,7 +347,11 @@ module.exports = (app) => {
             const comment = await Comment.findById(commentID);
 
             if (comment) {
+                let newMentions = [];
                 if (commentString) {
+                    const { userMentions } = htmlToText(commentString);
+                    const { userMentions: oldUserMentions } = htmlToText(comment.comment);
+                    newMentions = inBButNotInA(oldUserMentions, userMentions);
                     comment.comment = commentString;
                     comment.lastModified = Date.now();
                 }
@@ -354,6 +363,7 @@ module.exports = (app) => {
                         _id: commentID,
                         comment: commentString,
                         lastModified: comment.lastModified,
+                        userMentions: newMentions,
                     });
             }
             else {

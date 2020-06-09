@@ -81,6 +81,8 @@ const getAuthor = async(id, model) => {
 
 const getBlogFollowers = async(blog) => await User.find({ 'blogs': mongoose.Types.ObjectId(blog) });
 
+const getUsersFromEmails = async(emails = []) => await User.find({ email: { $in: emails } });
+
 const emailPreferenceTypes = [
     'newQuestion',
     'newAnswer',
@@ -96,6 +98,10 @@ const emailPreferenceTypes = [
     'editPost',
 ];
 
+const notMentions = (recipients = [], userMentions = []) => {
+    return recipients.filter(recipient => !userMentions.includes(recipient.email));
+}
+
 module.exports = {
     getUserFollowers,
     getTopicFollowers,
@@ -104,4 +110,6 @@ module.exports = {
     getAuthor,
     getBlogFollowers,
     emailPreferenceTypes,
+    notMentions,
+    getUsersFromEmails,
 };

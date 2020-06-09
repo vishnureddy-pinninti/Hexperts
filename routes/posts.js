@@ -11,6 +11,7 @@ const voting = require('../utils/voting');
 const emailNotify = require('../services/email/emailService');
 const { deleteService, updateService } = require('../services/common');
 const htmlToText = require('../utils/htmlToText');
+const { inBButNotInA } = require('../utils/common');
 
 module.exports = (app) => {
     app.post('/api/v1/post.add', loginMiddleware, async(req, res) => {
@@ -28,13 +29,14 @@ module.exports = (app) => {
             // const chosenBlog = await Blog.findById(mongoose.Types.ObjectId(blog));
             const chosenTopics = await Topic.find({ _id: { $in: topics.map((topic) => mongoose.Types.ObjectId(topic)) } });
 
+            const { plainText, userMentions } = htmlToText(description);
             const newPost = new Post({
                 author: _id,
                 // blog,
                 topics: chosenTopics.map((t) => t._id),
                 title,
                 description,
-                plainText: htmlToText(description),
+                plainText,
             });
 
             await newPost.save();
@@ -49,6 +51,7 @@ module.exports = (app) => {
                 ...responseObject,
                 req: req.io,
                 origin: xorigin,
+                userMentions,
             });
 
             res
@@ -331,9 +334,13 @@ module.exports = (app) => {
                     edited = true;
                 }
 
+                let newMentions = [];
+
                 if (description) {
+                    const { plainText, userMentions } = htmlToText(description);
+                    const { userMentions: oldUserMentions } = htmlToText(post.description);
+                    newMentions = inBButNotInA(oldUserMentions, userMentions);
                     updateService(post.description, description);
-                    const plainText = htmlToText(description);
                     post.description = description;
                     post.plainText = plainText;
                     responseObject.description = description;
@@ -357,6 +364,7 @@ module.exports = (app) => {
                         _id: post._id,
                         req: req.io,
                         origin: xorigin,
+                        userMentions: newMentions,
                     });
                 }
 

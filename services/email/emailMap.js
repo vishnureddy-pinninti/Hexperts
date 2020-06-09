@@ -11,6 +11,7 @@ const {
     getSuggestedExperts,
     getTopicFollowers,
     getUserFollowers,
+    getUsersFromEmails,
 } = require('./emailUtils');
 
 const {
@@ -22,7 +23,50 @@ const {
     },
 } = require('../../utils/constants');
 
+const notificationMap = {
+    question: QUESTION_NOTIFICATION,
+    answer: ANSWER_NOTIFICATION,
+    comment: COMMENT_NOTIFICATION,
+    post: POST_NOTIFICATION,
+}
+
 const emailMap = {
+    userMention: async(dataObj) => {
+        const {
+            author,
+            data,
+            id,
+            recipients: emails,
+            type,
+            mailType,
+            req,
+        } = dataObj;
+        const recipients = await getUsersFromEmails(emails);
+
+        return {
+            email: {
+                template: 'newEntry',
+                locals: {
+                    name: author.name,
+                    data,
+                    dataDescription: `mentioned you in below ${type}.`,
+                    link: `/${type}/${id}`,
+                    subject: 'You got a new mention',
+                },
+                recipients,
+                type: mailType,
+                user: author,
+            },
+            notification: {
+                recipients,
+                message: `<b>${author.name}</b> mentioned you in a ${type}.`,
+                link: `/${type}/${id}`,
+                user: author,
+                req,
+                type: notificationMap[type],
+            },
+        };
+    },
     newQuestion: async(data, options) => {
         // Emails to experts, author followers and topic followers
         const {

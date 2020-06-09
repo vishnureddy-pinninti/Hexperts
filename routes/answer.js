@@ -8,6 +8,7 @@ const loginMiddleware = require('../middlewares/loginMiddleware');
 const emailNotify = require('../services/email/emailService');
 const { deleteService, updateService } = require('../services/common');
 const htmlToText = require('../utils/htmlToText');
+const { inBButNotInA } = require('../utils/common');
 
 module.exports = (app) => {
     app.post('/api/v1/answer.add', loginMiddleware, async(req, res) => {
@@ -20,10 +21,11 @@ module.exports = (app) => {
         const { xorigin } = req.headers;
 
         try {
+            const { plainText, userMentions } = htmlToText(answer);
             const answerObject = {
                 answer,
                 author: mongoose.Types.ObjectId(_id),
-                plainText: htmlToText(answer),
+                plainText,
                 questionID: mongoose.Types.ObjectId(questionID),
             };
 
@@ -45,6 +47,7 @@ module.exports = (app) => {
                 ...responseObject,
                 req: req.io,
                 origin: xorigin,
+                userMentions,
             }, {
                 author: req.user,
             });
@@ -206,7 +209,9 @@ module.exports = (app) => {
             const answer = await Answer.findById(answerID);
 
             if (answer) {
-                const plainText = htmlToText(answerString);
+                const { plainText, userMentions } = htmlToText(answerString);
+                const { userMentions: oldUserMentions } = htmlToText(answer.answer);
+                const newMentions = inBButNotInA(oldUserMentions, userMentions);
                 if (answerString || answerString === '') {
                     updateService(answer.answer, answerString);
                     answer.answer = answerString;
@@ -218,6 +223,7 @@ module.exports = (app) => {
                         questionID: answer.questionID,
                         req: req.io,
                         origin: xorigin,
+                        userMentions: newMentions,
                     }, {
                         author: req.user,
                     });
