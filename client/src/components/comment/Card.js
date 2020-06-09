@@ -248,7 +248,7 @@ const CommentCard = (props) => {
                                 className={ classes.link }
                                 to={ `/comment/${comment._id}` }>
                                 { lastModified ? `Edited ${formatDistance(new Date(lastModified), new Date(), { addSuffix: true })}`
-                                    : `Answered ${formatDistance(new Date(comment.postedDate), new Date(), { addSuffix: true })}` }
+                                    : `Commented ${formatDistance(new Date(comment.postedDate), new Date(), { addSuffix: true })}` }
                             </Link>
                         } />
                     { renderComment(commentHTML) }
