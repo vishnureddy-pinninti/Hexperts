@@ -121,6 +121,7 @@ const CommentCard = (props) => {
         <ReadMore
             initialHeight={ 300 }
             mediaExists={ isMediaOrCode(comment) }
+            collapse={ collapse }
             readMore={ (props) => (
                 // eslint-disable-next-line jsx-a11y/anchor-is-valid
                 <a
@@ -250,13 +251,7 @@ const CommentCard = (props) => {
                                     : `Answered ${formatDistance(new Date(comment.postedDate), new Date(), { addSuffix: true })}` }
                             </Link>
                         } />
-                    { collapse ? renderComment(commentHTML) : <div
-                        style={ {
-                            display: 'flex',
-                            flexDirection: 'column',
-                        } }
-                        className="editor-read-mode"
-                        dangerouslySetInnerHTML={ { __html: commentHTML } } /> }
+                    { renderComment(commentHTML) }
                 </div>
             </CardContent>
             { openEditCommentModal && <EditAnswerModal

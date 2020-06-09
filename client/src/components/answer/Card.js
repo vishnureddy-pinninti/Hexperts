@@ -149,6 +149,7 @@ const AnswerCard = (props) => {
         <ReadMore
             initialHeight={ 300 }
             mediaExists={ isMediaOrCode(answer) }
+            collapse={ collapse }
             readMore={ (props) => (
                 // eslint-disable-next-line jsx-a11y/anchor-is-valid
                 <a
@@ -317,13 +318,7 @@ const AnswerCard = (props) => {
                                     : `Answered ${formatDistance(new Date(props.date), new Date(), { addSuffix: true })}` }
                             </Link>
                         } />
-                    { collapse ? renderAnswer(answerHTML) : <div
-                        style={ {
-                            display: 'flex',
-                            flexDirection: 'column',
-                        } }
-                        className="editor-read-mode"
-                        dangerouslySetInnerHTML={ { __html: answerHTML } } /> }
+                    { renderAnswer(answerHTML) }
                 </div>
             </CardContent>
             <CardActions
