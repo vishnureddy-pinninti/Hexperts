@@ -335,10 +335,12 @@ module.exports = (app) => {
                 }
 
                 let newMentions = [];
-
+                let allMentions = [];
+                
                 if (description) {
                     const { plainText, userMentions } = htmlToText(description);
                     const { userMentions: oldUserMentions } = htmlToText(post.description);
+                    mentions = userMentions.slice();
                     newMentions = inBButNotInA(oldUserMentions, userMentions);
                     updateService(post.description, description);
                     post.description = description;
@@ -365,6 +367,7 @@ module.exports = (app) => {
                         req: req.io,
                         origin: xorigin,
                         userMentions: newMentions,
+                        allMentions,
                     });
                 }
 

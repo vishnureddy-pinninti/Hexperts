@@ -11,6 +11,7 @@ const mentionMap = {
     newAnswer: 'answer',
     editAnswer: 'answer',
     newComment: 'comment',
+    editComment: 'comment',
     newPost: 'post',
     editPost: 'post',
 }

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const nodemailer = require('nodemailer');
 const Email = require('email-templates');
+const { onlyUnique } = require('../../utils/common');
 
 const transport = nodemailer.createTransport({
     host: 'in-smtprelay.ingrnet.com',
@@ -25,6 +26,7 @@ const email = async(mailOptions) => {
         locals,
         bcc,
     } = mailOptions;
+    const uniqueRecipients = onlyUnique(bcc);
 
     try {
         await emailConfig
@@ -32,7 +34,7 @@ const email = async(mailOptions) => {
                 template,
                 message: {
                     to: 'Hexperts <noreply-hexperts@hexagon.com>',
-                    bcc,
+                    bcc: uniqueRecipients,
                 },
                 locals,
             });

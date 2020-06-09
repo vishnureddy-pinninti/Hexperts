@@ -227,6 +227,11 @@ function Notifications(props) {
             name: 'Comments and Replies',
             description: 'Email me of comments on my blog posts or answers.',
         },
+        {
+            id: 'editComment',
+            name: 'Comments Edits/Updates',
+            description: 'Email me when someone updates/edits comments that I am tagged in.',
+        },
     ];
 
     const renderEmailPreferences = () => (

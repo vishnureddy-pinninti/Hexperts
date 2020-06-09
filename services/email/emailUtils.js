@@ -89,6 +89,7 @@ const emailPreferenceTypes = [
     'followQuestion',
     'upvoteAnswer',
     'newComment',
+    'editComment',
     'newPost',
     'upvotePost',
     'followUser',
