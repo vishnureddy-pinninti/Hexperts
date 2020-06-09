@@ -17,8 +17,6 @@ class ReadMore extends React.Component {
             readMore,
             blurStyle,
             overhangSize,
-            history,
-            collapse,
         } = this.props;
         const {
             maxHeight,
