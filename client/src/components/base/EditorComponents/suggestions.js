@@ -24,6 +24,8 @@ class SuggestionList extends React.Component {
             boxShadow: '0 0 0 1px rgba(0, 0, 0, .1), 0 1px 10px rgba(0, 0, 0, .35)',
             zIndex: 3000,
             position: 'fixed',
+            maxHeight: 300,
+            overflow: 'scroll',
             left,
             top,
         };

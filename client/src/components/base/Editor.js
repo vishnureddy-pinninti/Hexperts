@@ -51,6 +51,7 @@ class TextEditor extends React.Component {
         this.state = {
             value: props.initialValue,
             autocompleteState: null,
+            hide: false,
         };
 
         this.handleEscape = (e) => {
@@ -69,6 +70,10 @@ class TextEditor extends React.Component {
             this.onAutocompleteChange(null);
         };
 
+        this.handleBlur = () => {
+            setTimeout(() => { this.setState({ hide: true }); }, 100);
+        };
+
         this.handleTab = (e) => {
             this.commitSelection(e);
         };
@@ -78,6 +83,7 @@ class TextEditor extends React.Component {
         this.onAutocompleteChange = (autocompleteState) => {
             this.setState({
                 autocompleteState,
+                hide: false,
             });
         };
 
@@ -120,6 +126,7 @@ class TextEditor extends React.Component {
                     handleDroppedFiles={ this.onDropImageUpload }
                     handleReturn={ this.onReturn }
                     onEscape={ this.handleEscape }
+                    onBlur={ this.handleBlur }
                     onTab={ this.handleTab }
                     toolbarHidden={ toolbarHidden } />
             </div>
@@ -137,14 +144,18 @@ class TextEditor extends React.Component {
     renderAutocomplete() {
         const {
             autocompleteState,
+            hide,
         } = this.state;
         if (!autocompleteState) {
             return null;
         }
         return (
-            <SuggestionList
-                suggestionsState={ autocompleteState }
-                handleSuggestionItemClick={ this.onSuggestionItemClick } />
+            <>
+                { !hide && <SuggestionList
+                    suggestionsState={ autocompleteState }
+                    handleSuggestionItemClick={ this.onSuggestionItemClick } /> }
+
+            </>
         );
     }
 
