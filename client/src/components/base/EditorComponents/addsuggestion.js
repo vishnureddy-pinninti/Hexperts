@@ -11,13 +11,13 @@ const addSuggestion = (obj) => {
     const {
         value,
         text,
+        url,
     } = suggestion;
 
     const entityKey = Entity.create('MENTION', 'IMMUTABLE', {
         text: `${trigger}${text}`,
         value,
-        // eslint-disable-next-line no-script-url
-        url: 'javascript:void(0);',
+        url,
     });
     const currentSelectionState = editorState.getSelection();
     const mentionTextSelection = currentSelectionState.merge({

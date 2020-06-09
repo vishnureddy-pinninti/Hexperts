@@ -66,6 +66,9 @@ blockquote {
 .wysiwyg-mention{
   color:#e3742f;
   background-color: #fcefe3;
-  cursor: text;
   text-decoration: none;
+}
+
+.wysiwyg-mention:hover{
+  text-decoration: underline;
 }
