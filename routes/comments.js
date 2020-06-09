@@ -344,16 +344,29 @@ module.exports = (app) => {
         try {
             const { commentID } = req.params;
             const { comment: commentString } = req.body;
+            const { xorigin } = req.headers;
             const comment = await Comment.findById(commentID);
 
             if (comment) {
                 let newMentions = [];
                 if (commentString) {
-                    const { userMentions } = htmlToText(commentString);
+                    const { userMentions, plainText } = htmlToText(commentString);
                     const { userMentions: oldUserMentions } = htmlToText(comment.comment);
                     newMentions = inBButNotInA(oldUserMentions, userMentions);
                     comment.comment = commentString;
                     comment.lastModified = Date.now();
+
+                    emailNotify('editComment', {
+                        _id: commentID,
+                        author: req.user,
+                        comment: plainText,
+                        target: comment.target,
+                        targetID: comment.targetID,
+                        req: req.io,
+                        origin: xorigin,
+                        userMentions: newMentions,
+                        allMentions: userMentions,
+                    });
                 }
 
                 await comment.save();
@@ -363,7 +376,6 @@ module.exports = (app) => {
                         _id: commentID,
                         comment: commentString,
                         lastModified: comment.lastModified,
-                        userMentions: newMentions,
                     });
             }
             else {

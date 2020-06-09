@@ -977,11 +977,13 @@ module.exports = (app) => {
                 }
 
                 let newMentions = [];
+                let allMentions = [];
 
                 if (description || description === '') {
                     updateService(question.description, description);
                     const { plainText, userMentions } = htmlToText(description);
                     const { userMentions: oldUserMentions } = htmlToText(question.description);
+                    allMentions = userMentions.slice();
                     newMentions = inBButNotInA(oldUserMentions, userMentions);
                     question.description = description;
                     question.plainText = plainText;
@@ -999,6 +1001,7 @@ module.exports = (app) => {
                         req: req.io,
                         origin: xorigin,
                         userMentions: newMentions,
+                        allMentions,
                     }, {
                         author: req.user,
                         suggestedExperts,

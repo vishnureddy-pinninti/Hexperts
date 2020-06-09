@@ -118,6 +118,7 @@ const emailMap = {
             question,
             _id,
             req,
+            allMentions,
         } = data;
 
         const {
@@ -130,11 +131,13 @@ const emailMap = {
         const topicFollowers = await getTopicFollowers(topics);
         const experts = await getSuggestedExperts(suggestedExperts);
         const questionFollowers = await getQuestionFollowers(_id);
+        const userMentions = await getUsersFromEmails(allMentions);
         const recipients = [
             ...experts,
             ...userFollowers,
             ...topicFollowers,
             ...questionFollowers,
+            ...userMentions,
         ];
 
         return {
@@ -256,6 +259,7 @@ const emailMap = {
             _id,
             questionID,
             req,
+            allMentions,
         } = data;
 
         const {
@@ -264,10 +268,12 @@ const emailMap = {
 
         const questionFollowers = await getQuestionFollowers(questionID);
         const userFollowers = await getUserFollowers(owner._id);
+        const userMentions = await getUsersFromEmails(allMentions);
 
         const recipients = [
             ...questionFollowers,
             ...userFollowers,
+            ...userMentions,
         ];
 
         return {
@@ -457,6 +463,51 @@ const emailMap = {
             },
         };
     },
+    editComment: async(data) => {
+        // Emails to answer/post author and user mentions
+        const {
+            _id,
+            author,
+            comment,
+            target,
+            targetID,
+            req,
+            allMentions,
+        } = data;
+
+        const model = target === 'posts' ? Post: Answer;
+
+        const answerAuthor = await getAuthor(targetID, model);
+        const userMentions = await getUsersFromEmails(allMentions);
+        const recipients = [
+            answerAuthor,
+            ...userMentions,
+        ];
+
+        return {
+            email: {
+                template: 'newEntry',
+                locals: {
+                    name: author.name,
+                    data: comment,
+                    dataDescription: `edited below comment`,
+                    link: `/comment/${_id}`,
+                    subject: `Comment edited`,
+                },
+                recipients,
+                type: 'editComment',
+                user: author,
+            },
+            notification: {
+                recipients,
+                message: `<b>${author.name}</b> edited comment`,
+                link: `/comment/${_id}`,
+                user: author,
+                req,
+                type: COMMENT_NOTIFICATION,
+            },
+        };
+    },
     upvoteComment: async(data) => {
         // Emails to comment author
         const {
@@ -594,13 +645,16 @@ const emailMap = {
             title,
             _id,
             req,
+            allMentions,
         } = data;
 
         const userFollowers = await getUserFollowers(author._id);
         const topicFollowers = await getTopicFollowers(topics);
+        const userMentions = await getUsersFromEmails(allMentions);
         const recipients = [
             ...userFollowers,
             ...topicFollowers,
+            ...userMentions,
         ];
 
         return {

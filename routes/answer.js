@@ -224,6 +224,7 @@ module.exports = (app) => {
                         req: req.io,
                         origin: xorigin,
                         userMentions: newMentions,
+                        allMentions: userMentions,
                     }, {
                         author: req.user,
                     });
