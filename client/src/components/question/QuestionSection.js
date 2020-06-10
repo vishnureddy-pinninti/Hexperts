@@ -380,11 +380,11 @@ const QuestionSection = (props) => {
                 </Typography>
                 { (updatedQuestion.plainText || isMediaOrCode(updatedQuestion.description))
                  && <CardContent>
-                     <Typography
+                     { /* <Typography
                          className={ classes.italic }
                          component="p">
                          Description:
-                     </Typography>
+                     </Typography> */ }
                      { renderDescription(updatedQuestion.description) }
                  </CardContent> }
             </CardContent>
