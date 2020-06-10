@@ -52,7 +52,6 @@ function Question(props) {
 
 
     useEffect(() => {
-        window.scrollTo(0, 0);
         if (question.answers && question.answers.results){
             const { answers: { results } } = question;
             if (results.length) {
@@ -100,6 +99,7 @@ function Question(props) {
     }, [ modifiedQuestions ]);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         setItems([]);
         setNewAnswers([]);
         setPagination({
