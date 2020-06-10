@@ -30,7 +30,6 @@ const useStyles = makeStyles((theme) => {
             margin: theme.spacing(0.5),
         },
         post: {
-            height: 550,
         },
         editorWrapper: {
             border: '1px solid gray',
