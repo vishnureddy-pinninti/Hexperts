@@ -182,6 +182,8 @@ function Profile(props) {
                             : <ProfileHeader
                                 name={ userProfile.name }
                                 mail={ userProfile.email }
+                                department={ userProfile.department }
+                                city={ userProfile.city }
                                 isOwner={ isOwner }
                                 jobTitle={ userProfile.jobTitle }
                                 followers={ followers }

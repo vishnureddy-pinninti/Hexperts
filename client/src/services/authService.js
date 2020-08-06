@@ -22,7 +22,7 @@ const authService = (function() {
         getUserDetails: async(accessToken) => {
             token = accessToken.accessToken;
             const client = getAuthenticatedClient();
-            const user = await client.api('/me').get();
+            const user = await client.api('/me?$select=displayName,mail,jobTitle,id,department,employeeId,officeLocation,city,companyName,country,postalCode,state,streetAddress,businessPhones,mobilePhone').get();
             loggedinUser = user;
             return user;
         },
