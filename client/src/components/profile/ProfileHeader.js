@@ -51,6 +51,8 @@ const TopicSection = (props) => {
         isOwner,
         badge,
         followUser,
+        department,
+        city,
     } = props;
 
     const handleFollowClick = () => {
@@ -70,6 +72,12 @@ const TopicSection = (props) => {
                 variant="subtitle1"
                 color="textSecondary">
                 { jobTitle }
+            </Typography>
+            <Typography
+                variant="body2"
+                color="textSecondary">
+                { department }
+                { city && `, ${city}` }
             </Typography>
             <Typography
                 variant="subtitle1"

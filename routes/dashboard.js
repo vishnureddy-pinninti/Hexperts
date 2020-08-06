@@ -384,6 +384,8 @@ module.exports = (app) => {
                         name: 1,
                         email: 1,
                         jobTitle: 1,
+                        department: 1,
+                        city: 1,
                         role: 1,
                         answers: {
                             $cond: {

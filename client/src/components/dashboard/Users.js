@@ -80,6 +80,8 @@ class Users extends Component {
         return [
             { field: 'name', title: 'Name' },
             { field: 'jobTitle', title: 'Job Title' },
+            { field: 'department', title: 'Department' },
+            { field: 'city', title: 'Location' },
             { field: 'questions', title: 'Questions' },
             { field: 'answers', title: 'Answers' },
             { field: 'posts', title: 'Blog Posts' },
