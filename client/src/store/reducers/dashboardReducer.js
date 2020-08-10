@@ -5,6 +5,7 @@ import {
     RECEIVE_DASHBOARD_USERS,
     RECEIVE_GRANT_ADMIN_ACCESS,
     RECEIVE_REVOKE_ADMIN_ACCESS,
+    RECEIVE_UNIQUE_VALUES,
 } from '../actions/dashboard';
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
     userSummary: {},
     topics: [],
     users: [],
+    uniqueValues: {},
 }
 
 export default (state = initialState, action) => {
@@ -46,6 +48,11 @@ export default (state = initialState, action) => {
                     }
                     return user;
                 })
+            }
+        case RECEIVE_UNIQUE_VALUES:
+            return {
+                ...state,
+                uniqueValues: action.uniqueValues,
             }
         default:
             return state;

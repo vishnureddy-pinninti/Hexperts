@@ -12,6 +12,8 @@ export const REQUEST_REVOKE_ADMIN_ACCESS = 'REQUEST_REVOKE_ADMIN_ACCESS';
 export const RECEIVE_REVOKE_ADMIN_ACCESS = 'RECEIVE_REVOKE_ADMIN_ACCESS';
 export const REQUEST_GRANT_ADMIN_ACCESS = 'REQUEST_GRANT_ADMIN_ACCESS';
 export const RECEIVE_GRANT_ADMIN_ACCESS = 'RECEIVE_GRANT_ADMIN_ACCESS';
+export const REQUEST_UNIQUE_VALUES = 'REQUEST_UNIQUE_VALUES';
+export const RECEIVE_UNIQUE_VALUES = 'RECEIVE_UNIQUE_VALUES';
 
 const receiveDashboardSummary = (summary) => {
     return {
@@ -119,6 +121,24 @@ export const requestRevokeAdminAccess = (body) => {
             method: 'POST',
             body,
             success: (response) => receiveRevokeAdminAccess(response),
+        },
+    }
+}
+
+const receiveUniqueValues = (uniqueValues) => {
+    return {
+        type: RECEIVE_UNIQUE_VALUES,
+        uniqueValues,
+    }
+}
+
+export const requestUniqueValues = () => {
+    return {
+        type: REQUEST_UNIQUE_VALUES,
+        makeApiRequest: {
+            url: '/api/v1/distinct-dashboard-values',
+            method: 'GET',
+            success: (response) => receiveUniqueValues(response),
         },
     }
 }

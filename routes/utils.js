@@ -74,6 +74,38 @@ const updateAnswers = async (answers, questionID) => {
     return results;    
 };
 
+const updateUsers = async () => {
+    const results = [];
+    const missed = [];
+    const users = [];
+    for (let user of users) {
+        await new Promise(async (resolve) => {
+            try {
+                const dbRecord = await User.findOne({ name: user.Name.trim(),  jobTitle: user.JobTitle.trim() });
+            
+                if (dbRecord) {
+                    dbRecord.department = user.Department;
+                    dbRecord.city = user.Location;
+                    await dbRecord.save();
+                    results.push(user.Name);
+                }
+                else {
+                    missed.push(user.Name.trim());
+                }
+            }
+            catch (e) {
+                console.log(e);
+            }
+            resolve();
+        });
+    }
+
+    return {
+        results,
+        missed,
+    };    
+};
+
 module.exports = (app) => {
     app.post('/api/v1/property.add', async (req, res) => {
         try {
@@ -180,5 +212,16 @@ module.exports = (app) => {
                     stack: e.stack,
                 });
         }
+    });
+
+    app.get('/api/v1/update-users', async (req, res) => {
+        const { results, missed } = await updateUsers();
+
+        res
+          .status(200)
+          .json({
+              results,
+              missed,
+          });
     });
 }

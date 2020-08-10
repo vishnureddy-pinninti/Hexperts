@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import Table from '../base/Table';
 import { isAdmin } from '../../utils/common';
-import { requestGrantAdminAccess, requestRevokeAdminAccess } from '../../store/actions/dashboard';
+import { requestGrantAdminAccess, requestRevokeAdminAccess, requestUniqueValues } from '../../store/actions/dashboard';
 
 class Users extends Component {
     render() {
@@ -16,11 +16,16 @@ class Users extends Component {
             <div className="admin-container" style={{ marginBottom: 20 }}>
                 <Table
                     name="Users"
-                    filtering={true}
+                    filtering={ true }
                     columns={ this.getColumns() }
                     data={ users } />
             </div>
         )
+    }
+
+    componentDidMount() {
+        const { requestUniqueValues } = this.props;
+        requestUniqueValues();
     }
 
     handleAdminAccess = (rowData, admin = false) => {
@@ -77,11 +82,19 @@ class Users extends Component {
     }
 
     getColumns = () => {
+        const { uniqueValues } = this.props;
+        const { departments = [], jobTitles = [], location = [] } = uniqueValues;
+        const departmentsLookup = {};
+        departments.forEach((department) => departmentsLookup[department] = department);
+        const jobTitlesLookup = {};
+        jobTitles.forEach((jobTitle) => jobTitlesLookup[jobTitle] = jobTitle);
+        const locationsLookup = {};
+        location.forEach((location) => locationsLookup[location] = location);
         return [
-            { field: 'name', title: 'Name' },
-            { field: 'jobTitle', title: 'Job Title' },
-            { field: 'department', title: 'Department' },
-            { field: 'city', title: 'Location' },
+            { field: 'name', title: 'Name', cellStyle: { whiteSpace: 'nowrap' } },
+            { field: 'jobTitle', title: 'Job Title', filtering: true, lookup: jobTitlesLookup, filterCellStyle: { overflow: 'auto', minWidth: 300 }, },
+            { field: 'department', title: 'Department', filtering: true, lookup: departmentsLookup, filterCellStyle: { overflow: 'auto', minWidth: 200 }, },
+            { field: 'city', title: 'Location', filtering: true, lookup: locationsLookup },
             { field: 'questions', title: 'Questions' },
             { field: 'answers', title: 'Answers' },
             { field: 'posts', title: 'Blog Posts' },
@@ -94,6 +107,7 @@ class Users extends Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        uniqueValues: state.dashboard.uniqueValues,
     }
 }
 
@@ -104,7 +118,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         requestRevokeAdminAccess: (payload) => {
             dispatch(requestRevokeAdminAccess(payload));
-        }
+        },
+        requestUniqueValues: () => {
+            dispatch(requestUniqueValues());
+        },
     }
 }
 
