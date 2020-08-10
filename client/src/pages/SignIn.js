@@ -36,13 +36,13 @@ const useStyles = makeStyles((theme) => {
         },
         login: {
             backgroundColor: '#046080',
-            backgroundImage: 'url(/hexagon-bg.png)',
-            backgroundRepeat: 'no-repeat',
+            // backgroundImage: 'url(/hexagon-bg.png)',
+            // backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
         },
         image: {
-            backgroundImage: 'url(/signin.png)',
+            backgroundImage: 'url(/login-bg.jpg)',
             backgroundRepeat: 'no-repeat',
             backgroundColor:
       theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
