@@ -428,4 +428,28 @@ module.exports = (app) => {
                 });
         }
     });
+
+    app.get('/api/v1/distinct-dashboard-values', async (req, res) => {
+        try {
+            const departments = await User.distinct('department');
+            const jobTitles = await User.distinct('jobTitle');
+            const location = await User.distinct('city');
+            res
+                .status(200)
+                .json({
+                    departments,
+                    jobTitles,
+                    location,
+                });
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
 };
