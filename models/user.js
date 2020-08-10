@@ -19,6 +19,50 @@ const userSchema = new Schema({
         type: String,
         es_indexed: false,
     },
+    city: {
+        type: String,
+        es_indexed: false,
+    },
+    companyName: {
+        type: String,
+        es_indexed: false,
+    },
+    country: {
+        type: String,
+        es_indexed: false,
+    },
+    department: {
+        type: String,
+        es_indexed: false,
+    },
+    employeeId: {
+        type: String,
+        es_indexed: false,
+    },
+    officeLocation: {
+        type: String,
+        es_indexed: false,
+    },
+    postalCode: {
+        type: String,
+        es_indexed: false,
+    },
+    state: {
+        type: String,
+        es_indexed: false,
+    },
+    streetAddress: {
+        type: String,
+        es_indexed: false,
+    },
+    businessPhones: {
+        type: [ String ],
+        es_indexed: false,
+    },
+    mobilePhone: {
+        type: String,
+        es_indexed: false,
+    },
     interests: {
         type: [ mongoose.Types.ObjectId ],
         es_indexed: false,

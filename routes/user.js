@@ -28,57 +28,88 @@ module.exports = (app) => {
             id,
             jobTitle,
             mail,
+            department,
+            employeeId,
+            officeLocation,
+            city,
+            companyName,
+            country,
+            postalCode,
+            state,
+            streetAddress,
+            businessPhones,
+            mobilePhone,
         } = req.body;
 
         try {
-            const user = await User.aggregate([
-                { $match: { userid: id } },
-                {
-                    $lookup: {
-                        from: 'topics',
-                        localField: 'interests',
-                        foreignField: '_id',
-                        as: 'interests',
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'topics',
-                        localField: 'expertIn',
-                        foreignField: '_id',
-                        as: 'expertIn',
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'blogs',
-                        localField: 'blogs',
-                        foreignField: '_id',
-                        as: 'blogs',
-                    },
-                },
-                {
-                    $project: {
-                        followers: 1,
-                        emailSubscription: 1,
-                        name: 1,
-                        email: 1,
-                        jobTitle: 1,
-                        userid: 1,
-                        reputation: 1,
-                        blogs: 1,
-                        expertIn: 1,
-                        interests: 1,
-                        upvotes: 1,
-                        role: 1,
-                    },
-                },
-            ]);
-
+            const dbUser = await User.findOne({ userid: id });
             let cookieUser;
             let resUser;
 
-            if (user.length) {
+            if (dbUser) {
+                dbUser.displayName = displayName;
+                dbUser.jobTitle = jobTitle;
+                dbUser.mail = mail;
+                dbUser.department = department;
+                dbUser.employeeId = employeeId;
+                dbUser.officeLocation = officeLocation;
+                dbUser.city = city;
+                dbUser.companyName = companyName;
+                dbUser.country = country;
+                dbUser.postalCode = postalCode;
+                dbUser.state = state;
+                dbUser.streetAddress = streetAddress;
+                dbUser.businessPhones = businessPhones;
+                dbUser.mobilePhone = mobilePhone;
+
+                await dbUser.save();
+
+                const user = await User.aggregate([
+                    { $match: { userid: id } },
+                    {
+                        $lookup: {
+                            from: 'topics',
+                            localField: 'interests',
+                            foreignField: '_id',
+                            as: 'interests',
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: 'topics',
+                            localField: 'expertIn',
+                            foreignField: '_id',
+                            as: 'expertIn',
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: 'blogs',
+                            localField: 'blogs',
+                            foreignField: '_id',
+                            as: 'blogs',
+                        },
+                    },
+                    {
+                        $project: {
+                            followers: 1,
+                            emailSubscription: 1,
+                            name: 1,
+                            email: 1,
+                            jobTitle: 1,
+                            userid: 1,
+                            reputation: 1,
+                            blogs: 1,
+                            expertIn: 1,
+                            interests: 1,
+                            upvotes: 1,
+                            role: 1,
+                            department: 1,
+                            city: 1,
+                        },
+                    },
+                ]);
+
                 resUser = user[0];
                 cookieUser = {
                     _id: user[0]._id,
@@ -90,6 +121,17 @@ module.exports = (app) => {
                     email: mail,
                     jobTitle,
                     userid: id,
+                    department,
+                    employeeId,
+                    officeLocation,
+                    city,
+                    companyName,
+                    country,
+                    postalCode,
+                    state,
+                    streetAddress,
+                    businessPhones,
+                    mobilePhone,
                 });
 
                 await newUser.save();
@@ -292,6 +334,8 @@ module.exports = (app) => {
                         email: 1,
                         jobTitle: 1,
                         userid: 1,
+                        department: 1,
+                        city: 1,
                         reputation: 1,
                         blogs: 1,
                         expertIn: 1,
