@@ -5,8 +5,10 @@ import Topics from '../components/dashboard/Topics';
 import Summary from '../components/dashboard/Summary';
 import UserSummary from '../components/dashboard/UserSummary';
 import Users from '../components/dashboard/Users';
+import MonthlyTopContributors from '../components/dashboard/MonthlyTopContributors';
 import RangeSelection from '../components/dashboard/RangeSelection';
-import { requestDashboardSummary, requestUserSummary, requestDashboardTopics, requestDashboardUsers } from '../store/actions/dashboard';
+import MonthSelection from '../components/dashboard/MonthSelection';
+import { requestDashboardSummary, requestUserSummary, requestDashboardTopics, requestDashboardUsers, requestMonthlyTopContributors } from '../store/actions/dashboard';
 
 class Dashboard extends Component {
     render() {
@@ -15,6 +17,8 @@ class Dashboard extends Component {
             topics,
             userSummary,
             users,
+            monthlyTopContributors,
+            requestMonthlyTopContributors,
             requestDashboardSummary,
             requestDashboardTopics,
             requestDashboardUsers,
@@ -29,6 +33,9 @@ class Dashboard extends Component {
                 <Summary summary={ summary } />
                 <Topics data={ topics } />
                 <Users users={ users }/>
+                <MonthSelection
+                    requestMonthlyTopContributors={ requestMonthlyTopContributors } />
+                <MonthlyTopContributors monthlyTopContributors={ monthlyTopContributors } />
             </div>
         );
     }
@@ -39,12 +46,14 @@ class Dashboard extends Component {
             requestUserSummary,
             requestDashboardTopics,
             requestDashboardUsers,
+            requestMonthlyTopContributors,
         } = this.props;
 
         requestDashboardSummary();
         requestUserSummary();
         requestDashboardTopics();
         requestDashboardUsers();
+        requestMonthlyTopContributors();
     }
 }
 
@@ -54,6 +63,7 @@ const mapStateToProps = (state) => {
         topics: state.dashboard.topics,
         userSummary: state.dashboard.userSummary,
         users: state.dashboard.users,
+        monthlyTopContributors: state.dashboard.monthlyTopContributors,
     };
 }
 
@@ -70,6 +80,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         requestDashboardUsers: (params) => {
             dispatch(requestDashboardUsers(params));
+        },
+        requestMonthlyTopContributors: (params) => {
+            dispatch(requestMonthlyTopContributors(params));
         }
     }
 }

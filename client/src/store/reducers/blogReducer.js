@@ -117,16 +117,16 @@ export default (state = initialState, action) => {
             if (!post[id]){
                 post[id] = {};
             }
-            index = post[id].upvoters.indexOf(action.res.upvoter);
+            index = post[id].upvoters.findIndex(x => x._id === action.res.upvoter);
             if (index >= 0){
                 post[id].upvoters.splice(index, 1);
             }
             else {
-                index = post[id].downvoters.indexOf(action.res.upvoter);
+                index = post[id].downvoters.findIndex(x => x._id === action.res.upvoter);
                 if (index !== -1){
                     post[id].downvoters.splice(index, 1);
                 }
-                post[id].upvoters.push(action.res.upvoter);
+                post[id].upvoters.push({_id:action.res.upvoter});
             }
             return {
                 ...state,
