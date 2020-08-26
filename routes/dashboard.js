@@ -624,7 +624,6 @@ module.exports = (app) => {
                     }
                 }
             ]);
-            console.log(users);
             const monthlyTopContributors = getMonthlyTopContributors(users, month, year);
             res
                 .status(200)
@@ -639,5 +638,31 @@ module.exports = (app) => {
                     stack: e.stack,
                 });
         }
+    
     });
-};
+
+    app.get('/api/v1/distinct-dashboard-values', async (req, res) => {
+        try {
+            const departments = await User.distinct('department');
+            const jobTitles = await User.distinct('jobTitle');
+            const location = await User.distinct('city');
+            res
+                .status(200)
+                .json({
+                    departments,
+                    jobTitles,
+                    location,
+                });
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
+}
