@@ -267,7 +267,7 @@ module.exports = (app) => {
                                     preserveNullAndEmptyArrays: true,
                                 },
                             },
-                            { $addFields: { upvotersCount: { $size: '$upvoters' } } },
+                            { $addFields: { upvotersCount: { $size: '$newUpvoters' } } },
                             {
                                 $sort: {
                                     upvotersCount: -1,
@@ -309,7 +309,7 @@ module.exports = (app) => {
                                     postedDate: 1,
                                     lastModified: 1,
                                     questionID: 1,
-                                    upvoters: 1,
+                                    upvoters: '$newUpvoters',
                                     upvotersCount: 1,
                                 },
                             },
@@ -481,7 +481,7 @@ module.exports = (app) => {
                                     preserveNullAndEmptyArrays: true,
                                 },
                             },
-                            { $addFields: { upvotersCount: { $size: '$upvoters' } } },
+                            { $addFields: { upvotersCount: { $size: '$newUpvoters' } } },
                             {
                                 $sort: {
                                     upvotersCount: -1,
@@ -523,7 +523,7 @@ module.exports = (app) => {
                                     postedDate: 1,
                                     lastModified: 1,
                                     questionID: 1,
-                                    upvoters: 1,
+                                    upvoters: '$newUpvoters',
                                     upvotersCount: 1,
                                 },
                             },
@@ -801,7 +801,7 @@ module.exports = (app) => {
                             preserveNullAndEmptyArrays: true,
                         },
                     },
-                    { $addFields: { upvotersCount: { $size: '$upvoters' } } },
+                    { $addFields: { upvotersCount: { $size: '$newUpvoters' } } },
                     {
                         $sort: {
                             upvotersCount: -1,
@@ -823,7 +823,7 @@ module.exports = (app) => {
                                         },
                                     },
                                 },
-                                { $addFields: { upvotersCount: { $size: '$upvoters' } } },
+                                { $addFields: { upvotersCount: { $size: '$newUpvoters' } } },
                                 {
                                     $sort: {
                                         upvotersCount: -1,
@@ -850,7 +850,7 @@ module.exports = (app) => {
                             postedDate: 1,
                             lastModified: 1,
                             questionID: 1,
-                            upvoters: 1,
+                            upvoters: '$newUpvoters',
                             upvotersCount: 1,
                         },
                     },

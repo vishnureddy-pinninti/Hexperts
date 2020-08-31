@@ -47,7 +47,11 @@ const answerSchema = new Schema({
         es_indexed: true,
     },
     upvoters: {
-        type: [{
+        type: [ mongoose.Types.ObjectId ],
+        es_indexed: false,
+    },
+    newUpvoters: {
+        type: [ {
             _id: {
                 type: mongoose.Types.ObjectId,
                 es_indexed: false,
@@ -57,7 +61,7 @@ const answerSchema = new Schema({
                 default: Date.now,
                 es_indexed: false,
             }
-        }],
+        } ],
         es_indexed: false,
     },
     topics: {

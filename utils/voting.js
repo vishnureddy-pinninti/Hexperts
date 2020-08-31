@@ -1,6 +1,6 @@
 const voting = (topic, user, voting) => {
-    const main = voting === 'upvote' ? 'upvoters' : 'downvoters';
-    const secondary = voting === 'upvote' ? 'downvoters' : 'upvoters';
+    const main = voting === 'upvote' ? 'newUpvoters' : 'downvoters';
+    const secondary = voting === 'upvote' ? 'downvoters' : 'newUpvoters';
     
     const alreadyVoted = topic[main].find((v) => v._id.equals(user));
     const secondaryVoted = topic[secondary].find((v) => v._id.equals(user));

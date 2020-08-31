@@ -192,7 +192,7 @@ module.exports = (app) => {
                                     title: 1,
                                     description: 1,
                                     plainText: 1,
-                                    upvoters: 1,
+                                    upvoters: '$newUpvoters',
                                     commentsCount: {
                                         $cond: {
                                             if: { $isArray: '$comments' },

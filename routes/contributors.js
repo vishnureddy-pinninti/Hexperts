@@ -224,12 +224,12 @@ module.exports = (app) => {
                         from: "answers",
                         let: { id: '$_id' },
                         pipeline: [
-                            {$unwind : "$upvoters" },
+                            {$unwind : "$newUpvoters" },
                             {
                                 $project:{
                                     author: 1,
-                                    UpvoteMonth: { $month: "$upvoters.createdDate" },
-                                    UpvoteYear: { $year: "$upvoters.createdDate" },
+                                    UpvoteMonth: { $month: "$newUpvoters.createdDate" },
+                                    UpvoteYear: { $year: "$newUpvoters.createdDate" },
                                 }
                             },
                             {
@@ -262,12 +262,12 @@ module.exports = (app) => {
                         from: "posts",
                         let: { id: '$_id' },
                         pipeline: [
-                            {$unwind : "$upvoters" },
+                            {$unwind : "$newUpvoters" },
                             {
                                 $project:{
                                     author: 1,
-                                    UpvoteMonth: { $month: "$upvoters.createdDate" },
-                                    UpvoteYear: { $year: "$upvoters.createdDate" },
+                                    UpvoteMonth: { $month: "$newUpvoters.createdDate" },
+                                    UpvoteYear: { $year: "$newUpvoters.createdDate" },
                                 }
                             },
                             {

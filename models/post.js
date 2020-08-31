@@ -53,6 +53,10 @@ const postSchema = new Schema({
         es_indexed: true,
     },
     upvoters: {
+        type: [ mongoose.Types.ObjectId ],
+        es_indexed: false,
+    },
+    newUpvoters: {
         type: [{
             _id: {
                 type: mongoose.Types.ObjectId,

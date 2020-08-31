@@ -176,7 +176,7 @@ module.exports = (app) => {
                         topics: 1,
                         title: 1,
                         description: 1,
-                        upvoters: 1,
+                        upvoters: '$newUpvoters',
                         commentsCount: {
                             $cond: {
                                 if: { $isArray: '$comments' },
@@ -274,7 +274,7 @@ module.exports = (app) => {
                         topics: 1,
                         title: 1,
                         description: 1,
-                        upvoters: 1,
+                        upvoters: '$newUpvoters',
                         commentsCount: {
                             $cond: {
                                 if: { $isArray: '$comments' },
@@ -405,7 +405,7 @@ module.exports = (app) => {
                 deleteService({
                     type: 'post',
                     user: post.author,
-                    voteCount: post.upvoters.length,
+                    voteCount: post.newUpvoters.length,
                     htmlContent: post.description,
                 });
                 await post.remove();
