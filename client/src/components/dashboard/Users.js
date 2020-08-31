@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import Table from '../base/Table';
 import { isAdmin } from '../../utils/common';
-import { requestGrantAdminAccess, requestRevokeAdminAccess, requestUniqueValues } from '../../store/actions/dashboard';
+import { requestGrantAdminAccess, requestRevokeAdminAccess } from '../../store/actions/dashboard';
 
 class Users extends Component {
     render() {
@@ -21,11 +21,6 @@ class Users extends Component {
                     data={ users } />
             </div>
         )
-    }
-
-    componentDidMount() {
-        const { requestUniqueValues } = this.props;
-        requestUniqueValues();
     }
 
     handleAdminAccess = (rowData, admin = false) => {
@@ -118,9 +113,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         requestRevokeAdminAccess: (payload) => {
             dispatch(requestRevokeAdminAccess(payload));
-        },
-        requestUniqueValues: () => {
-            dispatch(requestUniqueValues());
         },
     }
 }

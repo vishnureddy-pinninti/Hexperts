@@ -5,6 +5,9 @@ import { Grid, Chip,
     Container } from '@material-ui/core';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Switch from '@material-ui/core/Switch';
+import Box from '@material-ui/core/Box';
+import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import AnswerCard from '../components/answer/Card';
@@ -17,6 +20,9 @@ import QuestionsList from '../components/question/QuestionsList';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
 import { requestUserQuestions, requestTrendingQuestions, toggleQuestionModal } from '../store/actions/questions';
+import { requestTopCreators, requestMonthlyTopCreators } from '../store/actions/auth';
+import { Months } from '../utils/common'
+import moment from 'moment'
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -43,11 +49,15 @@ function Home(props) {
     const {
         requestUserQuestions,
         requestTrendingQuestions,
+        requestTopCreators,
+        requestMonthlyTopCreators,
         questions,
         trendingQuestions,
         expertIn,
+        topUsers,
+        monthlyTopUsers,
     } = props;
-
+    //const previousMonth = 
     const classes = useStyles();
 
     const [
@@ -120,9 +130,13 @@ function Home(props) {
         });
         requestUserQuestions();
         requestTrendingQuestions();
+        requestTopCreators();
+        requestMonthlyTopCreators();
     }, [
         requestTrendingQuestions,
         requestUserQuestions,
+        requestTopCreators,
+        requestMonthlyTopCreators,
     ]);
 
     const loadMore = () => {
@@ -185,6 +199,7 @@ function Home(props) {
         );
     });
 
+
     return (
         <div
             className="App">
@@ -243,7 +258,28 @@ function Home(props) {
                                 label: classes.chipLable,
                             } }
                             className={ classes.chip } />
-                        <TopCreators />
+                        <Typography
+                            component="div"
+                            className={ classes.heading }>
+                            <Box
+                                fontWeight="fontWeightBold"
+                                m={ 1 }>
+                                Top Contributors
+                            </Box>
+                        </Typography>
+                        <Divider />
+                        <TopCreators topUsers={ topUsers } />
+                        <Typography
+                            component="div"
+                            className={ classes.heading }>
+                            <Box
+                                fontWeight="fontWeightBold"
+                                m={ 1 }>
+                                Monthly Top Contributors - {Months.find(x => x.value === parseInt(moment().subtract(1, 'months').format('M'))).field}
+                            </Box>
+                        </Typography>
+                        <Divider />
+                        <TopCreators topUsers={ monthlyTopUsers } />
                         <QuestionsList
                             title="Trending Questions"
                             questions={ trendingQuestions } />
@@ -273,6 +309,8 @@ const mapStateToProps = (state) => {
         modifiedAnswers: state.answer.modifiedAnswers,
         topics: state.topic.topics,
         questionModal: state.questions.questionModal,
+        topUsers: state.user.topUsers,
+        monthlyTopUsers: state.user.monthlyTopUsers,
     };
 };
 
@@ -286,6 +324,12 @@ const mapDispatchToProps = (dispatch) => {
         },
         toggleQuestionModal: () => {
             dispatch(toggleQuestionModal());
+        },
+        requestTopCreators: () => {
+            dispatch(requestTopCreators());
+        },
+        requestMonthlyTopCreators: () => {
+            dispatch(requestMonthlyTopCreators());
         },
     };
 };

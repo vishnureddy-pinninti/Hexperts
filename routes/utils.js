@@ -40,6 +40,38 @@ const updateRecords = async (records, Model) => {
     return results;    
 };
 
+const updateVotes = async (records, Model) => {
+    const results = [];
+    for (let record of records) {
+        await new Promise(async (resolve) => {
+            try {
+            
+                const dbRecord = await Model.findById(record._id);
+            
+                if (dbRecord) {
+                    dbRecord.newUpvoters = dbRecord.upvoters.map((upvote) => {
+                        return {
+                            _id: upvote,
+                            createdDate: dbRecord.postedDate
+                        }
+                    });
+            
+                    await dbRecord.save();
+                }
+            
+                results.push(record._id);
+            }
+            catch (e) {
+                console.log(e);
+            }
+
+            resolve();
+        });
+    }
+
+    return results;    
+};
+
 const updateAnswers = async (answers, questionID) => {
     const results = [];
 
@@ -148,6 +180,38 @@ module.exports = (app) => {
             const records = await Model.find();
 
             const status = await updateRecords(records, Model);
+
+            res
+                .status(200)
+                .json(status);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
+    app.post('/api/v1/property.update', async (req, res) => {
+        try {
+            const { collection } = req.body;
+            const Model = collectionMap[collection];
+
+            if (!Model) {
+                return res
+                    .status(400)
+                    .json({
+                        error: true,
+                        response: 'Provided collection type not supported',
+                    });
+            }
+
+            const records = await Model.find();
+            const status = await updateVotes(records, Model);
 
             res
                 .status(200)

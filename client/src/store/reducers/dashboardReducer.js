@@ -5,6 +5,7 @@ import {
     RECEIVE_DASHBOARD_USERS,
     RECEIVE_GRANT_ADMIN_ACCESS,
     RECEIVE_REVOKE_ADMIN_ACCESS,
+    RECEIVE_MONTHLY_TOP_CONTRIBUTORS,
     RECEIVE_UNIQUE_VALUES,
 } from '../actions/dashboard';
 
@@ -13,6 +14,7 @@ const initialState = {
     userSummary: {},
     topics: [],
     users: [],
+    monthlyTopContributors: [],
     uniqueValues: {},
 }
 
@@ -37,6 +39,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 users: action.users,
+            }
+        case RECEIVE_MONTHLY_TOP_CONTRIBUTORS:
+            return {
+                ...state,
+                monthlyTopContributors: action.monthlyTopContributors,
             }
         case RECEIVE_GRANT_ADMIN_ACCESS:
         case RECEIVE_REVOKE_ADMIN_ACCESS:

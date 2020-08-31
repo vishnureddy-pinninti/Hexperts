@@ -170,7 +170,7 @@ module.exports = (app) => {
                         lastModified: 1,
                         questionID: 1,
                         question: 1,
-                        upvoters: 1,
+                        upvoters: '$newUpvoters',
                     },
                 },
             ]);
@@ -269,7 +269,7 @@ module.exports = (app) => {
                 deleteService({
                     type: 'answer',
                     user: answer.author,
-                    voteCount: answer.upvoters.length,
+                    voteCount: answer.newUpvoters.length,
                     htmlContent: answer.answer,
                 });
                 await answer.remove();

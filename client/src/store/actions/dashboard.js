@@ -6,6 +6,8 @@ export const REQUEST_DASHBOARD_TOPICS = 'REQUEST_DASHBOARD_TOPICS';
 export const RECEIVE_DASHBOARD_TOPICS = 'RECEIVE_DASHBOARD_TOPICS';
 export const REQUEST_DASHBOARD_USERS = 'REQUEST_DASHBOARD_USERS';
 export const RECEIVE_DASHBOARD_USERS = 'RECEIVE_DASHBOARD_USERS';
+export const REQUEST_MONTHLY_TOP_CONTRIBUTORS = 'REQUEST_MONTHLY_TOP_CONTRIBUTORS';
+export const RECEIVE_MONTHLY_TOP_CONTRIBUTORS = 'RECEIVE_MONTHLY_TOP_CONTRIBUTORS';
 export const REQUEST_USER_SUMMARY = 'REQUEST_USER_SUMMARY';
 export const RECEIVE_USER_SUMMARY = 'RECEIVE_USER_SUMMARY';
 export const REQUEST_REVOKE_ADMIN_ACCESS = 'REQUEST_REVOKE_ADMIN_ACCESS';
@@ -65,6 +67,24 @@ export const requestDashboardUsers = (params) => {
             url: buildApiUrl('/api/v1/dashboard-users', params),
             method: 'GET',
             success: (response) => receiveDashboardUsers(response),
+        },
+    };
+}
+
+const receiveMonthlyTopContributors = (monthlyTopContributors) => {
+    return {
+        type: RECEIVE_MONTHLY_TOP_CONTRIBUTORS,
+        monthlyTopContributors,
+    }
+}
+
+export const requestMonthlyTopContributors = (params) => {
+    return {
+        type: REQUEST_MONTHLY_TOP_CONTRIBUTORS,
+        makeApiRequest: {
+            url: buildApiUrl('/api/v1/dashboard-monthlyTopContributors', params),
+            method: 'GET',
+            success: (response) => receiveMonthlyTopContributors(response),
         },
     };
 }
