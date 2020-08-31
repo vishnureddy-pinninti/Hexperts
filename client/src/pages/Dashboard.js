@@ -8,7 +8,7 @@ import Users from '../components/dashboard/Users';
 import MonthlyTopContributors from '../components/dashboard/MonthlyTopContributors';
 import RangeSelection from '../components/dashboard/RangeSelection';
 import MonthSelection from '../components/dashboard/MonthSelection';
-import { requestDashboardSummary, requestUserSummary, requestDashboardTopics, requestDashboardUsers, requestMonthlyTopContributors } from '../store/actions/dashboard';
+import { requestDashboardSummary, requestUserSummary, requestDashboardTopics, requestDashboardUsers, requestMonthlyTopContributors, requestUniqueValues } from '../store/actions/dashboard';
 
 class Dashboard extends Component {
     render() {
@@ -47,6 +47,7 @@ class Dashboard extends Component {
             requestDashboardTopics,
             requestDashboardUsers,
             requestMonthlyTopContributors,
+            requestUniqueValues,
         } = this.props;
 
         requestDashboardSummary();
@@ -54,6 +55,7 @@ class Dashboard extends Component {
         requestDashboardTopics();
         requestDashboardUsers();
         requestMonthlyTopContributors();
+        requestUniqueValues();
     }
 }
 
@@ -83,7 +85,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         requestMonthlyTopContributors: (params) => {
             dispatch(requestMonthlyTopContributors(params));
-        }
+        },
+        requestUniqueValues: () => {
+            dispatch(requestUniqueValues());
+        },
     }
 }
 

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import Table from '../base/Table';
 
@@ -20,11 +21,19 @@ class MonthlyTopContributors extends Component {
 
 
     getColumns = () => {
+        const { uniqueValues } = this.props;
+        const { departments = [], jobTitles = [], location = [] } = uniqueValues;
+        const departmentsLookup = {};
+        departments.forEach((department) => departmentsLookup[department] = department);
+        const jobTitlesLookup = {};
+        jobTitles.forEach((jobTitle) => jobTitlesLookup[jobTitle] = jobTitle);
+        const locationsLookup = {};
+        location.forEach((location) => locationsLookup[location] = location);
         return [
             { field: 'name', title: 'Name' },
-            { field: 'jobTitle', title: 'Job Title' },
-            // { field: 'month', title: 'Month' },
-            // { field: 'year', title: 'Year' },
+            { field: 'jobTitle', title: 'Job Title', filtering: true, lookup: jobTitlesLookup, filterCellStyle: { overflow: 'auto', minWidth: 300 }, },
+            { field: 'department', title: 'Department', filtering: true, lookup: departmentsLookup, filterCellStyle: { overflow: 'auto', minWidth: 200 }, },
+            { field: 'city', title: 'Location', filtering: true, lookup: locationsLookup },
             { field: 'questions', title: 'Questions' },
             { field: 'answers', title: 'Answers' },
             { field: 'posts', title: 'Blog Posts' },
@@ -35,4 +44,10 @@ class MonthlyTopContributors extends Component {
 }
 
 
-export default MonthlyTopContributors;
+const mapStateToProps = state => {
+    return {
+        uniqueValues: state.dashboard.uniqueValues,
+    }
+}
+
+export default connect(mapStateToProps)(MonthlyTopContributors);

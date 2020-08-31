@@ -21,6 +21,8 @@ const getMonthlyTopContributors = (userMonthlyInfo, Month, Year) =>{
             _id: user._id,
             name: user.name,
             jobTitle: user.jobTitle,
+            city: user.city,
+            department: user.department,
             email: user.email,
             month: Month,
             year: Year,
