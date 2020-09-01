@@ -190,7 +190,7 @@ module.exports = (app) => {
                                 postedDate: 1,
                                 target: 1,
                                 targetID: 1,
-                                upvoters: '$newUpvoters',
+                                upvoters: 1,
                             },
                         },
                     ]);
