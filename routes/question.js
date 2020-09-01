@@ -823,7 +823,7 @@ module.exports = (app) => {
                                         },
                                     },
                                 },
-                                { $addFields: { upvotersCount: { $size: '$newUpvoters' } } },
+                                { $addFields: { upvotersCount: { $size: '$upvoters' } } },
                                 {
                                     $sort: {
                                         upvotersCount: -1,
