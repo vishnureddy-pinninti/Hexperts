@@ -8,7 +8,7 @@ import Switch from '@material-ui/core/Switch';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
-
+import FeedbackIcon from '@material-ui/icons/Feedback';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => {
         },
         chip: {
             marginBottom: 10,
+            width:190,
         },
         chipIcon: {
             marginLeft: 5,
@@ -258,6 +259,15 @@ function Home(props) {
                                 label: classes.chipLable,
                             } }
                             className={ classes.chip } />
+                            <Chip
+                            icon={ <FeedbackIcon size="small" /> }
+                            label="Feedback to Hexperts"
+                            color="primary"
+                            classes={ {
+                                icon: classes.chipIcon,
+                                label: classes.chipLable,
+                            } }
+                            className={ classes.chip } />
                         <Typography
                             component="div"
                             className={ classes.heading }>
@@ -269,17 +279,6 @@ function Home(props) {
                         </Typography>
                         <Divider />
                         <TopCreators topUsers={ topUsers } />
-                        <Typography
-                            component="div"
-                            className={ classes.heading }>
-                            <Box
-                                fontWeight="fontWeightBold"
-                                m={ 1 }>
-                                Monthly Top Contributors - {Months.find(x => x.value === parseInt(moment().subtract(1, 'months').format('M'))).field}
-                            </Box>
-                        </Typography>
-                        <Divider />
-                        <TopCreators topUsers={ monthlyTopUsers } />
                         <QuestionsList
                             title="Trending Questions"
                             questions={ trendingQuestions } />
