@@ -8,7 +8,6 @@ import Switch from '@material-ui/core/Switch';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
-import FeedbackIcon from '@material-ui/icons/Feedback';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
@@ -254,15 +253,6 @@ function Home(props) {
                             color="primary"
                             clickable
                             onClick={ showOwnQuestions }
-                            classes={ {
-                                icon: classes.chipIcon,
-                                label: classes.chipLable,
-                            } }
-                            className={ classes.chip } />
-                            <Chip
-                            icon={ <FeedbackIcon size="small" /> }
-                            label="Feedback to Hexperts"
-                            color="primary"
                             classes={ {
                                 icon: classes.chipIcon,
                                 label: classes.chipLable,
