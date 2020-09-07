@@ -13,4 +13,5 @@ module.exports = (app) => {
     require('./crawl')(app);
     require('./dashboard')(app);
     require('./utils')(app);
+    require('./feedback')(app);
 };

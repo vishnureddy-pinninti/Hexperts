@@ -2,8 +2,6 @@ export const REQUEST_USER_SESSION = 'REQUEST_USER_SESSION';
 export const RECEIVE_USER_SESSION = 'RECEIVE_USER_SESSION';
 export const REQUEST_TOP_CREATORS = 'REQUEST_TOP_CREATORS';
 export const RECEIVE_TOP_CREATORS = 'RECEIVE_TOP_CREATORS';
-export const REQUEST_MONTHLY_TOP_CREATORS = 'REQUEST_MONTHLY_TOP_CREATORS';
-export const RECEIVE_MONTHLY_TOP_CREATORS = 'RECEIVE_MONTHLY_TOP_CREATORS';
 export const ADD_USER_PREFERENCES = 'ADD_USER_PREFERENCES';
 export const RECEIVE_USER_PREFERENCES = 'RECEIVE_USER_PREFERENCES';
 export const ADD_PREFERENCES_PENDING = 'ADD_PREFERENCES_PENDING';
@@ -80,23 +78,6 @@ export const requestTopCreators = () => {
     };
 };
 
-const receiveMonthlyTopCreators = (monthlyTopUsers) => {
-    return {
-        type: RECEIVE_MONTHLY_TOP_CREATORS,
-        monthlyTopUsers,
-    };
-};
-
-export const requestMonthlyTopCreators = () => {
-    return {
-        type: REQUEST_MONTHLY_TOP_CREATORS,
-        makeApiRequest: {
-            url: '/api/v1/top-contributors-of-month',
-            method: 'GET',
-            success: receiveMonthlyTopCreators,
-        },
-    };
-};
 
 export function addPreferencesPending() {
     return {

@@ -24,6 +24,8 @@ const email = async(mailOptions) => {
     const {
         template,
         locals,
+        from = 'Hexperts <noreply-hexperts@hexagon.com>',
+        to = 'Hexperts <noreply-hexperts@hexagon.com>',
         bcc,
     } = mailOptions;
     const uniqueRecipients = onlyUnique(bcc);
@@ -33,7 +35,8 @@ const email = async(mailOptions) => {
             .send({
                 template,
                 message: {
-                    to: 'Hexperts <noreply-hexperts@hexagon.com>',
+                    from,
+                    to,
                     bcc: uniqueRecipients,
                 },
                 locals,
