@@ -20,7 +20,6 @@ import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
 import FeedbackModel from '../components/feedback/FeedbackToHexperts'
 import { requestUserQuestions, requestTrendingQuestions, toggleQuestionModal } from '../store/actions/questions';
-import { addUserFeedback } from '../store/actions/feedback'
 import { requestTopCreators } from '../store/actions/auth';
 
 const useStyles = makeStyles((theme) => {
@@ -83,11 +82,6 @@ function Home(props) {
     const handleFeedbackModalClose = () => {
         setFeedbackModal(false);
     };
-
-    const handleFeedbackSubmit = () => {
-        addUserFeedback();
-        handleFeedbackModalClose();
-    }
 
     const [
         openExpertInModal,
@@ -310,7 +304,6 @@ function Home(props) {
                 handleFollowTopicsModalClose={ handleExpertInModalClose } />
             <FeedbackModel
                 open={ openFeedbackModal }
-                handleDone={ handleFeedbackSubmit }
                 handleClose={ handleFeedbackModalClose } />
         </div>
     );

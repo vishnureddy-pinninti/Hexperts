@@ -43,6 +43,7 @@ const useStyles = makeStyles(() => {
 
 const renderTextField = ({ input , name, multiline, label}) => (
     <TextField
+        autoComplete="off"
         name={ name }
         margin="dense"
         label={ label }
@@ -65,10 +66,9 @@ const FeedbackModel = (props) => {
     } = props;
 
     const submitFeedback = (values) =>{
-        const { handleDone } = props;
-        if(handleDone){
-            handleDone(values);
-        }
+        const { addUserFeedback } = props;
+        addUserFeedback(values);
+        handleClose();
     }
 
 
@@ -129,10 +129,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addUserFeedback: (body, callback) => {
-            dispatch(addUserFeedback(body, callback));
+        addUserFeedback: (body) => {
+            dispatch(addUserFeedback(body));
             dispatch(reset('feedback'));
-            dispatch();
         },
     };
 };
