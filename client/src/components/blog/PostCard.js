@@ -246,10 +246,6 @@ const AnswerCard = (props) => {
 
     const isOwner = user._id === _id;
 
-
-    //Old Code -- Before schema change
-    //const upvoted = upvoters.indexOf(user._id) >= 0;
-
     //New Code -- After schema change
     const upvoted = upvoters.findIndex(x => x._id === user._id) >= 0;
 

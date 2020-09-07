@@ -12,9 +12,6 @@ const getMonthlyTopContributors = require('../utils/getMonthlyTopContributors')
 const START_DATE = '2017-02-04T00:00:00.000Z';
 const END_DATE = '3017-02-04T00:00:00.000Z';
 
-const MONTH = new Date().getMonth();
-const FULLYEAR = new Date().getFullYear();
-
 module.exports = (app) => {
     app.get('/api/v1/dashboard-topics', loginMiddleware, adminMiddleware, queryMiddleware, async(req, res) => {
         const { query } = req.queryParams;
@@ -436,8 +433,8 @@ module.exports = (app) => {
     app.get('/api/v1/dashboard-monthlyTopContributors', loginMiddleware, adminMiddleware, queryMiddleware, async(req, res) => {
         const { query } = req.queryParams;
         const {
-            month = MONTH+1,
-            year = FULLYEAR,
+            month = new Date().getMonth()+1,
+            year = new Date().getFullYear(),
         } = query;
         try {
             const users = await User.aggregate([

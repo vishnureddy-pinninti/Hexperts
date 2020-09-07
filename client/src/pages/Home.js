@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Chip,
-    Container } from '@material-ui/core';
+import { Grid, Chip, Container } from '@material-ui/core';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Switch from '@material-ui/core/Switch';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+import FeedbackIcon from '@material-ui/icons/Feedback';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
@@ -18,10 +18,10 @@ import EmptyResults from '../components/base/EmptyResults';
 import QuestionsList from '../components/question/QuestionsList';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
+import FeedbackModel from '../components/feedback/FeedbackToHexperts'
 import { requestUserQuestions, requestTrendingQuestions, toggleQuestionModal } from '../store/actions/questions';
-import { requestTopCreators, requestMonthlyTopCreators } from '../store/actions/auth';
-import { Months } from '../utils/common'
-import moment from 'moment'
+import { addUserFeedback } from '../store/actions/feedback'
+import { requestTopCreators } from '../store/actions/auth';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -50,14 +50,11 @@ function Home(props) {
         requestUserQuestions,
         requestTrendingQuestions,
         requestTopCreators,
-        requestMonthlyTopCreators,
         questions,
         trendingQuestions,
         expertIn,
         topUsers,
-        monthlyTopUsers,
     } = props;
-    //const previousMonth = 
     const classes = useStyles();
 
     const [
@@ -73,6 +70,24 @@ function Home(props) {
     const handleFollowTopicsModalClose = () => {
         setOpenFollowTopicsModal(false);
     };
+
+    const [
+        openFeedbackModal,
+        setFeedbackModal,
+    ] = React.useState(false);
+
+    const handleFeedbackModalOpen = () => {
+        setFeedbackModal(true);
+    };
+
+    const handleFeedbackModalClose = () => {
+        setFeedbackModal(false);
+    };
+
+    const handleFeedbackSubmit = () => {
+        addUserFeedback();
+        handleFeedbackModalClose();
+    }
 
     const [
         openExpertInModal,
@@ -100,6 +115,7 @@ function Home(props) {
         index: 0,
         hasMore: true,
     });
+
 
     useEffect(() => {
         if (questions.length) {
@@ -131,12 +147,10 @@ function Home(props) {
         requestUserQuestions();
         requestTrendingQuestions();
         requestTopCreators();
-        requestMonthlyTopCreators();
     }, [
         requestTrendingQuestions,
         requestUserQuestions,
         requestTopCreators,
-        requestMonthlyTopCreators,
     ]);
 
     const loadMore = () => {
@@ -258,6 +272,17 @@ function Home(props) {
                                 label: classes.chipLable,
                             } }
                             className={ classes.chip } />
+                            <Chip
+                            icon={ <FeedbackIcon size="small" /> }
+                            label="Feedback to Hexperts"
+                            color="secondary"
+                            clickable
+                            onClick={ handleFeedbackModalOpen }
+                            classes={ {
+                                icon: classes.chipIcon,
+                                label: classes.chipLable,
+                            } }
+                            className={ classes.chip } />
                         <Typography
                             component="div"
                             className={ classes.heading }>
@@ -283,6 +308,10 @@ function Home(props) {
                 open={ openExpertInModal }
                 expertIn={ expertIn }
                 handleFollowTopicsModalClose={ handleExpertInModalClose } />
+            <FeedbackModel
+                open={ openFeedbackModal }
+                handleDone={ handleFeedbackSubmit }
+                handleClose={ handleFeedbackModalClose } />
         </div>
     );
 }
@@ -299,7 +328,6 @@ const mapStateToProps = (state) => {
         topics: state.topic.topics,
         questionModal: state.questions.questionModal,
         topUsers: state.user.topUsers,
-        monthlyTopUsers: state.user.monthlyTopUsers,
     };
 };
 
@@ -316,9 +344,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         requestTopCreators: () => {
             dispatch(requestTopCreators());
-        },
-        requestMonthlyTopCreators: () => {
-            dispatch(requestMonthlyTopCreators());
         },
     };
 };

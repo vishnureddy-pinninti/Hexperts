@@ -25,3 +25,4 @@ require('./blog');
 require('./post');
 require('./notification');
 require('./external');
+require('./feedback');

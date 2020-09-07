@@ -1,6 +1,5 @@
 import { RECEIVE_USER_SESSION,
     RECEIVE_TOP_CREATORS,
-    RECEIVE_MONTHLY_TOP_CREATORS,
     RECEIVE_USER_PREFERENCES,
     ADD_PREFERENCES_PENDING,
     RECEIVE_USER_BY_ID,
@@ -72,11 +71,6 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 topUsers: action.users,
-            };
-        case RECEIVE_MONTHLY_TOP_CREATORS:
-            return {
-                ...state,
-                monthlyTopUsers: action.monthlyTopUsers,
             };
         case ADD_PREFERENCES_PENDING:
             return {
