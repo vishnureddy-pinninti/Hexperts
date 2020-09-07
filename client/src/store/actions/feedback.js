@@ -10,8 +10,8 @@ const receiveAddedFeedback = (feedback) => {
     };
 };
 
-export const addUserFeedback = (postData, successcb) => {
-    console.log(postData,successcb)
+export const addUserFeedback = (postData) => {
+    console.log(postData)
     return {
         type: ADD_USER_FEEDBACK,
         makeApiRequest: {
@@ -19,7 +19,6 @@ export const addUserFeedback = (postData, successcb) => {
             method: 'POST',
             body: postData,
             success: receiveAddedFeedback,
-            successcb,
         },
     };
 };
