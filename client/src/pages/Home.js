@@ -8,6 +8,7 @@ import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import FeedbackIcon from '@material-ui/icons/Feedback';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import AnswerCard from '../components/answer/Card';
 import QuestionCard from '../components/question/Card';
@@ -19,6 +20,7 @@ import QuestionsList from '../components/question/QuestionsList';
 import FollowTopicsModal from '../components/topic/FollowTopicsModal';
 import ExpertInModal from '../components/topic/ExpertInModal';
 import FeedbackModel from '../components/feedback/FeedbackToHexperts'
+import Tour from '../components/tour/Tour';
 import { requestUserQuestions, requestTrendingQuestions, toggleQuestionModal } from '../store/actions/questions';
 import { requestTopCreators } from '../store/actions/auth';
 
@@ -55,6 +57,12 @@ function Home(props) {
         topUsers,
     } = props;
     const classes = useStyles();
+
+    const [openTour, setOpenTour] = React.useState(false);
+    
+    const handleTourToggle = () => {
+        setOpenTour(!openTour);
+    };
 
     const [
         openFollowTopicsModal,
@@ -211,6 +219,7 @@ function Home(props) {
     return (
         <div
             className="App">
+            <Tour open = {openTour} handleClose={ handleTourToggle } />
             <Container>
                 <Grid
                     container
@@ -252,6 +261,19 @@ function Home(props) {
                         item
                         className={ classes.sectionDesktop }
                         xs={ 3 }>
+                        <Chip
+                            xs={ 1 }
+                            id="HelpBox"
+                            icon={ <InfoOutlinedIcon size="small" /> }
+                            label="Help"
+                            color="primary"
+                            clickable
+                            onClick={ handleTourToggle }
+                            classes={ {
+                                icon: classes.chipIcon,
+                                label: classes.chipLable,
+                            } }
+                            className={ classes.chip } />
                         <Chip
                             icon={ <FormControlLabel
                                 control={ <Switch
