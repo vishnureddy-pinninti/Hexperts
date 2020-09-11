@@ -12,6 +12,6 @@ module.exports = (app) => {
     require('./contributors')(app);
     require('./crawl')(app);
     require('./dashboard')(app);
-    require('./utils')(app);
+    // require('./utils')(app);
     require('./feedback')(app);
 };
