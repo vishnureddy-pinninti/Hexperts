@@ -17,7 +17,7 @@ module.exports = {
         NEW_ANSWER: 5,
         UPVOTE_ANSWER: 1,
         DOWNVOTE_ANSWER: 0,
-        NEW_POST: 10,
+        NEW_POST: 7,
         UPVOTE_POST: 1,
         DOWNVOTE_POST: 0,
         NEW_COMMENT: 0,

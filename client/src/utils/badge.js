@@ -1,5 +1,5 @@
-const SILVER = 500;
-const GOLD = 1500;
+const SILVER = 75;
+const GOLD = 300;
 
 const badge = (reputation) => {
     if (reputation >= SILVER && reputation < GOLD) {
