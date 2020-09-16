@@ -259,6 +259,7 @@ function Home(props) {
                                     size="small" /> } /> }
                             label="Show My Questions"
                             color="primary"
+                            id="top_contr"
                             clickable
                             onClick={ showOwnQuestions }
                             classes={ {
