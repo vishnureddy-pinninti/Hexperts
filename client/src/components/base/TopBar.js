@@ -26,7 +26,10 @@ import SearchBar from './SearchBar';
 import EditTopicsModal from '../topic/EditTopicsModal';
 import EditSuggestedWriters from '../question/EditSuggestedWriters';
 import EditCode from './EditCode';
+import HelpIcon from '@material-ui/icons/Help';
 
+import Tour from '../tour/Tour';
+import moment from 'moment';
 import getBadge from '../../utils/badge';
 import { editCode } from '../../store/actions/answer';
 import { addUserQuestion, addQuestionPending, toggleQuestionModal } from '../../store/actions/questions';
@@ -141,6 +144,9 @@ const useStyles = makeStyles((theme) => {
             width: theme.spacing(2),
             height: theme.spacing(2),
         },
+        helpButton:{
+            color: '#ffffff'
+        }
     };
 });
 
@@ -228,6 +234,36 @@ const TopBar = (props) => {
         addedQuestion,
         pending,
     ]);
+
+    const requestTourStatus = () => {
+        try {
+            const timeStamp = localStorage.getItem('TourState');
+            if (timeStamp === null) {
+                var currentTimeStamp = moment();
+                localStorage.setItem('TourState', currentTimeStamp.format('L'));
+                return true;
+            }
+            else{
+                var createdDate = moment(new Date(timeStamp));
+                var currentDate = moment();
+                if(currentDate.diff(createdDate, 'days') > 15){
+                    localStorage.setItem('TourState', currentDate.format('L'));
+                    return true;
+                }
+                return false;
+            }
+        } catch (err) {
+            return true;
+        }
+    }
+
+    const [openTour, setOpenTour] = React.useState(requestTourStatus());
+    
+    const handleTourToggle = () => {
+        setOpenTour(!openTour);
+    };
+
+    //const topContrReference = React.useRef(null);
 
     const handleOnAddQuestion = (question, questionSuggestions) => {
         toggleQuestionModal();
@@ -417,6 +453,7 @@ const TopBar = (props) => {
 
     return (
         <div className={ classes.grow }>
+            <Tour open = {openTour} handleTourToggle={ handleTourToggle } />
             <AppBar
                 position="fixed"
                 elevation={ 1 }
@@ -528,6 +565,18 @@ const TopBar = (props) => {
                                     { /* <Avatar user={ user.email } /> */ }
                                 </IconButton>
                             </div>
+                            <div className={ classes.sectionDesktop }>
+                                <IconButton
+                                    edge="end"
+                                    aria-label="account of current user"
+                                    aria-controls={ menuId }
+                                    aria-haspopup="true"
+                                    onClick={ handleTourToggle }
+                                    color="inherit">
+                                    <HelpIcon 
+                                    className={ classes.helpButton }/>
+                                </IconButton>
+                            </div>
                             <div className={ classes.sectionMobile }>
                                 <IconButton
                                     aria-label="show more"
@@ -602,6 +651,7 @@ const mapStateToProps = (state) => {
         questionModal: state.questions.questionModal,
         pageLoader: state.user.pageLoader,
         codeConfig: state.answer.codeConfig,
+        showTour: state.showTour,
     };
 };
 

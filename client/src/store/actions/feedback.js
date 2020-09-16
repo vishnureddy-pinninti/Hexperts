@@ -1,4 +1,5 @@
 
+
 export const ADD_USER_FEEDBACK = 'ADD_USER_FEEDBACK';
 export const RECEIVE_ADDED_FEEDBACK = 'RECEIVE_ADDED_FEEDBACK';
 
@@ -11,7 +12,6 @@ const receiveAddedFeedback = (feedback) => {
 };
 
 export const addUserFeedback = (postData) => {
-    console.log(postData)
     return {
         type: ADD_USER_FEEDBACK,
         makeApiRequest: {
