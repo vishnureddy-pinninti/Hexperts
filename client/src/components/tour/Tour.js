@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => {
     return {
         root: {
             flexGrow: 1,
-            top: "8%",
             position: "relative",
         },
         h4: {
@@ -53,18 +52,11 @@ const useStyles = makeStyles((theme) => {
 
 function Tour(props) {
 
-    let topContrPosition = {};
     const {
         open,
         handleTourToggle,
     } = props;
 
-    React.useEffect(() => {
-        topContrPosition = document.getElementById('top_contr').getBoundingClientRect();
-        // if (topRef.current) {
-        //     // TODO
-        // }
-    }, []);
 
     const classes = useStyles();
 
