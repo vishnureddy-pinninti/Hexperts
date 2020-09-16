@@ -42,8 +42,8 @@ const useStyles = makeStyles((theme) => {
             position: "absolute",
         },
         closeButton: {
-            top: "5%",
-            right: "5%",
+            top: "0.5em",
+            right: "1.8em",
             color: "white",
             position: "absolute",
         }
@@ -108,22 +108,21 @@ function Tour(props) {
                 </Grid>
             </div> */}
                 
-            <Grid container spacing={1} >
+            <Grid container spacing={1} style={{ position: "relative", top: "5%", left: "5%"}} >
                 <Grid item xs>
-                <div style={{ textAlign: "right", marginRight: "100px" }} >
+                <div style={{ textAlign: "right", marginRight: "10em" }} >
                         <img
                             src="/arrowTop.png"
                             width={150}
-                            style={{ marginTop: "10px" }}
                             alt="logo" />
-                    </div>
+                </div>
                 </Grid>
                 <Grid item xs>
-                    <h4 style={{ textAlign: "right", marginTop: "-50px" }} className={classes.h4}>Here you can search for anything related to the blogs. You can search based on multiple factors</h4>
+                    <h4 style={{ textAlign: "right", marginTop: "-5em" }} className={classes.h4}>Here you can search for anything related to the blogs. You can search based on multiple factors</h4>
                 </Grid>
                 <Grid item xs>
                     <div>
-                        <img style={{ marginTop: "-120px" }}
+                        <img style={{ marginTop: "-12em" }}
                             src="/arrowTopRight.png"
                             width={120}
                             alt="logo" />
@@ -134,13 +133,13 @@ function Tour(props) {
 
             <Grid container spacing={1}>
                 <Grid item xs style={{ display: 'inline-block' }}>
-                <h4 style={{ textAlign: "left", marginTop: "-20px"}} className={classes.h4}>Here you can discover different topics. Click on any of the topics and you can find blogs related to the selected topic</h4>
+                <h4 style={{ textAlign: "left", marginTop: "-2em"}} className={classes.h4}>Here you can discover different topics. Click on any of the topics and you can find blogs related to the selected topic</h4>
                 </Grid>
                 <Grid item xs>
                     
                 </Grid>
                 <Grid item xs>
-                    <h4 style={{ textAlign: "right", marginTop: "50px" }} className={classes.h4}>Here you can find all the top contributors</h4>
+                    <h4 style={{ textAlign: "right", marginTop: "4em" }} className={classes.h4}>Here you can find all the top contributors</h4>
                 </Grid>
                 <Grid item xs>
                     <div >
@@ -177,12 +176,12 @@ function Tour(props) {
 
     const PageTwo = () => (
         <div>
-            <Grid container spacing={1} >
+            <Grid container spacing={1} style={{ position: "relative", top: "5%", left: "5%"}} >
                 <Grid item xs>
-                    <h4 style={{ textAlign: "right", marginTop: "-10px" }} className={classes.h4}>These are some important links which will help accessing different pages</h4>
+                    <h4 style={{ textAlign: "right", marginTop: "1em" }} className={classes.h4}>These are some important links which will help accessing different pages</h4>
                 </Grid>
                 <Grid item xs>
-                    <div style={{ textAlign: "left", marginTop: "-60px" }} >
+                    <div style={{ textAlign: "left", marginTop: "-2em" }} >
                         <img
                             src="/arrowTopRight.png"
                             width={100}
@@ -190,10 +189,10 @@ function Tour(props) {
                     </div>
                 </Grid>
                 <Grid item xs>
-                    <h4 style={{ textAlign: "right", marginTop: "20px" }} className={classes.h4}>You can ask a new question here</h4>
+                    <h4 style={{ textAlign: "right", marginTop: "2em" }} className={classes.h4}>You can ask a new question here</h4>
                 </Grid>
                 <Grid item xs>
-                    <div style={{ textAlign: "left", marginTop: "-60px", marginLeft: "10px" }} >
+                    <div style={{ textAlign: "left", marginTop: "-2em", marginLeft: "10px" }} >
                         <img
                             src="/arrowTopRight.png"
                             width={120}
@@ -229,7 +228,7 @@ function Tour(props) {
                     </div>
                 </Grid>
                 <Grid item xs>
-                    <h4 style={{ textAlign: "left" }} className={classes.h4}><br /><br />This is the area where all the blogs can be accessed.</h4>
+                    <h4 style={{ textAlign: "left" }} className={classes.h4}><br /><br />This is the area where all the answers can be accessed.</h4>
                 </Grid>
                 <Grid item xs></Grid>
             </Grid>
