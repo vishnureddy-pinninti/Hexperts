@@ -40,6 +40,36 @@ const updateRecords = async (records, Model) => {
     return results;    
 };
 
+const updateReputation = async (users) => {
+    const status = {
+        success: [],
+        failure: [],
+    };
+    for (let user of users) {
+        await new Promise(async (resolve) => {
+            try {
+            
+                const dbRecord = await User.findById(user._id);
+            
+                if (dbRecord) {
+                    dbRecord.reputation = dbRecord.reputation - (user.posts * 3);
+            
+                    await dbRecord.save();
+                }
+            
+                status.success.push(user._id);
+            }
+            catch (e) {
+                status.failure.push(user._id);
+            }
+
+            resolve();
+        });
+    }
+
+    return status;    
+};
+
 const updateVotes = async (records, Model) => {
     const results = [];
     for (let record of records) {
@@ -287,5 +317,56 @@ module.exports = (app) => {
               results,
               missed,
           });
+    });
+
+    app.post('/api/v1/update-reputation', async (req, res) => {
+        try {
+            const users = await User.aggregate([
+                {
+                    $lookup: {
+                        from: 'posts',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [
+                                            '$$id',
+                                            '$author',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'posts',
+                    },
+                },
+                {
+                    $project: {
+                        posts: {
+                            $cond: {
+                                if: { $isArray: '$posts' },
+                                then: { $size: '$posts' },
+                                else: 0,
+                            },
+                        },
+                    }
+                }
+            ]);
+            const status = await updateReputation(users);
+
+            res
+                .status(200)
+                .json(status);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
     });
 }

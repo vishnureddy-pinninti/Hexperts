@@ -5,22 +5,28 @@ import { connect } from 'react-redux';
 
 import Table from '../base/Table';
 import { isAdmin } from '../../utils/common';
+import getBadge from '../../utils/badge';
 import { requestGrantAdminAccess, requestRevokeAdminAccess } from '../../store/actions/dashboard';
 
 class Users extends Component {
     render() {
-        const {
-            users,
-        } = this.props;
         return (
             <div className="admin-container" style={{ marginBottom: 20 }}>
                 <Table
                     name="Users"
                     filtering={ true }
                     columns={ this.getColumns() }
-                    data={ users } />
+                    data={ this.processData() } />
             </div>
         )
+    }
+
+    processData = () => {
+        const {
+            users,
+        } = this.props;
+
+        return users.map((user = {}) => ({ ...user, membership: getBadge(user.reputation) }));
     }
 
     handleAdminAccess = (rowData, admin = false) => {
@@ -76,6 +82,24 @@ class Users extends Component {
         );
     }
 
+    renderReputationColumn = (rowData) => {
+        return (
+            <Tooltip title="Total reputation till date">
+                <Typography>
+                    { rowData.reputation }
+                </Typography>
+            </Tooltip>
+        );
+    }
+
+    renderMembershipStatus = (rowData) => {
+        return (
+            <Typography style={{ textTransform: 'capitalize' }}>
+                { getBadge(rowData.reputation) }
+            </Typography>
+        );
+    }
+
     getColumns = () => {
         const { uniqueValues } = this.props;
         const { departments = [], jobTitles = [], location = [] } = uniqueValues;
@@ -85,6 +109,11 @@ class Users extends Component {
         jobTitles.forEach((jobTitle) => jobTitlesLookup[jobTitle] = jobTitle);
         const locationsLookup = {};
         location.forEach((location) => locationsLookup[location] = location);
+        const membershipLookup = {
+            blue: 'Blue',
+            gold: 'Gold',
+            silver: 'Silver',
+        };
         return [
             { field: 'name', title: 'Name', cellStyle: { whiteSpace: 'nowrap' } },
             { field: 'jobTitle', title: 'Job Title', filtering: true, lookup: jobTitlesLookup, filterCellStyle: { overflow: 'auto', minWidth: 300 }, },
@@ -94,6 +123,8 @@ class Users extends Component {
             { field: 'answers', title: 'Answers' },
             { field: 'posts', title: 'Blog Posts' },
             { field: 'upvotes', title: 'Upvotes', render: this.renderUpvotesColumn },
+            { field: 'reputation', title: 'Reputation', render: this.renderReputationColumn },
+            { field: 'membership', title: 'Membership', render: this.renderMembershipStatus, lookup: membershipLookup },
             { field: 'role', title: 'Role', render: this.renderRoleColumn },
         ]
     }
