@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => {
         backdrop: {
             zIndex: 9000,
             color: '#fff',
-            padding: '6%',
+            padding: '0% 6%',
             backgroundColor: "rgba(48,48,48, 0.9)" //"#696969" //"rgba(0,0,0,0.9)" //rgba(64,64,64, 0.8)
         },
         nextButton: {
@@ -72,12 +72,6 @@ function Tour(props) {
 
     const loadPreviousPage = () => {
         setPage(false);
-    }
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            loadNextPage();
-        }
     }
 
     const PageOne = () => (
@@ -139,11 +133,11 @@ function Tour(props) {
                     
                 </Grid>
                 <Grid item xs>
-                    <h4 style={{ textAlign: "right", marginTop: "4em" }} className={classes.h4}>Here you can find all the top contributors</h4>
+                    <h4 style={{ textAlign: "right", marginTop: "4em", marginLeft: "-2em" }} className={classes.h4}>Here you can find all the top contributors</h4>
                 </Grid>
                 <Grid item xs>
                     <div >
-                        <img  
+                        <img style={{ marginLeft: "-3em" }}
                             src="/arrowTopRight.png"
                             width={120}
                             alt="logo" />
@@ -154,11 +148,11 @@ function Tour(props) {
                 <Grid item xs></Grid>
                 <Grid item xs></Grid>
                 <Grid item xs>
-                    <h4 style={{ textAlign: "right" }} className={classes.h4}>Here You can find the Trending questions</h4>
+                    <h4 style={{ textAlign: "right", marginLeft: "-2em" }} className={classes.h4}>Here You can find the Trending questions</h4>
                 </Grid>
                 <Grid item xs>
                     <div >
-                        <img
+                        <img style={{ marginLeft: "-3em" }}
                             src="/arrowRightBottom.png"
                             width={120}
                             alt="logo" />
@@ -262,9 +256,8 @@ function Tour(props) {
         </IconButton>
     )
 
-
     return (
-        <div onKeyDown={ handleKeyDown }>
+        <div>
             <Backdrop className={classes.backdrop} open={open} >
                 <CloseHelp />
                 {nextPage ? <PreviousPageBtn /> : <NextPageBtn />}
