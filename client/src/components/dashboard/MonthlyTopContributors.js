@@ -38,7 +38,7 @@ class MonthlyTopContributors extends Component {
             { field: 'answers', title: 'Answers' },
             { field: 'posts', title: 'Blog Posts' },
             { field: 'upvotes', title: 'Upvotes' },
-            { field: 'reputation', title: 'Reputation' },
+            { field: 'reputation', title: 'Points' },
         ]
     }
 }

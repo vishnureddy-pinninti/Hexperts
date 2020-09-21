@@ -84,7 +84,7 @@ class Users extends Component {
 
     renderReputationColumn = (rowData) => {
         return (
-            <Tooltip title="Total reputation till date">
+            <Tooltip title="Total points till date">
                 <Typography>
                     { rowData.reputation }
                 </Typography>
@@ -123,7 +123,7 @@ class Users extends Component {
             { field: 'answers', title: 'Answers' },
             { field: 'posts', title: 'Blog Posts' },
             { field: 'upvotes', title: 'Upvotes', render: this.renderUpvotesColumn },
-            { field: 'reputation', title: 'Reputation', render: this.renderReputationColumn },
+            { field: 'reputation', title: 'Points', render: this.renderReputationColumn },
             { field: 'membership', title: 'Membership', render: this.renderMembershipStatus, lookup: membershipLookup },
             { field: 'role', title: 'Role', render: this.renderRoleColumn },
         ]
