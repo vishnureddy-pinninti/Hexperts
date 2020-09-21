@@ -9,6 +9,7 @@ import NavigateNext from '@material-ui/icons/NavigateNext';
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import DeleteIcon from '@material-ui/icons/Close'
 import IconButton from '@material-ui/core/IconButton';
+import Hotkeys from 'react-hot-keys';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -54,7 +55,7 @@ function Tour(props) {
 
     const {
         open,
-        handleTourToggle,
+        handleTourClose,
     } = props;
 
 
@@ -64,7 +65,6 @@ function Tour(props) {
         nextPage,
         setPage,
     ] = React.useState(false);
-
 
     const loadNextPage = () => {
         setPage(true);
@@ -251,10 +251,20 @@ function Tour(props) {
     )
 
     const CloseHelp = () => (
-        <IconButton aria-label="delete" className={classes.closeButton} onClick={ handleTourToggle }>
+        <IconButton aria-label="delete" className={classes.closeButton} onClick={ handleTourClose }>
             <DeleteIcon />
         </IconButton>
     )
+
+    const onKeyUp = () => {
+        if(!nextPage){
+            loadNextPage();
+        }
+        else{
+            handleTourClose();
+            //loadPreviousPage();
+        }
+      }
 
     return (
         <div>
@@ -268,7 +278,10 @@ function Tour(props) {
 
                 </div>
             </Backdrop>
-
+            <Hotkeys 
+                keyName="Enter" 
+                onKeyUp={onKeyUp}>
+            </Hotkeys>
         </div>
     );
 

@@ -259,11 +259,13 @@ const TopBar = (props) => {
 
     const [openTour, setOpenTour] = React.useState(requestTourStatus());
     
-    const handleTourToggle = () => {
-        setOpenTour(!openTour);
-    };
+    const handleTourOpen = () => {
+        setOpenTour(true);
+    }
 
-    //const topContrReference = React.useRef(null);
+    const handleTourClose = () => {
+        setOpenTour(false);
+    }
 
     const handleOnAddQuestion = (question, questionSuggestions) => {
         toggleQuestionModal();
@@ -453,7 +455,7 @@ const TopBar = (props) => {
 
     return (
         <div className={ classes.grow }>
-            <Tour open = {openTour} handleTourToggle={ handleTourToggle } />
+            <Tour open = {openTour} handleTourClose={ handleTourClose } />
             <AppBar
                 position="fixed"
                 elevation={ 1 }
@@ -571,7 +573,7 @@ const TopBar = (props) => {
                                     aria-label="account of current user"
                                     aria-controls={ menuId }
                                     aria-haspopup="true"
-                                    onClick={ handleTourToggle }
+                                    onClick={ handleTourOpen }
                                     color="inherit">
                                     <HelpIcon 
                                     className={ classes.helpButton }/>
