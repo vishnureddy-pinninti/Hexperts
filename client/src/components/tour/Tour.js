@@ -112,7 +112,7 @@ function Tour(props) {
                 </div>
                 </Grid>
                 <Grid item xs>
-                    <h4 style={{ textAlign: "right", marginTop: "-5em" }} className={classes.h4}>Here you can search for anything related to the blogs. You can search based on multiple factors</h4>
+                    <h4 style={{ textAlign: "right", marginTop: "-5em" }} className={classes.h4}>Search for any information in Hexpert as well as other internal sites.</h4>
                 </Grid>
                 <Grid item xs>
                     <div>
@@ -127,13 +127,13 @@ function Tour(props) {
 
             <Grid container spacing={1}>
                 <Grid item xs style={{ display: 'inline-block' }}>
-                <h4 style={{ textAlign: "left", marginTop: "-2em"}} className={classes.h4}>Here you can discover different topics. Click on any of the topics and you can find blogs related to the selected topic</h4>
+                <h4 style={{ textAlign: "left", marginTop: "-2em"}} className={classes.h4}>Explore different topics and subscribe & self-nominate as expert to the topics of your interest. </h4>
                 </Grid>
                 <Grid item xs>
                     
                 </Grid>
                 <Grid item xs>
-                    <h4 style={{ textAlign: "right", marginTop: "4em", marginLeft: "-2em" }} className={classes.h4}>Here you can find all the top contributors</h4>
+                    <h4 style={{ textAlign: "right", marginTop: "4em", marginLeft: "-2em" }} className={classes.h4}>Meet our three top contributors.</h4>
                 </Grid>
                 <Grid item xs>
                     <div >
@@ -148,7 +148,7 @@ function Tour(props) {
                 <Grid item xs></Grid>
                 <Grid item xs></Grid>
                 <Grid item xs>
-                    <h4 style={{ textAlign: "right", marginLeft: "-2em" }} className={classes.h4}>Here You can find the Trending questions</h4>
+                    <h4 style={{ textAlign: "right", marginLeft: "-2em" }} className={classes.h4}>View questions that are trending in Hexpert.</h4>
                 </Grid>
                 <Grid item xs>
                     <div >
@@ -172,7 +172,7 @@ function Tour(props) {
         <div>
             <Grid container spacing={1} style={{ position: "relative", top: "5%", left: "5%"}} >
                 <Grid item xs>
-                    <h4 style={{ textAlign: "right", marginTop: "1em" }} className={classes.h4}>These are some important links which will help accessing different pages</h4>
+                    <h4 style={{ textAlign: "right", marginTop: "1em" }} className={classes.h4}>Answer a question, read or write a blog, and view notifications.</h4>
                 </Grid>
                 <Grid item xs>
                     <div style={{ textAlign: "left", marginTop: "-2em" }} >
@@ -183,7 +183,7 @@ function Tour(props) {
                     </div>
                 </Grid>
                 <Grid item xs>
-                    <h4 style={{ textAlign: "right", marginTop: "2em" }} className={classes.h4}>You can ask a new question here</h4>
+                    <h4 style={{ textAlign: "right", marginTop: "2em" }} className={classes.h4}>Ask a question.</h4>
                 </Grid>
                 <Grid item xs>
                     <div style={{ textAlign: "left", marginTop: "-2em", marginLeft: "10px" }} >
@@ -222,7 +222,7 @@ function Tour(props) {
                     </div>
                 </Grid>
                 <Grid item xs>
-                    <h4 style={{ textAlign: "left" }} className={classes.h4}><br /><br />This is the area where all the answers can be accessed.</h4>
+                    <h4 style={{ textAlign: "left" }} className={classes.h4}><br /><br />Displays questions, answers, and blogs</h4>
                 </Grid>
                 <Grid item xs></Grid>
             </Grid>
