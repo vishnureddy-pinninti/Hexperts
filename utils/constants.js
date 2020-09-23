@@ -7,6 +7,7 @@ module.exports = {
         CRAWLER_NOT_FOUND: 'Crawler not found',
         NOTIFICATION_NOT_FOUND: 'Notification Not Found',
         POST_NOT_FOUND: 'Post Not Found',
+        DRAFT_NOT_FOUND: 'Draft Not Found',
         QUESTION_NOT_FOUND: 'Question not found',
         TOPIC_NOT_FOUND: 'Topic Not Found',
         UNAUTHORIZED: 'UNAUTHORIZED',

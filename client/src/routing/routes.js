@@ -8,6 +8,7 @@ import Blogs from '../pages/BlogsHome';
 import Blog from '../pages/Blog';
 import AnswerWithQuestion from '../pages/AnswerWithQuestion';
 import Post from '../pages/Post';
+import Draft from '../pages/Draft'
 import Search from '../pages/Search';
 import CommentPage from '../pages/Comment';
 import Dashboard from '../pages/Dashboard';
@@ -58,6 +59,11 @@ const getRoutes = (admin) => {
             path: '/Post/:postId',
             component: Post,
             key: 'Post',
+        },
+        {
+            path: '/Draft/:draftId',
+            component: Draft,
+            key: 'Draft',
         },
         {
             path: '/Blogs',

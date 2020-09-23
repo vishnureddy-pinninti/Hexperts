@@ -15,6 +15,7 @@ import { withRouter } from 'react-router-dom';
 import Editor from '../base/Editor';
 
 import { addPostToBlog, addBlogPending } from '../../store/actions/blog';
+import { addDraftPending, createDraft } from '../../store/actions/draft';
 import { addNewTopic, requestTopics } from '../../store/actions/topic';
 import { editQuestion, editQuestionPending } from '../../store/actions/questions';
 import htmlToDraft from '../../utils/html-to-draftjs';
@@ -44,9 +45,6 @@ const useStyles = makeStyles((theme) => {
             height: 250,
             overflow: 'auto',
         },
-        title: {
-            marginBottom: 20,
-        },
     };
 });
 
@@ -61,6 +59,19 @@ const validate = (values) => {
     return errors;
 };
 
+const renderTextField = ({ input }) => (
+    <TextField
+        { ...input }
+        style= {{ marginBottom: 20, }}
+        id="name"
+        label="Title"
+        type="text"
+        variant="outlined"
+        autoComplete="off"
+        // autoFocus
+        required
+        fullWidth />
+);
 
 const BlogPostModal = (props) => {
     const classes = useStyles();
@@ -72,8 +83,10 @@ const BlogPostModal = (props) => {
         open,
         topicsList,
         addPostToBlog,
+        createDraft,
         pending,
         newPost,
+        newDraft,
         resetPost,
         history,
         descriptionHTML,
@@ -111,6 +124,15 @@ const BlogPostModal = (props) => {
     ] = React.useState(false);
 
     useEffect(() => {
+        if (!pending && newDraft && newDraft._id) {
+            setDisableSubmit(false);
+            resetPost();
+            history.push(`/draft/${newDraft._id}`);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ newDraft ]);
+
+    useEffect(() => {
         if (!pending && newPost && newPost._id) {
             setDisableSubmit(false);
             resetPost();
@@ -118,19 +140,6 @@ const BlogPostModal = (props) => {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ newPost ]);
-
-    const renderTextField = ({ input }) => (
-        <TextField
-            { ...input }
-            className={ classes.title }
-            id="name"
-            label="Title"
-            type="text"
-            variant="outlined"
-            // autoFocus
-            required
-            fullWidth />
-    );
 
     const renderDescriptionField = () => (
         <Editor
@@ -183,6 +192,122 @@ const BlogPostModal = (props) => {
                     placeholder="Topics" />
             ) } />
     );
+
+    const renderPostActions = () => {
+        const { postId, draftId } = props;
+        if (postId){
+            return (
+                <Button
+                    size="small"
+                    variant="contained"
+                    onClick={handleSubmit( values => addPost(values)) }
+                    disabled={ disableSubmit }
+                    color="primary">
+                    Submit
+                </Button>
+            )
+        }
+        else if (draftId) {
+            return (
+                <>
+                    <Button
+                        size="small"
+                        variant="contained"
+                        onClick={ handleSubmit( values => draftPost(values)) }
+                        disabled={ disableSubmit }
+                        color="primary">
+                        Save to Draft
+                    </Button>
+                    <Button
+                        size="small"
+                        variant="contained"
+                        onClick={ handleSubmit( values => postDraft(values)) }
+                        disabled={ disableSubmit }
+                        color="primary">
+                        Submit
+                    </Button>
+                </>
+            )
+        }
+        else {
+            return (
+                <>
+                    <Button
+                        size="small"
+                        variant="contained"
+                        onClick={handleSubmit( values => draftPost(values)) }
+                        disabled={ disableSubmit }
+                        color="primary">
+                        Save to Draft
+                    </Button>
+                    <Button
+                        size="small"
+                        variant="contained"
+                        onClick={handleSubmit( values => addPost(values)) }
+                        disabled={ disableSubmit }
+                        color="primary">
+                        Submit
+                    </Button>
+                </>
+            )
+        }
+    }
+
+    const draftPost = (values) => {
+        const {
+            title,
+            topics,
+        } = values;
+        
+        const { handleDone } = props;
+        if (handleDone){
+            handleDone(
+                {
+                    description: description && draftToHtml(convertToRaw(description.getCurrentContent())),
+                    topics: topics && topics.map((topic) => (topic._id)),
+                    title,
+                }
+            );
+        }
+        else {
+            setDisableSubmit(true);
+            createDraft(
+                {
+                    description: description && draftToHtml(convertToRaw(description.getCurrentContent())),
+                    topics: topics && topics.map((topic) => (topic._id)),
+                    title,
+                }
+            );
+        }
+    }
+
+    const postDraft = (values) => {
+        const {
+            title,
+            topics,
+        } = values;
+
+        const { handlePostDraft } = props;
+        if (handlePostDraft){
+            handlePostDraft(
+                {
+                    description: description && draftToHtml(convertToRaw(description.getCurrentContent())),
+                    topics: topics && topics.map((topic) => (topic._id)),
+                    title,
+                }
+            );
+        }
+        else {
+            setDisableSubmit(true);
+            addPostToBlog(
+                {
+                    description: description && draftToHtml(convertToRaw(description.getCurrentContent())),
+                    topics: topics && topics.map((topic) => (topic._id)),
+                    title,
+                }
+            );
+        }
+    };
 
     const addPost = (values) => {
         const {
@@ -243,14 +368,7 @@ const BlogPostModal = (props) => {
                         color="primary">
                         Cancel
                     </Button>
-                    <Button
-                        size="small"
-                        variant="contained"
-                        type="submit"
-                        disabled={ disableSubmit }
-                        color="primary">
-                        Submit
-                    </Button>
+                    { renderPostActions() }
                 </DialogActions>
             </form>
         </Dialog>
@@ -262,6 +380,7 @@ const mapStateToProps = (state) => {
         user: state.user,
         newPost: state.blog.newPost,
         topicsList: state.topic.topics,
+        newDraft: state.draft.newDraft,
     };
 };
 
@@ -280,6 +399,10 @@ const mapDispatchToProps = (dispatch) => {
         addPostToBlog: (body) => {
             dispatch(addBlogPending());
             dispatch(addPostToBlog(body));
+        },
+        createDraft: (body) => {
+            dispatch(addDraftPending());
+            dispatch(createDraft(body))
         },
         resetPost: () => {
             dispatch(reset('post'));
