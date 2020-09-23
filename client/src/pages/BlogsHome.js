@@ -10,6 +10,11 @@ import { Grid,
 import { withRouter } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+import Box from '@material-ui/core/Box';
+import Divider from '@material-ui/core/Divider';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import { Link } from 'react-router-dom';
 import PostCard from '../components/blog/PostCard';
 import Blogs from '../components/blog/BlogsList';
 import CardLoader from '../components/base/CardLoader';
@@ -20,6 +25,7 @@ import EmptyResults from '../components/base/EmptyResults';
 import ExpertInModal from '../components/topic/ExpertInModal';
 import BlogModal from '../components/blog/BlogModal';
 import { requestPosts } from '../store/actions/blog';
+import { requestDrafts } from '../store/actions/draft'
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -35,13 +41,29 @@ const useStyles = makeStyles((theme) => {
 function Home(props) {
     const {
         requestPostsFeed,
+        requestDraftedPosts,
         pending,
         expertIn,
         history,
         newBlog,
         blogPending,
         posts,
+        drafts,
     } = props;
+
+    const renderDrafts = () => drafts.map((draft) => (
+        <ListItem
+            alignItems="flex-start"
+            key={ draft._id }>
+            <Link
+                to={ `/draft/${draft._id}` }
+                className={ classes.link }>
+                <Typography className={ classes.link }>
+                    { draft.title }
+                </Typography>
+            </Link>
+        </ListItem>
+    ));
 
     const classes = useStyles();
 
@@ -150,6 +172,10 @@ function Home(props) {
         requestPostsFeed();
     }, [ requestPostsFeed ]);
 
+    useEffect(() => {
+        requestDraftedPosts();
+    }, [requestDraftedPosts])
+
     const loadMore = () => {
         if (pagination.index > 0){
             requestPostsFeed({ skip: pagination.index * 10 });
@@ -211,7 +237,7 @@ function Home(props) {
                     <Grid
                         item
                         className={ classes.sectionDesktop }
-                        xs={ 2 }>
+                        xs={ 3 }>
                         <Card className={ classes.root }>
                             <CardContent>
                                 <Typography
@@ -230,6 +256,19 @@ function Home(props) {
                                 </Button>
                             </CardContent>
                         </Card>
+                        <Typography
+                            component="div"
+                            className={ classes.heading }>
+                            <Box
+                                fontWeight="fontWeightBold"
+                                m={ 1 }>
+                                My Drafts
+                            </Box>
+                        </Typography>
+                        <Divider />
+                        <List>
+                            { drafts && renderDrafts() }
+                        </List>
                         { /* <Card className={ classes.root }>
                             <CardContent>
                                 <Typography
@@ -281,6 +320,7 @@ const mapStateToProps = (state) => {
         blogPending: state.blog.pending,
         followedBlogs: state.user.blogs,
         newBlog: state.blog.newBlog,
+        drafts: state.draft.drafts,
     };
 };
 
@@ -289,6 +329,9 @@ const mapDispatchToProps = (dispatch) => {
         requestPostsFeed: (params) => {
             dispatch(requestPosts(params));
         },
+        requestDraftedPosts: () => {
+            dispatch(requestDrafts());
+        }
     };
 };
 

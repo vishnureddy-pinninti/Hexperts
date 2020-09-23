@@ -1,32 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
-import ChatBubbleOutlineRoundedIcon from '@material-ui/icons/ChatBubbleOutlineRounded';
-import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import { IconButton,
     Menu,
     MenuItem } from '@material-ui/core';
-import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import Button from '@material-ui/core/Button';
+import PostAddIcon from '@material-ui/icons/PostAdd';
 import Box from '@material-ui/core/Box';
 import { Link, withRouter } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
 import { connect } from 'react-redux';
-import Collapse from '@material-ui/core/Collapse';
-import Divider from '@material-ui/core/Divider';
-import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
-import Comments from '../comment/comments';
 import ReadMore from '../base/ReadMore';
 import EditPostModal from './PostModal';
 import Avatar from '../base/Avatar';
-import { upvotePost, addPostToCache, downvotePost, editPost, deletePost } from '../../store/actions/blog';
+import { addDraftToCache, postDraft, editDraft, deleteDraft } from '../../store/actions/draft';
 import getBadge from '../../utils/badge';
 import getMinutes from '../../utils/words-to-mins';
 import { isMediaOrCode } from '../../utils/common';
@@ -36,6 +28,7 @@ const useStyles = makeStyles((theme) => {
         root: {
             marginBottom: 10,
             border: '1px solid #efefef',
+            backgroundColor: 'lightGray',
         },
         headerRoot: {
             paddingLeft: 0,
@@ -94,28 +87,29 @@ const AnswerCard = (props) => {
     const classes = useStyles();
 
     const {
-        post,
+        draft,
         hideHeader,
         history,
-        upvotePost,
-        deletePost,
-        editPost,
+        deleteDraft,
+        editDraft,
+        pending,
+        newPost,
+        postDraft,
         hideHeaderHelperText,
         user,
         collapse,
     } = props;
 
     const {
-        _id: postId,
+        _id: draftId,
         title,
         description,
         author,
-        upvoters,
         topics,
         postedDate,
         lastModified,
         plainText,
-    } = post;
+    } = draft;
 
     const {
         _id,
@@ -124,15 +118,10 @@ const AnswerCard = (props) => {
         email,
         reputation,
     } = author;
-
+    
     const [
-        open,
-        setOpen,
-    ] = React.useState(false);
-
-    const [
-        postObj,
-        setPostObj,
+        draftObj,
+        setDraftObj,
     ] = React.useState({
         topics,
         description,
@@ -141,15 +130,10 @@ const AnswerCard = (props) => {
         plainText,
     });
 
-    const [
-        commentsCount,
-        setCommentsCount,
-    ] = React.useState(post.commentsCount || 0);
-
-    const renderAnswer = (post) => (
+    const renderAnswer = (draft) => (
         <ReadMore
             initialHeight={ 300 }
-            mediaExists={ isMediaOrCode(post) }
+            mediaExists={ isMediaOrCode(draft) }
             collapse={ collapse }
             readMore={ (props) => (
                 // eslint-disable-next-line jsx-a11y/anchor-is-valid
@@ -167,7 +151,7 @@ const AnswerCard = (props) => {
                     flexDirection: 'column',
                 } }
                 className="editor-read-mode"
-                dangerouslySetInnerHTML={ { __html: post } } />
+                dangerouslySetInnerHTML={ { __html: draft } } />
         </ReadMore>
     );
 
@@ -190,7 +174,7 @@ const AnswerCard = (props) => {
             color="textSecondary"
             className={ classes.topics }
             component="p">
-            Blog Post -
+            Draft -
             { topics && topics.length ? renderTopics(topics) : ' Recommended to you' }
         </Typography>
     );
@@ -214,40 +198,51 @@ const AnswerCard = (props) => {
     };
 
     const [
-        openEditPostModal,
-        setOpenEditPostModal,
+        openEditDraftModal,
+        setOpenEditDraftModal,
     ] = React.useState(false);
 
-    const handleDeletePost = () => {
+    const handlePostDraft = (body) => {
         setAnchorEl(null);
-        deletePost(postId, (res) => {
+        setOpenEditDraftModal(false);
+        postDraft(draftId, body);
+    };
+
+    const handleDeleteDraft = () => {
+        setAnchorEl(null);
+        deleteDraft(draftId, (res) => {
             if (res) { setDisabled(true); }
         });
     };
 
-    const handleEditPost = (body) => {
+    useEffect(() => {
+        if (!pending && newPost && newPost._id) {
+            history.push(`/post/${newPost._id}`);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ newPost ]);
+
+    const handleEditDraft = (body) => {
         setAnchorEl(null);
-        setOpenEditPostModal(false);
-        editPost(postId, body, (res) => {
+        setOpenEditDraftModal(false);
+        editDraft(draftId, body, (res) => {
             if (res) {
-                setPostObj(res);
+                setDraftObj(res);
             }
         });
     };
 
-    const handleEditPostModalOpen = () => {
+    const handleEditDraftModalOpen = () => {
         setAnchorEl(null);
-        setOpenEditPostModal(true);
+        setOpenEditDraftModal(true);
     };
 
-    const handleEditPostModalClose = () => {
-        setOpenEditPostModal(false);
+    const handleEditDraftModalClose = () => {
+        setOpenEditDraftModal(false);
     };
 
     const isOwner = user._id === _id;
 
-    //New Code -- After schema change
-    const upvoted = upvoters.findIndex(x => x._id === user._id) >= 0;
 
     return (
         <Card
@@ -256,14 +251,14 @@ const AnswerCard = (props) => {
             <CardContent>
                 {
                     !hideHeader && <>
-                        { !hideHeaderHelperText && renderHeaderHelperText(postObj.topics) }
+                        { !hideHeaderHelperText && renderHeaderHelperText( draftObj.topics) }
                         <Link
-                            to={ `/post/${postId}` }
+                            to={ `/draft/${draftId}` }
                             className={ classes.link }>
                             <Box
                                 fontWeight="fontWeightBold"
                                 fontSize={ 20 }>
-                                { postObj.title }
+                                { draftObj.title }
                             </Box>
                         </Link>
                                    </>
@@ -294,11 +289,19 @@ const AnswerCard = (props) => {
                             keepMounted
                             open={ Boolean(anchorEl) }
                             onClose={ handleClose }>
-                            <MenuItem onClick={ handleEditPostModalOpen }>
+                            <MenuItem onClick={ handleEditDraftModalOpen }>
                                 <EditIcon className={ classes.menuIcon } />
                                 Edit
                             </MenuItem>
-                            <MenuItem onClick={ handleDeletePost }>
+                            <MenuItem onClick={ () => handlePostDraft({
+                                description,
+                                topics: topics && topics.map((topic) => (topic._id)),
+                                title,}) 
+                                } >
+                                <PostAddIcon className={ classes.menuIcon } />
+                                Post
+                            </MenuItem>
+                            <MenuItem onClick={ handleDeleteDraft }>
                                 <DeleteIcon className={ classes.menuIcon } />
                                 Delete
                             </MenuItem>
@@ -318,57 +321,26 @@ const AnswerCard = (props) => {
                         <>
                             <Link
                                 className={ classes.link }
-                                to={ `/post/${postId}` }>
-                                { postObj.lastModified ? `Edited ${formatDistance(new Date(postObj.lastModified), new Date(), { addSuffix: true })}` : `Posted ${formatDistance(new Date(postedDate), new Date(), { addSuffix: true })}` }
+                                to={ `/draft/${draftId}` }>
+                                { draftObj.lastModified ? `Edited ${formatDistance(new Date(draftObj.lastModified), new Date(), { addSuffix: true })}` : `Created ${formatDistance(new Date(postedDate), new Date(), { addSuffix: true })}` }
 
                             </Link>
                             <b> - </b>
-                            { `${getMinutes(postObj.plainText)} min read` }
+                            { `${getMinutes(draftObj.plainText)} min read` }
                         </>
                     } />
-                { renderAnswer(postObj.description) }
+                { renderAnswer(draftObj.description) }
             </CardContent>
-            <CardActions disableSpacing>
-                <Button
-                    size="small"
-                    onClick={ () => upvotePost(postId, post) }
-                    startIcon={ upvoted ? <ThumbUpAltIcon color="primary" /> : <ThumbUpOutlinedIcon /> }>
-                    { upvoters.length }
-                </Button>
-                <Button
-                    size="small"
-                    onClick={ () => setOpen(!open) }
-                    startIcon={ open ? <ChatBubbleIcon color="primary" /> : <ChatBubbleOutlineRoundedIcon /> }>
-                    { commentsCount }
-                </Button>
-                { /* <Button
-                    size="small"
-                    style={ { marginLeft: 'auto' } }
-                    onClick={ () => downvotePost(postId, post) }
-                    startIcon={ downvoted ? <ThumbDownAltIcon color="primary" /> : <ThumbDownOutlinedIcon /> } /> */ }
-            </CardActions>
-            <Collapse
-                in={ open }
-                timeout="auto"
-                unmountOnExit>
-                <CardContent>
-                    <Divider />
-                    <Comments
-                        target={ post }
-                        targetType="posts"
-                        handleNewComment={ () => { setCommentsCount(commentsCount + 1); } } />
-                </CardContent>
-                <CardActions />
-            </Collapse>
-            { openEditPostModal && <EditPostModal
-                open={ openEditPostModal }
+            { openEditDraftModal && <EditPostModal
+                open={ openEditDraftModal }
                 formName="post"
-                postId
-                descriptionHTML={ postObj.description }
-                title={ postObj.title }
-                topics={ postObj.topics }
-                handleClose={ handleEditPostModalClose }
-                handleDone={ handleEditPost } /> }
+                draftId
+                descriptionHTML={ draftObj.description }
+                title={ draftObj.title }
+                topics={ draftObj.topics }
+                handleClose={ handleEditDraftModalClose }
+                handleDone={ handleEditDraft }
+                handlePostDraft={ handlePostDraft } /> }
         </Card>
     );
 };
@@ -381,30 +353,26 @@ AnswerCard.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
-        pending: state.answer.pending,
+        pending: state.draft.pending,
         user: state.user.user,
         modifiedPosts: state.blog.modifiedPosts,
+        newPost: state.draft.newPost,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        upvotePost: (postId, post) => {
-            dispatch(addPostToCache(post));
-            dispatch(upvotePost(postId));
+        addDraftToCache: (draft) => {
+            dispatch(addDraftToCache(draft));
         },
-        downvotePost: (postId, post) => {
-            dispatch(addPostToCache(post));
-            dispatch(downvotePost(postId));
+        deleteDraft: (draftId, cb) => {
+            dispatch(deleteDraft(draftId, cb));
         },
-        addPostToCache: (post) => {
-            dispatch(addPostToCache(post));
+        editDraft: (draftId, body, cb) => {
+            dispatch(editDraft(draftId, body, cb));
         },
-        deletePost: (postId, cb) => {
-            dispatch(deletePost(postId, cb));
-        },
-        editPost: (postId, body, cb) => {
-            dispatch(editPost(postId, body, cb));
+        postDraft: (draftId, body) => {
+            dispatch(postDraft(draftId, body));
         },
     };
 };

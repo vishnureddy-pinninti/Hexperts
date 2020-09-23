@@ -12,6 +12,7 @@ module.exports = (app) => {
     require('./contributors')(app);
     require('./crawl')(app);
     require('./dashboard')(app);
+    require('./draft')(app);
     // require('./utils')(app);
     require('./feedback')(app);
 };
