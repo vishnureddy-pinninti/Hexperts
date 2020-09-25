@@ -68,7 +68,7 @@ const renderTextField = ({ input }) => (
         type="text"
         variant="outlined"
         autoComplete="off"
-        // autoFocus
+        autoFocus
         required
         fullWidth />
 );

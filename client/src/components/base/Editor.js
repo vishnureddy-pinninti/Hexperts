@@ -116,7 +116,6 @@ class TextEditor extends React.Component {
                     spellCheck
                     placeholder={ placeholder }
                     editorState={ value }
-                    editorRef={ this.setEditorReference }
                     wrapperClassName={ `${classes.editorWrapper} ${toolbarHidden && classes.comment}` }
                     editorClassName={ `${classes.editor} editor-write-mode ${!fullScreen && !toolbarHidden && classes.modal}` }
                     onEditorStateChange={ this.handleEditorStateChange }
@@ -158,10 +157,6 @@ class TextEditor extends React.Component {
             </>
         );
     }
-
-    setEditorReference = (ref) => {
-        if (ref) { ref.focus(); }
-    };
 
     uploadCallback = (res) => {
         const entityData = {
