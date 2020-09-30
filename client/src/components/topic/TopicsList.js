@@ -64,6 +64,7 @@ function TopicList(props) {
 
     return (
         <div
+            id="Discover-Topics"
             className={ classes.root }>
             <Chip
                 avatar={
