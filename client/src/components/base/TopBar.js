@@ -28,7 +28,9 @@ import EditSuggestedWriters from '../question/EditSuggestedWriters';
 import EditCode from './EditCode';
 import HelpIcon from '@material-ui/icons/Help';
 
-import Tour from '../tour/Tour';
+import Hotkeys from 'react-hot-keys';
+import Driver from 'driver.js';
+import 'driver.js/dist/driver.min.css';
 import moment from 'moment';
 import getBadge from '../../utils/badge';
 import { editCode } from '../../store/actions/answer';
@@ -235,36 +237,122 @@ const TopBar = (props) => {
         pending,
     ]);
 
+    const driver = new Driver({
+        allowClose: false,
+        stageBackground: 'rgba(48,48,48, 0.7)',
+        keyboardControl: true,
+        closeBtnText: '&times;',
+        doneBtnText:'&#10004;',
+        prevBtnText: '&#8592;',
+        nextBtnText: '&#8594;',
+    });
+
+    driver.defineSteps([
+        {
+            element: '#Discover-Topics',
+            popover: {
+                title: ' ',
+                description: 'Explore different topics and subscribe & self-nominate as expert to the topics of your interest.',
+                position: 'bottom-center'
+            }
+        },
+        {
+            element: '#Menu-Bar',
+            popover: {
+                title: ' ',
+                description: 'Answer a question, read or write a blog, and view notifications.',
+                position: 'bottom-center'
+            }
+        },
+        {
+            element: '#Infinite-Scroll',
+            popover: {
+                title: ' ',
+                description: 'Displays questions, answers, and blogs',
+                position: 'left'
+            }
+        },
+        {
+            element: '#Search-Bar',
+            popover: {
+                title: ' ',
+                description: 'Search for any information in Hexpert as well as other internal sites',
+                position: 'bottom-center'
+            }
+        },
+        {
+            element: '#Ask-Question',
+            popover: {
+                title: ' ',
+                description:'Ask a Question',
+                position: 'bottom-center'
+            }
+        },
+        {
+            element: '#Hexpets-Feedback',
+            popover: {
+                title: ' ',
+                description:'Provide your feedack and suggestions',
+                position: 'bottom-center'
+            }
+        },
+        {
+            element: '#Top-Contributors',
+            popover: {
+                title: ' ',
+                description: 'Meet our three top contributors.',
+                position: 'bottom-center'
+            }
+        },
+        {
+            element: '#Trending-Questions',
+            popover: {
+                title: ' ',
+                description: 'View questions that are trending in Hexpert.',
+                position: 'top-center'
+            }
+        },
+    ]);
+
     const requestTourStatus = () => {
         try {
             const timeStamp = localStorage.getItem('TourState');
             if (timeStamp === null) {
                 var currentTimeStamp = moment();
                 localStorage.setItem('TourState', currentTimeStamp.format('L'));
-                return true;
+                driver.start();
             }
             else{
                 var createdDate = moment(new Date(timeStamp));
                 var currentDate = moment();
                 if(currentDate.diff(createdDate, 'days') > 15){
                     localStorage.setItem('TourState', currentDate.format('L'));
-                    return true;
+                    driver.start();
                 }
-                return false;
             }
         } catch (err) {
-            return true;
+            //console.log(err);
         }
-    }
+    }    
 
-    const [openTour, setOpenTour] = React.useState(requestTourStatus());
-    
+    useEffect(() => {
+        requestTourStatus();
+    }, [])
+
     const handleTourOpen = () => {
-        setOpenTour(true);
+        driver.start();
     }
 
-    const handleTourClose = () => {
-        setOpenTour(false);
+    
+    const onKeyUp = () => {
+        if(driver.isActivated){
+            if(driver.hasNextStep()){
+                driver.moveNext();
+            }
+            else{
+                driver.reset();
+            }
+        }
     }
 
     const handleOnAddQuestion = (question, questionSuggestions) => {
@@ -455,7 +543,10 @@ const TopBar = (props) => {
 
     return (
         <div className={ classes.grow }>
-            <Tour open = {openTour} handleTourClose={ handleTourClose } />
+            <Hotkeys 
+                keyName="tab,k" 
+                onKeyUp={onKeyUp}>
+            </Hotkeys>
             <AppBar
                 position="fixed"
                 elevation={ 1 }
@@ -478,7 +569,7 @@ const TopBar = (props) => {
                                 </Link>
                             </div>
                             <div className={ classes.grow } />
-                            <div className={ classes.menu }>
+                            <div id="Menu-Bar" className={ classes.menu }>
                                 <Link
                                     to="/"
                                     className={ classes.link }>
@@ -540,11 +631,12 @@ const TopBar = (props) => {
                                     </Link>
                                 }
                             </div>
-                            <div className={ classes.search }>
+                            <div id="Search-Bar" className={ classes.search }>
                                 <SearchBar />
                             </div>
                             <div className={ classes.inline }>
                                 <Button
+                                    id="Ask-Question"
                                     variant="contained"
                                     size="small"
                                     color="primary"

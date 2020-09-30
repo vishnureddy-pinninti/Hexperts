@@ -226,27 +226,29 @@ function Home(props) {
                     <Grid
                         item
                         xs={ 7 }>
-                        { /* <AskQuestionCard
-                            user={ user }
-                            handleClickQuestionModalOpen={ toggleQuestionModal } /> */ }
-                        { (pagination.hasMore || items.length > 0)
-                    && <InfiniteScroll
-                        style={ { overflow: 'visible' } }
-                        dataLength={ items.length }
-                        next={ loadMore }
-                        hasMore={ pagination.hasMore }
-                        loader={ <CardLoader height={ 200 } /> }
-                        endMessage={
-                            <p style={ { textAlign: 'center' } }>
-                                <b>Yay! You have seen it all</b>
-                            </p>
-                        }>
-                        { renderQuestions(items) }
-                       </InfiniteScroll> }
-                        { items.length === 0 && !pagination.hasMore && <EmptyResults
-                            title="No feed yet."
-                            description="Feel free to follow topics to see the questions and answers."
-                            showBackButton={ false } /> }
+                        <div id="Infinite-Scroll">
+                            { /* <AskQuestionCard
+                                user={ user }
+                                handleClickQuestionModalOpen={ toggleQuestionModal } /> */ }
+                            { (pagination.hasMore || items.length > 0)
+                        && <InfiniteScroll
+                            style={ { overflow: 'visible' } }
+                            dataLength={ items.length }
+                            next={ loadMore }
+                            hasMore={ pagination.hasMore }
+                            loader={ <CardLoader height={ 200 } /> }
+                            endMessage={
+                                <p style={ { textAlign: 'center' } }>
+                                    <b>Yay! You have seen it all</b>
+                                </p>
+                            }>
+                            { renderQuestions(items) }
+                        </InfiniteScroll> }
+                            { items.length === 0 && !pagination.hasMore && <EmptyResults
+                                title="No feed yet."
+                                description="Feel free to follow topics to see the questions and answers."
+                                showBackButton={ false } /> }
+                        </div>
                     </Grid>
                     <Grid
                         item
@@ -268,6 +270,7 @@ function Home(props) {
                             } }
                             className={ classes.chip } />
                             <Chip
+                            id="Hexpets-Feedback"
                             icon={ <FeedbackIcon size="small" /> }
                             label="Feedback to Hexperts"
                             color="secondary"
@@ -278,20 +281,24 @@ function Home(props) {
                                 label: classes.chipLable,
                             } }
                             className={ classes.chip } />
-                        <Typography
-                            component="div"
-                            className={ classes.heading }>
-                            <Box
-                                fontWeight="fontWeightBold"
-                                m={ 1 }>
-                                Top Contributors
-                            </Box>
-                        </Typography>
-                        <Divider />
-                        <TopCreators topUsers={ topUsers } />
-                        <QuestionsList
-                            title="Trending Questions"
-                            questions={ trendingQuestions } />
+                        <div id="Top-Contributors">
+                            <Typography
+                                component="div"
+                                className={ classes.heading }>
+                                <Box
+                                    fontWeight="fontWeightBold"
+                                    m={ 1 }>
+                                    Top Contributors
+                                </Box>
+                            </Typography>
+                            <Divider />
+                            <TopCreators topUsers={ topUsers } />
+                        </div>
+                        <div id="Trending-Questions">
+                            <QuestionsList
+                                title="Trending Questions"
+                                questions={ trendingQuestions } />
+                        </div>
                     </Grid>
                 </Grid>
             </Container>

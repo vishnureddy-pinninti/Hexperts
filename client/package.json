@@ -19,6 +19,7 @@
     "draft-js": "^0.11.4",
     "draftjs-to-html": "^0.9.1",
     "draftjsToHTML": "0.0.2",
+    "driver.js": "^0.9.8",
     "immutable": "^4.0.0-rc.12",
     "material-table": "^1.57.2",
     "material-ui-dropzone": "^2.4.9",
