@@ -93,3 +93,9 @@ div#driver-popover-item .driver-popover-tip.right{
 div#driver-popover-item .driver-popover-tip.bottom{
   border-color: transparent transparent rgb(48,48,48) !important;
 }
+
+div#driver-popover-item .driver-popover-footer .driver-close-btn{
+  float: right !important;
+  margin-top: 3.5px;
+  margin-left: 3px;
+}

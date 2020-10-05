@@ -253,15 +253,7 @@ const TopBar = (props) => {
             popover: {
                 title: ' ',
                 description: 'Explore different topics and subscribe & self-nominate as expert to the topics of your interest.',
-                position: 'bottom-center'
-            }
-        },
-        {
-            element: '#Menu-Bar',
-            popover: {
-                title: ' ',
-                description: 'Answer a question, read or write a blog, and view notifications.',
-                position: 'bottom-center'
+                position: 'right'
             }
         },
         {
@@ -270,6 +262,14 @@ const TopBar = (props) => {
                 title: ' ',
                 description: 'Displays questions, answers, and blogs',
                 position: 'left'
+            }
+        },
+        {
+            element: '#Menu-Bar',
+            popover: {
+                title: ' ',
+                description: 'Answer a question, read or write a blog, and view notifications.',
+                position: 'bottom-center'
             }
         },
         {
@@ -309,7 +309,7 @@ const TopBar = (props) => {
             popover: {
                 title: ' ',
                 description: 'View questions that are trending in Hexpert.',
-                position: 'top-center'
+                position: 'left'
             }
         },
     ]);
