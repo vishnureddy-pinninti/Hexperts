@@ -73,7 +73,7 @@ blockquote {
   text-decoration: underline;
 }
 
-div#driver-popover-item{
+ div#driver-popover-item{
  background-color: rgb(48,48,48) !important;
  color: #ffffff !important;
 }
@@ -82,16 +82,20 @@ div#driver-popover-item .driver-popover-description{
   color: #ffffff !important;
 }
 
+div#driver-popover-item .driver-popover-tip.bottom{
+  border-color: rgb(48,48,48) transparent transparent !important;
+} 
+
 div#driver-popover-item .driver-popover-tip.top{
   border-color: transparent transparent rgb(48,48,48) !important;
 }
 
 div#driver-popover-item .driver-popover-tip.right{
-  border-color: transparent transparent rgb(48,48,48) !important;
+  border-color: transparent transparent transparent rgb(48,48,48) !important;
 }
 
-div#driver-popover-item .driver-popover-tip.bottom{
-  border-color: transparent transparent rgb(48,48,48) !important;
+div#driver-popover-item .driver-popover-tip.left{
+  border-color: transparent rgb(48,48,48) transparent transparent !important;
 }
 
 div#driver-popover-item .driver-popover-footer .driver-close-btn{
