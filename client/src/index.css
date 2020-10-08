@@ -100,6 +100,6 @@ div#driver-popover-item .driver-popover-tip.left{
 
 div#driver-popover-item .driver-popover-footer .driver-close-btn{
   float: right !important;
-  margin-top: 3.5px;
+  margin-top: 0.3em;
   margin-left: 3px;
 }
