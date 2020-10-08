@@ -34,7 +34,7 @@ class ReadMore extends React.Component {
                 <div
                     className="readmore container"
                     style={{
-                        maxHeight: location.pathname!=='/blogs' ? 'none': open ? maxHeight : maxHeight - overhangSize,
+                        maxHeight: location.pathname.includes('/post') ? 'none': open ? maxHeight : maxHeight - overhangSize,
                         transition: 'max-height .5s ease',
                         position: 'relative',
                         overflow: 'hidden',
