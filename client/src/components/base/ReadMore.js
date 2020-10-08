@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import { autofill } from 'redux-form';
 
 class ReadMore extends React.Component {
     constructor({ initialHeight }) {
@@ -10,6 +11,7 @@ class ReadMore extends React.Component {
             hideReadMore: false,
         };
     }
+    
 
     render() {
         const {
@@ -17,24 +19,26 @@ class ReadMore extends React.Component {
             readMore,
             blurStyle,
             overhangSize,
+            location,
         } = this.props;
         const {
             maxHeight,
             initialHeight,
             hideReadMore,
         } = this.state;
+
         const open = maxHeight !== initialHeight;
 
         return (
             <>
                 <div
                     className="readmore container"
-                    style={ {
-                        maxHeight: open ? maxHeight : maxHeight - overhangSize,
+                    style={{
+                        maxHeight: location.pathname!=='/blogs' ? 'none': open ? maxHeight : maxHeight - overhangSize,
                         transition: 'max-height .5s ease',
                         position: 'relative',
                         overflow: 'hidden',
-                    } }
+                    }}
                     onClick={ this.handleMentionClick }
                     ref={ (el) => (this.container = el) }>
                     { children }
@@ -125,7 +129,6 @@ class ReadMore extends React.Component {
         const children = [ ...this.container.children ];
         let height = 0;
         children.forEach((child) => (height += child.offsetHeight));
-
         return height;
     }
 
