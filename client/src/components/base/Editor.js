@@ -27,12 +27,12 @@ const styles = () => {
             height: 'inherit',
         },
         modal: {
-            height: 300,
+            height: '28vh',
         },
         comment: {
             paddingTop: 0,
             paddingBottom: 0,
-            maxHeight: 300,
+            maxHeight: '28vh',
         },
         link: {
             textDecoration: 'none',
