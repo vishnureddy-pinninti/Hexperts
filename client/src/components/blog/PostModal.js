@@ -14,6 +14,8 @@ import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import { withRouter } from 'react-router-dom';
 import Editor from '../base/Editor';
 
+import PreviewCard from '../blog/PreviewCard';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import { addPostToBlog, addBlogPending } from '../../store/actions/blog';
 import { addDraftPending, createDraft } from '../../store/actions/draft';
 import { addNewTopic, requestTopics } from '../../store/actions/topic';
@@ -31,6 +33,14 @@ const useStyles = makeStyles((theme) => {
             margin: theme.spacing(0.5),
         },
         post: {
+        },
+        
+        previewPost: {
+            minHeight: '60vh',
+            maxHeight:'70vh',
+        },
+        previewButton: {
+            float: 'right',
         },
         editorWrapper: {
             border: '1px solid gray',
@@ -96,6 +106,31 @@ const BlogPostModal = (props) => {
         description,
         setDescription,
     ] = React.useState('');
+
+    const [
+        title,
+        setTitle
+    ]   = React.useState('');
+
+    const [
+        topics,
+        setTopics
+    ]   = React.useState(null);
+
+    const [
+        variant,
+        setVariant
+    ] = React.useState('outlined');
+
+    const [
+        preview,
+        setPreview,
+    ] = React.useState(false); 
+
+    const createPreview = () => {
+        variant === 'outlined'? setVariant('contained'): setVariant('outlined')
+        setPreview(!preview);
+    }
 
     useEffect(() => {
         let editorState = '';
@@ -341,26 +376,58 @@ const BlogPostModal = (props) => {
         <Dialog
             open={ open }
             scroll="paper"
+            fullWidth={true}
             maxWidth="md"
             className={ classes.root }
-            onClose={ handleClose }>
+            onClose={ handleClose }
+            aria-labelledby="scroll-dialog-title"
+            aria-describedby="scroll-dialog-description">
             <form
                 id={ props.formName }
                 onSubmit={ handleSubmit(addPost) }>
-                <DialogTitle id="scroll-dialog-title">Blog Post</DialogTitle>
-                <DialogContent
+                <DialogTitle id="scroll-dialog-title">Blog Post
+                
+                <Button
+                        className ={ classes.previewButton }
+                        size="small"
+                        variant={variant}
+                        onClick={ createPreview }
+                        disabled={!title && !topics && !description}
+                        color="primary">
+                        Preview
+                        <VisibilityIcon />
+                </Button>
+                </DialogTitle>
+                {!preview && <DialogContent
                     className={ classes.post }
                     dividers>
                     <DialogContentText component="div">
                         <Field
+                            onChange={(e, newValue) => setTitle(newValue)}
                             name="title"
                             component={ renderTextField } />
                         <Field
+                            onChange={(e, newValue) => setTopics(newValue)}
                             name="topics"
                             component={ renderTopicsField } />
                     </DialogContentText>
                     { renderDescriptionField() }
-                </DialogContent>
+                </DialogContent>}
+                {preview && <DialogContent
+                    className={ classes.previewPost }
+                    dividers>
+                        <DialogContentText component="div"
+                        id="scroll-dialog-description">
+                            <PreviewCard
+                                previewPost={{
+                                    description: description && draftToHtml(convertToRaw(description.getCurrentContent())),
+                                    topics,
+                                    title,
+                                }}
+                                collapse={ false }
+                                hideHeaderHelperText={ false } />
+                        </DialogContentText>
+                    </DialogContent>}
                 <DialogActions>
                     <Button
                         size="small"
