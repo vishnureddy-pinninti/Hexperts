@@ -239,12 +239,12 @@ const TopBar = (props) => {
 
     const driver = new Driver({
         allowClose: false,
-        stageBackground: 'rgba(48,48,48, 0.7)',
+        animate: false, 
         keyboardControl: true,
         closeBtnText: '&times;',
         doneBtnText:'&#10004;',
-        prevBtnText: '&#8592;',
-        nextBtnText: '&#8594;',
+        prevBtnText: '&#x2039;',
+        nextBtnText: '&#x203A;',
     });
 
     driver.defineSteps([
@@ -265,10 +265,26 @@ const TopBar = (props) => {
             }
         },
         {
-            element: '#Menu-Bar',
+            element: '#Answer-a-question',
             popover: {
                 title: ' ',
-                description: 'Answer a question, read or write a blog, and view notifications.',
+                description: 'Answer a question',
+                position: 'bottom-center'
+            }
+        },
+        {
+            element: '#Read-write-blogs',
+            popover: {
+                title: ' ',
+                description: 'Read or write a blog',
+                position: 'bottom-center'
+            }
+        },
+        {
+            element: '#Get-Notifications',
+            popover: {
+                title: ' ',
+                description: 'View all notifications.',
                 position: 'bottom-center'
             }
         },
@@ -314,30 +330,31 @@ const TopBar = (props) => {
         },
     ]);
 
-    const requestTourStatus = () => {
-        try {
-            const timeStamp = localStorage.getItem('TourState');
-            if (timeStamp === null) {
-                var currentTimeStamp = moment();
-                localStorage.setItem('TourState', currentTimeStamp.format('L'));
-                driver.start();
-            }
-            else{
-                var createdDate = moment(new Date(timeStamp));
-                var currentDate = moment();
-                if(currentDate.diff(createdDate, 'days') > 15){
-                    localStorage.setItem('TourState', currentDate.format('L'));
-                    driver.start();
-                }
-            }
-        } catch (err) {
-            //console.log(err);
-        }
-    }    
+    
 
     useEffect(() => {
+        const requestTourStatus = () => {
+            try {
+                const timeStamp = localStorage.getItem('TourState');
+                if (timeStamp === null) {
+                    var currentTimeStamp = moment();
+                    localStorage.setItem('TourState', currentTimeStamp.format('L'));
+                    driver.start();
+                }
+                else{
+                    var createdDate = moment(new Date(timeStamp));
+                    var currentDate = moment();
+                    if(currentDate.diff(createdDate, 'days') > 15){
+                        localStorage.setItem('TourState', currentDate.format('L'));
+                        driver.start();
+                    }
+                }
+            } catch (err) {
+                //console.log(err);
+            }
+        }    
         requestTourStatus();
-    }, [])
+    }, [driver])
 
     const handleTourOpen = () => {
         driver.start();
@@ -544,7 +561,7 @@ const TopBar = (props) => {
     return (
         <div className={ classes.grow }>
             <Hotkeys 
-                keyName="tab,k" 
+                keyName="tab" 
                 onKeyUp={onKeyUp}>
             </Hotkeys>
             <AppBar
@@ -569,7 +586,7 @@ const TopBar = (props) => {
                                 </Link>
                             </div>
                             <div className={ classes.grow } />
-                            <div id="Menu-Bar" className={ classes.menu }>
+                            <div className={ classes.menu }>
                                 <Link
                                     to="/"
                                     className={ classes.link }>
@@ -581,6 +598,7 @@ const TopBar = (props) => {
                                     </Button>
                                 </Link>
                                 <Link
+                                    id="Answer-a-question"
                                     to="/answer"
                                     className={ classes.link }>
                                     <Badge
@@ -595,6 +613,7 @@ const TopBar = (props) => {
                                     </Badge>
                                 </Link>
                                 <Link
+                                    id="Read-write-blogs"
                                     to="/blogs"
                                     className={ classes.link }>
                                     <Button
@@ -605,6 +624,7 @@ const TopBar = (props) => {
                                     </Button>
                                 </Link>
                                 <Link
+                                    id="Get-Notifications"
                                     to="/notifications"
                                     className={ classes.link }>
                                     <Badge
