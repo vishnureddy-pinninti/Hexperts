@@ -47,7 +47,9 @@ const useStyles = makeStyles((theme) => {
                 maxWidth: 400,
             },
             [theme.breakpoints.up('lg')]: {
-                width: 400,
+                
+                minWidth: 200,
+                maxWidth: 400,
             },
         },
     };
