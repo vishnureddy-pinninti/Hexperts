@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { fade, makeStyles, rgbToHex } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -63,19 +63,37 @@ const useStyles = makeStyles((theme) => {
         link: {
             textDecoration: 'none',
             color: 'inherit',
+            [theme.breakpoints.up('md')]:{
+                margin: '2px !important',
+            },
+            [theme.breakpoints.up('lg')]:{
+                margin: '8px !important',
+            },
         },
         logo: {
             height: 40,
+            [theme.breakpoints.up('md')]:{
+                height: 30,
+            },
+            [theme.breakpoints.up('lg')]:{
+                height: 40,
+            }
         },
         menu: {
             '& > *': {
                 margin: theme.spacing(1),
             },
-            paddingRight: 20,
+            paddingRight: 10,
             paddingLeft: 10,
             display: 'none',
             [theme.breakpoints.up('md')]: {
                 display: 'flex',
+                paddingRight: 0,
+                paddingLeft: 0,
+            },
+            [theme.breakpoints.up('lg')]: {
+                paddingRight: 10,
+                paddingLeft: 10,
             },
         },
         search: {
@@ -92,6 +110,14 @@ const useStyles = makeStyles((theme) => {
                 marginLeft: theme.spacing(3),
                 width: 'auto',
             },
+            [theme.breakpoints.up('md')]:{
+                marginLeft: theme.spacing(0),
+                marginRight: theme.spacing(1),
+            },
+            [theme.breakpoints.up('lg')]:{
+                marginLeft: theme.spacing(3),
+                marginRight: theme.spacing(2),
+            }
             // border: '2px solid #e2e2e2',
         },
         searchIcon: {
@@ -118,6 +144,14 @@ const useStyles = makeStyles((theme) => {
             display: 'none',
             [theme.breakpoints.up('md')]: {
                 display: 'flex',
+            },
+        },
+        sectionUserAvatar: {
+            [theme.breakpoints.up('md')]: {
+                padding: 6,
+            },
+            [theme.breakpoints.up('lg')]: {
+                padding: 12,
             },
         },
         sectionMobile: {
@@ -239,7 +273,7 @@ const TopBar = (props) => {
 
     const driver = new Driver({
         allowClose: false,
-        animate: false, 
+        animate: false,
         keyboardControl: true,
         closeBtnText: '&times;',
         doneBtnText:'&#10004;',
@@ -289,10 +323,18 @@ const TopBar = (props) => {
             }
         },
         {
+            element: '#Admin-dashboard',
+            popover: {
+                title: ' ',
+                description: 'View all Hexpert stats.',
+                position: 'bottom-center'
+            }
+        },
+        {
             element: '#Search-Bar',
             popover: {
                 title: ' ',
-                description: 'Search for any information in Hexpert as well as other internal sites',
+                description: 'Search for any information in Hexpert',
                 position: 'bottom-center'
             }
         },
@@ -317,7 +359,7 @@ const TopBar = (props) => {
             popover: {
                 title: ' ',
                 description: 'Meet our three top contributors.',
-                position: 'bottom-center'
+                position: 'left'
             }
         },
         {
@@ -640,6 +682,7 @@ const TopBar = (props) => {
                                 </Link>
                                 {
                                     isAdmin(user) && <Link
+                                        id="Admin-dashboard"
                                         to="/dashboard"
                                         className={ classes.link }>
                                         <Button
@@ -666,6 +709,7 @@ const TopBar = (props) => {
                             </div>
                             <div className={ classes.sectionDesktop }>
                                 <IconButton
+                                    className= { classes.sectionUserAvatar }
                                     edge="end"
                                     aria-label="account of current user"
                                     aria-controls={ menuId }
