@@ -43,6 +43,10 @@ const useStyles = makeStyles((theme) => {
             transition: theme.transitions.create('width'),
             width: 'auto',
             [theme.breakpoints.up('md')]: {
+                minWidth: 200,
+                maxWidth: 400,
+            },
+            [theme.breakpoints.up('lg')]: {
                 width: 400,
             },
         },
