@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => {
         },
         paper: {
             width: 500,
-            maxHeight: 700,
+            maxHeight: '80vh',
             overflow: 'scroll',
             marginTop: 15,
         },
