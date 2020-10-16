@@ -399,7 +399,17 @@ const TopBar = (props) => {
     }, [driver])
 
     const handleTourOpen = () => {
+        document.getElementById('hexperts-tour').blur();
         driver.start();
+    }
+
+    document.onkeypress = function(e) {
+        e = e || window.event;
+        var code = e.code;
+        if (code.toLowerCase() === 'Space'.toLowerCase() && driver.isActivated) {
+            e.preventDefault();
+            return false;
+        }
     }
 
     
@@ -603,7 +613,7 @@ const TopBar = (props) => {
     return (
         <div className={ classes.grow }>
             <Hotkeys 
-                keyName="tab" 
+                keyName="tab,enter,space" 
                 onKeyUp={onKeyUp}>
             </Hotkeys>
             <AppBar
@@ -725,8 +735,9 @@ const TopBar = (props) => {
                             </div>
                             <div className={ classes.sectionDesktop }>
                                 <IconButton
+                                    id="hexperts-tour"
                                     edge="end"
-                                    aria-label="account of current user"
+                                    aria-label="hexperts tour"
                                     aria-controls={ menuId }
                                     aria-haspopup="true"
                                     onClick={ handleTourOpen }
