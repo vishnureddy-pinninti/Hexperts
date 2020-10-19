@@ -152,6 +152,7 @@ function EditorModal(props) {
                         onChange={ handleChange }
                         fontSize={ 14 }
                         width="100%"
+                        height="52vh"
                         showPrintMargin
                         showGutter
                         highlightActiveLine
