@@ -199,7 +199,8 @@ function EditorModal(props) {
                 <DialogTitle id="scroll-dialog-title">
                     { title }
                 </DialogTitle>
-                <DialogContent dividers>
+                <DialogContent
+                    dividers>
                     <FormControl
                         className={ classes.formControl }>
                         <InputLabel id="demo-simple-select-outlined-label">Language</InputLabel>
@@ -229,6 +230,7 @@ function EditorModal(props) {
                         onChange={ handleChange }
                         fontSize={ 14 }
                         width="100%"
+                        height="52vh"
                         showPrintMargin
                         showGutter
                         highlightActiveLine
