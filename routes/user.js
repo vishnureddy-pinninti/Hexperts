@@ -6,6 +6,7 @@ const Notification = mongoose.model('notifications');
 const Question = mongoose.model('questions');
 const Answer = mongoose.model('answers');
 const Post = mongoose.model('posts');
+const Error = mongoose.model('errorLogs');
 
 const { encrypt } = require('../utils/crypto');
 const config = require('../config/keys');
@@ -1321,6 +1322,38 @@ module.exports = (app) => {
                         response: USER_NOT_FOUND,
                     });
             }
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
+    app.post('/api/v1/user.log-error', async(req, res) => {
+        const {
+            errorCode,
+            errorMessage,
+            name
+        } = req.body;
+        
+        
+        try {
+            const newError = new Error({
+                author: null,
+                name,
+                errorCode,
+                errorMessage,
+            });
+
+            await newError.save();
+
+            res
+                .status(200)
         }
         catch (e) {
             res

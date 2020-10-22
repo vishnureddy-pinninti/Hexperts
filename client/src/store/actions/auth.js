@@ -39,6 +39,7 @@ export const EDIT_EMAIL_PREFERENCES = 'EDIT_EMAIL_PREFERENCES';
 export const RECEIVE_EDITED_EMAIL_PREFERENCES = 'RECEIVE_EDITED_EMAIL_PREFERENCES';
 export const REQUEST_EMAIL_SUBSCRIPTION = 'REQUEST_EMAIL_SUBSCRIPTION';
 export const RECEIVE_EMAIL_SUBSCRIPTION = 'RECEIVE_EMAIL_SUBSCRIPTION';
+export const LOG_ERROR = 'LOG_ERROR';
 
 const receiveUserSession = (user) => {
     return {
@@ -59,6 +60,17 @@ export const requestUserSession = (user, cb) => {
         },
     };
 };
+
+export const logError = (error) => {
+    return {
+        type: REQUEST_USER_SESSION,
+        makeApiRequest: {
+            url: '/api/v1/user.log-error',
+            method: 'POST',
+            body: error,
+        },
+    };
+}
 
 const receiveTopCreators = (users) => {
     return {

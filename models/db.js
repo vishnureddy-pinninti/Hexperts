@@ -27,3 +27,4 @@ require('./notification');
 require('./external');
 require('./feedback');
 require('./draft');
+require('./errorLog');
