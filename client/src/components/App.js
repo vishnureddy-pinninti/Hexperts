@@ -8,7 +8,7 @@ import { authService } from '../services/authService';
 import config from '../utils/config';
 import Router from '../routing/Router';
 
-import { requestUserSession } from '../store/actions/auth';
+import { requestUserSession, logError } from '../store/actions/auth';
 
 const theme = createMuiTheme({
     palette: {
@@ -47,20 +47,25 @@ class App extends Component {
             },
         });
 
-        const user = this.userAgentApplication.getAccount();
-        let loading = true;
+        try{
+            const user = this.userAgentApplication.getAccount();
+            let loading = true;
 
-        if (user) {
-            // Enhance user object with data from Graph
-            this.getUserProfile();
-        }
-        else {
-            loading = false;
-        }
+            if (user) {
+                // Enhance user object with data from Graph
+                this.getUserProfile();
+            }
+            else {
+                loading = false;
+            }
 
-        this.state = {
-            loading,
-        };
+            this.state = {
+                loading,
+            };
+        }
+        catch(e){
+
+        }
     }
 
     render() {
@@ -105,7 +110,6 @@ class App extends Component {
             const accessToken = await this.userAgentApplication.acquireTokenSilent({
                 scopes: config.scopes,
             });
-
             if (accessToken) {
             // Get the user's profile from Graph
                 const user = await authService.getUserDetails(accessToken);
@@ -115,6 +119,7 @@ class App extends Component {
             }
         }
         catch (err) {
+            this.props.logError(err);
             return err;
         }
     }
@@ -130,6 +135,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         requestUserSession: (user, cb) => {
             dispatch(requestUserSession(user, cb));
+        },
+        logError: (error) => {
+            dispatch(logError(error));
         },
     };
 };
