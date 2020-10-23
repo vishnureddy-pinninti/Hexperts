@@ -2,6 +2,11 @@ const tls = require('tls');
 const fs = require('fs');
 
 const certificates = {
+    'hexperts.hexagon.com': {
+        cert: './certs/hexagon.crt',
+        ca: './certs/hexagonCA.crt',
+        key: './certs/hexagon.key',
+    },
     'hexperts.intergraph.com': {
         cert: './certs/intergraph.crt',
         ca: './certs/intergraphCA.crt',
