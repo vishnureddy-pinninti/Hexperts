@@ -286,7 +286,7 @@ const TopBar = (props) => {
             element: '#Discover-Topics',
             popover: {
                 title: ' ',
-                description: 'Explore different topics and subscribe & self-nominate as expert to the topics of your interest',
+                description: 'Explore different topics and subscribe & self-nominate as expert to the topics of your interest.',
                 position: 'right'
             }
         },
@@ -294,7 +294,7 @@ const TopBar = (props) => {
             element: '#Infinite-Scroll',
             popover: {
                 title: ' ',
-                description: 'Displays questions, answers, and blogs',
+                description: 'Displays questions, answers, and blogs.',
                 position: 'left'
             }
         },
@@ -302,7 +302,7 @@ const TopBar = (props) => {
             element: '#Answer-a-question',
             popover: {
                 title: ' ',
-                description: 'Answer a question',
+                description: 'Answer a question.',
                 position: 'bottom-center'
             }
         },
@@ -310,7 +310,7 @@ const TopBar = (props) => {
             element: '#Read-write-blogs',
             popover: {
                 title: ' ',
-                description: 'Read or create a blog',
+                description: 'Read or create a blog.',
                 position: 'bottom-center'
             }
         },
@@ -318,7 +318,7 @@ const TopBar = (props) => {
             element: '#Get-Notifications',
             popover: {
                 title: ' ',
-                description: 'View notifications',
+                description: 'View notifications.',
                 position: 'bottom-center'
             }
         },
@@ -326,7 +326,7 @@ const TopBar = (props) => {
             element: '#Admin-dashboard',
             popover: {
                 title: ' ',
-                description: 'View Hexpert statistics',
+                description: 'View Hexpert statistics.',
                 position: 'bottom-center'
             }
         },
@@ -334,7 +334,7 @@ const TopBar = (props) => {
             element: '#Search-Bar',
             popover: {
                 title: ' ',
-                description: 'Search for any information in Hexpert',
+                description: 'Search for any information in Hexpert as well as other internal sites.',
                 position: 'bottom-center'
             }
         },
@@ -350,7 +350,7 @@ const TopBar = (props) => {
             element: '#Hexpets-Feedback',
             popover: {
                 title: ' ',
-                description:'Provide your feedack and suggestions',
+                description:'Provide your feedback and suggestions.',
                 position: 'bottom-center'
             }
         },
@@ -358,7 +358,7 @@ const TopBar = (props) => {
             element: '#Top-Contributors',
             popover: {
                 title: ' ',
-                description: 'Meet our three top contributors',
+                description: 'Meet our three top contributors.',
                 position: 'left'
             }
         },
