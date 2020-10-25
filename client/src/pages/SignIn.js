@@ -45,12 +45,12 @@ const useStyles = makeStyles((theme) => {
             backgroundImage: 'url(/login-bg.jpg)',
             backgroundRepeat: 'no-repeat',
             backgroundColor:
-      theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
+        theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
             backgroundSize: 'cover',
             backgroundPosition: 'center',
         },
         paper: {
-            margin: theme.spacing(8, 4),
+            margin: theme.spacing(18, 4),
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -64,10 +64,14 @@ const useStyles = makeStyles((theme) => {
             marginTop: theme.spacing(1),
         },
         submit: {
-            margin: theme.spacing(3, 0, 2),
+            borderRadius: 2,
+            margin: theme.spacing(6, 0, 2),
+            justifyContent: 'center',
+            fontSize: '1.4em',
         },
         logo: {
             boxShadow: 'none',
+            marginTop: '1.5em',
         },
     };
 });
@@ -78,6 +82,7 @@ const SignIn = (props) => {
     return (
         <Grid
             container
+            justify="center"
             component="main"
             className={ classes.root }>
             <CssBaseline />
@@ -97,14 +102,11 @@ const SignIn = (props) => {
                 elevation={ 6 }
                 square>
                 <div className={ classes.paper }>
-                    <Avatar className={ classes.avatar }>
-                        <LockOutlinedIcon />
-                    </Avatar>
                     <Typography
                         component="h1"
                         style={ { color: 'white' } }
                         variant="h5">
-                        Sign in
+                        Log In to
                     </Typography>
                     <div className={ classes.logo }>
                         <img
@@ -115,14 +117,15 @@ const SignIn = (props) => {
                     <form
                         className={ classes.form }
                         noValidate>
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={ classes.submit }
-                            onClick={ props.onLoginClick }>
-                            Login with Hexagon
-                        </Button>
+                        <Box textAlign='center'>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                className={ classes.submit }
+                                onClick={ props.onLoginClick }>
+                                <LockOutlinedIcon className={classes.avatar} /> Hexagon Single Sign On
+                            </Button>   
+                        </Box>
                         <Box mt={ 5 }>
                             <Copyright />
                         </Box>
