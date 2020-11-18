@@ -100,6 +100,18 @@ div#driver-popover-item .driver-popover-tip.left{
 
 div#driver-popover-item .driver-popover-footer .driver-close-btn{
   float: right !important;
-  margin-top: 0.3em;
   margin-left: 3px;
+}
+
+.driver-prev-btn, .driver-next-btn, .driver-close-btn{
+  font-weight: bold !important;
+  margin-top: 0.3em;
+  font-size: 0.9em !important;
+}
+
+.driver-next-btn{
+  float: right !important;
+}
+div#driver-popover-item .driver-popover-footer .driver-btn-group, div#driver-popover-item .driver-popover-footer .driver-close-only-btn {
+  width: 16.6em;
 }
