@@ -280,123 +280,121 @@ const TopBar = (props) => {
         prevBtnText: '&#x2039;',
         nextBtnText: '&#x203A;',
     });
-
-    driver.defineSteps([
-        {
-            element: '#Discover-Topics',
-            popover: {
-                title: ' ',
-                description: 'Explore different topics and subscribe & self-nominate as expert to the topics of your interest.',
-                position: 'right'
-            }
-        },
-        {
-            element: '#Infinite-Scroll',
-            popover: {
-                title: ' ',
-                description: 'Displays questions, answers, and blogs.',
-                position: 'left'
-            }
-        },
-        {
-            element: '#Answer-a-question',
-            popover: {
-                title: ' ',
-                description: 'Answer a question.',
-                position: 'bottom-center'
-            }
-        },
-        {
-            element: '#Read-write-blogs',
-            popover: {
-                title: ' ',
-                description: 'Read or create a blog.',
-                position: 'bottom-center'
-            }
-        },
-        {
-            element: '#Get-Notifications',
-            popover: {
-                title: ' ',
-                description: 'View notifications.',
-                position: 'bottom-center'
-            }
-        },
-        {
-            element: '#Admin-dashboard',
-            popover: {
-                title: ' ',
-                description: 'View Hexpert statistics.',
-                position: 'bottom-center'
-            }
-        },
-        {
-            element: '#Search-Bar',
-            popover: {
-                title: ' ',
-                description: 'Search for any information in Hexpert as well as other internal sites.',
-                position: 'bottom-center'
-            }
-        },
-        {
-            element: '#Ask-Question',
-            popover: {
-                title: ' ',
-                description:'Ask a Question',
-                position: 'bottom-center'
-            }
-        },
-        {
-            element: '#Hexpets-Feedback',
-            popover: {
-                title: ' ',
-                description:'Provide your feedback and suggestions.',
-                position: 'bottom-center'
-            }
-        },
-        {
-            element: '#Top-Contributors',
-            popover: {
-                title: ' ',
-                description: 'Meet our three top contributors.',
-                position: 'left'
-            }
-        },
-        {
-            element: '#Trending-Questions',
-            popover: {
-                title: ' ',
-                description: 'View questions that are trending in Hexpert.',
-                position: 'left'
-            }
-        },
-    ]);
-
     
-
-    useEffect(() => {
-        const requestTourStatus = () => {
-            try {
-                const timeStamp = localStorage.getItem('TourState');
-                if (timeStamp === null) {
-                    var currentTimeStamp = moment();
-                    localStorage.setItem('TourState', currentTimeStamp.format('L'));
+    const requestTourStatus = () => {
+        try {
+            const timeStamp = localStorage.getItem('TourState');
+            if (timeStamp === null) {
+                var currentTimeStamp = moment();
+                localStorage.setItem('TourState', currentTimeStamp.format('L'));
+                driver.start();
+            }
+            else{
+                var createdDate = moment(new Date(timeStamp));
+                var currentDate = moment();
+                if(currentDate.diff(createdDate, 'days') > 15){
+                    localStorage.setItem('TourState', currentDate.format('L'));
                     driver.start();
                 }
-                else{
-                    var createdDate = moment(new Date(timeStamp));
-                    var currentDate = moment();
-                    if(currentDate.diff(createdDate, 'days') > 15){
-                        localStorage.setItem('TourState', currentDate.format('L'));
-                        driver.start();
-                    }
-                }
-            } catch (err) {
-                //console.log(err);
             }
-        }    
+        } catch (err) {
+            //console.log(err);
+        }
+    }    
+
+    useEffect(() => {
+        driver.defineSteps([
+            {
+                element: '#Discover-Topics',
+                popover: {
+                    title: ' ',
+                    description: 'Explore different topics. Subscribe to subjects of your interest.',
+                    position: 'right'
+                }
+            },
+            {
+                element: '#Infinite-Scroll',
+                popover: {
+                    title: ' ',
+                    description: 'View questions and answers in the areas of your interest.',
+                    position: 'left'
+                }
+            },
+            {
+                element: '#Answer-a-question',
+                popover: {
+                    title: ' ',
+                    description: 'Answer a question.',
+                    position: 'bottom-center'
+                }
+            },
+            {
+                element: '#Read-write-blogs',
+                popover: {
+                    title: ' ',
+                    description: 'Read blogs. You can add new blogs also.',
+                    position: 'bottom-center'
+                }
+            },
+            {
+                element: '#Get-Notifications',
+                popover: {
+                    title: ' ',
+                    description: 'View notifications.',
+                    position: 'bottom-center'
+                }
+            },
+            {
+                element: '#Admin-dashboard',
+                popover: {
+                    title: ' ',
+                    description: 'View Hexpert statistics.',
+                    position: 'bottom-center'
+                }
+            },
+            {
+                element: '#Search-Bar',
+                popover: {
+                    title: ' ',
+                    description: 'Search for any information. Hexperts will find the result from this and other relevant sites.',
+                    position: 'bottom-center'
+                }
+            },
+            {
+                element: '#Ask-Question',
+                popover: {
+                    title: ' ',
+                    description:'Ask a question.',
+                    position: 'bottom-center'
+                }
+            },
+            {
+                element: '#Hexpets-Feedback',
+                popover: {
+                    title: ' ',
+                    description:'Suggest how we can improve Hexperts further.',
+                    position: 'bottom-center'
+                }
+            },
+            {
+                element: '#Top-Contributors',
+                popover: {
+                    title: ' ',
+                    description: 'Meet three top Hexperts contributors .',
+                    position: 'left'
+                }
+            },
+            {
+                element: '#Trending-Questions',
+                popover: {
+                    title: ' ',
+                    description: 'View questions that are trending in Hexperts.',
+                    position: 'left'
+                }
+            },
+        ]);
         requestTourStatus();
-    }, [driver])
+    }, [requestTourStatus, driver])
 
     const handleTourOpen = () => {
         document.getElementById('hexperts-tour').blur();
