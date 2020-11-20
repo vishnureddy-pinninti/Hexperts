@@ -111,7 +111,7 @@ class App extends Component {
                 scopes: config.scopes,
             });
             if (accessToken) {
-            // Get the user's profile from Graph
+                // Get the user's profile from Graph
                 const user = await authService.getUserDetails(accessToken);
                 this.props.requestUserSession(user, () => {
                     this.setState({ loading: false });
@@ -119,6 +119,9 @@ class App extends Component {
             }
         }
         catch (err) {
+            if(err.errorCode == 'interaction_required' && err.errorMessage.indexOf("multi-factor authentication has expired") !== -1){
+                localStorage.clear();
+            }
             this.props.logError(err);
             return err;
         }
