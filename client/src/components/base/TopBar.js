@@ -364,7 +364,7 @@ const TopBar = (props) => {
                 element: '#Ask-Question',
                 popover: {
                     title: ' ',
-                    description:'Ask a question.',
+                    description:'Post your questions here.',
                     position: 'bottom-center'
                 }
             },
