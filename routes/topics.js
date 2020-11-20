@@ -43,7 +43,7 @@ module.exports = (app) => {
 
     app.get('/api/v1/topics', loginMiddleware, async(req, res) => {
         try {
-            const topics = await Topic.find({});
+            const topics = await Topic.find({topic: { $ne: 'Feedback on Hexperts' }});
             res
                 .status(200)
                 .json(topics);
