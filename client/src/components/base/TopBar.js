@@ -308,7 +308,7 @@ const TopBar = (props) => {
                 element: '#Discover-Topics',
                 popover: {
                     title: ' ',
-                    description: 'Explore different topics. Subscribe to subjects of your interest.',
+                    description: 'Explore different topics. Subscribe to subjects of your interest',
                     position: 'right'
                 }
             },
@@ -316,7 +316,7 @@ const TopBar = (props) => {
                 element: '#Infinite-Scroll',
                 popover: {
                     title: ' ',
-                    description: 'View questions and answers in the areas of your interest.',
+                    description: 'View questions and answers in the areas of your interest',
                     position: 'left'
                 }
             },
@@ -324,7 +324,7 @@ const TopBar = (props) => {
                 element: '#Answer-a-question',
                 popover: {
                     title: ' ',
-                    description: 'Answer a question.',
+                    description: 'Answer a question in the area of your expertise',
                     position: 'bottom-center'
                 }
             },
@@ -332,7 +332,7 @@ const TopBar = (props) => {
                 element: '#Read-write-blogs',
                 popover: {
                     title: ' ',
-                    description: 'Read blogs. You can add new blogs also.',
+                    description: 'Start reading/writing a blog on a topic of your interest',
                     position: 'bottom-center'
                 }
             },
@@ -340,7 +340,7 @@ const TopBar = (props) => {
                 element: '#Get-Notifications',
                 popover: {
                     title: ' ',
-                    description: 'View notifications.',
+                    description: 'View notifications about new or changed blogs or questions',
                     position: 'bottom-center'
                 }
             },
@@ -348,7 +348,7 @@ const TopBar = (props) => {
                 element: '#Admin-dashboard',
                 popover: {
                     title: ' ',
-                    description: 'View Hexpert statistics.',
+                    description: 'View Hexpert statistics',
                     position: 'bottom-center'
                 }
             },
@@ -356,7 +356,7 @@ const TopBar = (props) => {
                 element: '#Search-Bar',
                 popover: {
                     title: ' ',
-                    description: 'Search for any information. Hexperts will find the result from this and other relevant sites.',
+                    description: 'Search for any information. Hexperts will find the result from this and other relevant sites',
                     position: 'bottom-center'
                 }
             },
@@ -364,7 +364,7 @@ const TopBar = (props) => {
                 element: '#Ask-Question',
                 popover: {
                     title: ' ',
-                    description:'Post your questions here.',
+                    description:'Post your questions here',
                     position: 'bottom-center'
                 }
             },
@@ -372,7 +372,7 @@ const TopBar = (props) => {
                 element: '#Hexpets-Feedback',
                 popover: {
                     title: ' ',
-                    description:'Suggest how we can improve Hexperts further.',
+                    description:'Suggest how we can improve Hexperts further',
                     position: 'bottom-center'
                 }
             },
@@ -380,7 +380,7 @@ const TopBar = (props) => {
                 element: '#Top-Contributors',
                 popover: {
                     title: ' ',
-                    description: 'Meet three top Hexperts contributors .',
+                    description: 'Meet three top Hexperts contributors',
                     position: 'left'
                 }
             },
@@ -388,7 +388,7 @@ const TopBar = (props) => {
                 element: '#Trending-Questions',
                 popover: {
                     title: ' ',
-                    description: 'View questions that are trending in Hexperts.',
+                    description: 'View questions that are trending in Hexperts',
                     position: 'left'
                 }
             },

@@ -81,7 +81,10 @@ function SearchBar(props) {
     const handleClick = (event) => {
         requestSearch({ text: event.target.value });
         setValue(event.target.value);
-        setAnchorEl(event.currentTarget);
+        if(event.target.value)
+            setAnchorEl(event.currentTarget);
+        else
+            setAnchorEl(null);
     };
 
     const handleClose = (event) => {
