@@ -11,6 +11,7 @@ import { Grid,
     ListItemAvatar, Box, Chip, Avatar,
     Divider, Tooltip, Button, CardHeader } from '@material-ui/core';
 import { Help as HelpIcon, Link as LinkIcon, QuestionAnswerOutlined as QuestionAnswerOutlinedIcon } from '@material-ui/icons';
+import SubjectIcon from '@material-ui/icons/Subject';
 import AddIcon from '@material-ui/icons/Add';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -189,9 +190,9 @@ const Search = (props) => {
             to={ `/post/${item._id}` }>
             <ListItem>
                 <ListItemAvatar>
-                    <Typography>
-                        Post:
-                    </Typography>
+                    <Avatar>
+                        <SubjectIcon />
+                    </Avatar>
                 </ListItemAvatar>
                 <ListItemText
                     primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> }
@@ -364,7 +365,7 @@ const Search = (props) => {
     };
 
     useEffect(() => {
-        getData(selectedTab);
+            getData(selectedTab);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ query ]);
 

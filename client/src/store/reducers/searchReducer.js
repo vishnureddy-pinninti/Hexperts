@@ -12,14 +12,16 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case RECEIVE_SEARCH:
+            
+            let searchResults = action.res.results.sort(function(a, b) {return (a.type > b.type) ? 1 : -1})
             return {
                 ...state,
-                results: action.res.results,
+                results: searchResults,
             };
         case RECEIVE_ADVANCED_SEARCH: {
             let nextIndex = state.paginationIndex + 1;
             let nextHasMore = state.paginationHasMore;
-
+            let searchResults = action.res.results.sort(function(a, b) {return (a.type > b.type) ? 1 : -1})
             if (action.res.results.length < action.limit) {
                 nextHasMore = false;
                 nextIndex = state.paginationIndex;
@@ -27,7 +29,7 @@ export default (state = initialState, action) => {
 
             return {
                 ...state,
-                advancedResults: [ ...state.advancedResults, ...action.res.results ],
+                advancedResults: [ ...state.advancedResults, ...searchResults ],
                 totalCount: action.res.totalCount,
                 paginationIndex: nextIndex,
                 paginationHasMore: nextHasMore,
