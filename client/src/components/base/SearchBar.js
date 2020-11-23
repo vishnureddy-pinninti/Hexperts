@@ -9,10 +9,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Typography from '@material-ui/core/Typography';
 import HelpIcon from '@material-ui/icons/Help';
 import { Avatar as MuiAvatar, Divider, Tooltip } from '@material-ui/core';
 import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
+import SubjectIcon from '@material-ui/icons/Subject';
 import Paper from '@material-ui/core/Paper';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
@@ -172,9 +172,9 @@ function SearchBar(props) {
             to={ `/post/${item._id}` }>
             <ListItem onClick={ () => { setAnchorEl(null); } }>
                 <ListItemAvatar>
-                    <Typography>
-                        Post:
-                    </Typography>
+                <MuiAvatar>
+                        <SubjectIcon />
+                    </MuiAvatar>
                 </ListItemAvatar>
                 <ListItemText
                     primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> } />
