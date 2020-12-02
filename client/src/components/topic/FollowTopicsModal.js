@@ -119,7 +119,7 @@ const FollowTopicsModal = (props) => {
 
     const addTopic = (values) => {
         if(values && Object.keys(values).length !== 0){
-            if(topics.find(x=> x.topic == values.addTopic)){
+            if(topics.find(x=> x.topic.toLowerCase() == values.addTopic.toLowerCase())){
                 throw new SubmissionError({ addTopic: 'Topic already exists', _error: 'Create Topic failed!' })
             }
             else{
