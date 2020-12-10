@@ -9,9 +9,19 @@ import CardHeader from '@material-ui/core/CardHeader';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import IconButton from '@material-ui/core/IconButton';
 
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
+import ConfluenceLogin from '../base/ConfluenceLogin';
+
 import Avatar from '../base/Avatar';
 import { addAnswerToQuestion, addAnswerPending } from '../../store/actions/answer';
+import { requestConfluenceLogout } from '../../store/actions/auth';
 import { followUser } from '../../store/actions/auth';
+import { CardContent } from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => {
@@ -53,6 +63,8 @@ const TopicSection = (props) => {
         followUser,
         department,
         city,
+        isConfluenceAuthorised,
+        UnsubscribeConfluenceSearch,
     } = props;
 
     const handleFollowClick = () => {
@@ -60,6 +72,19 @@ const TopicSection = (props) => {
     };
 
     const following = followers.indexOf(user._id) >= 0;
+    
+    const [
+        openConfluenceModal,
+        setConfluenceModal,
+    ] = React.useState(false);
+
+    const handleConfluenceModalClose = () => {
+        setConfluenceModal(false);
+    };
+
+    const handleConfluenceModalOpen = () => {
+        setConfluenceModal(true);
+    }
 
     const renderTitle = () => (
         <>
@@ -100,6 +125,7 @@ const TopicSection = (props) => {
     );
 
     return (
+        <>
         <Card>
             <CardHeader
                 avatar={
@@ -123,6 +149,38 @@ const TopicSection = (props) => {
                 </> }
                 title={ renderTitle() } />
         </Card>
+        <br/>
+        <Card>
+        <CardContent>
+            
+            <Typography>
+                My Subscriptions
+            </Typography>
+            <Table className={classes.table} aria-label="simple table">
+                <TableHead style={{fontWeight: 'bold'}}>
+                    <TableRow>
+                        <TableCell>Search</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell>Action</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    <TableRow>
+                        <TableCell>Geo - Confluence Search</TableCell>
+                        <TableCell>{isConfluenceAuthorised ? <span>Subscribed</span>: <span>---</span>}</TableCell>
+                    <TableCell>{isConfluenceAuthorised ? 
+                    <Button variant="contained" color="secondary" onClick={UnsubscribeConfluenceSearch}>Unsubscribe</Button>: 
+                    <Button variant="contained" color="primary" onClick={handleConfluenceModalOpen}>Subscribe</Button>}</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+        </CardContent>
+        </Card>
+        
+        <ConfluenceLogin
+                open={ openConfluenceModal }
+                handleClose={ handleConfluenceModalClose } />
+        </>
     );
 };
 
@@ -135,6 +193,8 @@ const mapStateToProps = (state) => {
     return {
         pending: state.answer.pending,
         user: state.user.user,
+        isConfluenceAuthorised: state.user.isConfluenceAuthorised,
+        isConfluenceEnabled: state.user.isConfluenceEnabled,
     };
 };
 
@@ -147,6 +207,9 @@ const mapDispatchToProps = (dispatch) => {
         followUser: (body) => {
             dispatch(followUser(body));
         },
+        UnsubscribeConfluenceSearch: () => {
+            dispatch(requestConfluenceLogout());
+        }
     };
 };
 

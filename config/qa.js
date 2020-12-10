@@ -4,5 +4,6 @@ module.exports = {
     clientID: 'af415683-f04d-43f7-9c4d-d1b661963f42',
     cookieKey: 'vcsdhjbckqwhfgduwqyvchjqwncxkwqgcduqwfvdqw',
     emailUrl: 'https://192.168.116.118:1515',
+    confluenceKey: 'uGJ3zTFaiWXJ3D32dmEYhcWjTE1gkdjnnJGR9/saNgE=',
     PORT: 1515,
 };

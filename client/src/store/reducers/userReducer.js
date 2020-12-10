@@ -18,7 +18,11 @@ import { RECEIVE_USER_SESSION,
     RECEIVE_EMAIL_PREFERENCES,
     RECEIVE_EDITED_EMAIL_PREFERENCES,
     RECEIVE_EMAIL_SUBSCRIPTION,
-    RECEIVE_MANGE_USER_PREFERENCES } from '../actions/auth';
+    RECEIVE_MANGE_USER_PREFERENCES,
+    RECEIVE_CONFLUENCE_lOGIN,
+    RECEIVE_CONFLUENCE_lOGOUT,
+    RECEIVE_ENABLE_CONFLUENCE_SEARCH,
+    RECEIVE_DISABLE_CONFLUENCE_SEARCH, } from '../actions/auth';
 
 import { RECEIVE_FOLLOWED_TOPIC, RECEIVE_UPLOADED_TOPIC_IMAGE, RECEIVE_EDITED_TOPIC } from '../actions/topic';
 import { RECEIVE_FOLLOWED_BLOG } from '../actions/blog';
@@ -38,6 +42,9 @@ const initialState = {
     pageLoader: false,
     emailPreferences: [],
     emailSubscription: false,
+    isConfluenceAuthorised: false,
+    isConfluenceEnabled: false,
+    loading: false,
 };
 
 export default (state = initialState, action) => {
@@ -45,11 +52,14 @@ export default (state = initialState, action) => {
     let index;
     let profile;
     let temp;
+    
     switch (action.type) {
         case RECEIVE_USER_SESSION:
             return {
                 ...state,
                 isAuthenticated: true,
+                isConfluenceAuthorised: action.user.isConfluenceAuthorised,
+                isConfluenceEnabled: action.user.isConfluenceEnabled,
                 user: action.user,
                 notificationCount: action.user.notificationCount,
                 interests: action.user.interests,
@@ -389,6 +399,34 @@ export default (state = initialState, action) => {
                 ...state,
                 emailSubscription: action.res.emailSubscription,
             };
+        }
+        case RECEIVE_CONFLUENCE_lOGIN: {
+            return{
+                ...state,
+                isConfluenceAuthorised: true,
+                isConfluenceEnabled: true,
+            }
+        }
+        case RECEIVE_CONFLUENCE_lOGOUT: {
+            return{
+                ...state,
+                isConfluenceAuthorised: false,
+                isConfluenceEnabled: false,
+            }
+        }
+        case RECEIVE_ENABLE_CONFLUENCE_SEARCH:{
+            console.log(RECEIVE_ENABLE_CONFLUENCE_SEARCH)
+            return {
+                ...state,
+                isConfluenceEnabled: true,
+            }
+        }
+        case RECEIVE_DISABLE_CONFLUENCE_SEARCH:{
+            console.log(RECEIVE_ENABLE_CONFLUENCE_SEARCH)
+            return {
+                ...state,
+                isConfluenceEnabled: false,
+            }
         }
         default:
             return state;

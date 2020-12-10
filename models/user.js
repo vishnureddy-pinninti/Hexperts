@@ -103,6 +103,14 @@ const userSchema = new Schema({
         default: 0,
         es_indexed: false,
     },
+    confluenceAuthentication: {
+        type: String,
+        es_indexed: false,
+    },
+    isConfluenceEnabled: {
+        type: Boolean,
+        es_indexed: false,
+    },
 });
 
 userSchema.plugin(mongoosastic, {

@@ -40,6 +40,14 @@ export const RECEIVE_EDITED_EMAIL_PREFERENCES = 'RECEIVE_EDITED_EMAIL_PREFERENCE
 export const REQUEST_EMAIL_SUBSCRIPTION = 'REQUEST_EMAIL_SUBSCRIPTION';
 export const RECEIVE_EMAIL_SUBSCRIPTION = 'RECEIVE_EMAIL_SUBSCRIPTION';
 export const LOG_ERROR = 'LOG_ERROR';
+export const REQUEST_CONFLUENCE_lOGIN = 'REQUEST_CONFLUENCE_lOGIN';
+export const RECEIVE_CONFLUENCE_lOGIN = 'RECEIVE_CONFLUENCE_lOGIN';
+export const REQUEST_ENABLE_CONFLUENCE_SEARCH = 'REQUEST_ENABLE_CONFLUENCE_SEARCH';
+export const RECEIVE_ENABLE_CONFLUENCE_SEARCH = 'RECEIVE_ENABLE_CONFLUENCE_SEARCH';
+export const REQUEST_DISABLE_CONFLUENCE_SEARCH = 'REQUEST_DISABLE_CONFLUENCE_SEARCH';
+export const RECEIVE_DISABLE_CONFLUENCE_SEARCH = 'RECEIVE_DISABLE_CONFLUENCE_SEARCH';
+export const REQUEST_CONFLUENCE_lOGOUT = 'REQUEST_CONFLUENCE_lOGOUT';
+export const RECEIVE_CONFLUENCE_lOGOUT = 'RECEIVE_CONFLUENCE_lOGOUT'
 
 const receiveUserSession = (user) => {
     return {
@@ -419,3 +427,80 @@ export const requestEmailSubscription = () => {
         },
     };
 };
+
+const receiveConfluenceLogin = (res) => {
+    return {
+        type: RECEIVE_CONFLUENCE_lOGIN,
+        res,
+    };
+};
+
+export const requestConfluenceLogin = (body, success, error) => {
+    return {
+        type: REQUEST_CONFLUENCE_lOGIN,
+        makeApiRequest: {
+            url: '/api/v1/confulence-login',
+            method: 'POST',
+            body,
+            success: (response) => receiveConfluenceLogin(response),
+            successcb: success,
+            errorcb: error
+        },
+    };
+};
+
+const receiveConfluenceLogout = (res) => {
+    return {
+        type: RECEIVE_CONFLUENCE_lOGOUT,
+        res,
+    };
+};
+
+export const requestConfluenceLogout = () => {
+    return {
+        type: REQUEST_CONFLUENCE_lOGOUT,
+        makeApiRequest: {
+            url: '/api/v1/confulence-logout',
+            method: 'GET',
+            success: receiveConfluenceLogout,
+        },
+    };
+};
+
+const receiveEnableConfluenceSearch = (res) => {
+    return {
+        type: RECEIVE_ENABLE_CONFLUENCE_SEARCH,
+        res,
+    };
+}
+
+export const enableConfluenceSearch = (cb) => {
+    return {
+        type: REQUEST_ENABLE_CONFLUENCE_SEARCH,
+        makeApiRequest: {
+            url: '/api/v1/invoke-confluence',
+            method: 'GET',
+            success: receiveEnableConfluenceSearch,
+            successcb: cb,
+        },
+    };
+}
+
+const receiveDisableConfluenceSearch = (res) => {
+    return {
+        type: RECEIVE_DISABLE_CONFLUENCE_SEARCH,
+        res,
+    };
+}
+
+export const disableConfluenceSearch = (cb) => {
+    return {
+        type: REQUEST_DISABLE_CONFLUENCE_SEARCH,
+        makeApiRequest: {
+            url: '/api/v1/waive-confluence',
+            method: 'GET',
+            success: receiveDisableConfluenceSearch,
+            successcb: cb,
+        },
+    };
+}
