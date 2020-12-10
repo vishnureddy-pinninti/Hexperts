@@ -4,9 +4,10 @@ module.exports = (req, res, next) => {
     const {
         limit,
         skip,
+        confluence,
         ...rest
     } = req.query;
-
+    
     const query = {};
     const pagination = {};
     const custom = {};
@@ -38,6 +39,10 @@ module.exports = (req, res, next) => {
 
     if (skip) {
         pagination.skip = Number(skip);
+    }
+
+    if(confluence){
+        pagination.confluence = (confluence == 'true');
     }
 
     req.queryParams = {

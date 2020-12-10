@@ -101,6 +101,23 @@ const fields = {
         text: 'title',
         subtext: 'content',
     },
+    confluence: {
+        searchFields: [
+            'link',
+            'title',
+            'content',
+        ],
+        highlightFields: [
+            'title',
+            'content',
+        ],
+        excludeSourceFields: [
+            'title',
+            'content',
+        ],
+        text: 'title',
+        subtext: 'content',
+    },
 };
 
 const onlyUnique = (value, index, self) => value && self.indexOf(value) === index;
@@ -155,6 +172,36 @@ const getRequestUrl = (categories) => {
     return `http://localhost:9200/${realCategories}/_search`;
 };
 
+const parseConfluenceResult = (result) => {
+    const response = [];
+    result.results.forEach((item) => {
+        item.excerpt = item.excerpt.replace(/@@@hl@@@/gi,"<span class='highlighter'>");
+        item.excerpt = item.excerpt.replace(/@@@endhl@@@/gi,"</span>");
+        item.title = item.title.replace(/@@@hl@@@/gi,"<span class='highlighter'>");
+        item.title = item.title.replace(/@@@endhl@@@/gi,"</span>");
+        
+        if(item.entityType == "content"){
+            response.push({
+                _id: item.content.id,
+                text:item.title,
+                subtext: item.excerpt,
+                type:"confluence",
+                options: {
+                    link: "https://hxgntech.com/confluence"+item.url,
+                },
+                globalContainer: item.resultGlobalContainer,
+                parentContainer: item.resultParentContainer,
+                timestamp: item.timestamp,
+            });
+        }
+        else{
+            
+        console.log(item);
+        }
+    });
+    return response;
+}
+
 const parseResult = (result) => {
     const response = {};
     response.totalCount = result.hits.total.value;
@@ -197,6 +244,24 @@ const parseResult = (result) => {
     return response;
 };
 
+const checkConfluenceAuthentication = async(encodedData) => {
+    
+    result = await request.get('https://hxgntech.com/confluence/rest/api/accessmode', {
+        headers: {
+            Authorization: "Basic "+encodedData
+        },
+        json: true // Automatically parses the JSON string in the response
+    });
+
+    const response ={
+        accessMode: result,
+        isAccessable: true,
+        enableAccess: true,
+    }
+        
+    return response;
+}
+
 const search = async(properties) => {
     const {
         text,
@@ -210,7 +275,7 @@ const search = async(properties) => {
     const excludeFields = exclude ? getExcludeFields(categories) : [];
     const highlightFields = getHighlightFields(searchFields);
     const requestUrl = getRequestUrl(categories);
-
+    
     const mustQuery = [
         {
             multi_match: {
@@ -227,7 +292,7 @@ const search = async(properties) => {
     }
 
     try {
-        const results = await request.get(requestUrl, {
+        let results = await request.get(requestUrl, {
             json: true,
             body: {
                 _source: {
@@ -257,8 +322,36 @@ const search = async(properties) => {
                 size: pagination.limit || 10,
             },
         });
-
-        return parseResult(results);
+        results = parseResult(results);
+            
+        let confluenceResults = {};
+        console.length(pagination,categories);
+        if(pagination.confluence && pagination.skip == 0 &&(categories.length == 0 || (categories.length > 0  && categories.indexOf('confulence')))){
+            confluenceResults = await request.get('https://hxgntech.com/confluence/rest/api/search?cql={text~'+text+'}', {
+                headers: {
+                    Authorization: "Basic c3lzdXNlci1oZXhwZXJ0czpyQUVVWUVLaWlBRDBaNFg1YUROb3hHQlgzOUVjOQ=="
+                },
+                json: true // Automatically parses the JSON string in the response
+            });
+            
+            const confluenceSearchResults = parseConfluenceResult(confluenceResults);
+            confluenceSearchResults.forEach((item) => {
+                results.results.push(item);
+            } )
+            results.totalCount += confluenceSearchResults.length;
+            // if(categories && categories.length>0){
+                
+            //     let sortedResults = [];
+            //     categories.forEach((category) => {
+            //         let sortedResult = results.results.filter(x=> x.type == category);
+            //         sortedResults = sortedResults.concat(sortedResult);
+            //     })
+            //     results.results = sortedResults;
+            //     results.totalCount = sortedResults.length
+            // }
+        }
+        
+        return results;
     }
     catch (e) {
         return {
@@ -272,4 +365,5 @@ const search = async(properties) => {
 
 module.exports = {
     search,
+    checkConfluenceAuthentication,
 };

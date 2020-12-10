@@ -10,6 +10,7 @@ const Error = mongoose.model('errorLogs');
 
 const { encrypt } = require('../utils/crypto');
 const config = require('../config/keys');
+const { checkConfluenceAuthentication } = require('../utils/search');
 const loginMiddleware = require('../middlewares/loginMiddleware');
 const queryMiddleware = require('../middlewares/queryMiddleware');
 const adminMiddleware = require('../middlewares/adminMiddleware');
@@ -21,6 +22,8 @@ const {
     },
 } = require('../utils/constants');
 const { search } = require('../utils/search');
+const base64 = require('base-64');
+const cryptr = require('cryptr');
 
 module.exports = (app) => {
     app.post('/api/v1/user.read', async(req, res) => {
@@ -107,6 +110,8 @@ module.exports = (app) => {
                             role: 1,
                             department: 1,
                             city: 1,
+                            confluenceAuthentication: 1,
+                            isConfluenceEnabled: 1,
                         },
                     },
                 ]);
@@ -133,6 +138,8 @@ module.exports = (app) => {
                     streetAddress,
                     businessPhones,
                     mobilePhone,
+                    confluenceAuthentication: '',
+                    isConfluenceEnabled: false,
                 });
 
                 await newUser.save();
@@ -142,6 +149,27 @@ module.exports = (app) => {
                     _id: newUser._doc._id,
                 };
             }
+            
+            resUser.isConfluenceAuthorised = false;
+
+            if(resUser.confluenceAuthentication && resUser.confluenceAuthentication.trim() != ''){
+                const cipher = new cryptr(config.confluenceKey);
+
+                const encodedData = cipher.decrypt(resUser.confluenceAuthentication);
+                try{
+                    const result = await checkConfluenceAuthentication(encodedData);
+                    if(result)
+                        resUser.isConfluenceAuthorised = true;
+                }
+                catch(e){
+                    //disable confluence search if the user is not authorised
+                    resUser.isConfluenceAuthorised = false;
+                    resUser.isConfluenceEnabled = false;
+                }
+                
+            }
+
+            delete resUser.confluenceAuthentication;
 
             const notifications = await Notification.find({
                 recipients: {
@@ -151,6 +179,8 @@ module.exports = (app) => {
                     }
                 }
             });
+
+
 
             // Create cookie and send the response back
             const d1 = new Date();
@@ -1365,4 +1395,202 @@ module.exports = (app) => {
                 });
         }
     });
+
+    
+    app.post('/api/v1/confulence-login', loginMiddleware, async(req, res) => {
+        try {
+            const { _id } = req.user;
+            
+            let user = await User.findById(mongoose.Types.ObjectId(_id));
+
+            let response;
+            const {
+                Email,
+                Password,
+            } = req.body;
+            
+            const encodedData = base64.encode(Email+':'+Password);
+            console.log(Email,Password);
+            const result = await checkConfluenceAuthentication(encodedData);
+            
+            const cipher = new cryptr(config.confluenceKey);
+
+            const encryptedString = cipher.encrypt(encodedData);
+
+            if (user) {
+                user.confluenceAuthentication = encryptedString;
+                user.isConfluenceEnabled = true;
+
+                await user.save();
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: USER_NOT_FOUND,
+                    });
+            }
+
+            let resUser = {...user._doc}
+            resUser.isConfluenceAuthorised = true;
+            delete resUser.confluenceAuthentication;
+
+            response = {
+                result,
+                user: {...resUser},
+            }
+            
+            res
+                .status(200)
+                .json(response);
+        }
+        catch(e){
+            res
+            .status(500)
+            .json({
+                error: true,
+                response: UNAUTHORIZED,
+            });
+        }
+    });
+
+    app.get('/api/v1/confulence-logout', loginMiddleware, async(req, res) => {
+        try {
+            const { _id } = req.user;
+            
+            let user = await User.findById(mongoose.Types.ObjectId(_id));
+            if (user) {
+                user.confluenceAuthentication = '';
+                user.isConfluenceEnabled = false;
+
+                await user.save();
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: USER_NOT_FOUND,
+                    });
+            }
+
+            let resUser = {...user._doc}
+            resUser.isConfluenceAuthorised = false;
+            delete resUser.confluenceAuthentication;
+
+            response = {
+                user: {...resUser},
+            }
+            
+            res
+                .status(200)
+                .json(response);
+        }
+        catch(e){
+            res
+            .status(500)
+            .json({
+                error: true,
+                response: UNAUTHORIZED,
+            });
+        }
+    });
+
+    app.get('/api/v1/invoke-confluence', loginMiddleware, async(req, res) => {
+        const { _id } = req.user;
+        const user = await User.findById(mongoose.Types.ObjectId(_id));
+        let response;
+        if(user){
+            const cipher = new cryptr(config.confluenceKey);
+            const encodedData = cipher.decrypt(user.confluenceAuthentication);
+            try{
+                const result = await checkConfluenceAuthentication(encodedData);
+                
+                user.isConfluenceEnabled = true;
+
+                await user.save();
+                
+                let resUser = {...user._doc}
+                resUser.isConfluenceAuthorised = true;
+                delete resUser.confluenceAuthentication;
+
+                response = {
+                    result,
+                    user: {...resUser},
+                }
+
+                res
+                    .status(200)
+                    .json(response);
+            }
+            catch(e){
+                res
+                .status(404)
+                .json({
+                    error: true,
+                    response: UNAUTHORIZED,
+                });
+            }
+
+        }
+        else {
+            res
+                .status(404)
+                .json({
+                    error: true,
+                    response: USER_NOT_FOUND,
+                });
+        }
+    });
+
+    app.get('/api/v1/waive-confluence', loginMiddleware, async(req, res) => {
+        try{
+            const { _id } = req.user;
+            const user = await User.findById(mongoose.Types.ObjectId(_id));
+            let response;
+            if(user){
+                
+                user.isConfluenceEnabled = false;
+                await user.save();
+                console.log(user);
+                const result ={
+                    enableAccess: false,
+                }
+                
+                
+                let resUser = {...user._doc}
+                resUser.isConfluenceAuthorised = true;
+                delete resUser.confluenceAuthentication;
+
+                response = {
+                    result,
+                    user: {...resUser},
+                }
+
+                res
+                    .status(200)
+                    .json(response);
+
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        error: true,
+                        response: USER_NOT_FOUND,
+                    });
+            }
+        }
+        catch(e){
+            console.log(e);
+            res
+            .status(404)
+            .json({
+                error: true,
+                response: UNAUTHORIZED,
+            });
+        }
+    });
+
 };

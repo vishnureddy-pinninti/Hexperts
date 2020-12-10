@@ -13,11 +13,11 @@ const receiveSearchResults = (res) => {
     };
 };
 
-export const requestSearch = (body, params = { skip: 0 }) => {
+export const requestSearch = (body, params = { skip: 0, confluence: false }) => {
     return {
         type: REQUEST_SEARCH,
         makeApiRequest: {
-            url: `/api/v1/search?skip=${params.skip}`,
+            url: `/api/v1/search?skip=${params.skip}&confluence=${params.confluence}`,
             method: 'POST',
             body,
             success: receiveSearchResults,
@@ -44,14 +44,16 @@ export const requestAdvancedSearch = (body, params) => {
     const {
         skip,
         limit = 10,
+        confluence,
     } = params;
 
     return {
         type: REQUEST_ADVANCED_SEARCH,
         skip,
         limit,
+        confluence,
         makeApiRequest: {
-            url: `/api/v1/search?skip=${skip}&limit=${limit}`,
+            url: `/api/v1/search?skip=${skip}&limit=${limit}&confluence=${confluence}`,
             method: 'POST',
             body,
             success: (res) => receiveAdvancedSearchResults(res, skip, limit),

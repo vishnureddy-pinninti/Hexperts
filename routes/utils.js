@@ -369,4 +369,45 @@ module.exports = (app) => {
                 });
         }
     });
+
+    app.get('/api/v1/deletetopic/:topicID',async(req, res) => {
+        const { topicID } = req.params;
+
+        try{
+            const topic = await Topic.remove({_id: mongoose.Types.ObjectId(topicID)});
+            res
+                .status(200)
+                .json(topic);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
+
+    app.get('/api/v1/removetopic/:questionID',async(req, res) => {
+        const { questionID } = req.params;
+
+        try{
+            const topic = await Question.find({_id: mongoose.Types.ObjectId(questionID)});
+            res
+                .status(200)
+                .json(topic);
+        }
+        catch (e) {
+            res
+                .status(500)
+                .json({
+                    error: true,
+                    response: String(e),
+                    stack: e.stack,
+                });
+        }
+    });
 }
+

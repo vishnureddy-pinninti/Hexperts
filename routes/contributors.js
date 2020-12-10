@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const moment = require('moment');
 
-const getMonthlyTopContributors = require('../utils/getMonthlyTopContributors')
-
 const loginMiddleware = require('../middlewares/loginMiddleware');
 
 module.exports = (app) => {

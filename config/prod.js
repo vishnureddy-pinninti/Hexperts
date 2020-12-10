@@ -4,5 +4,6 @@ module.exports = {
     clientID: 'af415683-f04d-43f7-9c4d-d1b661963f42',
     cookieKey: 'vcsdhjbckqwhfgduwqyvchjqwncxkwqgcduqwfvdqw',
     emailUrl: 'https://hexperts.ingrnet.com',
+    confluenceKey: 'PUrC3EEocZ8Qf+mNbybahmpeLsxJ+KHMWpnIOS1jaLM=',
     PORT: 443,
 };

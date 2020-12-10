@@ -7,6 +7,7 @@ import { Grid,
     TextField,
     Container,
     Typography,
+    Avatar as MuiAvatar,
     List, ListItem, ListItemText,
     ListItemAvatar, Box, Chip, Avatar,
     Divider, Tooltip, Button, CardHeader } from '@material-ui/core';
@@ -76,6 +77,7 @@ const Search = (props) => {
         loading,
         topicsList,
         requestTopics,
+        isConfluenceEnabled,
     } = props;
 
     const [
@@ -240,6 +242,26 @@ const Search = (props) => {
         </a>
     );
 
+    const confluence = (item) => (
+        <a
+            className={ classes.link }
+            target="_blank"
+            rel="noopener noreferrer"
+            href={ item.options.link }>
+            <ListItem>
+                <ListItemAvatar>
+                    <MuiAvatar
+                        alt="Confluence Icon"
+                        src={ '/confluence-icon.png' }
+                        className={ classes.avatar } />
+                </ListItemAvatar>
+                <ListItemText
+                    primary={ <span dangerouslySetInnerHTML={ { __html: item.text } } /> }
+                    secondary={ <span dangerouslySetInnerHTML={ { __html: item.subtext } } /> } />
+            </ListItem>
+        </a>
+    );
+
     const renderResults = (item) => {
         switch (item.type){
             case 'topics':
@@ -256,6 +278,8 @@ const Search = (props) => {
                 return profile(item);
             case 'externals':
                 return externals(item);
+            case 'confluence':
+                return confluence(item);
             default:
                 return question(item);
         }
@@ -285,6 +309,22 @@ const Search = (props) => {
     };
 
     const renderSearchResults = (items) => items.map((item, index) => {
+        if (index > 0 && item.type === 'confluence' && items[index - 1].type !== 'confluence') {
+            return (
+                <div key={ index }>
+                    <div style={ {
+                        height: 40,
+                        backgroundColor: '#f0f2f2',
+                        paddingTop: 20,
+                        fontWeight: 'bolder',
+                    } }>
+                        Geo - Confluence Results
+                    </div>
+                    { renderResults(item) }
+                    <Divider />
+                </div>
+            );
+        }
         if (index > 0 && item.type === 'externals' && items[index - 1].type !== 'externals') {
             return (
                 <div key={ index }>
@@ -322,6 +362,7 @@ const Search = (props) => {
                 requestSearch(req, {
                     skip: 0,
                     limit: 20,
+                    confluence: isConfluenceEnabled,
                 });
                 break;
             default:
@@ -330,6 +371,7 @@ const Search = (props) => {
                 requestSearch(req, {
                     skip: 0,
                     limit: 20,
+                    confluence: isConfluenceEnabled,
                 });
         }
     };
@@ -341,6 +383,7 @@ const Search = (props) => {
             'users',
             'externals',
             'topics',
+            'confluence',
         ].indexOf(type) >= 0){
             setShowTopicSearch(false);
         }
@@ -348,11 +391,13 @@ const Search = (props) => {
             setShowTopicSearch(true);
             req.topics = checked;
         }
+        
         switch (type){
             case 'all':
                 requestSearch(req, {
                     skip: 0,
                     limit: 20,
+                    confluence: isConfluenceEnabled,
                 });
                 break;
             default:
@@ -360,12 +405,13 @@ const Search = (props) => {
                 requestSearch(req, {
                     skip: 0,
                     limit: 20,
+                    confluence: isConfluenceEnabled,
                 });
         }
     };
 
     useEffect(() => {
-            getData(selectedTab);
+        getData(selectedTab);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ query ]);
 
@@ -434,6 +480,15 @@ const Search = (props) => {
                 onClick={ () => { getData('externals'); } }
                 clickable
                 disabled={ loading } />
+            {isConfluenceEnabled ? <Chip
+                label="Geo - Confluence"
+                className={ classes.chip }
+                color="primary"
+                size="small"
+                variant={ selectedTab === 'confluence' ? 'default' : 'outlined' }
+                onClick={ () => { getData('confluence'); } }
+                clickable
+                disabled={ loading } />: <></>}
         </List>
     );
 
@@ -623,7 +678,7 @@ const Search = (props) => {
                                 </b>
                                     </Typography> } />
 
-                        { totalCount === null ? <CardLoader height={ 50 } />
+                        { totalCount === null && results === null ? <CardLoader height={ 50 } />
                             : <List className={ classes.root }>
                                 <InfiniteScroll
                                     dataLength={ results.length }
@@ -657,6 +712,8 @@ const mapStateToProps = (state) => {
         newResults: state.search.newResults,
         loading: state.search.loading,
         topicsList: state.topic.topics,
+        setConfluence: state.search.setConfluence,
+        isConfluenceEnabled: state.user.isConfluenceEnabled,
     };
 };
 
