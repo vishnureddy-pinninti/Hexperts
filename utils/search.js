@@ -164,10 +164,15 @@ const getRequestUrl = (categories) => {
     let realCategories = [];
 
     if (categories.length) {
-        realCategories = categories.filter((category) => !!fields[category]).join(',');
+        realCategories = categories.filter((category) => {
+            if(category != 'confluence'){
+                !!fields[category]
+            }
+        }).join(',');
     }
     else {
         realCategories = Object.keys(fields).join(',');
+        realCategories = realCategories.replace(',confluence','');
     }
     return `http://localhost:9200/${realCategories}/_search`;
 };
@@ -290,43 +295,58 @@ const search = async(properties) => {
             match: { topics }
         });
     }
-
+    
     try {
-        let results = await request.get(requestUrl, {
-            json: true,
-            body: {
-                _source: {
-                    excludes: excludeFields,
-                },
-                query: {
-                    boosting: {
-                        positive: {
-                            bool: {
-                                must: mustQuery
-                            }
-                        },
-                        negative: {
-                            terms: {
-                                _index: [ 'externals' ],
-                            },
-                        },
-                        negative_boost: 0.01,
+        let results = { totalCount: 0, results: []};
+        if(categories.length == 0 || (categories.length == 1 && categories.indexOf('confluence') == -1)){
+            results = await request.get(requestUrl, {
+                json: true,
+                body: {
+                    _source: {
+                        excludes: excludeFields,
                     },
+                    query: {
+                        boosting: {
+                            positive: {
+                                bool: {
+                                    must: mustQuery
+                                }
+                            },
+                            negative: {
+                                terms: {
+                                    _index: [ 'externals' ],
+                                },
+                            },
+                            negative_boost: 0.01,
+                        },
+                    },
+                    highlight: {
+                        pre_tags: [ '<span class=\'highlighter\'>' ],
+                        post_tags: [ '</span>' ],
+                        fields: highlightFields,
+                    },
+                    from: pagination.skip || 0,
+                    size: pagination.limit || 10,
                 },
-                highlight: {
-                    pre_tags: [ '<span class=\'highlighter\'>' ],
-                    post_tags: [ '</span>' ],
-                    fields: highlightFields,
-                },
-                from: pagination.skip || 0,
-                size: pagination.limit || 10,
-            },
-        });
-        results = parseResult(results);
+            });
+            results = parseResult(results);
+        }
             
         let confluenceResults = {};
-        console.length(pagination,categories);
-        if(pagination.confluence && pagination.skip == 0 &&(categories.length == 0 || (categories.length > 0  && categories.indexOf('confulence')))){
+        
+        if(categories && categories.length>0){
+                
+            let sortedResults = [];
+            categories.forEach((category) => {
+                let sortedResult = results.results.filter(x=> x.type == category);
+                sortedResults = sortedResults.concat(sortedResult);
+            })
+            results.results = sortedResults;
+            results.totalCount = sortedResults.length
+        }
+        results.results = results.results.sort(function(a, b) {return (a.type > b.type) ? 1 : -1})
+        
+        if(pagination.confluence && pagination.skip == 0 &&(categories.length == 0 || (categories.length > 0  && categories.indexOf('confluence') > -1))){
             confluenceResults = await request.get('https://hxgntech.com/confluence/rest/api/search?cql={text~'+text+'}', {
                 headers: {
                     Authorization: "Basic c3lzdXNlci1oZXhwZXJ0czpyQUVVWUVLaWlBRDBaNFg1YUROb3hHQlgzOUVjOQ=="
@@ -339,16 +359,6 @@ const search = async(properties) => {
                 results.results.push(item);
             } )
             results.totalCount += confluenceSearchResults.length;
-            // if(categories && categories.length>0){
-                
-            //     let sortedResults = [];
-            //     categories.forEach((category) => {
-            //         let sortedResult = results.results.filter(x=> x.type == category);
-            //         sortedResults = sortedResults.concat(sortedResult);
-            //     })
-            //     results.results = sortedResults;
-            //     results.totalCount = sortedResults.length
-            // }
         }
         
         return results;
