@@ -26,6 +26,7 @@ import { addNewTopic,
 import { editQuestion } from '../../store/actions/questions';
 import { addPreferencesPending,
     maangeUserPreferences } from '../../store/actions/auth';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 
 const useStyles = makeStyles(() => {
@@ -69,23 +70,6 @@ const validate = (values) => {
     return errors;
 };
 
-const renderAddTopicField = ({input, name, meta: { touched, error }}) => (
-    <>
-        <TextField
-            margin="dense"
-            id="addTopic"
-            name={ name }
-            label="Enter Topic"
-            type="text"
-            { ...input }
-            style={{ marginBottom: 30 }}
-            autoComplete="off"
-            fullWidth/>
-            {touched && error && <span style={{color: "red"}}>{error}</span>}
-    </>
-);
-
-
 const FollowTopicsModal = (props) => {
     const classes = useStyles();
     const theme = useTheme();
@@ -104,35 +88,6 @@ const FollowTopicsModal = (props) => {
         addNewTopic,
     } = props;
 
-    const [
-        openAddTopic,
-        setAddTopic,
-    ] = React.useState(false);
-
-    const handleOpenAddTopic = () => {
-        setAddTopic(true);
-    }
-
-    const handleCloseAddTopic = () => {
-        setAddTopic(false);
-    }
-
-    const addTopic = (values) => {
-        if(values && Object.keys(values).length !== 0){
-            if(topics.find(x=> x.topic.toLowerCase() == values.addTopic.toLowerCase())){
-                throw new SubmissionError({ addTopic: 'Topic already exists', _error: 'Create Topic failed!' })
-            }
-            else{
-                const topics = { topics: [values.addTopic] };
-                addNewTopic(topics);
-                setAddTopic(false);
-            }
-        }
-        else{
-            throw new SubmissionError({ addTopic: 'Cannot create empty Topic', _error: 'Create Topic failed!' })
-        }
-    }
-
     useEffect(() => {
         requestTopics();
     }, [ requestTopics ]);
@@ -150,19 +105,6 @@ const FollowTopicsModal = (props) => {
         const filtered = topics.filter((topic) => topic.topic.toLowerCase().indexOf(text.toLowerCase()) > -1);
         setFilteredTopics(filtered);
     };
-
-    const renderTextField = () => (
-        <TextField
-            name="searchTopics"
-            margin="dense"
-            id="searchTopic"
-            label="Search Topics"
-            type="text"
-            className={ classes.textfield }
-            autoComplete="off"
-            onChange={ (event) => filterTopics(event.target.value) }
-            fullWidth />
-    );
 
     const [
         checked,
@@ -221,6 +163,11 @@ const FollowTopicsModal = (props) => {
         }
     };
 
+    const [
+        value,
+        setValue,
+    ] = React.useState(null);
+
     const addTopicsToInterests = () => {
         maangeUserPreferences({
             expertIn: expertChecked,
@@ -235,6 +182,16 @@ const FollowTopicsModal = (props) => {
             handleFollowTopicsModalClose();
         }
     };
+
+    const topicsList = [];
+
+    const onTopicSelect = (obj, value) => {
+        if (value && value.inputValue) {
+            addNewTopic({ topics: [ value.inputValue ] });
+            setValue({ topic: '' });
+            return;
+        }
+    }
 
     const renderTopics = () => (
         <div className={ classes.root }>
@@ -294,18 +251,42 @@ const FollowTopicsModal = (props) => {
                 aria-labelledby="responsive-dialog-title">
                 <DialogTitle>
                     Topics
-                    <Button
-                        className={ classes.addTopic }
-                        color="primary"
-                        variant="contained"
-                        onClick={ handleOpenAddTopic }
-                        type="submit"><AddCircleOutlineIcon /> Create Topic</Button>
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         <b>Follow topics of your interest and we will give you feed when new question or answer is posted.</b>
                     </DialogContentText>
-                    { renderTextField() }
+                    <div className={ classes.container }>
+                        <Autocomplete
+                            id="highlights-demo"
+                            value={ value }
+                            options={ topicsList }
+                            onChange={ onTopicSelect }
+                            getOptionLabel={ (option) => option.topic }
+                            noOptionsText='Enter Text'
+                            filterOptions={ (options, params) => {
+                                const filtered = [];
+                                if (params.inputValue && params.inputValue !== '') {
+                                    if(topicsList.findIndex(x => x.topic.toLowerCase() != params.inputValue.toLowerCase()) == -1){
+                                        filtered.push({
+                                            inputValue: params.inputValue,
+                                            topic: `Create "${params.inputValue}"`,
+                                        });
+                                    }
+                                }
+
+                                return filtered;
+                            } }
+
+                            renderInput={ (params) => (
+                                <TextField
+                                    { ...params }
+                                    onChange= { (event) => filterTopics(event.target.value) }
+                                    label="Search / Create Topics"
+                                    margin="normal" />
+                            ) }
+                            />
+                    </div>
                     { renderTopics() }
                 </DialogContent>
                 <DialogActions>
@@ -323,41 +304,6 @@ const FollowTopicsModal = (props) => {
                         Done
                     </Button>
                 </DialogActions>
-            </Dialog>
-            <Dialog
-                className={ classes.root }
-                fullWidth={ true }
-                maxWidth={'md'}
-                open={ openAddTopic }
-                onClose={ handleCloseAddTopic }
-                aria-labelledby="responsive-dialog-title">
-                <form
-                    id="createTopic"
-                    onSubmit={ handleSubmit(addTopic) }>
-                    <DialogTitle>Add Topic</DialogTitle>
-                    
-                    <DialogContent>
-                        <DialogContentText>
-                            Please create a topic of your interest.
-                        </DialogContentText>
-                        <Field name="addTopic" component={renderAddTopicField}/>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button
-                            autoFocus
-                            onClick={ handleCloseAddTopic }
-                            color="primary"
-                            type="button">
-                            Cancel
-                        </Button>
-                        <Button
-                            color="primary"
-                            variant="contained"
-                            type="submit">
-                            Add
-                        </Button>
-                    </DialogActions>
-                </form>
             </Dialog>
         </>
     );
