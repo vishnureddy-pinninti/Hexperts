@@ -104,11 +104,20 @@ class Users extends Component {
         const { uniqueValues } = this.props;
         const { departments = [], jobTitles = [], location = [] } = uniqueValues;
         const departmentsLookup = {};
-        departments.forEach((department) => departmentsLookup[department] = department);
+        departments.forEach((department) => {
+            if(department && department.trim() != '')
+                departmentsLookup[department] = department
+        });
         const jobTitlesLookup = {};
-        jobTitles.forEach((jobTitle) => jobTitlesLookup[jobTitle] = jobTitle);
+        jobTitles.forEach((jobTitle) => {
+            if(jobTitle && jobTitle.trim() != '')
+                jobTitlesLookup[jobTitle] = jobTitle
+        });
         const locationsLookup = {};
-        location.forEach((location) => locationsLookup[location] = location);
+        location.forEach((location) => {
+            if(location && location.trim() != '')
+                locationsLookup[location] = location
+        });
         const membershipLookup = {
             blue: 'Blue',
             gold: 'Gold',
@@ -116,9 +125,9 @@ class Users extends Component {
         };
         return [
             { field: 'name', title: 'Name', cellStyle: { whiteSpace: 'nowrap' } },
-            { field: 'jobTitle', title: 'Job Title', filtering: true, lookup: jobTitlesLookup, filterCellStyle: { overflow: 'auto', minWidth: 300 }, },
-            { field: 'department', title: 'Department', filtering: true, lookup: departmentsLookup, filterCellStyle: { overflow: 'auto', minWidth: 200 }, },
-            { field: 'city', title: 'Location', filtering: true, lookup: locationsLookup },
+            { field: 'jobTitle', title: 'Job Title', filtering: true, lookup: jobTitlesLookup, filterCellStyle: { overflow: 'auto', minWidth: 250, maxWidth: 250}, },
+            { field: 'department', title: 'Department', filtering: true, lookup: departmentsLookup, filterCellStyle: { overflow: 'auto', minWidth: 200 , maxWidth: 250}, },
+            { field: 'city', title: 'Location', filtering: true, lookup: locationsLookup, filterCellStyle: { overflow: 'auto',  maxWidth: 150}, },
             { field: 'questions', title: 'Questions' },
             { field: 'answers', title: 'Answers' },
             { field: 'posts', title: 'Blog Posts' },
