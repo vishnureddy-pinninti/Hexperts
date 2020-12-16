@@ -31,9 +31,9 @@ class MonthlyTopContributors extends Component {
         location.forEach((location) => locationsLookup[location] = location);
         return [
             { field: 'name', title: 'Name' },
-            { field: 'jobTitle', title: 'Job Title', filtering: true, lookup: jobTitlesLookup, filterCellStyle: { overflow: 'auto', minWidth: 300 }, },
-            { field: 'department', title: 'Department', filtering: true, lookup: departmentsLookup, filterCellStyle: { overflow: 'auto', minWidth: 200 }, },
-            { field: 'city', title: 'Location', filtering: true, lookup: locationsLookup },
+            { field: 'jobTitle', title: 'Job Title', filtering: true, lookup: jobTitlesLookup, filterCellStyle: { overflow: 'auto',  minWidth: 250, maxWidth: 250}, },
+            { field: 'department', title: 'Department', filtering: true, lookup: departmentsLookup, filterCellStyle: { overflow: 'auto', minWidth: 200, maxWidth: 250 }, },
+            { field: 'city', title: 'Location', filtering: true, lookup: locationsLookup, filterCellStyle: { overflow: 'auto',  maxWidth: 150}, },
             { field: 'questions', title: 'Questions' },
             { field: 'answers', title: 'Answers' },
             { field: 'posts', title: 'Blog Posts' },
