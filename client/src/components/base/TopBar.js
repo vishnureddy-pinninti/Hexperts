@@ -115,8 +115,8 @@ const useStyles = makeStyles((theme) => {
                 marginRight: theme.spacing(1),
             },
             [theme.breakpoints.up('lg')]:{
-                marginLeft: theme.spacing(3),
-                marginRight: theme.spacing(2),
+                marginLeft: theme.spacing(0),
+                marginRight: theme.spacing(1),
             }
             // border: '2px solid #e2e2e2',
         },
@@ -182,6 +182,10 @@ const useStyles = makeStyles((theme) => {
         },
         helpButton:{
             color: '#ffffff'
+        },
+        topBarButton:{
+            padding: 8,
+            color: '#000000'
         }
     };
 });
@@ -624,7 +628,8 @@ const TopBar = (props) => {
                     justify="center">
                     <Grid
                         item>
-                        <Toolbar>
+                        <Toolbar
+                    style={{ paddingLeft: 8, paddingRight: 8}}>
                             <div className={ classes.inline }>
                                 <Link
                                     to="/"
@@ -641,6 +646,7 @@ const TopBar = (props) => {
                                     to="/"
                                     className={ classes.link }>
                                     <Button
+                                            style = {{ padding: 8 }}
                                         startIcon={ <HomeIcon /> }
                                         size="large"
                                         className={ path === '/' ? classes.activeMenuButton : classes.menuButton }>
@@ -655,6 +661,7 @@ const TopBar = (props) => {
                                         badgeContent={ 0 }
                                         color="secondary">
                                         <Button
+                                            style = {{ padding: 8 }}
                                             startIcon={ <EditIcon /> }
                                             size="large"
                                             className={ path === '/Answer' ? classes.activeMenuButton : classes.menuButton }>
@@ -667,6 +674,7 @@ const TopBar = (props) => {
                                     to="/blogs"
                                     className={ classes.link }>
                                     <Button
+                                            style = {{ padding: 8 }}
                                         startIcon={ <SubjectIcon /> }
                                         size="large"
                                         className={ path === '/Blogs' || path.startsWith('/Blog') || path.startsWith('/Post') ? classes.activeMenuButton : classes.menuButton }>
@@ -681,6 +689,7 @@ const TopBar = (props) => {
                                         badgeContent={ notificationCount }
                                         color="secondary">
                                         <Button
+                                            style = {{ padding: 8 }}
                                             startIcon={ <NotificationsIcon /> }
                                             size="large"
                                             className={ path === '/Notifications' ? classes.activeMenuButton : classes.menuButton }>
@@ -694,6 +703,7 @@ const TopBar = (props) => {
                                         to="/dashboard"
                                         className={ classes.link }>
                                         <Button
+                                            style = {{ padding: 8, paddingRight: 16}}
                                             startIcon={ <DashboardIcon /> }
                                             size="large"
                                             className={ path === '/dashboard' ? classes.activeMenuButton : classes.menuButton }>

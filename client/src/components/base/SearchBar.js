@@ -53,13 +53,13 @@ const useStyles = makeStyles((theme) => {
             borderRadius: 0,
             width: 'auto',
             [theme.breakpoints.up('md')]: {
-                minWidth: 200,
-                maxWidth: 400,
+                minWidth: '10em',
+                maxWidth: '12em',
             },
             [theme.breakpoints.up('lg')]: {
                 
-                minWidth: 200,
-                maxWidth: 400,
+                minWidth: '10em',
+                maxWidth: '15.5em',
             },
         },
         searchFilter: {
