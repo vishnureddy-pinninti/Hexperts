@@ -19,6 +19,10 @@ const feedbackSchema = new Schema({
     description: {
         type: String,
     },
+    isAddressed: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 mongoose.model('feedbacks', feedbackSchema);

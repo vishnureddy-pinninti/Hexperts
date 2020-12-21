@@ -9,6 +9,7 @@ import blog from './blogReducer';
 import search from './searchReducer';
 import dashboard from './dashboardReducer';
 import draft from './draftReducer';
+import feedback from './feedbackReducer';
 
 export default combineReducers({
     form: formReducer,
@@ -20,4 +21,5 @@ export default combineReducers({
     blog,
     dashboard,
     draft,
+    feedback,
 });

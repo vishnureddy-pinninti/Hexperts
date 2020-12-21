@@ -186,6 +186,7 @@ const FollowTopicsModal = (props) => {
     const topicsList = [];
 
     const onTopicSelect = (obj, value) => {
+        console.log("OnTopicSelect")
         if (value && value.inputValue) {
             addNewTopic({ topics: [ value.inputValue ] });
             setValue({ topic: '' });
