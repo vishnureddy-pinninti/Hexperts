@@ -178,6 +178,7 @@ const FollowTopicsModal = (props) => {
     const handleClose = () => {
         setChecked(followedTopics.map((t) => t._id));
         setExpertChecked(expertTopics.map((t) => t._id));
+        filterTopics("");
         if (handleFollowTopicsModalClose){
             handleFollowTopicsModalClose();
         }
@@ -186,6 +187,7 @@ const FollowTopicsModal = (props) => {
     const topicsList = [];
 
     const onTopicSelect = (obj, value) => {
+        console.log("OnTopicSelect")
         if (value && value.inputValue) {
             addNewTopic({ topics: [ value.inputValue ] });
             setValue({ topic: '' });

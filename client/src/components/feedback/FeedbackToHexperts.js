@@ -10,7 +10,7 @@ import { Button,
     TextField} from '@material-ui/core';
 import { reduxForm, Field, reset } from 'redux-form';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
-import { addUserFeedback } from '../../store/actions/feedback'
+import { addUserFeedback } from '../../store/actions/feedback';
 
 
 
