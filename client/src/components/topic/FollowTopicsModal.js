@@ -178,6 +178,7 @@ const FollowTopicsModal = (props) => {
     const handleClose = () => {
         setChecked(followedTopics.map((t) => t._id));
         setExpertChecked(expertTopics.map((t) => t._id));
+        filterTopics("");
         if (handleFollowTopicsModalClose){
             handleFollowTopicsModalClose();
         }
