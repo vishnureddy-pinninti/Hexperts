@@ -87,6 +87,7 @@ function Dashboard(props) {
         requestDashboardTopics,
         requestDashboardUsers,
         requestUserSummary,
+        requestUniqueValues,
         requestUserFeedbacks,
     } = props; 
 
