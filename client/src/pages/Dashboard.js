@@ -150,6 +150,7 @@ const mapStateToProps = (state) => {
         monthlyTopContributors: state.dashboard.monthlyTopContributors,
         feedbacks: state.feedback.feedbacks,
     };
+    
 }
 
 const mapDispatchToProps = (dispatch) => {
