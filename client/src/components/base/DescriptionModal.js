@@ -25,6 +25,18 @@ const validate = (values) => {
     return errors;
 };
 
+
+
+const renderTextField = ({ input }) => (
+    <TextField
+        { ...input }
+        label="Question"
+        type="text"
+        variant="outlined"
+        required
+        fullWidth />
+);
+
 function DescriptionModal(props) {
     const {
         questionText,
@@ -70,16 +82,6 @@ function DescriptionModal(props) {
             }
         }
     };
-
-    const renderTextField = ({ input }) => (
-        <TextField
-            { ...input }
-            label="Question"
-            type="text"
-            variant="outlined"
-            required
-            fullWidth />
-    );
 
     return (
         <div>
